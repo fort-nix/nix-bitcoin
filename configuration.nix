@@ -18,6 +18,8 @@
   ];
 
   services.openssh.enable = true;
+  services.tor.enable = true;
+  services.tor.client.enable = true;
 
 #  users.users.root = {
 #     openssh.authorizedKeys.keys = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILacgZRwLsiICNHGHY2TG2APeuxFsrw6Cg13ZTMQpNqA nickler@rick" ];
