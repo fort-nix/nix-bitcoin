@@ -3,10 +3,9 @@
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
 { config, pkgs, ... }:
-
-{
-
-
+let
+  nodeinfo = (import pkgs/nodeinfo.nix);
+in {
   disabledModules = [ "services/security/tor.nix" ];
 
   imports =
@@ -14,15 +13,18 @@
       ./modules/default.nix
       ./modules/tor.nix
       ./modules/onionnode.nix
-
+      ./modules/nodeinfo.nix
     ];
 
   networking.hostName = "nix-bitcoin"; # Define your hostname.
   time.timeZone = "UTC";
 
   environment.systemPackages = with pkgs; [
-     wget vim tmux bitcoin git nginx
+     wget vim tmux git nginx nodeinfo
   ];
+  nixpkgs.config.packageOverrides = pkgs: {
+    inherit nodeinfo;
+  };
 
   services.openssh.enable = true;
 
