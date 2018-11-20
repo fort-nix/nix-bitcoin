@@ -3,14 +3,14 @@
 with lib;
 
 let
-  cfg = config.services.onionnode;
+  cfg = config.services.nixbitcoin;
 in {
-  options.services.onionnode = {
+  options.services.nixbitcoin = {
     enable = mkOption {
       type = types.bool;
       default = false;
       description = ''
-        If enabled, the onion service will be installed.
+        If enabled, the nix-bitcoin service will be installed.
       '';
     };
   };
@@ -27,6 +27,15 @@ in {
         port = config.services.bitcoin.port;
       }];
       version = 3;
+    };
+    systemd.services.nodeinfo = {
+      description = "Get node info";
+      wantedBy = [ "multi-user.target" ];
+      serviceConfig = {
+        ExecStart = "${pkgs.bash}/bin/bash -c ${pkgs.nodeinfo}/bin/nodeinfo";
+        user = "root";
+        type = "oneshot";
+      };
     };
   };
 }

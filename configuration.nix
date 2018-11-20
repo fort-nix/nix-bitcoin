@@ -4,16 +4,16 @@
 
 { config, pkgs, ... }:
 let
+  # custom package
   nodeinfo = (import pkgs/nodeinfo.nix);
 in {
   disabledModules = [ "services/security/tor.nix" ];
 
   imports =
     [
-      ./modules/default.nix
+      ./modules/bitcoind.nix
       ./modules/tor.nix
-      ./modules/onionnode.nix
-      ./modules/nodeinfo.nix
+      ./modules/nixbitcoin.nix
     ];
 
   networking.hostName = "nix-bitcoin"; # Define your hostname.
@@ -42,7 +42,7 @@ in {
   services.tor.enable = true;
   services.tor.client.enable = true;
   #services.bitcoin.proxy = services.tor.client.socksListenAddress;
-  services.onionnode.enable = true;
+  services.nixbitcoin.enable = true;
 
 
   # turn off binary cache by passing the empty list
