@@ -38,9 +38,13 @@ in {
     services.bitcoin.listen = true;
     services.bitcoin.proxy = config.services.tor.client.socksListenAddress;
     services.bitcoin.port = 8333;
+    services.bitcoin.rpcuser = "bitcoinrpc";
+    services.bitcoin.rpcpassword = "bitcoinrpc";
 
     # clightning
     services.clightning.enable = true;
+    services.clightning.bitcoin-rpcuser = config.services.bitcoin.rpcuser;
+    services.clightning.bitcoin-rpcpassword = config.services.bitcoin.rpcpassword;
 
     # nodeinfo
     systemd.services.nodeinfo = {

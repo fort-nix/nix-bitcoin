@@ -7,14 +7,14 @@ let
   home = "/var/lib/bitcoin";
   configFile = pkgs.writeText "bitcoin.conf" ''
     listen=${if cfg.listen then "1" else "0"}
-    prune=1001
+    prune=2000
     assumevalid=0000000000000000000726d186d6298b5054b9a5c49639752294b322a305d240
     ${optionalString (cfg.proxy != null) "proxy=${cfg.proxy}"}
     addnode=ecoc5q34tmbq54wl.onion
     discover=0
     ${optionalString (cfg.port != null) "port=${toString cfg.port}"}
-    rpcuser=foo
-    rpcpassword=bar
+    ${optionalString (cfg.rpcuser != null) "rpcuser=${cfg.rpcuser}"}
+    ${optionalString (cfg.rpcpassword != null) "rpcuser=${cfg.rpcpassword}"}
     '';
 in {
   options.services.bitcoin = {
@@ -43,6 +43,16 @@ in {
         type = types.nullOr types.ints.u16;
         default = null;
         description = "Override the default port on which to listen for connections.";
+    };
+    rpcuser = mkOption {
+        type = types.nullOr types.string;
+        default = null;
+        description = "Set bitcoin RPC user";
+    };
+    rpcpassword = mkOption {
+        type = types.nullOr types.string;
+        default = null;
+        description = "Set bitcoin RPC password";
     };
   };
   config = mkIf cfg.enable {
