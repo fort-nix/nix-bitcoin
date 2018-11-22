@@ -11,16 +11,20 @@ in {
 
   imports =
     [
-      ./modules/bitcoind.nix
-      ./modules/tor.nix
       ./modules/nixbitcoin.nix
     ];
+
+  # TODO: does that destroy the channels symlink?
+  # turn off binary cache by passing the empty list
+  #nix.binaryCaches = [];
 
   networking.hostName = "nix-bitcoin"; # Define your hostname.
   time.timeZone = "UTC";
 
   environment.systemPackages = with pkgs; [
-     wget vim tmux git nginx nodeinfo
+     vim tmux clightning bitcoin
+     nodeinfo
+     jq
   ];
   nixpkgs.config.packageOverrides = pkgs: {
     inherit nodeinfo;
@@ -45,8 +49,6 @@ in {
   services.nixbitcoin.enable = true;
 
 
-  # turn off binary cache by passing the empty list
-  nix.binaryCaches = [];
 
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";

@@ -13,6 +13,8 @@ let
       addnode=ecoc5q34tmbq54wl.onion
       discover=0
       ${optionalString (cfg.port != null) "port=${toString cfg.port}"}
+      rpcuser=foo
+      rpcpassword=bar
       '';
 in {
   options.services.bitcoin = {
@@ -40,8 +42,6 @@ in {
     port = mkOption {
         type = types.nullOr types.ints.u16;
         default = null;
-#        type = types.int;
-        #default = 8333;
         description = "Override the default port on which to listen for connections.";
     };
 
