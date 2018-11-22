@@ -6,16 +6,16 @@ let
   cfg = config.services.bitcoin;
   home = "/var/lib/bitcoin";
   configFile = pkgs.writeText "bitcoin.conf" ''
-      listen=${if cfg.listen then "1" else "0"}
-      prune=1001
-      assumevalid=0000000000000000000726d186d6298b5054b9a5c49639752294b322a305d240
-      ${optionalString (cfg.proxy != null) "proxy=${cfg.proxy}"}
-      addnode=ecoc5q34tmbq54wl.onion
-      discover=0
-      ${optionalString (cfg.port != null) "port=${toString cfg.port}"}
-      rpcuser=foo
-      rpcpassword=bar
-      '';
+    listen=${if cfg.listen then "1" else "0"}
+    prune=1001
+    assumevalid=0000000000000000000726d186d6298b5054b9a5c49639752294b322a305d240
+    ${optionalString (cfg.proxy != null) "proxy=${cfg.proxy}"}
+    addnode=ecoc5q34tmbq54wl.onion
+    discover=0
+    ${optionalString (cfg.port != null) "port=${toString cfg.port}"}
+    rpcuser=foo
+    rpcpassword=bar
+    '';
 in {
   options.services.bitcoin = {
     enable = mkOption {
@@ -44,29 +44,32 @@ in {
         default = null;
         description = "Override the default port on which to listen for connections.";
     };
-
   };
-
   config = mkIf cfg.enable {
-      users.users.bitcoin =
-        {
-          description = "Bitcoind User";
-          createHome  = true;
-          inherit home;
-      };
-      systemd.services.bitcoind =
-        { description = "Run bitcoind";
-          path  = [ pkgs.bitcoin ];
-          wantedBy = [ "multi-user.target" ];
-          preStart = ''
-            mkdir -p ${home}/.bitcoin
-            ln -sf ${configFile} ${home}/.bitcoin/bitcoin.conf
-            '';
-          serviceConfig =
-            {
-              ExecStart = "${pkgs.bitcoin}/bin/bitcoind";
-              User = "bitcoin";
-            };
-        };
+    users.users.bitcoin = {
+        description = "Bitcoind User";
+        createHome  = true;
+        inherit home;
     };
+    systemd.services.bitcoind = {
+      description = "Run bitcoind";
+      path  = [ pkgs.bitcoin ];
+      wantedBy = [ "multi-user.target" ];
+      preStart = ''
+        mkdir -p ${home}/.bitcoin
+        ln -sf ${configFile} ${home}/.bitcoin/bitcoin.conf
+        '';
+      serviceConfig = {
+        ExecStart = "${pkgs.bitcoin}/bin/bitcoind";
+        User = "bitcoin";
+        Restart = "on-failure";
+
+        PrivateTmp = "true";
+        ProtectSystem = "full";
+        NoNewPrivileges = "true";
+        PrivateDevices = "true";
+        MemoryDenyWriteExecute = "true";
+      };
+    };
+  };
 }
