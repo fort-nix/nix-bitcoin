@@ -14,7 +14,7 @@ let
     discover=0
     ${optionalString (cfg.port != null) "port=${toString cfg.port}"}
     ${optionalString (cfg.rpcuser != null) "rpcuser=${cfg.rpcuser}"}
-    ${optionalString (cfg.rpcpassword != null) "rpcuser=${cfg.rpcpassword}"}
+    ${optionalString (cfg.rpcpassword != null) "rpcpassword=${cfg.rpcpassword}"}
     '';
 in {
   options.services.bitcoin = {

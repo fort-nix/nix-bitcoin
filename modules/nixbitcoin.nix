@@ -4,6 +4,7 @@ with lib;
 
 let
   cfg = config.services.nixbitcoin;
+  secrets = import ../load-secrets.nix;
 in {
   imports =
     [
@@ -39,7 +40,7 @@ in {
     services.bitcoin.proxy = config.services.tor.client.socksListenAddress;
     services.bitcoin.port = 8333;
     services.bitcoin.rpcuser = "bitcoinrpc";
-    services.bitcoin.rpcpassword = "bitcoinrpc";
+    services.bitcoin.rpcpassword = secrets.bitcoinrpcpassword;
 
     # clightning
     services.clightning.enable = true;

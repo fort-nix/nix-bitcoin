@@ -24,7 +24,6 @@ in {
   environment.systemPackages = with pkgs; [
      vim tmux clightning bitcoin
      nodeinfo
-     jq
   ];
   nixpkgs.config.packageOverrides = pkgs: {
     inherit nodeinfo;
@@ -47,8 +46,6 @@ in {
   services.tor.client.enable = true;
   #services.bitcoin.proxy = services.tor.client.socksListenAddress;
   services.nixbitcoin.enable = true;
-
-
 
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
