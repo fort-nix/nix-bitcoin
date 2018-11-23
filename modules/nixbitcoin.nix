@@ -41,6 +41,12 @@ in {
     services.bitcoind.port = 8333;
     services.bitcoind.rpcuser = "bitcoinrpc";
     services.bitcoind.rpcpassword = secrets.bitcoinrpcpassword;
+    services.bitcoind.extraConfig = ''
+      assumevalid=0000000000000000000726d186d6298b5054b9a5c49639752294b322a305d240
+      addnode=ecoc5q34tmbq54wl.onion
+      discover=0
+    '';
+    services.bitcoind.prune = 2000;
 
     # clightning
     services.clightning.enable = true;
@@ -62,6 +68,7 @@ in {
         RestartSec = "10s";
       };
     };
+
     # Define a user account. Don't forget to set a password with ‘passwd’.
     users.users.guest = {
       isNormalUser = true;
