@@ -24,6 +24,7 @@ in {
   environment.systemPackages = with pkgs; [
      vim tmux clightning bitcoin
      nodeinfo
+     jq
   ];
   nixpkgs.config.packageOverrides = pkgs: {
     inherit nodeinfo;
@@ -68,12 +69,6 @@ in {
 
   # Open ports in the firewall.
   # Or disable the firewall altogether.
-
-  # Define a user account. Don't forget to set a password with ‘passwd’.
-  # users.users.guest = {
-  #   isNormalUser = true;
-  #   uid = 1000;
-  # };
 
   # This value determines the NixOS release with which your system is to be
   # compatible, in order to avoid breaking some software such as database

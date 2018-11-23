@@ -52,6 +52,8 @@ in {
         { description = "Run clightningd";
           path  = [ pkgs.clightning pkgs.bitcoin ];
           wantedBy = [ "multi-user.target" ];
+          requires = [ "bitcoind.service" ];
+          after = [ "bitcoind.service" ];
           preStart = ''
             mkdir -p ${home}/.lightning
             ln -sf ${configFile} ${home}/.lightning/config
@@ -61,6 +63,7 @@ in {
               ExecStart = "${pkgs.clightning}/bin/lightningd";
               User = "clightning";
               Restart = "on-failure";
+              RestartSec = "10s";
               PrivateTmp = "true";
               ProtectSystem = "full";
               NoNewPrivileges = "true";
