@@ -188,8 +188,8 @@ in {
         if ! test -e ${cfg.dataDir}; then
           mkdir -m 0770 -p '${cfg.dataDir}'
           chown '${cfg.user}:${cfg.group}' '${cfg.dataDir}'
-          ln -s '${configFile}' '${cfg.dataDir}/bitcoin.conf'
         fi
+        ln -sf '${configFile}' '${cfg.dataDir}/bitcoin.conf'
       '';
       serviceConfig = {
         Type = "simple";
