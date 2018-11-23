@@ -40,10 +40,6 @@ in {
   # networking.firewall.allowedUDPPorts = [ ... ];
   networking.firewall.enable = true;
 
-  services.bitcoin.enable = true;
-  # make an onion listen node
-  services.tor.enable = true;
-  services.tor.client.enable = true;
   #services.bitcoin.proxy = services.tor.client.socksListenAddress;
   services.nixbitcoin.enable = true;
 

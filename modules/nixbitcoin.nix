@@ -29,23 +29,23 @@ in {
     services.tor.client.enable = true;
     services.tor.hiddenServices.bitcoind = {
       map = [{
-        port = config.services.bitcoin.port;
+        port = config.services.bitcoind.port;
       }];
       version = 3;
     };
 
-    # bitcoin
-    services.bitcoin.enable = true;
-    services.bitcoin.listen = true;
-    services.bitcoin.proxy = config.services.tor.client.socksListenAddress;
-    services.bitcoin.port = 8333;
-    services.bitcoin.rpcuser = "bitcoinrpc";
-    services.bitcoin.rpcpassword = secrets.bitcoinrpcpassword;
+    # bitcoind
+    services.bitcoind.enable = true;
+    services.bitcoind.listen = true;
+    services.bitcoind.proxy = config.services.tor.client.socksListenAddress;
+    services.bitcoind.port = 8333;
+    services.bitcoind.rpcuser = "bitcoinrpc";
+    services.bitcoind.rpcpassword = secrets.bitcoinrpcpassword;
 
     # clightning
     services.clightning.enable = true;
-    services.clightning.bitcoin-rpcuser = config.services.bitcoin.rpcuser;
-    services.clightning.bitcoin-rpcpassword = config.services.bitcoin.rpcpassword;
+    services.clightning.bitcoin-rpcuser = config.services.bitcoind.rpcuser;
+    services.clightning.bitcoin-rpcpassword = config.services.bitcoind.rpcpassword;
 
     # nodeinfo
     systemd.services.nodeinfo = {
