@@ -671,7 +671,7 @@ in
              version = mkOption {
                default = null;
                description = "If configured, the hidden service uses version 3";
-               type = types.nullOr types.int //  { check = (x: x == 2 || x == 3); };
+               type = types.nullOr (types.addCheck types.int (x: x == 2 || x == 3));
              };
           };
 
