@@ -74,10 +74,7 @@ in {
           par=16
           rpcthreads=16
           logips=1
-          assumevalid=0000000000000000000726d186d6298b5054b9a5c49639752294b322a305d240
-          addnode=ecoc5q34tmbq54wl.onion
-          discover=0
-          printtoconsole=1
+
         '';
         description = "Additional configurations to be appended to <filename>bitcoin.conf</filename>.";
       };
