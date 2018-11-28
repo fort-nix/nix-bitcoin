@@ -4,7 +4,6 @@ with lib;
 
 let
   cfg = config.services.clightning;
-  home = "/var/lib/clightning";
   configFile = pkgs.writeText "config" ''
     autolisten=false
     network=bitcoin
@@ -32,16 +31,25 @@ in {
         Bitcoin RPC user
       '';
     };
+    dataDir = mkOption {
+      type = types.path;
+      default = "/var/lib/clightning";
+      description = "The data directory for bitcoind.";
+    };
   };
 
   config = mkIf cfg.enable {
       users.users.clightning =
         {
           description = "clightning User";
-          createHome  = true;
+          group = "clightning";
           extraGroups = [ "bitcoinrpc" "keys" ];
-          inherit home;
+          home = cfg.dataDir;
       };
+      users.groups.clightning = {
+        name = "clightning";
+      };
+
       systemd.services.clightning =
         { description = "Run clightningd";
           path  = [ pkgs.bash pkgs.clightning pkgs.bitcoin ];
@@ -49,15 +57,19 @@ in {
           requires = [ "bitcoind.service" ];
           after = [ "bitcoind.service" ];
           preStart = ''
-            mkdir -p ${home}/.lightning
-            rm -f ${home}/.lightning/config
-            cp ${configFile} ${home}/.lightning/config
-            chmod +w ${home}/.lightning/config
-            echo "bitcoin-rpcpassword=$(cat /secrets/bitcoin-rpcpassword)" >> '${home}/.lightning/config'
+            mkdir -m 0770 -p ${cfg.dataDir}
+            rm -f ${cfg.dataDir}/config
+            chown 'clightning:clightning' '${cfg.dataDir}'
+            cp ${configFile} ${cfg.dataDir}/config
+            chown 'clightning:clightning' '${cfg.dataDir}/config'
+            chmod +w ${cfg.dataDir}/config
+            chmod o-rw ${cfg.dataDir}/config
+            echo "bitcoin-rpcpassword=$(cat /secrets/bitcoin-rpcpassword)" >> '${cfg.dataDir}/config'
             '';
           serviceConfig =
             {
-              ExecStart = "${pkgs.clightning}/bin/lightningd";
+              PermissionsStartOnly = "true";
+              ExecStart = "${pkgs.clightning}/bin/lightningd --lightning-dir=${cfg.dataDir}";
               User = "clightning";
               Restart = "on-failure";
               RestartSec = "10s";

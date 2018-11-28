@@ -23,6 +23,7 @@ in {
   };
 
   config = mkIf cfg.enable {
+    # Add bitcoinrpc group
     users.groups.bitcoinrpc = {};
 
     # Tor
@@ -69,15 +70,28 @@ in {
     };
 
     # Define a user account. Don't forget to set a password with ‘passwd’.
-    users.users.guest = {
+    users.users.operator = {
       isNormalUser = true;
+      extraGroups = [ "clightning" config.services.bitcoind.group ];
+
     };
+    environment.interactiveShellInit = ''
+      alias bitcoin-cli='bitcoin-cli -datadir=${config.services.bitcoind.dataDir}'
+      alias lightning-cli='sudo -u clightning lightning-cli --lightning-dir=${config.services.clightning.dataDir}'
+    '';
+    # Unfortunately c-lightning doesn't allow setting the permissions of the rpc socket
+    # https://github.com/ElementsProject/lightning/issues/1366
+    security.sudo.configFile = ''
+      operator    ALL=(clightning) NOPASSWD: ALL
+    '';
+
+    # Give root ssh access to the operator account
     systemd.services.copy-root-authorized-keys = {
       description = "Copy root authorized keys";
       wantedBy = [ "multi-user.target" ];
       path  = [ ];
       serviceConfig = {
-        ExecStart = "${pkgs.bash}/bin/bash -c \"mkdir -p ${config.users.users.guest.home}/.ssh && cp ${config.users.users.root.home}/.vbox-nixops-client-key ${config.users.users.guest.home}/.ssh/authorized_keys && chown -R guest ${config.users.users.guest.home}/.ssh\"";
+        ExecStart = "${pkgs.bash}/bin/bash -c \"mkdir -p ${config.users.users.operator.home}/.ssh && cp ${config.users.users.root.home}/.vbox-nixops-client-key ${config.users.users.operator.home}/.ssh/authorized_keys && chown -R operator ${config.users.users.operator.home}/.ssh\"";
         user = "root";
         type = "oneshot";
       };
