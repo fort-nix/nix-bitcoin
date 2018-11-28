@@ -9,7 +9,6 @@ let
     autolisten=false
     network=bitcoin
     bitcoin-rpcuser=${cfg.bitcoin-rpcuser}
-    bitcoin-rpcpassword=${cfg.bitcoin-rpcpassword}
   '';
 in {
   options.services.clightning = {
@@ -33,12 +32,6 @@ in {
         Bitcoin RPC user
       '';
     };
-    bitcoin-rpcpassword = mkOption {
-      type = types.string;
-      description = ''
-        Bitcoin RPC password
-      '';
-    };
   };
 
   config = mkIf cfg.enable {
@@ -46,17 +39,21 @@ in {
         {
           description = "clightning User";
           createHome  = true;
+          extraGroups = [ "bitcoinrpc" "keys" ];
           inherit home;
       };
       systemd.services.clightning =
         { description = "Run clightningd";
-          path  = [ pkgs.clightning pkgs.bitcoin ];
+          path  = [ pkgs.bash pkgs.clightning pkgs.bitcoin ];
           wantedBy = [ "multi-user.target" ];
           requires = [ "bitcoind.service" ];
           after = [ "bitcoind.service" ];
           preStart = ''
             mkdir -p ${home}/.lightning
-            ln -sf ${configFile} ${home}/.lightning/config
+            rm -f ${home}/.lightning/config
+            cp ${configFile} ${home}/.lightning/config
+            chmod +w ${home}/.lightning/config
+            echo "bitcoin-rpcpassword=$(cat /secrets/bitcoin-rpcpassword)" >> '${home}/.lightning/config'
             '';
           serviceConfig =
             {

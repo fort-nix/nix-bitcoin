@@ -28,7 +28,6 @@ let
     ${cfg.extraConfig}
   '';
   cmdlineOptions = concatMapStringsSep " " (arg: "'${arg}'") [
-    "-conf=${configFile}"
     "-datadir=${cfg.dataDir}"
     "-pid=${pidFile}"
   ];
@@ -179,14 +178,16 @@ in {
     environment.systemPackages = [ cfg.package ];
     systemd.services.bitcoind = {
       description = "Bitcoin daemon";
-      after = [ "network.target" ];
+      requires = [ "bitcoin-rpcpassword-key.service" ];
+      after = [ "network.target" "bitcoin-rpcpassword-key.service" ];
       wantedBy = [ "multi-user.target" ];
       preStart = ''
         if ! test -e ${cfg.dataDir}; then
           mkdir -m 0770 -p '${cfg.dataDir}'
           chown '${cfg.user}:${cfg.group}' '${cfg.dataDir}'
         fi
-        ln -sf '${configFile}' '${cfg.dataDir}/bitcoin.conf'
+        cp '${configFile}' '${cfg.dataDir}/bitcoin.conf'
+        echo "rpcpassword=$(cat /secrets/bitcoin-rpcpassword)" >> '${cfg.dataDir}/bitcoin.conf'
       '';
       serviceConfig = {
         Type = "simple";
@@ -212,6 +213,7 @@ in {
       name = cfg.user;
       #uid  = config.ids.uids.bitcoin;
       group = cfg.group;
+      extraGroups = [ "keys" ];
       description = "Bitcoin daemon user";
       home = cfg.dataDir;
     };

@@ -4,7 +4,6 @@ with lib;
 
 let
   cfg = config.services.nixbitcoin;
-  secrets = import ../load-secrets.nix;
 in {
   imports =
     [
@@ -24,6 +23,8 @@ in {
   };
 
   config = mkIf cfg.enable {
+    users.groups.bitcoinrpc = {};
+
     # Tor
     services.tor.enable = true;
     services.tor.client.enable = true;
@@ -40,7 +41,6 @@ in {
     services.bitcoind.proxy = config.services.tor.client.socksListenAddress;
     services.bitcoind.port = 8333;
     services.bitcoind.rpcuser = "bitcoinrpc";
-    services.bitcoind.rpcpassword = secrets.bitcoinrpcpassword;
     services.bitcoind.extraConfig = ''
       assumevalid=0000000000000000000726d186d6298b5054b9a5c49639752294b322a305d240
       addnode=ecoc5q34tmbq54wl.onion
@@ -51,7 +51,6 @@ in {
     # clightning
     services.clightning.enable = true;
     services.clightning.bitcoin-rpcuser = config.services.bitcoind.rpcuser;
-    services.clightning.bitcoin-rpcpassword = config.services.bitcoind.rpcpassword;
 
     # nodeinfo
     systemd.services.nodeinfo = {
