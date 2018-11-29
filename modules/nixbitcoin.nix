@@ -60,13 +60,14 @@ in {
       after = [ "clightning.service" "tor.service" ];
       path  = [ pkgs.clightning pkgs.jq pkgs.sudo ];
       serviceConfig = {
-        ExecStart="${pkgs.bash}/bin/bash ${pkgs.nodeinfo}/bin/nodeinfo";
+        ExecStart="${pkgs.bash}/bin/bash ${pkgs.nodeinfo}/bin/nodeinfo > /var/lib/nodeinfo.nix";
         User = "root";
         Type = "simple";
         RemainAfterExit="yes";
         Restart = "on-failure";
         RestartSec = "10s";
       };
+
     };
 
     # Define a user account. Don't forget to set a password with ‘passwd’.
