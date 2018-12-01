@@ -7,9 +7,10 @@ let
 in {
   imports =
     [
-      ./bitcoind.nix
       ./tor.nix
+      ./bitcoind.nix
       ./clightning.nix
+      ./lightning-charge.nix
     ];
 
   options.services.nixbitcoin = {
@@ -52,6 +53,8 @@ in {
     # clightning
     services.clightning.enable = true;
     services.clightning.bitcoin-rpcuser = config.services.bitcoind.rpcuser;
+
+    services.lightning-charge.enable = true;
 
     # nodeinfo
     systemd.services.nodeinfo = {

@@ -9,8 +9,11 @@ fi
 
 echo Installing apg through nix-env
 nix-env -i apg
-echo Creating bitcoin RPC password
-echo \{ >> $SECRETSFILE
-echo "  bitcoinrpcpassword = \"$(apg -m 20 -x 20 -M Ncl -n 1)\";" >> $SECRETSFILE
-echo \} >> $SECRETSFILE
+echo Write secrets to $SECRETSFILE
+{
+    echo \{
+    echo "  bitcoinrpcpassword = \"$(apg -m 20 -x 20 -M Ncl -n 1)\";"
+    echo "  lightning-charge-api-token = \"$(apg -m 20 -x 20 -M Ncl -n 1)\";"
+    echo \}
+} >> $SECRETSFILE
 echo Done
