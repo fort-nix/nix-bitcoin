@@ -20,5 +20,12 @@ in
       deployment.keys.lightning-charge-api-token.user = "clightning";
       deployment.keys.lightning-charge-api-token.group = "clightning";
       deployment.keys.lightning-charge-api-token.permissions = "0440";
+
+      # variable is called CHARGE_TOKEN instead of API_TOKEN
+      deployment.keys.lightning-charge-api-token-for-nanopos.text = "CHARGE_TOKEN=" + secrets.lightning-charge-api-token;
+      deployment.keys.lightning-charge-api-token-for-nanopos.destDir = "/secrets/";
+      deployment.keys.lightning-charge-api-token-for-nanopos.user = "nanopos";
+      deployment.keys.lightning-charge-api-token-for-nanopos.group = "nanopos";
+      deployment.keys.lightning-charge-api-token-for-nanopos.permissions = "0440";
     };
 }

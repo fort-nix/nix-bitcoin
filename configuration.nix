@@ -7,6 +7,7 @@ let
   # custom packages
   nodeinfo = (import pkgs/nodeinfo.nix);
   lightning-charge = import pkgs/lightning-charge.nix { inherit pkgs; };
+  nanopos = import pkgs/nanopos.nix { inherit pkgs; };
 in {
   disabledModules = [ "services/security/tor.nix" ];
 
@@ -26,10 +27,14 @@ in {
      nodeinfo
      jq
      lightning-charge.package
+     nanopos.package
+     nodejs-8_x
+     nginx
   ];
   nixpkgs.config.packageOverrides = pkgs: {
     inherit nodeinfo;
     inherit lightning-charge;
+    inherit nanopos;
   };
 
   services.openssh.enable = true;
@@ -38,9 +43,9 @@ in {
 #     openssh.authorizedKeys.keys = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILacgZRwLsiICNHGHY2TG2APeuxFsrw6Cg13ZTMQpNqA nickler@rick" ];
 #  };
 
-  # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];
   networking.firewall.enable = true;
+  networking.firewall.allowedTCPPorts = [ ];
 
   #services.bitcoin.proxy = services.tor.client.socksListenAddress;
   services.nixbitcoin.enable = true;
