@@ -7,6 +7,7 @@ let
 in {
   imports =
     [
+      # Tor module from nixpkgs but with HiddenService v3
       ./tor.nix
       ./bitcoind.nix
       ./clightning.nix
@@ -26,18 +27,22 @@ in {
   };
 
   config = mkIf cfg.enable {
+    environment.systemPackages = with pkgs; [
+       vim tmux clightning bitcoin
+       nodeinfo
+       jq
+       lightning-charge.package
+       nanopos.package
+       nodejs-8_x
+       nginx
+    ];
+
     # Add bitcoinrpc group
     users.groups.bitcoinrpc = {};
 
     # Tor
     services.tor.enable = true;
     services.tor.client.enable = true;
-    services.tor.hiddenServices.bitcoind = {
-      map = [{
-        port = config.services.bitcoind.port;
-      }];
-      version = 3;
-    };
 
     # bitcoind
     services.bitcoind.enable = true;
@@ -51,6 +56,12 @@ in {
       discover=0
     '';
     services.bitcoind.prune = 2000;
+    services.tor.hiddenServices.bitcoind = {
+      map = [{
+        port = config.services.bitcoind.port;
+      }];
+      version = 3;
+    };
 
     # clightning
     services.clightning = {
@@ -69,23 +80,7 @@ in {
     services.nanopos.enable = true;
     services.nixbitcoin-webindex.enable = true;
 
-    # nodeinfo
-    systemd.services.nodeinfo = {
-      description = "Get node info";
-      wantedBy = [ "multi-user.target" ];
-      after = [ "clightning.service" "tor.service" ];
-      path  = [ pkgs.clightning pkgs.jq pkgs.sudo ];
-      serviceConfig = {
-        ExecStart="${pkgs.bash}/bin/bash ${pkgs.nodeinfo}/bin/nodeinfo > /var/lib/nodeinfo.sh";
-        User = "root";
-        Type = "simple";
-        RemainAfterExit="yes";
-        Restart = "on-failure";
-        RestartSec = "10s";
-      };
-    };
-
-    # Define a user account. Don't forget to set a password with ‘passwd’.
+    # Create user operator which can use bitcoin-cli and lightning-cli
     users.users.operator = {
       isNormalUser = true;
       extraGroups = [ "clightning" config.services.bitcoind.group ];
