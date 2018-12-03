@@ -185,6 +185,7 @@ in {
         cp '${configFile}' '${cfg.dataDir}/liquid.conf'
         chmod o-rw  '${cfg.dataDir}/liquid.conf'
         chown '${cfg.user}:${cfg.group}' '${cfg.dataDir}/liquid.conf'
+        echo "rpcpassword=$(cat /secrets/liquid-rpcpassword)" >> '${cfg.dataDir}/liquid.conf'
       '';
       serviceConfig = {
         Type = "simple";

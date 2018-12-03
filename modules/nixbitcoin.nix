@@ -118,6 +118,8 @@ in {
     };
 
     services.liquidd.enable = cfg.modules == "all";
+    services.liquidd.rpcuser = "liquidrpc";
+
     services.lightning-charge.enable = cfg.modules == "all";
     services.nanopos.enable = cfg.modules == "all";
     services.nixbitcoin-webindex.enable = cfg.modules == "all";

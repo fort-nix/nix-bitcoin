@@ -14,6 +14,7 @@ echo Write secrets to $SECRETSFILE
     echo \{
     echo "  bitcoinrpcpassword = \"$(apg -m 20 -x 20 -M Ncl -n 1)\";"
     echo "  lightning-charge-api-token = \"$(apg -m 20 -x 20 -M Ncl -n 1)\";"
+    echo "  liquidrpcpassword = \"$(apg -m 20 -x 20 -M Ncl -n 1)\";"
     echo \}
 } >> $SECRETSFILE
 echo Done
