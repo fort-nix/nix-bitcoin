@@ -1,31 +1,40 @@
 let
   secrets = import ./secrets/secrets.nix;
+  bitcoin-rpcpassword = {
+    text = secrets.bitcoinrpcpassword;
+    destDir = "/secrets/";
+    user = "bitcoin";
+    group = "bitcoinrpc";
+    permissions = "0440";
+  };
+  lightning-charge-api-token = {
+    text = "API_TOKEN=" + secrets.lightning-charge-api-token;
+    destDir = "/secrets/";
+    user = "clightning";
+    group = "clightning";
+    permissions = "0440";
+  };
+  # variable is called CHARGE_TOKEN instead of API_TOKEN
+  lightning-charge-api-token-for-nanopos = {
+    text = "CHARGE_TOKEN=" + secrets.lightning-charge-api-token;
+    destDir = "/secrets/";
+    user = "nanopos";
+    group = "nanopos";
+    permissions = "0440";
+  };
 in
 {
   bitcoin-node =
     { config, pkgs, ... }:
-    { deployment.targetEnv = "virtualbox";
+    {
+      deployment.targetEnv = "virtualbox";
       deployment.virtualbox.memorySize = 2048; # megabytes
       deployment.virtualbox.vcpu = 2; # number of cpus
       deployment.virtualbox.headless = true;
 
-      deployment.keys.bitcoin-rpcpassword.text = secrets.bitcoinrpcpassword;
-      deployment.keys.bitcoin-rpcpassword.destDir = "/secrets/";
-      deployment.keys.bitcoin-rpcpassword.user = "bitcoin";
-      deployment.keys.bitcoin-rpcpassword.group = "bitcoinrpc";
-      deployment.keys.bitcoin-rpcpassword.permissions = "0440";
 
-      deployment.keys.lightning-charge-api-token.text = "API_TOKEN=" + secrets.lightning-charge-api-token;
-      deployment.keys.lightning-charge-api-token.destDir = "/secrets/";
-      deployment.keys.lightning-charge-api-token.user = "clightning";
-      deployment.keys.lightning-charge-api-token.group = "clightning";
-      deployment.keys.lightning-charge-api-token.permissions = "0440";
-
-      # variable is called CHARGE_TOKEN instead of API_TOKEN
-      deployment.keys.lightning-charge-api-token-for-nanopos.text = "CHARGE_TOKEN=" + secrets.lightning-charge-api-token;
-      deployment.keys.lightning-charge-api-token-for-nanopos.destDir = "/secrets/";
-      deployment.keys.lightning-charge-api-token-for-nanopos.user = "nanopos";
-      deployment.keys.lightning-charge-api-token-for-nanopos.group = "nanopos";
-      deployment.keys.lightning-charge-api-token-for-nanopos.permissions = "0440";
+      deployment.keys = {
+        inherit bitcoin-rpcpassword lightning-charge-api-token;
+      } // (if (config.services.nanopos.enable) then { inherit lightning-charge-api-token-for-nanopos; } else { });
     };
 }

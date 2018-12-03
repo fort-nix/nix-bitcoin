@@ -116,10 +116,6 @@ in {
         type = "oneshot";
       };
     };
-    # This is required to have the deployment keys copied and chowned even if
-    # nanopos is not enabled
-    users.users.nanopos = {};
-    users.groups.nanopos = {};
 
     services.liquidd.enable = cfg.modules == "all";
     services.lightning-charge.enable = cfg.modules == "all";
