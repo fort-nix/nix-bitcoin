@@ -5,7 +5,7 @@ with lib;
 let
   cfg = config.services.clightning;
   configFile = pkgs.writeText "config" ''
-    autolisten=false
+    autolisten=${toString cfg.autolisten}
     network=bitcoin
     bitcoin-rpcuser=${cfg.bitcoin-rpcuser}
   '';

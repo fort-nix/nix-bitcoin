@@ -11,6 +11,7 @@ let
     jq
   ];
   allPackages = with pkgs; [
+    liquidd
     lightning-charge.package
     nanopos.package
     nodejs-8_x
@@ -26,6 +27,7 @@ in {
       ./lightning-charge.nix
       ./nanopos.nix
       ./nixbitcoin-webindex.nix
+      ./liquid.nix
     ];
 
   options.services.nixbitcoin = {
@@ -87,13 +89,16 @@ in {
     # Create user operator which can use bitcoin-cli and lightning-cli
     users.users.operator = {
       isNormalUser = true;
-      extraGroups = [ "clightning" config.services.bitcoind.group ];
+      extraGroups = [ "clightning" config.services.bitcoind.group ]
+        ++ (if config.services.liquidd.enable then [ config.services.liquidd.group ] else [ ]);
 
     };
     environment.interactiveShellInit = ''
       alias bitcoin-cli='bitcoin-cli -datadir=${config.services.bitcoind.dataDir}'
       alias lightning-cli='sudo -u clightning lightning-cli --lightning-dir=${config.services.clightning.dataDir}'
-    '';
+    '' + (if config.services.liquidd.enable then ''
+      alias liquid-cli='liquid-cli -datadir=${config.services.liquidd.dataDir}'
+    '' else "");
     # Unfortunately c-lightning doesn't allow setting the permissions of the rpc socket
     # https://github.com/ElementsProject/lightning/issues/1366
     security.sudo.configFile = ''
@@ -116,9 +121,11 @@ in {
     users.users.nanopos = {};
     users.groups.nanopos = {};
 
+    services.liquidd.enable = cfg.modules == "all";
     services.lightning-charge.enable = cfg.modules == "all";
     services.nanopos.enable = cfg.modules == "all";
     services.nixbitcoin-webindex.enable = cfg.modules == "all";
+    services.clightning.autolisten = cfg.modules == "all";
     environment.systemPackages = if (cfg.modules == "all") then (minimalPackages ++ allPackages) else minimalPackages;
   };
 }

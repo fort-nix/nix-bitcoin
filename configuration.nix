@@ -8,6 +8,7 @@ let
   nodeinfo = (import pkgs/nodeinfo.nix);
   lightning-charge = import pkgs/lightning-charge.nix { inherit pkgs; };
   nanopos = import pkgs/nanopos.nix { inherit pkgs; };
+  liquidd = import pkgs/liquidd.nix;
 in {
   disabledModules = [ "services/security/tor.nix" ];
 
@@ -30,6 +31,7 @@ in {
     inherit nodeinfo;
     inherit lightning-charge;
     inherit nanopos;
+    liquidd = (pkgs.callPackage liquidd { });
   };
 
   services.openssh.enable = true;
