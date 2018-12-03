@@ -188,6 +188,7 @@ in {
         fi
         cp '${configFile}' '${cfg.dataDir}/bitcoin.conf'
         chmod o-rw  '${cfg.dataDir}/bitcoin.conf'
+        chown '${cfg.user}:${cfg.group}' '${cfg.dataDir}/bitcoin.conf'
         echo "rpcpassword=$(cat /secrets/bitcoin-rpcpassword)" >> '${cfg.dataDir}/bitcoin.conf'
       '';
       serviceConfig = {

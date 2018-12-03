@@ -16,7 +16,7 @@ in {
       ./modules/nixbitcoin.nix
     ];
 
-  # turn off binary cache by setting binaryCaches to empty list
+  # Turn off binary cache by setting binaryCaches to empty list
   # nix.binaryCaches = [];
 
   networking.hostName = "nix-bitcoin"; # Define your hostname.
@@ -35,6 +35,8 @@ in {
   services.openssh.enable = true;
   networking.firewall.enable = true;
   services.nixbitcoin.enable = true;
+  # Install and use minimal or all modules
+  services.nixbitcoin.modules = "all";
 
    # This value determines the NixOS release with which your system is to be
   # compatible, in order to avoid breaking some software such as database

@@ -4,6 +4,18 @@ with lib;
 
 let
   cfg = config.services.nixbitcoin;
+  minimalPackages = with pkgs; [
+    bitcoin
+    clightning
+    nodeinfo
+    jq
+  ];
+  allPackages = with pkgs; [
+    lightning-charge.package
+    nanopos.package
+    nodejs-8_x
+    nginx
+  ];
 in {
   imports =
     [
@@ -24,22 +36,16 @@ in {
         If enabled, the nix-bitcoin service will be installed.
       '';
     };
+    modules = mkOption {
+      type = types.enum [ "minimal" "all" ];
+      default = "minimal";
+      description = ''
+        If enabled, the nix-bitcoin service will be installed.
+      '';
+    };
   };
 
   config = mkIf cfg.enable {
-    environment.systemPackages = with pkgs; [
-       vim tmux clightning bitcoin
-       nodeinfo
-       jq
-       lightning-charge.package
-       nanopos.package
-       nodejs-8_x
-       nginx
-    ];
-
-    # Add bitcoinrpc group
-    users.groups.bitcoinrpc = {};
-
     # Tor
     services.tor.enable = true;
     services.tor.client.enable = true;
@@ -63,6 +69,9 @@ in {
       version = 3;
     };
 
+    # Add bitcoinrpc group
+    users.groups.bitcoinrpc = {};
+
     # clightning
     services.clightning = {
       enable = true;
@@ -74,11 +83,6 @@ in {
       }];
       version = 3;
     };
-
-
-    services.lightning-charge.enable = true;
-    services.nanopos.enable = true;
-    services.nixbitcoin-webindex.enable = true;
 
     # Create user operator which can use bitcoin-cli and lightning-cli
     users.users.operator = {
@@ -107,6 +111,14 @@ in {
         type = "oneshot";
       };
     };
+    # This is required to have the deployment keys copied and chowned even if
+    # nanopos is not enabled
+    users.users.nanopos = {};
+    users.groups.nanopos = {};
 
+    services.lightning-charge.enable = cfg.modules == "all";
+    services.nanopos.enable = cfg.modules == "all";
+    services.nixbitcoin-webindex.enable = cfg.modules == "all";
+    environment.systemPackages = if (cfg.modules == "all") then (minimalPackages ++ allPackages) else minimalPackages;
   };
 }
