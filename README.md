@@ -1,12 +1,12 @@
 nix-bitcoin
 ===
 
-A set of nix packages and nixos modules including profiles to easily install featureful Bitcoin nodes.
+Nix packages and nixos modules including profiles to easily install featureful Bitcoin nodes.
 Work in progress.
 
 Profiles
 ---
-nixbitcoin.nix provides the two profiles "minimal" and "all":
+`nixbitcoin.nix` provides the two profiles "minimal" and "all":
 
 * minimal
     * bitcoind (pruned) with outbound connections through Tor and inbound connections through a hidden
@@ -14,7 +14,7 @@ nixbitcoin.nix provides the two profiles "minimal" and "all":
     * [clightning](https://github.com/ElementsProject/lightning) with outbound connections through Tor, not listening
     * includes "nodeinfo" script which prints basic info about the node
     * adds non-root user "operator" which has access to bitcoin-cli and lightning-cli
-* full
+* all
     * adds clightning hidden service
     * [liquid-daemon](https://github.com/blockstream/liquid)
     * [lightning charge](https://github.com/ElementsProject/lightning-charge)
