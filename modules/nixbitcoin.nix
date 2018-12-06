@@ -21,7 +21,6 @@ let
 in {
   imports =
     [
-      # Tor module from nixpkgs but with HiddenService v3
       ./bitcoind.nix
       ./clightning.nix
       ./lightning-charge.nix

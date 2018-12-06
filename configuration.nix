@@ -10,35 +10,32 @@ let
   nanopos = import pkgs/nanopos.nix { inherit pkgs; };
   liquidd = import pkgs/liquidd.nix;
 in {
-
   imports =
     [
       ./modules/nixbitcoin.nix
     ];
-
   # Turn off binary cache by setting binaryCaches to empty list
   # nix.binaryCaches = [];
-
-  networking.hostName = "nix-bitcoin"; # Define your hostname.
-  time.timeZone = "UTC";
-
-  environment.systemPackages = with pkgs; [
-    vim tmux
-    htop
-  ];
-
   nixpkgs.config.packageOverrides = pkgs: {
     inherit nodeinfo;
     inherit lightning-charge;
     inherit nanopos;
     liquidd = (pkgs.callPackage liquidd { });
   };
-
-  services.openssh.enable = true;
-  networking.firewall.enable = true;
   services.nixbitcoin.enable = true;
   # Install and use minimal or all modules
   services.nixbitcoin.modules = "all";
+
+  # Regular nixos configuration
+  networking.hostName = "nix-bitcoin"; # Define your hostname.
+  time.timeZone = "UTC";
+  services.openssh.enable = true;
+  networking.firewall.enable = true;
+
+  environment.systemPackages = with pkgs; [
+    vim tmux
+    htop
+  ];
 
    # This value determines the NixOS release with which your system is to be
   # compatible, in order to avoid breaking some software such as database
