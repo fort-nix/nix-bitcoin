@@ -10,7 +10,6 @@ let
   nanopos = import pkgs/nanopos.nix { inherit pkgs; };
   liquidd = import pkgs/liquidd.nix;
 in {
-  disabledModules = [ "services/security/tor.nix" ];
 
   imports =
     [

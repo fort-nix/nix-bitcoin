@@ -5,6 +5,7 @@ with lib;
 let
   cfg = config.services.nixbitcoin;
   minimalPackages = with pkgs; [
+    tor
     bitcoin
     clightning
     nodeinfo
@@ -21,7 +22,6 @@ in {
   imports =
     [
       # Tor module from nixpkgs but with HiddenService v3
-      ./tor.nix
       ./bitcoind.nix
       ./clightning.nix
       ./lightning-charge.nix
