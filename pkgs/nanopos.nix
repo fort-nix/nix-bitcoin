@@ -6,10 +6,10 @@
 with pkgs;
 let
  d1 = stdenv.mkDerivation {
-    name = "nanotip-sources";
+    name = "nanopos-sources";
     src = fetchurl {
-      url = "https://registry.npmjs.org/nanopos/-/nanopos-0.1.3.tgz";
-      sha256 = "602d250190d4991b288ed7c493226bcbf03e73181f5d4d54d34334404fc06bb6";
+      url = "https://registry.npmjs.org/nanopos/-/nanopos-0.1.4.tgz";
+      sha256 = "294c4ac90027e5172408dadad9a62e0117459e4c60d4ab362b12190887c698ec";
     };
 
     buildInputs = [ nodePackages.node2nix git ];
