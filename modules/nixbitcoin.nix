@@ -64,6 +64,7 @@ in {
       discover=0
     '';
     services.bitcoind.prune = 2000;
+    services.bitcoind.dbCache = 1000;
     services.tor.hiddenServices.bitcoind = {
       map = [{
         port = config.services.bitcoind.port;
@@ -119,6 +120,7 @@ in {
 
     services.liquidd.enable = cfg.modules == "all";
     services.liquidd.rpcuser = "liquidrpc";
+    services.liquidd.prune = 1000;
 
     services.lightning-charge.enable = cfg.modules == "all";
     services.nanopos.enable = cfg.modules == "all";

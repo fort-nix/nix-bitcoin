@@ -64,6 +64,8 @@ in {
             chown 'clightning:clightning' '${cfg.dataDir}/config'
             chmod +w ${cfg.dataDir}/config
             chmod o-rw ${cfg.dataDir}/config
+            # The RPC socket has to be removed otherwise we might have stale sockets
+            rm -f ${cfg.dataDir}/lightning-rpc
             echo "bitcoin-rpcpassword=$(cat /secrets/bitcoin-rpcpassword)" >> '${cfg.dataDir}/config'
             '';
           serviceConfig =

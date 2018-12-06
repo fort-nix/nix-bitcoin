@@ -25,6 +25,7 @@ in {
 
   environment.systemPackages = with pkgs; [
     vim tmux
+    htop
   ];
 
   nixpkgs.config.packageOverrides = pkgs: {
