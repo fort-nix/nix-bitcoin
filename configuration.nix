@@ -8,6 +8,7 @@ let
   nodeinfo = (import pkgs/nodeinfo.nix);
   lightning-charge = import pkgs/lightning-charge.nix { inherit pkgs; };
   nanopos = import pkgs/nanopos.nix { inherit pkgs; };
+  spark-wallet = import pkgs/spark-wallet.nix  { inherit pkgs; };
   liquidd = import pkgs/liquidd.nix;
 in {
   imports =
@@ -20,6 +21,7 @@ in {
     inherit nodeinfo;
     inherit lightning-charge;
     inherit nanopos;
+    inherit spark-wallet;
     liquidd = (pkgs.callPackage liquidd { });
   };
   services.nixbitcoin.enable = true;

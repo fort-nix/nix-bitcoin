@@ -15,6 +15,7 @@ let
     liquidd
     lightning-charge.package
     nanopos.package
+    spark-wallet.package
     nodejs-8_x
     nginx
   ];
@@ -27,6 +28,7 @@ in {
       ./nanopos.nix
       ./nixbitcoin-webindex.nix
       ./liquid.nix
+      ./spark-wallet.nix
     ];
 
   options.services.nixbitcoin = {
@@ -125,6 +127,13 @@ in {
     services.nanopos.enable = cfg.modules == "all";
     services.nixbitcoin-webindex.enable = cfg.modules == "all";
     services.clightning.autolisten = cfg.modules == "all";
+    services.spark-wallet.enable = cfg.modules == "all";
+    services.tor.hiddenServices.spark-wallet = {
+      map = [{
+        port = 80; toPort = 9737;
+      }];
+      version = 3;
+    };
     environment.systemPackages = if (cfg.modules == "all") then (minimalPackages ++ allPackages) else minimalPackages;
   };
 }

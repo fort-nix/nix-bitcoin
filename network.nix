@@ -29,6 +29,13 @@ let
     group = "liquid";
     permissions = "0440";
   };
+  spark-wallet-login = {
+    text = "login=" + "spark-wallet:" + secrets.spark-wallet-password;
+    destDir = "/secrets/";
+    user = "clightning";
+    group = "clightning";
+    permissions = "0440";
+  };
 in {
   network.description = "Bitcoin Core node";
 
@@ -41,6 +48,7 @@ in {
         inherit bitcoin-rpcpassword lightning-charge-api-token;
       }
       // (if (config.services.nanopos.enable) then { inherit lightning-charge-api-token-for-nanopos; } else { })
-      // (if (config.services.liquidd.enable) then { inherit liquid-rpcpassword; } else { });
+      // (if (config.services.liquidd.enable) then { inherit liquid-rpcpassword; } else { })
+      // (if (config.services.spark-wallet.enable) then { inherit spark-wallet-login; } else { });
     } // (bitcoin-node { inherit config pkgs; });
 }
