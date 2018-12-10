@@ -17,12 +17,6 @@ if [ -e "$NGINX_ONION_FILE" ]; then
     echo NGINX_ONION="$NGINX_ONION"
 fi
 
-NGINX_ONION_FILE=/var/lib/tor/onion/nginx/hostname
-if [ -e "$NGINX_ONION_FILE" ]; then
-    NGINX_ONION="$(cat $NGINX_ONION_FILE)"
-    echo NGINX_ONION="$NGINX_ONION"
-fi
-
 SPARKWALLET_ONION_FILE=/var/lib/tor/onion/spark-wallet/hostname
 if [ -e "$SPARKWALLET_ONION_FILE" ]; then
     SPARKWALLET_ONION="$(cat $SPARKWALLET_ONION_FILE)"

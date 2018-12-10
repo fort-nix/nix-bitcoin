@@ -1,6 +1,7 @@
 #!/bin/bash
 
 SECRETSFILE=secrets/secrets.nix
+mkdir -p secrets
 
 if [ -e "$SECRETSFILE" ]; then
     echo $SECRETSFILE already exists
