@@ -19,6 +19,16 @@ let
     nodejs-8_x
     nginx
   ];
+  operatorCopySSH = pkgs.writeText "operator-copy-ssh.sh" ''
+    mkdir -p ${config.users.users.operator.home}/.ssh
+    if [ -e "${config.users.users.root.home}/.vbox-nixops-client-key" ]; then
+      cp ${config.users.users.root.home}/.vbox-nixops-client-key ${config.users.users.operator.home}/.ssh/authorized_keys
+    fi
+    if [ -e "/etc/ssh/authorized_keys.d/root" ]; then
+      cat /etc/ssh/authorized_keys.d/root >> ${config.users.users.operator.home}/.ssh/authorized_keys
+    fi
+    chown -R operator ${config.users.users.operator.home}/.ssh
+  '';
 in {
   imports =
     [
@@ -113,7 +123,7 @@ in {
       wantedBy = [ "multi-user.target" ];
       path  = [ ];
       serviceConfig = {
-        ExecStart = "${pkgs.bash}/bin/bash -c \"mkdir -p ${config.users.users.operator.home}/.ssh && cp ${config.users.users.root.home}/.vbox-nixops-client-key ${config.users.users.operator.home}/.ssh/authorized_keys && chown -R operator ${config.users.users.operator.home}/.ssh\"";
+        ExecStart = "${pkgs.bash}/bin/bash \"${operatorCopySSH}\"";
         user = "root";
         type = "oneshot";
       };
