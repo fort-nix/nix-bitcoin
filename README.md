@@ -20,7 +20,7 @@ Profiles
     * [lightning charge](https://github.com/ElementsProject/lightning-charge)
     * [nanopos](https://github.com/ElementsProject/nanopos)
     * adds an index page using nginx to display node information and link to nanopos
-* [spark-wallet](https://github.com/shesek/spark-wallet)
+    * [spark-wallet](https://github.com/shesek/spark-wallet)
         * Notes: run `nodeinfo` to get its onion address and `systemctl status spark-wallet` to get the access key.
             When entering the onion address on the Android app don't forgot to prepend "http://"
 
