@@ -60,7 +60,6 @@ wget https://www.virtualbox.org/download/oracle_vbox_2016.asc
 gpg2 oracle_vbox_2016.asc
 ```
 Proceed _only_ if fingerprint reads B9F8 D658 297A F3EF C18D  5CDF A2F6 83C5 2980 AECF
-
 ```
 sudo apt-key add oracle_vbox_2016.asc
 ```
@@ -69,17 +68,10 @@ Install virtualbox-5.2
 sudo apt-get update
 sudo apt-get install virtualbox-5.2
 ```
-Currently there is an upstream bug in the nixops package which results in an error during `nixops create`. That is why we have to build nixops from source until a binary with the bug-fix is released.
-
-Build Nixops from source
+Install nixops
 ```
-git clone https://github.com/NixOS/nixops
-cd ~/nixops
-nix-build release.nix -A build.x86_64-linux
-cd
+nix-env -i nixops
 ```
-This should output a last line like `/nix/store/wa6nk3aqxjb2mgl9pkwrnawqnh9z1b9d-nixops-1.6.1pre0_abcdef/`. This is the directory Nixops is installed in. Note it for later.
-
 Create Host Adapter in VirtualBox
 ```
 Open VirtualBox
@@ -100,14 +92,10 @@ Create Nixops
 ```
 nixops create network.nix network-vbox.nix -d bitcoin-node
 ```
-Replace `nixops` with the path to the nixops you built from source. For example: `/nix/store/wa6nk3aqxjb2mgl9pkwrnawqnh9z1b9d-nixops-1.6.1pre0_abcdef/bin/nixops`. Alternatively you can change your path, i.e. `export PATH=/nix/store/wa6nk3aqxjb2mgl9pkwrnawqnh9z1b9d-nixops-1.6.1pre0_abcdef/bin/:$PATH` so you can just type nixops.
-
 Deploy Nixops
 ```
 nixops deploy -d bitcoin-node
 ```
-If you haven't changed your nixops path, replace `nixops` with the path to the nixops you built from source. For example: `/nix/store/wa6nk3aqxjb2mgl9pkwrnawqnh9z1b9d-nixops-1.6.1pre0_abcdef/bin/nixops`
-
 This will now create a nix-bitcoin node in a VirtualBox on your computer.
 
 Nixops automatically creates a ssh key and adds it to your computer.
@@ -117,4 +105,3 @@ Access `bitcoin-node` through ssh
 ```
 nixops ssh operator@bitcoin-node
 ```
-If you haven't changed your nixops path, replace `nixops` with the path to the nixops you built from source. For example: `/nix/store/wa6nk3aqxjb2mgl9pkwrnawqnh9z1b9d-nixops-1.6.1pre0_abcdef/bin/nixops`
