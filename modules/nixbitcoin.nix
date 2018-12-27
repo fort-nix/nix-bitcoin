@@ -63,6 +63,14 @@ in {
     services.tor.enable = true;
     services.tor.client.enable = true;
 
+    # Tor SSH service
+    services.tor.hiddenServices.sshd = {
+      map = [{
+        port = 22;
+      }];
+      version = 3;
+    }
+
     # bitcoind
     services.bitcoind.enable = true;
     services.bitcoind.listen = true;
