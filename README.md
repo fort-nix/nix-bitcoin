@@ -102,6 +102,10 @@ nixops create network.nix network-vbox.nix -d bitcoin-node
 ```
 Replace `nixops` with the path to the nixops you built from source. For example: `/nix/store/wa6nk3aqxjb2mgl9pkwrnawqnh9z1b9d-nixops-1.6.1pre0_abcdef/bin/nixops`. Alternatively you can change your path, i.e. `export PATH=/nix/store/wa6nk3aqxjb2mgl9pkwrnawqnh9z1b9d-nixops-1.6.1pre0_abcdef/bin/:$PATH` so you can just type nixops.
 
+Adjust configuration
+Open configuration.nix and remove FIXMEs.
+No custom boot options or hardware configuration is needed for a VM install.
+
 Deploy Nixops
 ```
 nixops deploy -d bitcoin-node

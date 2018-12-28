@@ -9,11 +9,20 @@
   # Install and use minimal or all modules
   services.nixbitcoin.modules = "all";
 
-  networking.hostName = "nix-bitcoin"; # Define your hostname.
+  # FIXME: Define your hostname.
+  networking.hostName = "nix-bitcoin";
 
   imports = [
-    ./configuration-nix-bitcoin.nix
+    ./configuration-nixbitcoin.nix
+    # FIXME: Uncomment next line to import your hardware configuration. If so,
+    # add the hardware configuration file to the same directory as this file.
     #./hardware-configuration.nix
   ];
-  # Add custom options options (like boot options) here:
+  # FIXME: Add your SSH pubkey
+  users.users.root = {
+    openssh.authorizedKeys.keys = [ "" ];
+  };
+
+  # FIXME: Add custom options options (like boot options):
+
 }
