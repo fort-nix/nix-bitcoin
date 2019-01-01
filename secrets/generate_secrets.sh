@@ -1,15 +1,13 @@
 #!/bin/bash
 
 SECRETSFILE=secrets/secrets.nix
-mkdir -p secrets
 
 if [ -e "$SECRETSFILE" ]; then
-    echo $SECRETSFILE already exists
+    echo $SECRETSFILE already exists. No new secrets were generated.
     exit 1
 fi
 
 echo Installing apg through nix-env
-nix-env -i apg
 echo Write secrets to $SECRETSFILE
 {
     echo \{
