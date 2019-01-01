@@ -6,7 +6,7 @@ Work in progress.
 
 Profiles
 ---
-`nixbitcoin.nix` provides the two profiles "minimal" and "all":
+`nix-bitcoin.nix` provides the two profiles "minimal" and "all":
 
 * minimal
     * bitcoind (pruned) with outbound connections through Tor and inbound connections through a hidden

@@ -4,25 +4,43 @@
 
 { config, pkgs, ... }:
 {
-
-  services.nixbitcoin.enable = true;
-  # Install and use minimal or all modules
-  services.nixbitcoin.modules = "all";
-
-  # FIXME: Define your hostname.
-  networking.hostName = "nix-bitcoin";
-
   imports = [
-    ./configuration-nixbitcoin.nix
+    ./nix-bitcoin.nix
     # FIXME: Uncomment next line to import your hardware configuration. If so,
     # add the hardware configuration file to the same directory as this file.
     #./hardware-configuration.nix
   ];
+  services.nix-bitcoin.enable = true;
+  # FIXME Install and use minimal or all modules
+  services.nix-bitcoin.modules = "all";
+
+  # FIXME: Define your hostname.
+  networking.hostName = "nix-bitcoin";
+  time.timeZone = "UTC";
+
   # FIXME: Add your SSH pubkey
+  services.openssh.enable = true;
   users.users.root = {
     openssh.authorizedKeys.keys = [ "" ];
   };
 
+  # FIXME: add packages you need in your system
+  environment.systemPackages = with pkgs; [
+    vim
+  ];
+
+  # FIXME: Turn off the binary cache by setting binaryCaches to empty list.
+  # This means that it will take a while for all packages to be built but it
+  # prevents a compromised cache taking over your system. As a result, the next
+  # line should be uncommented in production systems.
+  # nix.binaryCaches = [];
+
   # FIXME: Add custom options options (like boot options):
 
+
+  # This value determines the NixOS release with which your system is to be
+  # compatible, in order to avoid breaking some software such as database
+  # servers. You should change this only after NixOS release notes say you
+  # should.
+  system.stateVersion = "18.09"; # Did you read the comment?
 }

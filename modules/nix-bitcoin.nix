@@ -3,7 +3,7 @@
 with lib;
 
 let
-  cfg = config.services.nixbitcoin;
+  cfg = config.services.nix-bitcoin;
   minimalPackages = with pkgs; [
     tor
     bitcoin
@@ -36,12 +36,12 @@ in {
       ./clightning.nix
       ./lightning-charge.nix
       ./nanopos.nix
-      ./nixbitcoin-webindex.nix
+      ./nix-bitcoin-webindex.nix
       ./liquid.nix
       ./spark-wallet.nix
     ];
 
-  options.services.nixbitcoin = {
+  options.services.nix-bitcoin = {
     enable = mkOption {
       type = types.bool;
       default = false;
@@ -59,6 +59,8 @@ in {
   };
 
   config = mkIf cfg.enable {
+    networking.firewall.enable = true;
+
     # Tor
     services.tor.enable = true;
     services.tor.client.enable = true;
@@ -69,7 +71,7 @@ in {
         port = 22;
       }];
       version = 3;
-    }
+    };
 
     # bitcoind
     services.bitcoind.enable = true;
@@ -143,7 +145,7 @@ in {
 
     services.lightning-charge.enable = cfg.modules == "all";
     services.nanopos.enable = cfg.modules == "all";
-    services.nixbitcoin-webindex.enable = cfg.modules == "all";
+    services.nix-bitcoin-webindex.enable = cfg.modules == "all";
     services.clightning.autolisten = cfg.modules == "all";
     services.spark-wallet.enable = cfg.modules == "all";
     services.tor.hiddenServices.spark-wallet = {

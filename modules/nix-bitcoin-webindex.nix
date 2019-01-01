@@ -3,7 +3,7 @@
 with lib;
 
 let
-  cfg = config.services.nixbitcoin-webindex;
+  cfg = config.services.nix-bitcoin-webindex;
   indexFile = pkgs.writeText "index.html" ''
     <html>
       <body>
@@ -35,7 +35,7 @@ let
     sed -i "s/CLIGHTNING_ID/$CLIGHTNING_ID/g" /var/www/index.html
   '';
 in {
-  options.services.nixbitcoin-webindex = {
+  options.services.nix-bitcoin-webindex = {
     enable = mkOption {
       type = types.bool;
       default = false;
