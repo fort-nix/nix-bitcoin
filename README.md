@@ -93,7 +93,7 @@ Adjust configuration
 Open configuration.nix and remove FIXMEs.
 No custom boot options or hardware configuration is needed for a VM install.
 
-Deploy Nixops in nex-shell
+Deploy Nixops in nix-shell
 ```
 nixops deploy -d bitcoin-node
 ```
