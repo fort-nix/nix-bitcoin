@@ -28,10 +28,9 @@ The data directories can be found in `/var/lib`.
 
 Installing profiles
 ---
-The easiest way is to use the provided network.nix and configuration.nix with [nixops](https://nixos.org/nixops/manual/).
-Once you've set up nixops first run `./generate_secrets.sh` then continue with the deployment using nixops.
+The easiest way is to run `nix-shell env.nix` and then create a [nixops](https://nixos.org/nixops/manual/) deployment with the provided network.nix.
+Fix the FIXMEs in configuration.nix and deploy with nixops in nix-shell.
 
-At the moment this relies on using the unstable nixpkgs channel.
 The "all" profile requires 15 GB of disk space and 2GB of memory.
 
 Tutorial: install a nix-bitcoin node on Debian 9 Stretch in a VirtualBox
@@ -69,16 +68,6 @@ Install virtualbox-5.2
 sudo apt-get update
 sudo apt-get install virtualbox-5.2
 ```
-Currently there is an upstream bug in the nixops package which results in an error during `nixops create`. That is why we have to build nixops from source until a binary with the bug-fix is released.
-
-Build Nixops from source
-```
-git clone https://github.com/NixOS/nixops
-cd ~/nixops
-nix-build release.nix -A build.x86_64-linux
-cd
-```
-This should output a last line like `/nix/store/wa6nk3aqxjb2mgl9pkwrnawqnh9z1b9d-nixops-1.6.1pre0_abcdef/`. This is the directory Nixops is installed in. Note it for later.
 
 Create Host Adapter in VirtualBox
 ```
@@ -92,36 +81,31 @@ cd
 git clone https://github.com/jonasnick/nix-bitcoin
 cd ~/nix-bitcoin
 ```
-Generate Secrets
+Setup environment
 ```
-./generate_secrets.sh
+nix-shell env.nix
 ```
-Create Nixops
+Create nixops deployment in nix-shell
 ```
 nixops create network.nix network-vbox.nix -d bitcoin-node
 ```
-Replace `nixops` with the path to the nixops you built from source. For example: `/nix/store/wa6nk3aqxjb2mgl9pkwrnawqnh9z1b9d-nixops-1.6.1pre0_abcdef/bin/nixops`. Alternatively you can change your path, i.e. `export PATH=/nix/store/wa6nk3aqxjb2mgl9pkwrnawqnh9z1b9d-nixops-1.6.1pre0_abcdef/bin/:$PATH` so you can just type nixops.
-
 Adjust configuration
 Open configuration.nix and remove FIXMEs.
 No custom boot options or hardware configuration is needed for a VM install.
 
-Deploy Nixops
+Deploy Nixops in nex-shell
 ```
 nixops deploy -d bitcoin-node
 ```
-If you haven't changed your nixops path, replace `nixops` with the path to the nixops you built from source. For example: `/nix/store/wa6nk3aqxjb2mgl9pkwrnawqnh9z1b9d-nixops-1.6.1pre0_abcdef/bin/nixops`
-
 This will now create a nix-bitcoin node in a VirtualBox on your computer.
 
 Nixops automatically creates a ssh key and adds it to your computer.
 
-Access `bitcoin-node` through ssh
+Access `bitcoin-node` through ssh in nix-shell.
 
 ```
 nixops ssh operator@bitcoin-node
 ```
-If you haven't changed your nixops path, replace `nixops` with the path to the nixops you built from source. For example: `/nix/store/wa6nk3aqxjb2mgl9pkwrnawqnh9z1b9d-nixops-1.6.1pre0_abcdef/bin/nixops`
 
 FAQ
 ---
