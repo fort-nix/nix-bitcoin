@@ -30,16 +30,15 @@ let
     chown -R operator ${config.users.users.operator.home}/.ssh
   '';
 in {
-  imports =
-    [
-      ./bitcoind.nix
-      ./clightning.nix
-      ./lightning-charge.nix
-      ./nanopos.nix
-      ./nix-bitcoin-webindex.nix
-      ./liquid.nix
-      ./spark-wallet.nix
-    ];
+  imports = [
+    ./bitcoind.nix
+    ./clightning.nix
+    ./lightning-charge.nix
+    ./nanopos.nix
+    ./nix-bitcoin-webindex.nix
+    ./liquid.nix
+    ./spark-wallet.nix
+  ];
 
   options.services.nix-bitcoin = {
     enable = mkOption {

@@ -51,34 +51,33 @@ in {
   };
 
   config = mkIf cfg.enable {
-      users.users.nanopos =
-        {
-          description = "nanopos User";
-          group = "nanopos";
-          extraGroups = [ "keys" ];
-      };
-      users.groups.nanopos = {
-        name = "nanopos";
-      };
-
-      systemd.services.nanopos =
-        { description = "Run nanopos";
-          wantedBy = [ "multi-user.target" ];
-          requires = [ "lightning-charge.service" ];
-          after = [ "lightning-charge.service" ];
-          serviceConfig =
-            {
-              EnvironmentFile = "/secrets/lightning-charge-api-token-for-nanopos";
-              ExecStart = "${pkgs.nanopos.package}/bin/nanopos -y ${cfg.itemsFile} -p ${toString cfg.port} --show-bolt11";
-
-              User = "nanopos";
-              Restart = "on-failure";
-              RestartSec = "10s";
-              PrivateTmp = "true";
-              ProtectSystem = "full";
-              NoNewPrivileges = "true";
-              PrivateDevices = "true";
-            };
-        };
+    users.users.nanopos =
+      {
+        description = "nanopos User";
+        group = "nanopos";
+        extraGroups = [ "keys" ];
     };
+    users.groups.nanopos = {
+      name = "nanopos";
+    };
+
+    systemd.services.nanopos = {
+      description = "Run nanopos";
+      wantedBy = [ "multi-user.target" ];
+      requires = [ "lightning-charge.service" ];
+      after = [ "lightning-charge.service" ];
+      serviceConfig = {
+        EnvironmentFile = "/secrets/lightning-charge-api-token-for-nanopos";
+        ExecStart = "${pkgs.nanopos.package}/bin/nanopos -y ${cfg.itemsFile} -p ${toString cfg.port} --show-bolt11";
+
+        User = "nanopos";
+        Restart = "on-failure";
+        RestartSec = "10s";
+        PrivateTmp = "true";
+        ProtectSystem = "full";
+        NoNewPrivileges = "true";
+        PrivateDevices = "true";
+      };
+    };
+  };
 }

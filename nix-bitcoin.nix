@@ -15,11 +15,10 @@
    liquidd = pkgs.callPackage (import pkgs/liquidd.nix) { };
 in {
   disabledModules = [ "services/security/tor.nix" ];
-  imports =
-    [
-      ./modules/nix-bitcoin.nix
-      (unstable-pkgs-git + "/nixos/modules/services/security/tor.nix")
-    ];
+  imports = [
+    ./modules/nix-bitcoin.nix
+    (unstable-pkgs-git + "/nixos/modules/services/security/tor.nix")
+  ];
 
   nixpkgs.config.packageOverrides = pkgs: {
     # Use bitcoin and clightning from unstable

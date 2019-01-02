@@ -23,22 +23,21 @@ in {
   };
 
   config = mkIf cfg.enable {
-      systemd.services.spark-wallet =
-        { description = "Run spark-wallet";
-          wantedBy = [ "multi-user.target" ];
-          requires = [ "clightning.service" ];
-          after = [ "clightning.service" ];
-          serviceConfig =
-            {
-              ExecStart = "${pkgs.spark-wallet.package}/bin/spark-wallet --ln-path ${cfg.ln-path} -k -c /secrets/spark-wallet-password";
-              User = "clightning";
-              Restart = "on-failure";
-              RestartSec = "10s";
-              PrivateTmp = "true";
-              ProtectSystem = "full";
-              NoNewPrivileges = "true";
-              PrivateDevices = "true";
-            };
-        };
+    systemd.services.spark-wallet = {
+      description = "Run spark-wallet";
+      wantedBy = [ "multi-user.target" ];
+      requires = [ "clightning.service" ];
+      after = [ "clightning.service" ];
+      serviceConfig = {
+        ExecStart = "${pkgs.spark-wallet.package}/bin/spark-wallet --ln-path ${cfg.ln-path} -k -c /secrets/spark-wallet-password";
+        User = "clightning";
+        Restart = "on-failure";
+        RestartSec = "10s";
+        PrivateTmp = "true";
+        ProtectSystem = "full";
+        NoNewPrivileges = "true";
+        PrivateDevices = "true";
+      };
     };
+  };
 }
