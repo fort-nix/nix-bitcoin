@@ -8,6 +8,7 @@
     ./nix-bitcoin.nix
     # FIXME: Uncomment next line to import your hardware configuration. If so,
     # add the hardware configuration file to the same directory as this file.
+    # This is not needed when deploying to a virtual box.
     #./hardware-configuration.nix
   ];
   services.nix-bitcoin.enable = true;
@@ -35,7 +36,7 @@
   # line should be uncommented in production systems.
   # nix.binaryCaches = [];
 
-  # FIXME: Add custom options options (like boot options):
+  # FIXME: Add custom options (like boot options, output of nixos-generate-config, etc.):
 
 
   # This value determines the NixOS release with which your system is to be

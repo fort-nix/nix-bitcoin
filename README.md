@@ -28,15 +28,21 @@ The data directories can be found in `/var/lib`.
 
 Installing profiles
 ---
-The easiest way is to run `nix-shell env.nix` and then create a [nixops](https://nixos.org/nixops/manual/) deployment with the provided network.nix.
+The easiest way is to run `nix-shell env.nix` and then create a [NixOps](https://nixos.org/nixops/manual/) deployment with the provided network.nix.
 Fix the FIXMEs in configuration.nix and deploy with nixops in nix-shell.
+See below for a detailed tutorial.
 
 The "all" profile requires 15 GB of disk space and 2GB of memory.
 
-Tutorial: install a nix-bitcoin node on Debian 9 Stretch in a VirtualBox
+Tutorial: install a nix-bitcoin node
 ---
+Get a machine to deploy nix-bitcoin on.
+This could be a VirtualBox, a machine that is already running [NixOs](https://nixos.org/nixos/manual/index.html) or a cloud provider.
+Have a look at the options in the [NixOps manual](https://nixos.org/nixops/manual/).
 
-Install Dependencies
+The following steps are meant to be run on the machine you deploy from, not the machine you deploy to.
+
+Install Dependencies (Debian 9 stretch)
 ```
 sudo apt-get install curl git gnupg2 dirmngr
 ```
@@ -49,32 +55,6 @@ gpg2 --verify ./install-nix-2.1.3.sig
 sh ./install-nix-2.1.3
 . /home/user/.nix-profile/etc/profile.d/nix.sh
 ```
-Add virtualbox.list to /etc/apt/sources.list.d
-```
-deb http://download.virtualbox.org/virtualbox/debian stretch contrib
-```
-Add Oracle VirtualBox public key
-```
-wget https://www.virtualbox.org/download/oracle_vbox_2016.asc
-gpg2 oracle_vbox_2016.asc
-```
-Proceed _only_ if fingerprint reads B9F8 D658 297A F3EF C18D  5CDF A2F6 83C5 2980 AECF
-
-```
-sudo apt-key add oracle_vbox_2016.asc
-```
-Install virtualbox-5.2
-```
-sudo apt-get update
-sudo apt-get install virtualbox-5.2
-```
-
-Create Host Adapter in VirtualBox
-```
-Open VirtualBox
-File -> Host Network Manager -> Create
-This should create a hostadapter named vboxnet0
-```
 Clone this project
 ```
 cd
@@ -85,27 +65,35 @@ Setup environment
 ```
 nix-shell env.nix
 ```
-Create nixops deployment in nix-shell
+Create nixops deployment in nix-shell.
+When deploying in a VirtualBox you can use the provided `network-vbox.nix` file (ensure that you've created a host adaptor as explained in the appendix).
 ```
 nixops create network.nix network-vbox.nix -d bitcoin-node
 ```
-Adjust configuration
-Open configuration.nix and remove FIXMEs.
-No custom boot options or hardware configuration is needed for a VM install.
+Otherwise replace it with a network file as explained in the [NixOps manual](https://nixos.org/nixops/manual/).
+
+Adjust configuration by opening configuration.nix and removing FIXMEs.
 
 Deploy Nixops in nix-shell
 ```
 nixops deploy -d bitcoin-node
 ```
-This will now create a nix-bitcoin node in a VirtualBox on your computer.
+This will now create a nix-bitcoin node on the target machine.
 
-Nixops automatically creates a ssh key and adds it to your computer.
-
-Access `bitcoin-node` through ssh in nix-shell.
-
+Nixops automatically creates an ssh key for use with `nixops ssh`. Access `bitcoin-node` through ssh in nix-shell with
 ```
 nixops ssh operator@bitcoin-node
 ```
+
+If you change anything in the configuration you can run
+```
+nixops deploy -d bitcoin-node
+```
+in the nix-shell again to redeploy the configuration to the node.
+
+Updating
+---
+Run `git pull` on this repo, enter the nix shell with `nix-shell env.nix` and redeploy with `nixops deploy -d bitcoin-node`.
 
 FAQ
 ---
@@ -138,3 +126,36 @@ FAQ
     * **A:** Check your clightning logs with `journalctl -eu clightning`. Do you see something like `bitcoin-cli getblock ... false` failed? Are you using pruned mode? That means that clightning hasn't seen all the blocks it needs to and it can't get that block because your node is pruned. If you're just setting up a new node you can `systemctl stop clightning` and wipe your `/var/lib/clightning` directory. Otherwise you need to reindex the Bitcoin node.
 * **Q:** My disk space is getting low due to nix.
     * **A:** run `nix-collect-garbage -d`
+
+Appendix
+===
+Tutorial: install and configure VirtualBox for nix-bitcoin on Debian 9 Stretch
+---
+Add virtualbox.list to /etc/apt/sources.list.d
+```
+deb http://download.virtualbox.org/virtualbox/debian stretch contrib
+```
+Add Oracle VirtualBox public key
+```
+wget https://www.virtualbox.org/download/oracle_vbox_2016.asc
+gpg2 oracle_vbox_2016.asc
+```
+Proceed _only_ if fingerprint reads B9F8 D658 297A F3EF C18D  5CDF A2F6 83C5 2980 AECF
+
+```
+sudo apt-key add oracle_vbox_2016.asc
+```
+Install virtualbox-5.2
+```
+sudo apt-get update
+sudo apt-get install virtualbox-5.2
+```
+
+**IMPORTANT:** Create Host Adapter in VirtualBox
+```
+Open VirtualBox
+File -> Host Network Manager -> Create
+This should create a hostadapter named vboxnet0
+```
+
+
