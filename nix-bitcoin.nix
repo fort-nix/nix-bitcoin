@@ -12,6 +12,7 @@
    lightning-charge = import pkgs/lightning-charge.nix { inherit pkgs; };
    nanopos = import pkgs/nanopos.nix { inherit pkgs; };
    spark-wallet = import pkgs/spark-wallet.nix  { inherit pkgs; };
+   electrs = pkgs.callPackage (import pkgs/electrs.nix) { };
    liquidd = pkgs.callPackage (import pkgs/liquidd.nix) { };
 in {
   disabledModules = [ "services/security/tor.nix" ];
@@ -31,6 +32,7 @@ in {
     inherit lightning-charge;
     inherit nanopos;
     inherit spark-wallet;
+    inherit electrs;
     inherit liquidd;
   };
 }

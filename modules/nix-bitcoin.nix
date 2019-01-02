@@ -16,6 +16,7 @@ let
     lightning-charge.package
     nanopos.package
     spark-wallet.package
+    electrs
     nodejs-8_x
     nginx
   ];
@@ -38,6 +39,7 @@ in {
     ./nix-bitcoin-webindex.nix
     ./liquid.nix
     ./spark-wallet.nix
+    ./electrs.nix
   ];
 
   options.services.nix-bitcoin = {
@@ -83,7 +85,7 @@ in {
       addnode=ecoc5q34tmbq54wl.onion
       discover=0
     '';
-    services.bitcoind.prune = 2000;
+    services.bitcoind.prune = if (cfg.modules == "minimal") then 2000 else 0;
     services.bitcoind.dbCache = 1000;
     services.tor.hiddenServices.bitcoind = {
       map = [{
@@ -146,6 +148,7 @@ in {
     services.nix-bitcoin-webindex.enable = cfg.modules == "all";
     services.clightning.autolisten = cfg.modules == "all";
     services.spark-wallet.enable = cfg.modules == "all";
+    services.electrs.enable = cfg.modules == "all";
     services.tor.hiddenServices.spark-wallet = {
       map = [{
         port = 80; toPort = 9737;
