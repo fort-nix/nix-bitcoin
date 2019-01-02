@@ -52,7 +52,6 @@ in {
 
       systemd.services.clightning =
         { description = "Run clightningd";
-          path  = [ pkgs.bash pkgs.clightning pkgs.bitcoin ];
           wantedBy = [ "multi-user.target" ];
           requires = [ "bitcoind.service" ];
           after = [ "bitcoind.service" ];

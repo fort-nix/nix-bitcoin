@@ -131,7 +131,6 @@ in {
     systemd.services.copy-root-authorized-keys = {
       description = "Copy root authorized keys";
       wantedBy = [ "multi-user.target" ];
-      path  = [ ];
       serviceConfig = {
         ExecStart = "${pkgs.bash}/bin/bash \"${operatorCopySSH}\"";
         user = "root";
