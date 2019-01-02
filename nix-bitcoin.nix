@@ -8,11 +8,11 @@
    unstable-pkgs = import unstable-pkgs-git { };
 
    # Custom packages
-   nodeinfo = (import pkgs/nodeinfo.nix);
+   nodeinfo = (import pkgs/nodeinfo.nix) { inherit pkgs; };
    lightning-charge = import pkgs/lightning-charge.nix { inherit pkgs; };
    nanopos = import pkgs/nanopos.nix { inherit pkgs; };
    spark-wallet = import pkgs/spark-wallet.nix  { inherit pkgs; };
-   liquidd = import pkgs/liquidd.nix;
+   liquidd = pkgs.callPackage (import pkgs/liquidd.nix) { };
 in {
   disabledModules = [ "services/security/tor.nix" ];
   imports =
@@ -32,6 +32,6 @@ in {
     inherit lightning-charge;
     inherit nanopos;
     inherit spark-wallet;
-    liquidd = (pkgs.callPackage liquidd { });
+    inherit liquidd;
   };
 }

@@ -1,5 +1,6 @@
-with import <nixpkgs> {}; # bring all of Nixpkgs into scope
+{pkgs}:
 
+with pkgs;
 stdenv.mkDerivation {
   name = "nodeinfo";
   src = ./nodeinfo.sh;

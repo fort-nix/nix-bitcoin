@@ -1,6 +1,4 @@
-{pkgs ? import <nixpkgs> {
-    inherit system;
-  }, system ? builtins.currentSystem, nodejs ? pkgs."nodejs-8_x"}:
+{pkgs, system ? builtins.currentSystem, nodejs ? pkgs."nodejs-8_x"}:
 
 
 with pkgs;
