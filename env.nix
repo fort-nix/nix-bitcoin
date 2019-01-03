@@ -14,6 +14,7 @@ stdenv.mkDerivation rec {
   buildInputs = [ pkgs.nixops pkgs.figlet pkgs.apg ];
 
   shellHook = ''
+    export NIX_PATH="nixpkgs=${nixpkgs}:."
     figlet "nix-bitcoin"
     ./secrets/generate_secrets.sh
   '';
