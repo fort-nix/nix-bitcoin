@@ -33,19 +33,19 @@ in {
 
     systemd.services.electrs = {
       description = "Run electrs";
-      wantedBy = [ "muli-user.target" ];
+      wantedBy = [ "multi-user.target" ];
       requires = [ "bitcoind.service" ];
       after = [ "bitcoind.service" ];
       # create shell script to start up electrs safely with password parameter
       preStart = ''
         mkdir -m 0770 -p ${cfg.dataDir}
-	chown 'electrs:electrs' ${cfg.dataDir}
-	echo "${pkgs.electrs}/bin/electrs -vvv --timestamp --db-dir ${cfg.dataDir} --daemon-dir /var/lib/bitcoind --cookie=${config.services.bitcoind.rpcuser}:$(cat /secrets/bitcoin-rpcpassword)" > /var/lib/electrs/startscript.sh
-	chown -R 'electrs:electrs' ${cfg.dataDir}
-	chmod u+x ${cfg.dataDir}/startscript.sh
-	'';	
+        chown 'electrs:electrs' ${cfg.dataDir}
+        echo "${pkgs.electrs}/bin/electrs -vvv --timestamp --db-dir ${cfg.dataDir} --daemon-dir /var/lib/bitcoind --cookie=${config.services.bitcoind.rpcuser}:$(cat /secrets/bitcoin-rpcpassword)" > /var/lib/electrs/startscript.sh
+        chown -R 'electrs:electrs' ${cfg.dataDir}
+        chmod u+x ${cfg.dataDir}/startscript.sh
+        '';	
       serviceConfig = {
-	PermissionsStartOnly = "true";
+        PermissionsStartOnly = "true";
         ExecStart = "${pkgs.bash}/bin/bash ${cfg.dataDir}/startscript.sh";
         User = "electrs";
         Restart = "on-failure";
