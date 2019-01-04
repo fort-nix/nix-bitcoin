@@ -28,7 +28,7 @@ The data directories can be found in `/var/lib`.
 
 Installing profiles
 ---
-The easiest way is to run `nix-shell env.nix` and then create a [NixOps](https://nixos.org/nixops/manual/) deployment with the provided network.nix.
+The easiest way is to run `nix-shell` in the nix-bitcoin directory and then create a [NixOps](https://nixos.org/nixops/manual/) deployment with the provided network.nix.
 Fix the FIXMEs in configuration.nix and deploy with nixops in nix-shell.
 See below for a detailed tutorial.
 
@@ -63,7 +63,7 @@ cd ~/nix-bitcoin
 ```
 Setup environment
 ```
-nix-shell env.nix
+nix-shell
 ```
 Create nixops deployment in nix-shell.
 When deploying in a VirtualBox you can use the provided `network-vbox.nix` file (ensure that you've created a host adaptor as explained in the appendix).
@@ -93,7 +93,7 @@ in the nix-shell again to redeploy the configuration to the node.
 
 Updating
 ---
-Run `git pull` on this repo, enter the nix shell with `nix-shell env.nix` and redeploy with `nixops deploy -d bitcoin-node`.
+Run `git pull` in the nix-bitcoin directory, enter the nix shell with `nix-shell` and redeploy with `nixops deploy -d bitcoin-node`.
 
 FAQ
 ---
