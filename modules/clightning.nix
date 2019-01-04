@@ -34,7 +34,7 @@ in {
     dataDir = mkOption {
       type = types.path;
       default = "/var/lib/clightning";
-      description = "The data directory for bitcoind.";
+      description = "The data directory for clightning.";
     };
   };
 
