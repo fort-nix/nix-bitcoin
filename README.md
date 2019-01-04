@@ -18,6 +18,7 @@ Profiles
     * adds clightning hidden service
     * [liquid-daemon](https://github.com/blockstream/liquid)
     * [lightning charge](https://github.com/ElementsProject/lightning-charge)
+    * [electrs](https://github.com/romanz/electrs)
     * [nanopos](https://github.com/ElementsProject/nanopos)
     * adds an index page using nginx to display node information and link to nanopos
     * [spark-wallet](https://github.com/shesek/spark-wallet)

@@ -1,9 +1,13 @@
 let
-  PkgsSource = builtins.fetchGit { url = "https://github.com/nixos/nixpkgs-channels"; ref = "nixos-18.09"; };
-  defaultPkgs = import PkgsSource {overlays = [(import (builtins.fetchTarball https://github.com/mozilla/nixpkgs-mozilla/archive/master.tar.gz)) ]; };
+  overlay = builtins.fetchGit {
+     url = "https://github.com/mozilla/nixpkgs-mozilla";
+     ref = "master";
+     rev = "f61795ea78ea2a489a2cabb27abde254d2a37d25";
+   };
+  defaultPkgs = import <nixpkgs> {overlays = [ (import overlay) ]; };
   defaultRust = defaultPkgs.latest.rustChannels.nightly.rust;
   defaultCargo = defaultPkgs.latest.rustChannels.nightly.cargo;
-  defaultBuildRustPackage = defaultPkgs.callPackage (import "${PkgsSource}/pkgs/build-support/rust") {
+  defaultBuildRustPackage = defaultPkgs.callPackage (import <nixpkgs/pkgs/build-support/rust>) {
     rust = {
       rustc = defaultRust;
       cargo = defaultCargo;
