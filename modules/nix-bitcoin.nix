@@ -16,7 +16,8 @@ let
     lightning-charge.package
     nanopos.package
     spark-wallet.package
-    electrs
+    # TODO: re-enable when fixed
+    #electrs
     nodejs-8_x
     nginx
   ];
@@ -148,7 +149,8 @@ in {
     services.nix-bitcoin-webindex.enable = cfg.modules == "all";
     services.clightning.autolisten = cfg.modules == "all";
     services.spark-wallet.enable = cfg.modules == "all";
-    services.electrs.enable = cfg.modules == "all";
+    # TODO: re-enable when fixed
+    services.electrs.enable = false;
     services.tor.hiddenServices.spark-wallet = {
       map = [{
         port = 80; toPort = 9737;
