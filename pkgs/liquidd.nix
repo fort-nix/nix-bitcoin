@@ -5,13 +5,13 @@
 with stdenv.lib;
 stdenv.mkDerivation rec{
   name = "liquid-" + version;
-  version = "3.14.1.21";
+  version = "3.14.1.22";
 
   src = fetchurl {
     urls = [
             "https://github.com/Blockstream/liquid/releases/download/liquid.${version}/liquid-${version}.tar.gz"
            ];
-    sha256 = "0fb17de2ac7169a69980f0417007263d439f6bd7045549621c1877178bac8b23";
+    sha256 = "25907a4085b7b92a0365235f059a12a3c82679b0049115b80697b438816e74de";
   };
 
   nativeBuildInputs = [ pkgconfig autoreconfHook ]
