@@ -3,7 +3,7 @@ let
   nixpkgs = builtins.fetchGit {
     url = "https://github.com/nixos/nixpkgs-channels";
     ref = "nixos-18.09";
-    rev = "0396345b79436f54920f7eb651ab42acf2eb7973";
+    rev = "001b34abcb4d7f5cade707f7fd74fa27cbabb80b";
   };
 in
 with import nixpkgs { };
