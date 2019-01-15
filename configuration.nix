@@ -30,13 +30,14 @@
     vim
   ];
 
-  # FIXME: Turn off the binary cache by setting binaryCaches to empty list.
-  # This means that it will take a while for all packages to be built but it
-  # prevents a compromised cache taking over your system. As a result, the next
-  # line should be uncommented in production systems.
-  # nix.binaryCaches = [];
+  # FIXME: Turn on the binary cache by commenting out the next line. When the
+  # binary cache is enabled you are retrieving builds from a trusted third
+  # party which can compromise your system. As a result, the cache should only
+  # be enabled to speed up deployment of test systems.
+  nix.binaryCaches = [];
 
-  # FIXME: Add custom options (like boot options, output of nixos-generate-config, etc.):
+  # FIXME: Add custom options (like boot options, output of
+  # nixos-generate-config, etc.):
 
 
   # This value determines the NixOS release with which your system is to be
