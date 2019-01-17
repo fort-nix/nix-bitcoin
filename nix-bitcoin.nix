@@ -2,8 +2,8 @@
  let
    unstable-pkgs-git = builtins.fetchGit {
      url = "https://github.com/nixos/nixpkgs-channels";
-     ref = "nixos-unstable";
-     rev = "201d739b0ffbebceb444864d1856babcd1a666a8";
+     ref = "nixpkgs-unstable";
+     rev = "8349329617ffa70164c5a16b049c2ef5f59416bd";
    };
    unstable-pkgs = import unstable-pkgs-git { };
 
