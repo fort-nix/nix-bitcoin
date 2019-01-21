@@ -29,7 +29,7 @@ in {
       requires = [ "clightning.service" ];
       after = [ "clightning.service" ];
       serviceConfig = {
-        ExecStart = "${pkgs.spark-wallet.package}/bin/spark-wallet --ln-path ${cfg.ln-path} -k -c /secrets/spark-wallet-password";
+        ExecStart = "${pkgs.spark-wallet.package}/bin/spark-wallet --ln-path ${cfg.ln-path} -k -c /secrets/spark-wallet-login";
         User = "clightning";
         Restart = "on-failure";
         RestartSec = "10s";
