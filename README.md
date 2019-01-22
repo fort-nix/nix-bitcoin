@@ -1,8 +1,8 @@
 nix-bitcoin
 ===
 
-Nix packages and nixos modules including profiles to easily install featureful Bitcoin nodes.
-Work in progress.
+Nix packages and nixos modules with profiles for easily installing Bitcoin nodes and higher layer protocols.
+This is a work in progress.
 A demo installation is running at http://6tr4dg3f2oa7slotdjp4syvnzzcry2lqqlcvqkfxdavxo6jsuxwqpxad.onion.
 
 Profiles
