@@ -41,6 +41,7 @@ Tutorial: install a nix-bitcoin node
 Get a machine to deploy nix-bitcoin on.
 This could be a VirtualBox, a machine that is already running [NixOs](https://nixos.org/nixos/manual/index.html) or a cloud provider.
 Have a look at the options in the [NixOps manual](https://nixos.org/nixops/manual/).
+There's a tutorial for installing and configuring VirtualBox in the [appendix](#appendix).
 
 The following steps are meant to be run on the machine you deploy from, not the machine you deploy to.
 
@@ -129,8 +130,7 @@ FAQ
 * **Q:** My disk space is getting low due to nix.
     * **A:** run `nix-collect-garbage -d`
 
-Appendix
-===
+# Appendix
 Tutorial: install and configure VirtualBox for nix-bitcoin on Debian 9 Stretch
 ---
 Add virtualbox.list to /etc/apt/sources.list.d
