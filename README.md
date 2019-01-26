@@ -34,7 +34,9 @@ The easiest way is to run `nix-shell` in the nix-bitcoin directory and then crea
 Fix the FIXMEs in configuration.nix and deploy with nixops in nix-shell.
 See below for a detailed tutorial.
 
-The "all" profile requires 15 GB of disk space and 2GB of memory.
+The profiles require 300 GB (235GB for Bitcoin blockchain + some room) of disk space and 2GB of memory.
+Bitcoin Core pruning is not supported at the moment because it's not supported by c-lightning.
+It's possible to use pruning but you need to know what you're doing.
 
 Tutorial: install a nix-bitcoin node
 ---
