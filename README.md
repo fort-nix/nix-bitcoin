@@ -11,7 +11,10 @@ Outbound peer-to-peer traffic is forced through Tor and listening services are b
 
 A demo installation is running at [http://6tr4dg3f2oa7slotdjp4syvnzzcry2lqqlcvqkfxdavxo6jsuxwqpxad.onion](http://6tr4dg3f2oa7slotdjp4syvnzzcry2lqqlcvqkfxdavxo6jsuxwqpxad.onion).
 The following screen cast shows how a fresh deployment of the full profile.
-[![asciicast](https://asciinema.org/a/223630.png)](https://asciinema.org/a/223630/?speed=2)
+
+[<img src="https://asciinema.org/a/223630.png" height="300">](https://asciinema.org/a/223630/?speed=2&autoplay=1)
+
+
 
 The goal is too make it easy to deploy a reasonably secure Bitcoin node with a usable wallet.
 It should allow managing bitcoin (the currency) effectively and providing public infrastructure.
