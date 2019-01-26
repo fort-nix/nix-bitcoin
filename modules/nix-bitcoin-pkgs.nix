@@ -1,6 +1,6 @@
 { config, pkgs, ... }:
  let
-   nixpkgs-pinned = import ../nixpkgs-pinned.nix;
+   nixpkgs-pinned = import ../pkgs/nixpkgs-pinned.nix;
    nixpkgs-unstable = import nixpkgs-pinned.nixpkgs-unstable { };
 
    # Custom packages

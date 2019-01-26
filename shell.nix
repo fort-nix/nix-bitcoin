@@ -1,5 +1,5 @@
 let
-  nixpkgs = (import ./nixpkgs-pinned.nix).nixpkgs;
+  nixpkgs = (import ./pkgs/nixpkgs-pinned.nix).nixpkgs;
 in
 with import nixpkgs { };
 
