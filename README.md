@@ -2,7 +2,7 @@ nix-bitcoin
 ===
 
 Nix packages and nixos modules with profiles for easily installing Bitcoin nodes and higher layer protocols.
-This is a work in progress.
+This is a work in progress - don't expect it to be bug free or secure.
 A demo installation is running at http://6tr4dg3f2oa7slotdjp4syvnzzcry2lqqlcvqkfxdavxo6jsuxwqpxad.onion.
 
 Profiles
@@ -19,7 +19,7 @@ Profiles
     * adds clightning hidden service
     * [liquid-daemon](https://github.com/blockstream/liquid)
     * [lightning charge](https://github.com/ElementsProject/lightning-charge)
-    * [electrs](https://github.com/romanz/electrs)
+    * [electrs](https://github.com/romanz/electrs) (currently disabled)
     * [nanopos](https://github.com/ElementsProject/nanopos)
     * adds an index page using nginx to display node information and link to nanopos
     * [spark-wallet](https://github.com/shesek/spark-wallet)
@@ -89,6 +89,8 @@ Nixops automatically creates an ssh key for use with `nixops ssh`. Access `bitco
 ```
 nixops ssh operator@bitcoin-node
 ```
+
+Run `nodeinfo` to see your onion addresses for the webindex, spark, etc. if they are included in the profile.
 
 If you change anything in the configuration you can run
 ```
