@@ -5,7 +5,7 @@
 { config, pkgs, ... }:
 {
   imports = [
-    ./nix-bitcoin.nix
+    ./modules/nix-bitcoin.nix
     # FIXME: Uncomment next line to import your hardware configuration. If so,
     # add the hardware configuration file to the same directory as this file.
     # This is not needed when deploying to a virtual box.

@@ -33,6 +33,7 @@ let
   '';
 in {
   imports = [
+    ./nix-bitcoin-pkgs.nix
     ./bitcoind.nix
     ./clightning.nix
     ./lightning-charge.nix
