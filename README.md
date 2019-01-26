@@ -12,7 +12,9 @@ Outbound peer-to-peer traffic is forced through Tor and listening services are b
 A demo installation is running at [http://6tr4dg3f2oa7slotdjp4syvnzzcry2lqqlcvqkfxdavxo6jsuxwqpxad.onion](http://6tr4dg3f2oa7slotdjp4syvnzzcry2lqqlcvqkfxdavxo6jsuxwqpxad.onion).
 The following screen cast shows how a fresh deployment of the full profile.
 
-[<img src="https://asciinema.org/a/223630.png" height="300">](https://asciinema.org/a/223630/?speed=2&autoplay=1)
+<p align="center">
+  <a href="https://asciinema.org/a/223630/?speed=2&autoplay=1"><img src="https://asciinema.org/a/223630.png" height="500"></a>
+</p>
 
 
 
