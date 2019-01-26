@@ -1,11 +1,7 @@
 { config, pkgs, ... }:
  let
-   unstable-pkgs-git = builtins.fetchGit {
-     url = "https://github.com/nixos/nixpkgs-channels";
-     ref = "nixpkgs-unstable";
-     rev = "8349329617ffa70164c5a16b049c2ef5f59416bd";
-   };
-   unstable-pkgs = import unstable-pkgs-git { };
+   nixpkgs-pinned = import ./nixpkgs-pinned.nix;
+   nixpkgs-unstable = import nixpkgs-pinned.nixpkgs-unstable { };
 
    # Custom packages
    nodeinfo = (import pkgs/nodeinfo.nix) { inherit pkgs; };
@@ -18,14 +14,14 @@ in {
   disabledModules = [ "services/security/tor.nix" ];
   imports = [
     ./modules/nix-bitcoin.nix
-    (unstable-pkgs-git + "/nixos/modules/services/security/tor.nix")
+    (nixpkgs-pinned.nixpkgs-unstable + "/nixos/modules/services/security/tor.nix")
   ];
 
   nixpkgs.config.packageOverrides = pkgs: {
     # Use bitcoin and clightning from unstable
-    bitcoin = unstable-pkgs.bitcoin.override { };
-    altcoins.bitcoind = unstable-pkgs.altcoins.bitcoind.override { };
-    clightning = unstable-pkgs.clightning.override { };
+    bitcoin = nixpkgs-unstable.bitcoin.override { };
+    altcoins.bitcoind = nixpkgs-unstable.altcoins.bitcoind.override { };
+    clightning = nixpkgs-unstable.clightning.override { };
 
     # Add custom packages
     inherit nodeinfo;

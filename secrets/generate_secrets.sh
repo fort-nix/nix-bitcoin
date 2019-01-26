@@ -7,7 +7,6 @@ if [ -e "$SECRETSFILE" ]; then
     exit 1
 fi
 
-echo Installing apg through nix-env
 echo Write secrets to $SECRETSFILE
 {
     echo \{
