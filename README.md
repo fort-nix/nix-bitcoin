@@ -3,11 +3,20 @@ nix-bitcoin
 
 Nix packages and nixos modules with profiles for easily installing Bitcoin nodes and higher layer protocols.
 This is a work in progress - don't expect it to be bug free or secure.
+
+The 'full' profile right now sets up a Bitcoin Core node and c-lightning, accessable with a smartphone using spark-wallet.
+A simple webpage shows the lightning nodeid and links to nanopos allowing to receive donations.
+It also includes liquid-daemon.
+
 A demo installation is running at http://6tr4dg3f2oa7slotdjp4syvnzzcry2lqqlcvqkfxdavxo6jsuxwqpxad.onion.
+
+The goal is too make it easy to deploy a reasonably secure Bitcoin node with a usable wallet.
+It should allow managing bitcoin (the currency) effectively and providing public infrastructure.
+It should be a reproducible and extensible platform applications building on Bitcoin.
 
 Profiles
 ---
-`nix-bitcoin.nix` provides the two profiles "minimal" and "all":
+The `nix-bitcoin.nix` module provides the two profiles "minimal" and "all":
 
 * minimal
     * bitcoind (pruned) with outbound connections through Tor and inbound connections through a hidden
@@ -26,7 +35,7 @@ Profiles
         * Notes: run `nodeinfo` to get its onion address and `systemctl status spark-wallet` to get the access key.
             When entering the onion address on the Android app don't forgot to prepend "http://"
 
-The data directories can be found in `/var/lib`.
+The data directories of the services can be found in `/var/lib` on the deployed machines.
 
 Installing profiles
 ---
