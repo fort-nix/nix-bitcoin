@@ -7,8 +7,11 @@ This is a work in progress - don't expect it to be bug free or secure.
 The 'full' profile right now sets up a Bitcoin Core node and c-lightning, accessable with a smartphone using spark-wallet.
 A simple webpage shows the lightning nodeid and links to nanopos allowing to receive donations.
 It also includes liquid-daemon.
+Outbound peer-to-peer traffic is forced through Tor and listening services are bound to onion addresses.
 
-A demo installation is running at http://6tr4dg3f2oa7slotdjp4syvnzzcry2lqqlcvqkfxdavxo6jsuxwqpxad.onion.
+A demo installation is running at [http://6tr4dg3f2oa7slotdjp4syvnzzcry2lqqlcvqkfxdavxo6jsuxwqpxad.onion](http://6tr4dg3f2oa7slotdjp4syvnzzcry2lqqlcvqkfxdavxo6jsuxwqpxad.onion).
+The following screen cast shows how a fresh deployment of the full profile.
+[![asciicast](https://asciinema.org/a/223630.png)](https://asciinema.org/a/223630/?speed=2)
 
 The goal is too make it easy to deploy a reasonably secure Bitcoin node with a usable wallet.
 It should allow managing bitcoin (the currency) effectively and providing public infrastructure.
