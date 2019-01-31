@@ -126,7 +126,12 @@ FAQ
     bitcoin-node> waiting for SSH...
     Received disconnect from 10.1.1.200 port 22:2: Too many authentication failures
     ```
-    * **A:** Somehow ssh-agent and nixops don't play well together. Try killing the ssh-agent. Also make sure you don't have something like
+    * **A:** Somehow ssh-agent and nixops don't play well together. Try killing the ssh-agent.
+* **Q:** When deploying or trying to SSH into the machine I see
+    ```
+    root@xxx.xxx.xxx.xxx: Permission denied (publickey,password,keyboard-interactive).
+    ```
+    Make sure you don't have something like
     ```
     Host *
         PubkeyAuthentication no
