@@ -87,7 +87,7 @@ in {
       addnode=ecoc5q34tmbq54wl.onion
       discover=0
     '';
-    services.bitcoind.prune = 2000;
+    services.bitcoind.prune = 0;
     services.bitcoind.dbCache = 1000;
     services.tor.hiddenServices.bitcoind = {
       map = [{
