@@ -2,12 +2,12 @@
   nixpkgs = builtins.fetchGit {
     url = "https://github.com/nixos/nixpkgs-channels";
     ref = "nixos-18.09";
-    rev = "001b34abcb4d7f5cade707f7fd74fa27cbabb80b";
+    rev = "5225d4bf0193b51cfb1a200faa4ae50958f98c62";
   };
   nixpkgs-unstable = builtins.fetchGit {
-   url = "https://github.com/nixos/nixpkgs-channels";
-   ref = "nixpkgs-unstable";
-   rev = "8349329617ffa70164c5a16b049c2ef5f59416bd";
+    url = "https://github.com/nixos/nixpkgs-channels";
+    ref = "nixpkgs-unstable";
+    rev = "2b2820df94fd4a78cf03fb17b8e4c04d7f7395f7";
   };
 }
 
