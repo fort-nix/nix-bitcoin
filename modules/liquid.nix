@@ -26,8 +26,6 @@ let
 
     # Extra config options (from liquidd nixos service)
     ${cfg.extraConfig}
-
-    validatepegin=0
   '';
   cmdlineOptions = concatMapStringsSep " " (arg: "'${arg}'") [
     "-datadir=${cfg.dataDir}"
@@ -186,6 +184,7 @@ in {
         chmod o-rw  '${cfg.dataDir}/liquid.conf'
         chown '${cfg.user}:${cfg.group}' '${cfg.dataDir}/liquid.conf'
         echo "rpcpassword=$(cat /secrets/liquid-rpcpassword)" >> '${cfg.dataDir}/liquid.conf'
+        echo "mainchainrpcpassword=$(cat /secrets/bitcoin-rpcpassword)" >> '${cfg.dataDir}/liquid.conf'
       '';
       serviceConfig = {
         Type = "simple";

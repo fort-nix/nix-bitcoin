@@ -144,6 +144,10 @@ in {
     services.liquidd.enable = cfg.modules == "all";
     services.liquidd.rpcuser = "liquidrpc";
     services.liquidd.prune = 1000;
+    services.liquidd.extraConfig = "
+      mainchainrpcuser=${config.services.bitcoind.rpcuser}
+      mainchainrpcport=8332
+    ";
 
     services.lightning-charge.enable = cfg.modules == "all";
     services.nanopos.enable = cfg.modules == "all";
