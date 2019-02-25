@@ -4,6 +4,8 @@ with lib;
 
 let
   cfg = config.services.electrs;
+  index-batch-size = "${if cfg.high-memory then "" else "--index-batch-size=10"}";
+  jsonrpc-import = "${if cfg.high-memory then "" else "--jsonrpc-import"}";
 in {
   options.services.electrs = {
     enable = mkOption {
@@ -18,13 +20,20 @@ in {
       default = "/var/lib/electrs";
       description = "The data directory for electrs.";
     };
+    high-memory = mkOption {
+      type = types.bool;
+      default = false;
+      description = ''
+      If enabled, the electrs service will sync faster on high-memory systems.
+      '';
+    };
   };
 
   config = mkIf cfg.enable {
     users.users.electrs = {
         description = "electrs User";
         group = "electrs";
-        extraGroups = [ "bitcoinrpc" "keys" ];
+        extraGroups = [ "bitcoinrpc" "keys" "bitcoin"];
         home = cfg.dataDir;
     };
     users.groups.electrs = {
@@ -40,7 +49,7 @@ in {
       preStart = ''
         mkdir -m 0770 -p ${cfg.dataDir}
         chown 'electrs:electrs' ${cfg.dataDir}
-        echo "${pkgs.electrs}/bin/electrs -vvv --timestamp --db-dir ${cfg.dataDir} --daemon-dir /var/lib/bitcoind --cookie=${config.services.bitcoind.rpcuser}:$(cat /secrets/bitcoin-rpcpassword)" > /var/lib/electrs/startscript.sh
+        echo "${pkgs.electrs}/bin/electrs -vvv ${index-batch-size} ${jsonrpc-import} --timestamp --db-dir ${cfg.dataDir} --daemon-dir /var/lib/bitcoind --cookie=${config.services.bitcoind.rpcuser}:$(cat /secrets/bitcoin-rpcpassword)" > /var/lib/electrs/startscript.sh
         chown -R 'electrs:electrs' ${cfg.dataDir}
         chmod u+x ${cfg.dataDir}/startscript.sh
         '';	

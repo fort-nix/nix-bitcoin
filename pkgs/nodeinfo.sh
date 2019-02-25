@@ -23,6 +23,12 @@ if [ -e "$SPARKWALLET_ONION_FILE" ]; then
     echo SPARKWALLET_ONION="http://$SPARKWALLET_ONION"
 fi
 
+ELECTRS_ONION_FILE=/var/lib/tor/onion/electrs/hostname
+if [ -e "$ELECTRS_ONION_FILE" ]; then
+    ELECTRS_ONION="$(cat $ELECTRS_ONION_FILE)"
+    echo ELECTRS_ONION="$ELECTRS_ONION"
+fi
+
 SSHD_ONION_FILE=/var/lib/tor/onion/sshd/hostname
 if [ -e "$SSHD_ONION_FILE" ]; then
     SSHD_ONION="$(cat $SSHD_ONION_FILE)"

@@ -9,6 +9,9 @@ let
     ${optionalString cfg.testnet "testnet=1"}
     ${optionalString (cfg.dbCache != null) "dbcache=${toString cfg.dbCache}"}
     ${optionalString (cfg.prune != null) "prune=${toString cfg.prune}"}
+    sysperms=${if cfg.sysperms then "1" else "0"}
+    disablewallet=${if cfg.disablewallet then "1" else "0"}
+
 
     # Connection options
     ${optionalString (cfg.port != null) "port=${toString cfg.port}"}
@@ -151,6 +154,22 @@ in {
           If enabled, the bitcoin service will listen.
         '';
       };
+      sysperms = mkOption {
+        type = types.bool;
+        default = false;
+        description = ''
+        Create new files with system default permissions, instead of umask 077 (only effective with disabled wallet functionality)
+        # Necessary for electrs
+        '';
+      };
+      disablewallet = mkOption {
+        type = types.bool;
+        default = false;
+        description = ''
+        Do not load the wallet and disable wallet RPC calls
+        # Necessary for electrs
+        '';
+      };
       dbCache = mkOption {
         type = types.nullOr (types.ints.between 4 16384);
         default = null;
@@ -195,6 +214,7 @@ in {
         chmod o-rw  '${cfg.dataDir}/bitcoin.conf'
         chown '${cfg.user}:${cfg.group}' '${cfg.dataDir}/bitcoin.conf'
         echo "rpcpassword=$(cat /secrets/bitcoin-rpcpassword)" >> '${cfg.dataDir}/bitcoin.conf'
+        chmod -R g+rX '${cfg.dataDir}/blocks'
       '';
       serviceConfig = {
         Type = "simple";
