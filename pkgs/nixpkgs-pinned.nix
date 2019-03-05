@@ -7,7 +7,7 @@
   nixpkgs-unstable = builtins.fetchGit {
     url = "https://github.com/nixos/nixpkgs-channels";
     ref = "nixpkgs-unstable";
-    rev = "6e5caa3f8ac48750233ef82a94825be238940825";
+    rev = "9b3e5a3aab728e7cea2da12b6db300136604be3a";
   };
 }
 
