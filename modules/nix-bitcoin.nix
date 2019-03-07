@@ -104,6 +104,9 @@ in {
       enable = true;
       bitcoin-rpcuser = config.services.bitcoind.rpcuser;
     };
+    services.clightning.proxy = config.services.tor.client.socksListenAddress;
+    services.clightning.always-use-proxy = true;
+    services.clightning.bind-addr = "127.0.0.1:9735";
     services.tor.hiddenServices.clightning = {
       map = [{
         port = 9375; toPort = 9375;
