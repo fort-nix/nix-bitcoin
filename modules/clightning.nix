@@ -7,6 +7,9 @@ let
   configFile = pkgs.writeText "config" ''
     autolisten=${if cfg.autolisten then "true" else "false"}
     network=bitcoin
+    ${optionalString (cfg.proxy != null) "proxy=${cfg.proxy}"}
+    always-use-proxy=${if cfg.always-use-proxy then "true" else "false"}
+    ${optionalString (cfg.bind-addr != null) "bind-addr=${cfg.bind-addr}"}
     bitcoin-rpcuser=${cfg.bitcoin-rpcuser}
   '';
 in {
@@ -24,6 +27,23 @@ in {
       description = ''
         If enabled, the clightning service will listen.
       '';
+    };
+    proxy = mkOption {
+      type = types.nullOr types.string;
+      default = null;
+      description = "Set a socks proxy to use to connect to Tor nodes (or for all connections if *always-use-proxy* is set)";
+    };
+    always-use-proxy = mkOption {
+      type = types.bool;
+      default = false;
+      description = ''
+        Always use the *proxy*, even to connect to normal IP addresses (you can still connect to Unix domain sockets manually). This also disables all DNS lookups, to avoid leaking information.
+      '';
+    };
+    bind-addr = mkOption {
+      type = types.nullOr types.string;
+      default = null;
+      description = "Set an IP address or UNIX domain socket to listen to";
     };
     bitcoin-rpcuser = mkOption {
       type = types.string;
