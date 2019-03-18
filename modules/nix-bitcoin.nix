@@ -153,9 +153,10 @@ in {
     ";
     services.liquidd.listen = true;
     services.liquidd.proxy = config.services.tor.client.socksListenAddress;
+    services.liquidd.port = 7042;
     services.tor.hiddenServices.liquidd = {
       map = [{
-        port = 7042; toPort = 7042;
+        port = config.services.liquidd.port; toPort = config.services.liquidd.port;
       }];
       version = 3;
     };
