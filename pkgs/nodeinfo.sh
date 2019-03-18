@@ -17,6 +17,12 @@ if [ -e "$NGINX_ONION_FILE" ]; then
     echo NGINX_ONION="$NGINX_ONION"
 fi
 
+LIQUIDD_ONION_FILE=/var/lib/tor/onion/liquidd/hostname
+if [ -e "$LIQUIDD_ONION_FILE" ]; then
+    LIQUIDD_ONION="$(cat $LIQUIDD_ONION_FILE)"
+    echo LIQUIDD_ONION="$LIQUIDD_ONION"
+fi
+
 SPARKWALLET_ONION_FILE=/var/lib/tor/onion/spark-wallet/hostname
 if [ -e "$SPARKWALLET_ONION_FILE" ]; then
     SPARKWALLET_ONION="$(cat $SPARKWALLET_ONION_FILE)"

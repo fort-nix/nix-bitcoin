@@ -151,7 +151,16 @@ in {
       mainchainrpcuser=${config.services.bitcoind.rpcuser}
       mainchainrpcport=8332
     ";
-
+    services.liquidd.listen = true;
+    services.liquidd.proxy = config.services.tor.client.socksListenAddress;
+    services.liquidd.port = 7042;
+    services.tor.hiddenServices.liquidd = {
+      map = [{
+        port = config.services.liquidd.port; toPort = config.services.liquidd.port;
+      }];
+      version = 3;
+    };
+     
     services.lightning-charge.enable = cfg.modules == "all";
     services.nanopos.enable = cfg.modules == "all";
     services.nix-bitcoin-webindex.enable = cfg.modules == "all";
