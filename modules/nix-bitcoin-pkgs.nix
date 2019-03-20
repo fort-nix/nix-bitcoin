@@ -5,6 +5,7 @@
 
    # Custom packages
    nodeinfo = (import ../pkgs/nodeinfo.nix) { inherit pkgs; };
+   banlist = (import ../pkgs/banlist.nix) { inherit pkgs; };
    lightning-charge = import ../pkgs/lightning-charge.nix { inherit pkgs; };
    nanopos = import ../pkgs/nanopos.nix { inherit pkgs; };
    spark-wallet = import ../pkgs/spark-wallet.nix  { inherit pkgs; };
@@ -24,6 +25,7 @@ in {
 
     # Add custom packages
     inherit nodeinfo;
+    inherit banlist;
     inherit lightning-charge;
     inherit nanopos;
     inherit spark-wallet;

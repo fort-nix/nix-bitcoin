@@ -9,6 +9,7 @@ let
     bitcoin
     clightning
     nodeinfo
+    banlist
     jq
   ];
   allPackages = with pkgs; [
@@ -177,3 +178,4 @@ in {
     environment.systemPackages = if (cfg.modules == "all") then (minimalPackages ++ allPackages) else minimalPackages;
   };
 }
+
