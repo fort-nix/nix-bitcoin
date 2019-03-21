@@ -196,6 +196,10 @@ in {
         chown '${cfg.user}:${cfg.group}' '${cfg.dataDir}/bitcoin.conf'
         echo "rpcpassword=$(cat /secrets/bitcoin-rpcpassword)" >> '${cfg.dataDir}/bitcoin.conf'
       '';
+      postStart = ''
+        until '${cfg.package}'/bin/bitcoin-cli -datadir='${cfg.dataDir}' getnetworkinfo; do sleep 1; done
+        '${pkgs.banlist}'/bin/banlist ${pkgs.altcoins.bitcoind}
+      '';
       serviceConfig = {
         Type = "simple";
         User = "${cfg.user}";
