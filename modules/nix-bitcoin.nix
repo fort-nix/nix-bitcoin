@@ -78,8 +78,8 @@ in {
     # bitcoind
     services.bitcoind.enable = true;
     services.bitcoind.listen = true;
-    services.bitcoind.sysperms = true;
-    services.bitcoind.disablewallet = true;
+    services.bitcoind.sysperms = if config.services.electrs.enable then true else null;
+    services.bitcoind.disablewallet = if config.services.electrs.enable then true else null;
     services.bitcoind.proxy = config.services.tor.client.socksListenAddress;
     services.bitcoind.port = 8333;
     services.bitcoind.rpcuser = "bitcoinrpc";
@@ -164,7 +164,7 @@ in {
       }];
       version = 3;
     };
-    services.electrs.enable = true;
+    services.electrs.enable = cfg.modules == "all";
     services.electrs.high-memory = false;
     services.tor.hiddenServices.electrs = {
       map = [{

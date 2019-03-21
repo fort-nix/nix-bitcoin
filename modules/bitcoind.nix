@@ -9,9 +9,8 @@ let
     ${optionalString cfg.testnet "testnet=1"}
     ${optionalString (cfg.dbCache != null) "dbcache=${toString cfg.dbCache}"}
     ${optionalString (cfg.prune != null) "prune=${toString cfg.prune}"}
-    sysperms=${if cfg.sysperms then "1" else "0"}
-    disablewallet=${if cfg.disablewallet then "1" else "0"}
-
+    ${optionalString (cfg.sysperms != null) "sysperms=${if cfg.sysperms then "1" else "0"}"}
+    ${optionalString (cfg.disablewallet != null) "disablewallet=${if cfg.disablewallet then "1" else "0"}"}
 
     # Connection options
     ${optionalString (cfg.port != null) "port=${toString cfg.port}"}
@@ -155,19 +154,17 @@ in {
         '';
       };
       sysperms = mkOption {
-        type = types.bool;
-        default = false;
+        type = types.nullOr types.bool;
+        default = null;
         description = ''
         Create new files with system default permissions, instead of umask 077 (only effective with disabled wallet functionality)
-        # Necessary for electrs
         '';
       };
       disablewallet = mkOption {
-        type = types.bool;
-        default = false;
+        type = types.nullOr types.bool;
+        default = null;
         description = ''
         Do not load the wallet and disable wallet RPC calls
-        # Necessary for electrs
         '';
       };
       dbCache = mkOption {
