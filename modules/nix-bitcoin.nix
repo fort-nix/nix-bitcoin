@@ -17,8 +17,7 @@ let
     lightning-charge.package
     nanopos.package
     spark-wallet.package
-    # TODO: re-enable when fixed
-    #electrs
+    electrs
     nodejs-8_x
     nginx
   ];
@@ -80,6 +79,8 @@ in {
     # bitcoind
     services.bitcoind.enable = true;
     services.bitcoind.listen = true;
+    services.bitcoind.sysperms = if config.services.electrs.enable then true else null;
+    services.bitcoind.disablewallet = if config.services.electrs.enable then true else null;
     services.bitcoind.proxy = config.services.tor.client.socksListenAddress;
     services.bitcoind.port = 8333;
     services.bitcoind.rpcuser = "bitcoinrpc";
@@ -167,11 +168,17 @@ in {
     services.nix-bitcoin-webindex.enable = cfg.modules == "all";
     services.clightning.autolisten = cfg.modules == "all";
     services.spark-wallet.enable = cfg.modules == "all";
-    # TODO: re-enable when fixed
-    services.electrs.enable = false;
     services.tor.hiddenServices.spark-wallet = {
       map = [{
         port = 80; toPort = 9737;
+      }];
+      version = 3;
+    };
+    services.electrs.enable = cfg.modules == "all";
+    services.electrs.high-memory = false;
+    services.tor.hiddenServices.electrs = {
+      map = [{
+        port = 50001; toPort = 50001;
       }];
       version = 3;
     };
