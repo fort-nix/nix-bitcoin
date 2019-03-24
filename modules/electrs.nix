@@ -24,7 +24,7 @@ in {
       type = types.bool;
       default = false;
       description = ''
-      If enabled, the electrs service will sync faster on high-memory systems.
+      If enabled, the electrs service will sync faster on high-memory systems (≤ 8GB).
       '';
     };
   };
