@@ -174,7 +174,7 @@ in {
       }];
       version = 3;
     };
-    services.electrs.enable = cfg.modules == "all";
+    services.electrs.enable = false;
     services.electrs.high-memory = false;
     services.tor.hiddenServices.electrs = {
       map = [{

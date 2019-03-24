@@ -36,12 +36,13 @@ The `nix-bitcoin.nix` module provides the two profiles "minimal" and "all":
     * adds clightning hidden service
     * [liquid-daemon](https://github.com/blockstream/liquid)
     * [lightning charge](https://github.com/ElementsProject/lightning-charge)
-    * [electrs](https://github.com/romanz/electrs) (currently disabled)
     * [nanopos](https://github.com/ElementsProject/nanopos)
     * adds an index page using nginx to display node information and link to nanopos
     * [spark-wallet](https://github.com/shesek/spark-wallet)
         * Notes: run `nodeinfo` to get its onion address and `systemctl status spark-wallet` to get the access key.
             When entering the onion address on the Android app don't forgot to prepend "http://"
+* other
+    * [electrs](https://github.com/romanz/electrs) can be enabled by setting `services.electrs.enable` in modules `nix-bitcoin.nix` to `true`
 
 The data directories of the services can be found in `/var/lib` on the deployed machines.
 
