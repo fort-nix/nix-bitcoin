@@ -2,11 +2,11 @@ let
   overlay = builtins.fetchGit {
      url = "https://github.com/mozilla/nixpkgs-mozilla";
      ref = "master";
-     rev = "f61795ea78ea2a489a2cabb27abde254d2a37d25";
+     rev = "e37160aaf4de5c4968378e7ce6fe5212f4be239f";
    };
   defaultPkgs = import <nixpkgs> {overlays = [ (import overlay) ]; };
-  defaultRust = defaultPkgs.latest.rustChannels.nightly.rust;
-  defaultCargo = defaultPkgs.latest.rustChannels.nightly.cargo;
+  defaultRust = (defaultPkgs.rustChannelOf { date = "2019-03-05"; channel = "nightly"; }).rust;
+  defaultCargo = (defaultPkgs.rustChannelOf { date = "2019-03-05"; channel = "nightly"; }).cargo;
   defaultBuildRustPackage = defaultPkgs.callPackage (import <nixpkgs/pkgs/build-support/rust>) {
     rust = {
       rustc = defaultRust;
@@ -19,7 +19,7 @@ pkgs.lib.flip pkgs.callPackage { inherit buildRustPackage; } (
   { lib, buildRustPackage, fetchFromGitHub, llvmPackages, clang }:
 
   let
-    version = "0.4.2";
+    version = "0.4.3";
 
   in buildRustPackage {
     name = "electrs-${version}";
@@ -27,11 +27,11 @@ pkgs.lib.flip pkgs.callPackage { inherit buildRustPackage; } (
     src = fetchFromGitHub {
       owner = "romanz";
       repo = "electrs";
-      rev = "5f2d4289dcb98ef283725b3d12f8733a7b9e832b";
-      sha256 = "1lqhrcyd8hdaja5k01a2banvjcbxxcwvb2p7zh05984fpzzs02gr";
+      rev = "5ab3b4648769bf4a421d48fb29c93ef048db7dbf";
+      sha256 = "1xjjs1j4wm8pv7h0gr7i8xi2j78ss3haai4hyaiavwph8kk5n0ch";
     };
 
-    cargoSha256 = "0v0cc62mx728cqfyz3x1bfh2436yiw2hkv58672j2f45cafcgp2h";
+    cargoSha256 = "0a80i77s3r4nivrrxndadzgxcpnyamrw7xqrrlz1ylwyjz00xcnf";
 
     LIBCLANG_PATH = "${llvmPackages.libclang}/lib";
     buildInputs = [ clang ];
@@ -44,5 +44,3 @@ pkgs.lib.flip pkgs.callPackage { inherit buildRustPackage; } (
     };
   }
 )
-
-
