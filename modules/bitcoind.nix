@@ -205,7 +205,11 @@ in {
       preStart = ''
         if ! test -e ${cfg.dataDir}; then
           mkdir -m 0770 -p '${cfg.dataDir}'
-          chown '${cfg.user}:${cfg.group}' '${cfg.dataDir}'
+          chown -R '${cfg.user}:${cfg.group}' '${cfg.dataDir}'
+        fi
+        if ! test -e ${cfg.dataDir}/blocks; then
+          mkdir -m 0770 -p '${cfg.dataDir}/blocks'
+          chown -R '${cfg.user}:${cfg.group}' '${cfg.dataDir}/blocks'
         fi
         cp '${cfg.configFileOption}' '${cfg.dataDir}/bitcoin.conf'
         chmod o-rw  '${cfg.dataDir}/bitcoin.conf'
