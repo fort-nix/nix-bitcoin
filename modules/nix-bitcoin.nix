@@ -14,9 +14,9 @@ let
   ];
   allPackages = with pkgs; [
     liquidd
-    lightning-charge.package
-    nanopos.package
-    spark-wallet.package
+    lightning-charge
+    nanopos
+    spark-wallet
     electrs
     nodejs-8_x
     nginx

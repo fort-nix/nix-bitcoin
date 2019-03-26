@@ -6,9 +6,9 @@
    # Custom packages
    nodeinfo = (import ../pkgs/nodeinfo.nix) { inherit pkgs; };
    banlist = (import ../pkgs/banlist.nix) { inherit pkgs; };
-   lightning-charge = import ../pkgs/lightning-charge.nix { inherit pkgs; };
-   nanopos = import ../pkgs/nanopos.nix { inherit pkgs; };
-   spark-wallet = import ../pkgs/spark-wallet.nix  { inherit pkgs; };
+   lightning-charge = pkgs.callPackage ../pkgs/lightning-charge { };
+   nanopos = pkgs.callPackage ../pkgs/nanopos { };
+   spark-wallet = pkgs.callPackage ../pkgs/spark-wallet { };
    electrs = pkgs.callPackage (import ../pkgs/electrs.nix) { };
    liquidd = pkgs.callPackage (import ../pkgs/liquidd.nix) { };
 in {

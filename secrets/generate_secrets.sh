@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 SECRETSFILE=secrets/secrets.nix
 
