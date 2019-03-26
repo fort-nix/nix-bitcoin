@@ -1,3 +1,3 @@
 [
-  { "nanopos": "https://registry.npmjs.org/nanopos/-/nanopos-0.1.5.tgz" }
+  { "nanopos": "^0.1.5" }
 ]
