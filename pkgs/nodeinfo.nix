@@ -9,7 +9,7 @@ stdenv.mkDerivation {
   installPhase = ''
     mkdir -p $out
     mkdir -p $out/bin
-    chmod +wx $src
     cp $src $out/bin/nodeinfo
+    chmod +x $out/bin/nodeinfo
     '';
 }
