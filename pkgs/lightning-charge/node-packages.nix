@@ -4005,14 +4005,13 @@ let
   };
 in
 {
-  "lightning-charge-https://registry.npmjs.org/lightning-charge/-/lightning-charge-0.4.7.tgz" = nodeEnv.buildNodePackage {
+  "lightning-charge-^0.4.7" = nodeEnv.buildNodePackage {
     name = "lightning-charge";
     packageName = "lightning-charge";
     version = "0.4.7";
     src = fetchurl {
-      name = "lightning-charge-0.4.7.tar.gz";
-      url = https://registry.npmjs.org/lightning-charge/-/lightning-charge-0.4.7.tgz;
-      sha256 = "780f3c347055b361588c335a6a5c4d9a63d4115e3d74825b1ff55615bd0adfe4";
+      url = "https://registry.npmjs.org/lightning-charge/-/lightning-charge-0.4.7.tgz";
+      sha512 = "tUpTg2Ofs/hHDeeIiLGWarAGMvdYmuxNgsq9hsEOn1ihY0frJ44W9FwFyU2Pq2WwABJJJzZOaky7mf6NOQIseQ==";
     };
     dependencies = [
       sources."@types/babel-types-7.0.6"
@@ -4676,6 +4675,7 @@ in
     buildInputs = globalBuildInputs;
     meta = {
       description = "A simple drop-in solution for accepting lightning payments.";
+      homepage = "https://github.com/ElementsProject/lightning-charge#readme";
       license = "MIT";
     };
     production = true;
