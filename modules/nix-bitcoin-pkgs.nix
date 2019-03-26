@@ -4,13 +4,13 @@
    nixpkgs-unstable = import nixpkgs-pinned.nixpkgs-unstable { };
 
    # Custom packages
-   nodeinfo = (import ../pkgs/nodeinfo.nix) { inherit pkgs; };
-   banlist = (import ../pkgs/banlist.nix) { inherit pkgs; };
+   nodeinfo = pkgs.callPackage ../pkgs/nodeinfo { };
+   banlist = pkgs.callPackage ../pkgs/banlist { };
    lightning-charge = pkgs.callPackage ../pkgs/lightning-charge { };
    nanopos = pkgs.callPackage ../pkgs/nanopos { };
    spark-wallet = pkgs.callPackage ../pkgs/spark-wallet { };
-   electrs = pkgs.callPackage (import ../pkgs/electrs.nix) { };
-   liquidd = pkgs.callPackage (import ../pkgs/liquidd.nix) { };
+   electrs = pkgs.callPackage ../pkgs/electrs { };
+   liquidd = pkgs.callPackage ../pkgs/liquidd { };
 in {
   disabledModules = [ "services/security/tor.nix" ];
   imports = [
