@@ -1871,14 +1871,13 @@ let
   };
 in
 {
-  "nanopos-https://registry.npmjs.org/nanopos/-/nanopos-0.1.5.tgz" = nodeEnv.buildNodePackage {
+  "nanopos-^0.1.5" = nodeEnv.buildNodePackage {
     name = "nanopos";
     packageName = "nanopos";
     version = "0.1.5";
     src = fetchurl {
-      name = "nanopos-0.1.5.tar.gz";
-      url = https://registry.npmjs.org/nanopos/-/nanopos-0.1.5.tgz;
-      sha256 = "b8a5fd77f1b0607b49aad0910fea3dfcde7b970defe7e3e2e2c37f147cf2a21e";
+      url = "https://registry.npmjs.org/nanopos/-/nanopos-0.1.5.tgz";
+      sha512 = "JH50N9ICfOjQq+rIZp/SY2pdQDy1a1CucrQWEXEp8XbF9wgNj5V5mT/xle9KDkvjtnFDbWFMNBD8IUdXu1XD0g==";
     };
     dependencies = [
       sources."@types/babel-types-7.0.6"
@@ -2128,6 +2127,7 @@ in
     buildInputs = globalBuildInputs;
     meta = {
       description = "A simple Lightning point-of-sale system, powered by Lightning Charge.";
+      homepage = "https://github.com/ElementsProject/nanopos#readme";
       license = "MIT";
     };
     production = true;
