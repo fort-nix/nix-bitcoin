@@ -172,12 +172,7 @@ in {
     services.nix-bitcoin-webindex.enable = cfg.modules == "all";
     services.clightning.autolisten = cfg.modules == "all";
     services.spark-wallet.enable = cfg.modules == "all";
-    services.tor.hiddenServices.spark-wallet = {
-      map = [{
-        port = 80; toPort = 9737;
-      }];
-      version = 3;
-    };
+    services.spark-wallet.onion-service = true;
     services.electrs.enable = false;
     services.electrs.high-memory = false;
     services.tor.hiddenServices.electrs = {
