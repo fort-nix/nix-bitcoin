@@ -1,5 +1,7 @@
 set +e
 
+echo "Importing node banlist into bitcoind"
+# banlist taken from https://people.xiph.org/~greg/banlist.cli.txt
 $1/bin/bitcoin-cli -datadir=/var/lib/bitcoind setban 101.201.53.37/32 add 31557600
 $1/bin/bitcoin-cli -datadir=/var/lib/bitcoind setban 101.91.234.37/32 add 31557600
 $1/bin/bitcoin-cli -datadir=/var/lib/bitcoind setban 103.3.61.48/32 add 31557600

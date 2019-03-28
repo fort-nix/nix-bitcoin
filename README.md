@@ -28,7 +28,7 @@ The `nix-bitcoin.nix` module provides the two profiles "minimal" and "all":
 
 * minimal
     * bitcoind (pruned) with outbound connections through Tor and inbound connections through a hidden
-      service
+      service. By default loaded with banlist of spy nodes.
     * [clightning](https://github.com/ElementsProject/lightning) with outbound connections through Tor, not listening
     * includes "nodeinfo" script which prints basic info about the node
     * adds non-root user "operator" which has access to bitcoin-cli and lightning-cli

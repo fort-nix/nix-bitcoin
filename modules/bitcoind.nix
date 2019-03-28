@@ -217,10 +217,6 @@ in {
         echo "rpcpassword=$(cat /secrets/bitcoin-rpcpassword)" >> '${cfg.dataDir}/bitcoin.conf'
         chmod -R g+rX '${cfg.dataDir}/blocks'
       '';
-      postStart = ''
-        until '${cfg.package}'/bin/bitcoin-cli -datadir='${cfg.dataDir}' getnetworkinfo; do sleep 1; done
-        '${pkgs.banlist}'/bin/banlist ${pkgs.altcoins.bitcoind}
-      '';
       serviceConfig = {
         Type = "simple";
         User = "${cfg.user}";
@@ -241,9 +237,51 @@ in {
         PermissionsStartOnly = "true";
       };
     };
+    systemd.services.bitcoind-add-banlist = {
+      description = "Bitcoin daemon banlist adder";
+      requires = [ "bitcoind.service" ];
+      after = [ "bitcoind.service" ];
+      wantedBy = [ "multi-user.target" ];
+      preStart = ''
+        echo "Checking that bitcoind is up"
+        # Give bitcoind time to create pid file
+        sleep 2
+        while true
+        do
+            pid=$(cat ${pidFile})
+            ${pkgs.ps}/bin/ps -p "$pid" > /dev/null
+            if [ "$?" -ne 0 ]; then
+              echo "bitcoind already exited"
+              break
+            fi
+            '${cfg.package}'/bin/bitcoin-cli -datadir='${cfg.dataDir}' getnetworkinfo > /dev/null
+            if [ "$?" -eq 0 ]; then
+              break
+            fi
+            sleep 1
+        done
+      '';
+      serviceConfig = {
+        Type = "oneshot";
+        User = "${cfg.user}";
+        Group = "${cfg.group}";
+        ExecStart = "${pkgs.bash}/bin/bash ${pkgs.banlist}/bin/banlist ${pkgs.altcoins.bitcoind}";
+        StateDirectory = "bitcoind";
+
+        # Hardening measures
+        PrivateTmp = "true";
+        ProtectSystem = "full";
+        NoNewPrivileges = "true";
+        PrivateDevices = "true";
+        MemoryDenyWriteExecute = "true";
+
+        # Permission for preStart
+        PermissionsStartOnly = "true";
+      };
+    };
+
     users.users.${cfg.user} = {
       name = cfg.user;
-      #uid  = config.ids.uids.bitcoin;
       group = cfg.group;
       extraGroups = [ "keys" ];
       description = "Bitcoin daemon user";
@@ -251,7 +289,6 @@ in {
     };
     users.groups.${cfg.group} = {
       name = cfg.group;
-      #gid = config.ids.gids.bitcoin;
     };
   };
 }
