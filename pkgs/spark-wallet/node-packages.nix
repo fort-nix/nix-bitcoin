@@ -4,6 +4,15 @@
 
 let
   sources = {
+    "@coolaj86/urequest-1.3.7" = {
+      name = "_at_coolaj86_slash_urequest";
+      packageName = "@coolaj86/urequest";
+      version = "1.3.7";
+      src = fetchurl {
+        url = "https://registry.npmjs.org/@coolaj86/urequest/-/urequest-1.3.7.tgz";
+        sha512 = "PPrVYra9aWvZjSCKl/x1pJ9ZpXda1652oJrPBYy5rQumJJMkmTBN3ux+sK2xAUwVvv2wnewDlaQaHLxLwSHnIA==";
+      };
+    };
     "accepts-1.3.5" = {
       name = "accepts";
       packageName = "accepts";
@@ -11,6 +20,24 @@ let
       src = fetchurl {
         url = "https://registry.npmjs.org/accepts/-/accepts-1.3.5.tgz";
         sha1 = "eb777df6011723a3b14e8a72c0805c8e86746bd2";
+      };
+    };
+    "acme-1.2.0" = {
+      name = "acme";
+      packageName = "acme";
+      version = "1.2.0";
+      src = fetchurl {
+        url = "https://registry.npmjs.org/acme/-/acme-1.2.0.tgz";
+        sha512 = "lG9Wq0Ol2OLpVrusq5OQ+KCT06rXaGjbHcDhKtNO6Hr3J3swISaCYi0slwLpEA9DGV+QhDkAnZ6qsXAo86SM5Q==";
+      };
+    };
+    "acme-v2-1.5.3" = {
+      name = "acme-v2";
+      packageName = "acme-v2";
+      version = "1.5.3";
+      src = fetchurl {
+        url = "https://registry.npmjs.org/acme-v2/-/acme-v2-1.5.3.tgz";
+        sha512 = "P6VTa3v4Hw4hT8Ra0g8aB+vPNxCcpHQcl3LxDyrokvfWNjnCv6GOuiU4H0DxM0nMSOJbvw/eO4kSAb0t2Qy/9Q==";
       };
     };
     "ansi-regex-2.1.1" = {
@@ -94,6 +121,24 @@ let
         sha512 = "NF+epuEdnUYVlGuhaxbbq+dvJttwLnGY+YixlXlME5KpQ5W3CnXA5cVTneY3SPbPDRkcjMbifrwmFYcClgOZeg==";
       };
     };
+    "bindings-1.5.0" = {
+      name = "bindings";
+      packageName = "bindings";
+      version = "1.5.0";
+      src = fetchurl {
+        url = "https://registry.npmjs.org/bindings/-/bindings-1.5.0.tgz";
+        sha512 = "p2q/t/mhvuOj/UeLlV6566GD/guowlr0hHxClI0W9m7MWYkL1F0hLo+0Aexs9HSPCtR1SXQ0TD3MMKrXZajbiQ==";
+      };
+    };
+    "bluebird-3.5.3" = {
+      name = "bluebird";
+      packageName = "bluebird";
+      version = "3.5.3";
+      src = fetchurl {
+        url = "https://registry.npmjs.org/bluebird/-/bluebird-3.5.3.tgz";
+        sha512 = "/qKPUQlaW1OyR51WeCPBvRnAlnZFUJkCSG5HzGnuIqhgyJtF+T94lFnn33eiazjRm2LAHVy2guNnaq48X9SJuw==";
+      };
+    };
     "body-parser-1.18.3" = {
       name = "body-parser";
       packageName = "body-parser";
@@ -155,6 +200,15 @@ let
       src = fetchurl {
         url = "https://registry.npmjs.org/can-promise/-/can-promise-0.0.1.tgz";
         sha512 = "gzVrHyyrvgt0YpDm7pn04MQt8gjh0ZAhN4ZDyCRtGl6YnuuK6b4aiUTD7G52r9l4YNmxfTtEscb92vxtAlL6XQ==";
+      };
+    };
+    "cert-info-1.5.1" = {
+      name = "cert-info";
+      packageName = "cert-info";
+      version = "1.5.1";
+      src = fetchurl {
+        url = "https://registry.npmjs.org/cert-info/-/cert-info-1.5.1.tgz";
+        sha512 = "eoQC/yAgW3gKTKxjzyClvi+UzuY97YCjcl+lSqbsGIy7HeGaWxCPOQFivhUYm27hgsBMhsJJFya3kGvK6PMIcQ==";
       };
     };
     "cliui-4.1.0" = {
@@ -418,6 +472,15 @@ let
         sha1 = "5932890dc9f4e2f19e5eb02a20026e5e5efc8f58";
       };
     };
+    "eckles-1.4.1" = {
+      name = "eckles";
+      packageName = "eckles";
+      version = "1.4.1";
+      src = fetchurl {
+        url = "https://registry.npmjs.org/eckles/-/eckles-1.4.1.tgz";
+        sha512 = "auWyk/k8oSkVHaD4RxkPadKsLUcIwKgr/h8F7UZEueFDBO7BsE4y+H6IMUDbfqKIFPg/9MxV6KcBdJCmVVcxSA==";
+      };
+    };
     "ee-first-1.1.1" = {
       name = "ee-first";
       packageName = "ee-first";
@@ -527,6 +590,15 @@ let
         sha512 = "2hGrlv6efG4hscYVZeaYjpzpT6I2OZgYqE2yDUzeAcKj2D1SH0AsEzqJNXzdoglEddcIXQQYop3lD97XpG75Jw==";
       };
     };
+    "file-uri-to-path-1.0.0" = {
+      name = "file-uri-to-path";
+      packageName = "file-uri-to-path";
+      version = "1.0.0";
+      src = fetchurl {
+        url = "https://registry.npmjs.org/file-uri-to-path/-/file-uri-to-path-1.0.0.tgz";
+        sha512 = "0Zt+s3L7Vf1biwWZ29aARiVYLx7iMGnEUl9x33fbB/j3jR81u/O2LbqK+Bm1CDSNDKVtJ/YjwY7TUd5SkeLQLw==";
+      };
+    };
     "finalhandler-1.1.1" = {
       name = "finalhandler";
       packageName = "finalhandler";
@@ -624,6 +696,15 @@ let
       src = fetchurl {
         url = "https://registry.npmjs.org/graceful-fs/-/graceful-fs-4.1.15.tgz";
         sha512 = "6uHUhOPEBgQ24HM+r6b/QwWfZq+yiFcipKFrOFiBEnWdy5sdzYoi+pJeQaPI5qOLRFqWmAXUPQNsielzdLoecA==";
+      };
+    };
+    "greenlock-2.6.8" = {
+      name = "greenlock";
+      packageName = "greenlock";
+      version = "2.6.8";
+      src = fetchurl {
+        url = "https://registry.npmjs.org/greenlock/-/greenlock-2.6.8.tgz";
+        sha512 = "TYm9XrbtGkcFIwfonCzuAGCJXteyZRQxoaHYlDG2OPAihtVAlsM+KAVKsLlzLJ+oVEWj5XPLBnWU9NtwLrRX+Q==";
       };
     };
     "helmet-3.16.0" = {
@@ -869,6 +950,15 @@ let
         sha1 = "3f4dae4a91fac315f71062f8521cc239f1366280";
       };
     };
+    "keypairs-1.2.14" = {
+      name = "keypairs";
+      packageName = "keypairs";
+      version = "1.2.14";
+      src = fetchurl {
+        url = "https://registry.npmjs.org/keypairs/-/keypairs-1.2.14.tgz";
+        sha512 = "ZoZfZMygyB0QcjSlz7Rh6wT2CJasYEHBPETtmHZEfxuJd7bnsOG5AdtPZqHZBT+hoHvuWCp/4y8VmvTvH0Y9uA==";
+      };
+    };
     "lcid-2.0.0" = {
       name = "lcid";
       packageName = "lcid";
@@ -876,6 +966,33 @@ let
       src = fetchurl {
         url = "https://registry.npmjs.org/lcid/-/lcid-2.0.0.tgz";
         sha512 = "avPEb8P8EGnwXKClwsNUgryVjllcRqtMYa49NTsbQagYuT1DcXnl1915oxWjoyGrXR6zH/Y0Zc96xWsPcoDKeA==";
+      };
+    };
+    "le-challenge-fs-2.0.8" = {
+      name = "le-challenge-fs";
+      packageName = "le-challenge-fs";
+      version = "2.0.8";
+      src = fetchurl {
+        url = "https://registry.npmjs.org/le-challenge-fs/-/le-challenge-fs-2.0.8.tgz";
+        sha1 = "b6d458a37f097e87df3d8b5ff67013737ab9d5a2";
+      };
+    };
+    "le-sni-auto-2.1.6" = {
+      name = "le-sni-auto";
+      packageName = "le-sni-auto";
+      version = "2.1.6";
+      src = fetchurl {
+        url = "https://registry.npmjs.org/le-sni-auto/-/le-sni-auto-2.1.6.tgz";
+        sha512 = "LcfkF2yQ1nrep+ZfyG+SfR3pHphKFD3zMZ9FKervGfTfvgScCv/XGbX+vxsGZEKZjvzxKbFZ/5LdSCXuLXUU6A==";
+      };
+    };
+    "le-store-certbot-2.2.1" = {
+      name = "le-store-certbot";
+      packageName = "le-store-certbot";
+      version = "2.2.1";
+      src = fetchurl {
+        url = "https://registry.npmjs.org/le-store-certbot/-/le-store-certbot-2.2.1.tgz";
+        sha512 = "BhljZjTULhbNBAT6RBiv4TeZegFraMxURYEvh3WRUI048zmXf4ZfC8gwbdu5fnD2tTCsS9fbsCOAQyrFBl4jlA==";
       };
     };
     "lightning-client-git://github.com/shesek/lightning-client-js#ccb565d889803bce65a1a0e42d3948332a7fcdac" = {
@@ -1086,6 +1203,15 @@ let
         sha512 = "tgp+dl5cGk28utYktBsrFqA7HKgrhgPsg6Z/EfhWI4gl1Hwq8B/GmY/0oXZ6nF8hDVesS/FpnYaD/kOWhYQvyg==";
       };
     };
+    "nan-2.13.2" = {
+      name = "nan";
+      packageName = "nan";
+      version = "2.13.2";
+      src = fetchurl {
+        url = "https://registry.npmjs.org/nan/-/nan-2.13.2.tgz";
+        sha512 = "TghvYc72wlMGMVMluVo9WRJc0mB8KxxF/gZ4YYFy7V2ZQX9l7rgbPg7vjS9mt6U5HXODVFVI2bOduCzwOMv/lw==";
+      };
+    };
     "nanoid-1.3.4" = {
       name = "nanoid";
       packageName = "nanoid";
@@ -1120,6 +1246,24 @@ let
       src = fetchurl {
         url = "https://registry.npmjs.org/nocache/-/nocache-2.0.0.tgz";
         sha1 = "202b48021a0c4cbde2df80de15a17443c8b43980";
+      };
+    };
+    "node-forge-0.7.5" = {
+      name = "node-forge";
+      packageName = "node-forge";
+      version = "0.7.5";
+      src = fetchurl {
+        url = "https://registry.npmjs.org/node-forge/-/node-forge-0.7.5.tgz";
+        sha512 = "MmbQJ2MTESTjt3Gi/3yG1wGpIMhUfcIypUCGtTizFR9IiccFwxSpfp0vtIZlkFclEqERemxfnSdZEMR9VqqEFQ==";
+      };
+    };
+    "node-forge-0.7.6" = {
+      name = "node-forge";
+      packageName = "node-forge";
+      version = "0.7.6";
+      src = fetchurl {
+        url = "https://registry.npmjs.org/node-forge/-/node-forge-0.7.6.tgz";
+        sha512 = "sol30LUpz1jQFBjOKwbjxijiE3b6pjd74YwfD0fJOKPjF+fONKb2Yg8rYgS6+bK6VDl+/wfr4IYpC7jDzLUIfw==";
       };
     };
     "normalize-package-data-2.5.0" = {
@@ -1383,6 +1527,15 @@ let
         sha512 = "LwZy+p3SFs1Pytd/jYct4wpv49HiYCqd9Rlc5ZVdk0V+8Yzv6jR5Blk3TRmPL1ft69TxP0IMZGJ+WPFU2BFhww==";
       };
     };
+    "pyconf-1.1.6" = {
+      name = "pyconf";
+      packageName = "pyconf";
+      version = "1.1.6";
+      src = fetchurl {
+        url = "https://registry.npmjs.org/pyconf/-/pyconf-1.1.6.tgz";
+        sha512 = "4ujjwqch6nViWduSLc3/QFrDdJJAvAE7NRBarSGLANwh0tNW0MbXeJE8ZziJZvzRnUEN5scYwsS+ItYU1uj6dQ==";
+      };
+    };
     "qrcode-1.3.3" = {
       name = "qrcode";
       packageName = "qrcode";
@@ -1390,6 +1543,15 @@ let
       src = fetchurl {
         url = "https://registry.npmjs.org/qrcode/-/qrcode-1.3.3.tgz";
         sha512 = "SH7V13AcJusH3GT8bMNOGz4w0L+LjcpNOU/NiOgtBhT/5DoWeZE6D5ntMJnJ84AMkoaM4kjJJoHoh9g++8lWFg==";
+      };
+    };
+    "qrcode-terminal-0.12.0" = {
+      name = "qrcode-terminal";
+      packageName = "qrcode-terminal";
+      version = "0.12.0";
+      src = fetchurl {
+        url = "https://registry.npmjs.org/qrcode-terminal/-/qrcode-terminal-0.12.0.tgz";
+        sha512 = "EXtzRZmC+YGmGlDFbXKxQiMZNwCLEO6BANKXG4iCtSIM0yqc/pappSx3RIKr4r0uh5JsBckOXeKrB3Iz7mdQpQ==";
       };
     };
     "qs-6.5.2" = {
@@ -1417,6 +1579,15 @@ let
       src = fetchurl {
         url = "https://registry.npmjs.org/range-parser/-/range-parser-1.2.0.tgz";
         sha1 = "f49be6b487894ddc40dcc94a322f611092e00d5e";
+      };
+    };
+    "rasha-1.2.4" = {
+      name = "rasha";
+      packageName = "rasha";
+      version = "1.2.4";
+      src = fetchurl {
+        url = "https://registry.npmjs.org/rasha/-/rasha-1.2.4.tgz";
+        sha512 = "GsIwKv+hYSumJyK9wkTDaERLwvWaGYh1WuI7JMTBISfYt13TkKFU/HFzlY4n72p8VfXZRUYm0AqaYhkZVxOC3Q==";
       };
     };
     "raw-body-2.3.3" = {
@@ -1518,6 +1689,24 @@ let
         sha512 = "3sUr9aq5OfSg2S9pNtPA9hL1FVEAjvfOC4leW0SNf/mpnaakz2a9femSd6LqAww2RaFctwyf1lCqnTHuF1rxDg==";
       };
     };
+    "rsa-compat-1.9.4" = {
+      name = "rsa-compat";
+      packageName = "rsa-compat";
+      version = "1.9.4";
+      src = fetchurl {
+        url = "https://registry.npmjs.org/rsa-compat/-/rsa-compat-1.9.4.tgz";
+        sha512 = "VAbxPMNPl7nMizAYQDroTqdFM9TzyawpP9CsYn3IBGWAf+/BaBrD+8vgli6cpsFMoO1VF3iPmt4erOYSkSqEjw==";
+      };
+    };
+    "rsa-compat-2.0.6" = {
+      name = "rsa-compat";
+      packageName = "rsa-compat";
+      version = "2.0.6";
+      src = fetchurl {
+        url = "https://registry.npmjs.org/rsa-compat/-/rsa-compat-2.0.6.tgz";
+        sha512 = "bQmpscAQec9442RaghDybrHMy1twQ3nUZOgTlqntio1yru+rMnDV64uGRzKp7dJ4VVhNv3mLh3X4MNON+YM0dA==";
+      };
+    };
     "safe-buffer-5.1.2" = {
       name = "safe-buffer";
       packageName = "safe-buffer";
@@ -1527,6 +1716,15 @@ let
         sha512 = "Gd2UZBJDkXlY7GbJxfsE8/nvKkUEU1G38c1siN6QP6a9PT9MmHB8GnpscSmMJSoF8LOIrt8ud/wPtojys4G6+g==";
       };
     };
+    "safe-replace-1.1.0" = {
+      name = "safe-replace";
+      packageName = "safe-replace";
+      version = "1.1.0";
+      src = fetchurl {
+        url = "https://registry.npmjs.org/safe-replace/-/safe-replace-1.1.0.tgz";
+        sha512 = "9/V2E0CDsKs9DWOOwJH7jYpSl9S3N05uyevNjvsnDauBqRowBPOyot1fIvV5N2IuZAbYyvrTXrYFVG0RZInfFw==";
+      };
+    };
     "safer-buffer-2.1.2" = {
       name = "safer-buffer";
       packageName = "safer-buffer";
@@ -1534,6 +1732,15 @@ let
       src = fetchurl {
         url = "https://registry.npmjs.org/safer-buffer/-/safer-buffer-2.1.2.tgz";
         sha512 = "YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==";
+      };
+    };
+    "selfsigned-1.10.4" = {
+      name = "selfsigned";
+      packageName = "selfsigned";
+      version = "1.10.4";
+      src = fetchurl {
+        url = "https://registry.npmjs.org/selfsigned/-/selfsigned-1.10.4.tgz";
+        sha512 = "9AukTiDmHXGXWtWjembZ5NDmVvP2695EtpgbCsxCa68w3c88B+alqbmZ4O3hZ4VWGXeGWzEVdvqgAJD8DQPCDw==";
       };
     };
     "semver-5.6.0" = {
@@ -1779,6 +1986,15 @@ let
         sha1 = "b2bf4ee8514aae6165b4817829d21b2ef49904ec";
       };
     };
+    "ursa-optional-0.9.10" = {
+      name = "ursa-optional";
+      packageName = "ursa-optional";
+      version = "0.9.10";
+      src = fetchurl {
+        url = "https://registry.npmjs.org/ursa-optional/-/ursa-optional-0.9.10.tgz";
+        sha512 = "RvEbhnxlggX4MXon7KQulTFiJQtLJZpSb9ZSa7ZTkOW0AzqiVTaLjI4vxaSzJBDH9dwZ3ltZadFiBaZslp6haA==";
+      };
+    };
     "util-deprecate-1.0.2" = {
       name = "util-deprecate";
       packageName = "util-deprecate";
@@ -1917,17 +2133,23 @@ let
   };
 in
 {
-  "spark-wallet-https://registry.npmjs.org/spark-wallet/-/spark-wallet-0.2.5.tgz" = nodeEnv.buildNodePackage {
+  "spark-wallet-^0.2.5" = nodeEnv.buildNodePackage {
     name = "spark-wallet";
     packageName = "spark-wallet";
     version = "0.2.5";
     src = fetchurl {
-      name = "spark-wallet-0.2.5.tar.gz";
-      url = https://registry.npmjs.org/spark-wallet/-/spark-wallet-0.2.5.tgz;
-      sha256 = "506e7c164a5eb43d37c24cbc2831e0e177ec53a188def78b674dfec741f8f178";
+      url = "https://registry.npmjs.org/spark-wallet/-/spark-wallet-0.2.5.tgz";
+      sha512 = "1zjyJgeZk0KwBSN8FcFWb4RZ1tTgogii1+/bR9ue7J+0f6g6C82U8jAaUzwJObnEjayewXe80vEhukHVWg93dQ==";
     };
     dependencies = [
+      sources."@coolaj86/urequest-1.3.7"
       sources."accepts-1.3.5"
+      sources."acme-1.2.0"
+      (sources."acme-v2-1.5.3" // {
+        dependencies = [
+          sources."rsa-compat-1.9.4"
+        ];
+      })
       sources."ansi-regex-3.0.0"
       sources."array-find-index-1.0.2"
       sources."array-flatten-1.1.1"
@@ -1940,12 +2162,15 @@ in
         ];
       })
       sources."basic-auth-2.0.1"
+      sources."bindings-1.5.0"
+      sources."bluebird-3.5.3"
       sources."body-parser-1.18.3"
       sources."bytes-3.0.0"
       sources."camelcase-4.1.0"
       sources."camelcase-keys-4.2.0"
       sources."camelize-1.0.0"
       sources."can-promise-0.0.1"
+      sources."cert-info-1.5.1"
       sources."cliui-4.1.0"
       sources."code-point-at-1.1.0"
       sources."combined-stream-1.0.7"
@@ -1977,6 +2202,7 @@ in
       sources."dijkstrajs-1.0.1"
       sources."dns-prefetch-control-0.1.0"
       sources."dont-sniff-mimetype-1.0.0"
+      sources."eckles-1.4.1"
       sources."ee-first-1.1.1"
       sources."encodeurl-1.0.2"
       sources."end-of-stream-1.4.1"
@@ -1993,6 +2219,7 @@ in
       })
       sources."extend-3.0.2"
       sources."feature-policy-0.2.0"
+      sources."file-uri-to-path-1.0.0"
       (sources."finalhandler-1.1.1" // {
         dependencies = [
           sources."statuses-1.4.0"
@@ -2007,6 +2234,7 @@ in
       sources."get-caller-file-1.0.3"
       sources."get-stream-4.1.0"
       sources."graceful-fs-4.1.15"
+      sources."greenlock-2.6.8"
       (sources."helmet-3.16.0" // {
         dependencies = [
           sources."depd-2.0.0"
@@ -2040,7 +2268,11 @@ in
       sources."isexe-2.0.0"
       sources."json-parse-better-errors-1.0.2"
       sources."jsonparse-1.3.1"
+      sources."keypairs-1.2.14"
       sources."lcid-2.0.0"
+      sources."le-challenge-fs-2.0.8"
+      sources."le-sni-auto-2.1.6"
+      sources."le-store-certbot-2.2.1"
       (sources."lightning-client-git://github.com/shesek/lightning-client-js#ccb565d889803bce65a1a0e42d3948332a7fcdac" // {
         dependencies = [
           sources."debug-3.2.6"
@@ -2066,10 +2298,12 @@ in
       sources."mkdirp-0.5.1"
       sources."morgan-1.9.1"
       sources."ms-2.0.0"
+      sources."nan-2.13.2"
       sources."nanoid-1.3.4"
       sources."negotiator-0.6.1"
       sources."nice-try-1.0.5"
       sources."nocache-2.0.0"
+      sources."node-forge-0.7.6"
       sources."normalize-package-data-2.5.0"
       sources."npm-run-path-2.0.2"
       sources."number-is-nan-1.0.1"
@@ -2096,10 +2330,13 @@ in
       sources."process-nextick-args-2.0.0"
       sources."proxy-addr-2.0.4"
       sources."pump-3.0.0"
+      sources."pyconf-1.1.6"
       sources."qrcode-1.3.3"
+      sources."qrcode-terminal-0.12.0"
       sources."qs-6.5.2"
       sources."quick-lru-1.1.0"
       sources."range-parser-1.2.0"
+      sources."rasha-1.2.4"
       sources."raw-body-2.3.3"
       sources."read-pkg-3.0.0"
       sources."read-pkg-up-3.0.0"
@@ -2114,8 +2351,15 @@ in
       sources."require-directory-2.1.1"
       sources."require-main-filename-1.0.1"
       sources."resolve-1.10.0"
+      sources."rsa-compat-2.0.6"
       sources."safe-buffer-5.1.2"
+      sources."safe-replace-1.1.0"
       sources."safer-buffer-2.1.2"
+      (sources."selfsigned-1.10.4" // {
+        dependencies = [
+          sources."node-forge-0.7.5"
+        ];
+      })
       sources."semver-5.6.0"
       (sources."send-0.16.2" // {
         dependencies = [
@@ -2153,6 +2397,7 @@ in
       sources."trim-newlines-2.0.0"
       sources."type-is-1.6.16"
       sources."unpipe-1.0.0"
+      sources."ursa-optional-0.9.10"
       sources."util-deprecate-1.0.2"
       sources."utils-merge-1.0.1"
       sources."validate-npm-package-license-3.0.4"
@@ -2187,6 +2432,7 @@ in
     buildInputs = globalBuildInputs;
     meta = {
       description = "A minimalistic wallet GUI for c-lightning";
+      homepage = "https://github.com/shesek/spark-wallet#readme";
       license = "MIT";
     };
     production = true;
