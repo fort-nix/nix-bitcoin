@@ -27,6 +27,11 @@ in {
       If enabled, the electrs service will sync faster on high-memory systems (≥ 8GB).
       '';
     };
+    port = mkOption {
+        type = types.ints.u16;
+        default = 50001;
+        description = "Override the default port on which to listen for connections.";
+    };
   };
 
   config = mkIf cfg.enable {
@@ -49,7 +54,7 @@ in {
       preStart = ''
         mkdir -m 0770 -p ${cfg.dataDir}
         chown 'electrs:electrs' ${cfg.dataDir}
-        echo "${pkgs.electrs}/bin/electrs -vvv ${index-batch-size} ${jsonrpc-import} --timestamp --db-dir ${cfg.dataDir} --daemon-dir /var/lib/bitcoind --cookie=${config.services.bitcoind.rpcuser}:$(cat /secrets/bitcoin-rpcpassword)" > /var/lib/electrs/startscript.sh
+        echo "${pkgs.electrs}/bin/electrs -vvv ${index-batch-size} ${jsonrpc-import} --timestamp --db-dir ${cfg.dataDir} --daemon-dir /var/lib/bitcoind --cookie=${config.services.bitcoind.rpcuser}:$(cat /secrets/bitcoin-rpcpassword) --electrum-rpc-addr=127.0.0.1:${toString cfg.port}" > /var/lib/electrs/startscript.sh
         chown -R 'electrs:electrs' ${cfg.dataDir}
         chmod u+x ${cfg.dataDir}/startscript.sh
         '';	
