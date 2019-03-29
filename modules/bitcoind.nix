@@ -237,12 +237,13 @@ in {
         PermissionsStartOnly = "true";
       };
     };
-    systemd.services.bitcoind-add-banlist = {
-      description = "Bitcoin daemon banlist adder";
+    systemd.services.bitcoind-import-banlist = {
+      description = "Bitcoin daemon banlist importer";
       requires = [ "bitcoind.service" ];
       after = [ "bitcoind.service" ];
       wantedBy = [ "multi-user.target" ];
       preStart = ''
+        set +e
         echo "Checking that bitcoind is up"
         # Give bitcoind time to create pid file
         sleep 2
