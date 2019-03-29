@@ -42,6 +42,7 @@ in {
     ./liquid.nix
     ./spark-wallet.nix
     ./electrs.nix
+    ./onion-chef.nix
   ];
 
   options.services.nix-bitcoin = {
@@ -121,8 +122,11 @@ in {
       isNormalUser = true;
       extraGroups = [ "clightning" config.services.bitcoind.group ]
         ++ (if config.services.liquidd.enable then [ config.services.liquidd.group ] else [ ]);
-
     };
+    # Give operator access to onion hostnames
+    services.onion-chef.enable = true;
+    services.onion-chef.access.operator = [ "bitcoind" "clightning" "ngninx" "liquidd" "spark-wallet" "electrs" "sshd" ];
+
     environment.interactiveShellInit = ''
       alias bitcoin-cli='bitcoin-cli -datadir=${config.services.bitcoind.dataDir}'
       alias lightning-cli='sudo -u clightning lightning-cli --lightning-dir=${config.services.clightning.dataDir}'
