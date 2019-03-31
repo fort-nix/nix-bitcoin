@@ -71,13 +71,22 @@ sudo apt-get install curl git gnupg2 dirmngr
 ```
 Install Latest Nix with GPG Verification
 ```
-curl -o install-nix-2.1.3 https://nixos.org/nix/install
-curl -o install-nix-2.1.3.sig https://nixos.org/nix/install.sig
+curl -o install-nix-2.2.1 https://nixos.org/nix/install
+curl -o install-nix-2.2.1.sig https://nixos.org/nix/install.sig
 gpg2 --recv-keys B541D55301270E0BCF15CA5D8170B4726D7198DE
-gpg2 --verify ./install-nix-2.1.3.sig
-sh ./install-nix-2.1.3
+gpg2 --verify ./install-nix-2.2.1.sig
+sh ./install-nix-2.2.1
 . /home/user/.nix-profile/etc/profile.d/nix.sh
 ```
+
+Sandboxing is enabled by default on Nix <2.2. This may cause problems on your system. If you get an error similar to
+```
+error: cloning builder process: Operation not permitted
+error: unable to start build process
+/tmp/nix-binary-tarball-unpack.hqawN4uSPr/unpack/nix-2.2.1-x86_64-linux/install: unable to install Nix into your default profile
+```
+try installing as root or building as user (see https://nixos.org/nix/manual/#conf-sandbox for more information).
+
 Clone this project
 ```
 cd
@@ -324,13 +333,23 @@ On the machine you are deploying from:
 2. Install Latest Nix with GPG Verification
 
 	```
-	curl -o install-nix-2.1.3 https://nixos.org/nix/install
-	curl -o install-nix-2.1.3.sig https://nixos.org/nix/install.sig
+	curl -o install-nix-2.2.1 https://nixos.org/nix/install
+	curl -o install-nix-2.2.1.sig https://nixos.org/nix/install.sig
 	gpg2 --recv-keys B541D55301270E0BCF15CA5D8170B4726D7198DE
-	gpg2 --verify ./install-nix-2.1.3.sig
-	sh ./install-nix-2.1.3
+	gpg2 --verify ./install-nix-2.2.1.sig
+	sh ./install-nix-2.2.1
 	. /home/user/.nix-profile/etc/profile.d/nix.sh
 	```
+
+	Sandboxing is enabled by default on Nix <2.2. This may cause problems on your system. If you get an error similar to
+
+	```
+	error: cloning builder process: Operation not permitted
+	error: unable to start build process
+	/tmp/nix-binary-tarball-unpack.hqawN4uSPr/unpack/nix-2.2.1-x86_64-linux/install: unable to install Nix into your default profile
+	```
+
+	try installing as root or building as user (see https://nixos.org/nix/manual/#conf-sandbox for more information).
 
 3. Clone this project
 
