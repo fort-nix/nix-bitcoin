@@ -92,7 +92,7 @@ The following steps are meant to be run on the machine you deploy from, not the 
 3. Create nixops deployment in nix-shell.
 
 	```
-	nixops create network.nix network-vbox.nix -d bitcoin-node
+	nixops create network/network.nix network/network-vbox.nix -d bitcoin-node
 	```
 
 4. Adjust configuration by opening `configuration.nix` and removing FIXMEs. Enable/disable the modules you want in `configuration.nix`.
@@ -280,7 +280,7 @@ On the machine you are deploying from:
 4. Create network file
 
 	```
-	nano network-nixos.nix
+	nano network/network-nixos.nix
 	```
 
 	```
@@ -327,7 +327,7 @@ On the machine you are deploying from:
 
 9. Create nixops deployment in nix-shell.
 	```
-	nixops create network.nix network-nixos.nix -d bitcoin-node
+	nixops create network/network.nix network/network-nixos.nix -d bitcoin-node
 	```
 
 10. Adjust configuration by opening `configuration.nix` and removing FIXMEs. Enable/disable the modules you want in `configuration.nix`.
