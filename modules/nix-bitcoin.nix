@@ -17,7 +17,6 @@ let
     lightning-charge
     nanopos
     spark-wallet
-    electrs
     nodejs-8_x
     nginx
   ];
@@ -174,10 +173,11 @@ in {
     services.spark-wallet.enable = cfg.modules == "all";
     services.spark-wallet.onion-service = true;
     services.electrs.enable = false;
+    services.electrs.port = 50001;
     services.electrs.high-memory = false;
     services.tor.hiddenServices.electrs = {
       map = [{
-        port = 50001; toPort = 50001;
+        port = config.services.electrs.port; toPort = config.services.electrs.port;
       }];
       version = 3;
     };
