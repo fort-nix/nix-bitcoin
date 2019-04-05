@@ -119,7 +119,8 @@ in {
     # Create user operator which can use bitcoin-cli and lightning-cli
     users.users.operator = {
       isNormalUser = true;
-      extraGroups = [ "clightning" config.services.bitcoind.group ]
+      extraGroups = [ config.services.bitcoind.group ]
+        ++ (if config.services.clightning.enable then [ "clightning" ] else [ ])
         ++ (if config.services.liquidd.enable then [ config.services.liquidd.group ] else [ ]);
     };
     # Give operator access to onion hostnames
@@ -134,9 +135,12 @@ in {
     '' else "");
     # Unfortunately c-lightning doesn't allow setting the permissions of the rpc socket
     # https://github.com/ElementsProject/lightning/issues/1366
-    security.sudo.configFile = ''
-      operator    ALL=(clightning) NOPASSWD: ALL
-    '';
+    security.sudo.configFile = (
+      if config.services.clightning.enable then ''
+        operator    ALL=(clightning) NOPASSWD: ALL
+      ''
+      else ""
+    );
 
     # Give root ssh access to the operator account
     systemd.services.copy-root-authorized-keys = {
