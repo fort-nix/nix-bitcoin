@@ -11,9 +11,25 @@
     # This is not needed when deploying to a virtual box.
     #./hardware-configuration.nix
   ];
-  services.nix-bitcoin.enable = true;
-  # FIXME Install and use minimal or all modules
-  services.nix-bitcoin.modules = "all";
+  # FIXME Enable modules by uncommenting their respective line. Disable modules by commenting out their respective line.
+    # Enable this module to use the nix-bitcoin node configuration. Only disable this if you know what you are doing.
+    services.nix-bitcoin.enable = true;
+    # Enable this module to use clightning, a Lightning Network implementation in C.
+    services.clightning.enable = true;
+    # Enable this module to use lightning-charge, a simple drop-in solution for accepting lightning payments.
+    # services.lightning-charge.enable = true;
+    # Enable this module to use nanopos, a simple Lightning point-of-sale system, powered by Lightning Charge. Only enable this if lightning-charge is enabled.
+    # services.nanopos.enable = true;
+    # Enable this module to use the nix-bitcoin-webindex, a simple website displaying your node information and link to nanopos store. Only enable this if nanopos is enabled.
+    # services.nix-bitcoin-webindex.enable = true;
+    # Enable this option to listen for incoming connections. By default nix-bitcoin nodes offer outgoing connectivity. 
+    # services.clightning.autolisten = true;
+    # Enable this module to use liquidd, a daemon for an inter-exchange settlement network linking together cryptocurrency exchanges and institutions around the world.
+    # services.liquidd.enable = true;
+    # Enable this module to use spark-wallet, a minimalistic wallet GUI for c-lightning, accessible over the web or through mobile and desktop apps.
+    # services.spark-wallet.enable = true;
+    # Enable this module to use electrs, an efficient re-implementation of Electrum Server in Rust.
+    # services.electrs.enable = true;
 
   # FIXME: Define your hostname.
   networking.hostName = "nix-bitcoin";
