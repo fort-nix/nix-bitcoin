@@ -164,6 +164,51 @@ FAQ
     * **A:** Check your clightning logs with `journalctl -eu clightning`. Do you see something like `bitcoin-cli getblock ... false` failed? Are you using pruned mode? That means that clightning hasn't seen all the blocks it needs to and it can't get that block because your node is pruned. If you're just setting up a new node you can `systemctl stop clightning` and wipe your `/var/lib/clightning` directory. Otherwise you need to reindex the Bitcoin node.
 * **Q:** My disk space is getting low due to nix.
     * **A:** run `nix-collect-garbage -d`
+* **Q:** How do I connect to my nix-bitcoin node through the ssh Tor Hidden Service?
+    * **A:** 
+
+	1. Run `nodeinfo` on your nix-bitcoin node and note the `SSHD_ONION`
+
+	```
+	nixops ssh operator@bitcoin-node
+	nodeinfo | grep 'SSHD_ONION'
+	```
+
+	2. Create a SSH key 
+
+	```
+	ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519
+	```
+
+	3. Place the ed25519 key's fingerprint in the `configuration.nix` `openssh.authorizedKeys.keys` field like so
+
+	```
+	# FIXME: Add your SSH pubkey
+	services.openssh.enable = true;
+	users.users.root = {
+	  openssh.authorizedKeys.keys = [ "[contents of ~/.ssh/id_ed25519.pub]" ];
+	};
+	```
+
+	4. Connect to your nix-bitcoin node's ssh Tor Hidden Service, forwarding a local port to the nix-bitcoin node's ssh server
+
+	```
+	ssh -i ~/.ssh/id_ed25519 -L [random port of your choosing]:localhost:22 root@[your SSHD_ONION]
+	```
+
+	5. Edit your `network-nixos.nix` to look like this
+
+	```
+	{
+	  bitcoin-node =
+	    { config, pkgs, ... }:
+	    { deployment.targetHost = "127.0.0.1";
+	    deployment.targetPort = [random port of your choosing];
+	    };
+	}
+	```
+
+	6. Now you can run `nixops deploy -d bitcoin-node` and it will connect through the ssh tunnel you established in step iv. This also allows you to do more complex ssh setups that `nixops ssh` doesn't support. An example would be authenticating with [Trezor's ssh agent](https://github.com/romanz/trezor-agent), which provides extra security.
 
 # Appendix
 Tutorial: install and configure VirtualBox for nix-bitcoin on Debian 9 Stretch
