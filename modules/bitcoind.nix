@@ -263,7 +263,7 @@ in {
         done
       '';
       serviceConfig = {
-        Type = "oneshot";
+        Type = "simple";
         User = "${cfg.user}";
         Group = "${cfg.group}";
         ExecStart = "${pkgs.bash}/bin/bash ${pkgs.banlist}/bin/banlist ${pkgs.altcoins.bitcoind}";
