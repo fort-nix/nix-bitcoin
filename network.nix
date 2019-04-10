@@ -45,8 +45,9 @@ in {
       bitcoin-node = import ./configuration.nix;
     in {
       deployment.keys = {
-        inherit bitcoin-rpcpassword lightning-charge-api-token;
+        inherit bitcoin-rpcpassword;
       }
+      // (if (config.services.lightning-charge.enable) then { inherit lightning-charge-api-token; } else { })
       // (if (config.services.nanopos.enable) then { inherit lightning-charge-api-token-for-nanopos; } else { })
       // (if (config.services.liquidd.enable) then { inherit liquid-rpcpassword; } else { })
       // (if (config.services.spark-wallet.enable) then { inherit spark-wallet-login; } else { });
