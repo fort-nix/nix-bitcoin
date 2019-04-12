@@ -4,23 +4,7 @@ with lib;
 
 let
   cfg = config.services.nix-bitcoin;
-  minimalPackages = with pkgs; [
-    tor
-    bitcoin
-    clightning
-    nodeinfo
-    banlist
-    jq
-  ];
-  allPackages = with pkgs; [
-    liquidd
-    lightning-charge
-    nanopos
-    spark-wallet
-    nodejs-8_x
-    nginx
-  ];
-  operatorCopySSH = pkgs.writeText "operator-copy-ssh.sh" ''
+  operatorCopySSH = pkgs.writeText "operator-copy-ssh.sh" '' 
     mkdir -p ${config.users.users.operator.home}/.ssh
     if [ -e "${config.users.users.root.home}/.vbox-nixops-client-key" ]; then
       cp ${config.users.users.root.home}/.vbox-nixops-client-key ${config.users.users.operator.home}/.ssh/authorized_keys
@@ -48,13 +32,6 @@ in {
     enable = mkOption {
       type = types.bool;
       default = false;
-      description = ''
-        If enabled, the nix-bitcoin service will be installed.
-      '';
-    };
-    modules = mkOption {
-      type = types.enum [ "minimal" "all" ];
-      default = "minimal";
       description = ''
         If enabled, the nix-bitcoin service will be installed.
       '';
@@ -102,10 +79,7 @@ in {
     users.groups.bitcoinrpc = {};
 
     # clightning
-    services.clightning = {
-      enable = true;
-      bitcoin-rpcuser = config.services.bitcoind.rpcuser;
-    };
+    services.clightning.bitcoin-rpcuser = config.services.bitcoind.rpcuser;
     services.clightning.proxy = config.services.tor.client.socksListenAddress;
     services.clightning.always-use-proxy = true;
     services.clightning.bind-addr = "127.0.0.1:9735";
@@ -153,7 +127,6 @@ in {
       };
     };
 
-    services.liquidd.enable = cfg.modules == "all";
     services.liquidd.rpcuser = "liquidrpc";
     services.liquidd.prune = 1000;
     services.liquidd.extraConfig = "
@@ -170,13 +143,7 @@ in {
       version = 3;
     };
      
-    services.lightning-charge.enable = cfg.modules == "all";
-    services.nanopos.enable = cfg.modules == "all";
-    services.nix-bitcoin-webindex.enable = cfg.modules == "all";
-    services.clightning.autolisten = cfg.modules == "all";
-    services.spark-wallet.enable = cfg.modules == "all";
     services.spark-wallet.onion-service = true;
-    services.electrs.enable = false;
     services.electrs.port = 50001;
     services.electrs.high-memory = false;
     services.tor.hiddenServices.electrs = {
@@ -185,7 +152,20 @@ in {
       }];
       version = 3;
     };
-    environment.systemPackages = if (cfg.modules == "all") then (minimalPackages ++ allPackages) else minimalPackages;
+    environment.systemPackages = with pkgs; [
+      tor
+      bitcoin
+      nodeinfo
+      banlist
+      jq
+    ]
+    ++ optionals config.services.clightning.enable [clightning]
+    ++ optionals config.services.lightning-charge.enable [lightning-charge]
+    ++ optionals config.services.nanopos.enable [nanopos]
+    ++ optionals config.services.nix-bitcoin-webindex.enable [nginx]
+    ++ optionals config.services.liquidd.enable [liquidd]
+    ++ optionals config.services.spark-wallet.enable [spark-wallet]
+    ++ optionals config.services.electrs.enable [electrs];
   };
 }
 
