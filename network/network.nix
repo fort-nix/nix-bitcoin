@@ -1,5 +1,5 @@
 let
-  secrets = import ./secrets/secrets.nix;
+  secrets = import ../secrets/secrets.nix;
   bitcoin-rpcpassword = {
     text = secrets.bitcoinrpcpassword;
     destDir = "/secrets/";
@@ -42,7 +42,7 @@ in {
   bitcoin-node =
     { config, pkgs, ... }:
     let
-      bitcoin-node = import ./configuration.nix;
+      bitcoin-node = import ../configuration.nix;
     in {
       deployment.keys = {
         inherit bitcoin-rpcpassword;
