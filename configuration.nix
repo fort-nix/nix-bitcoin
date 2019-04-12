@@ -13,34 +13,48 @@
   # use the nix-bitcoin node configuration. Only disable this if you know what
   # you are doing.
   services.nix-bitcoin.enable = true;
+
+  ### CLIGHTNING
   # Enable this module to use clightning, a Lightning Network implementation
   # in C.
   services.clightning.enable = true;
-  # Enable this module to use lightning-charge, a simple drop-in solution for
-  # accepting lightning payments. Only enable this if clightning is enabled.
-  # services.lightning-charge.enable = true; 
-  # Enable this module to use nanopos, a simple Lightning point-of-sale
-  # system, powered by Lightning Charge. Only enable this if clightning and
-  # lightning-charge are enabled.
-  # services.nanopos.enable = true; 
-  # Enable this module to use the nix-bitcoin-webindex, a simple website
-  # displaying your node information and link to nanopos store. Only enable
-  # this if clightning, lightning-charge, and nanopos are enabled.
-  # services.nix-bitcoin-webindex.enable = true; 
   # Enable this option to listen for incoming lightning connections. By
-  # default nix-bitcoin nodes offer outgoing connectivity.  
-  # services.clightning.autolisten = true; 
-  # Enable this module to use liquidd, a daemon for an inter-exchange
-  # settlement network linking together cryptocurrency exchanges and
-  # institutions around the world.  
-  # services.liquidd.enable = true; 
+  # default nix-bitcoin nodes offer outgoing connectivity.
+  # services.clightning.autolisten = true;
+
+  ### SPARK WALLET
   # Enable this module to use spark-wallet, a minimalistic wallet GUI for
   # c-lightning, accessible over the web or through mobile and desktop apps.
-  # Only enable this if clightning is enabled.  
-  # services.spark-wallet.enable = true; 
+  # Only enable this if clightning is enabled.
+  # services.spark-wallet.enable = true;
+
+  ### ELECTRS
   # Enable this module to use electrs, an efficient re-implementation of
   # Electrum Server in Rust.
   # services.electrs.enable = true;
+
+  ### LIQUIDD
+  # Enable this module to use liquidd, a daemon for an inter-exchange
+  # settlement network linking together cryptocurrency exchanges and
+  # institutions around the world.
+  # services.liquidd.enable = true;
+
+  ### LIGHTNING CHARGE
+  # Enable this module to use lightning-charge, a simple drop-in solution for
+  # accepting lightning payments. Only enable this if clightning is enabled.
+  # services.lightning-charge.enable = true;
+
+  ### NANOPOS
+  # Enable this module to use nanopos, a simple Lightning point-of-sale
+  # system, powered by Lightning Charge. Only enable this if clightning and
+  # lightning-charge are enabled.
+  # services.nanopos.enable = true;
+
+  ### WEBINDEX
+  # Enable this module to use the nix-bitcoin-webindex, a simple website
+  # displaying your node information and link to nanopos store. Only enable
+  # this if clightning, lightning-charge, and nanopos are enabled.
+  # services.nix-bitcoin-webindex.enable = true;
 
   # FIXME: Define your hostname.
   networking.hostName = "nix-bitcoin";
