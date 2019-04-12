@@ -44,7 +44,7 @@ The data directories of the services can be found in `/var/lib` on the deployed 
 
 Installation
 ---
-The easiest way is to run `nix-shell` (on a Linux machine) in the nix-bitcoin directory and then create a [NixOps](https://nixos.org/nixops/manual/) deployment with the provided network.nix.
+The easiest way is to run `nix-shell` (on a Linux machine) in the nix-bitcoin directory and then create a [NixOps](https://nixos.org/nixops/manual/) deployment with the provided `network.nix` in the `network` directory.
 Fix the FIXMEs in configuration.nix and deploy with nixops in nix-shell.
 See [install.md](docs/install.md) for a detailed tutorial.
 
