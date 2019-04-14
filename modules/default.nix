@@ -10,4 +10,5 @@
   nix-bitcoin-pkgs = ./nix-bitcoin-pkgs.nix;
   nix-bitcoin-webindex = ./nix-bitcoin-webindex.nix;
   spark-wallet = ./spark-wallet.nix;
+  recurring-donations = ./recurring-donations.nix
 }

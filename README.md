@@ -39,6 +39,7 @@ In `configuration.nix` the user can enable:
 * an index page using nginx to display node information and link to nanopos
 * [spark-wallet](https://github.com/shesek/spark-wallet)
 * [electrs](https://github.com/romanz/electrs)
+* recurring-donations, a module to repeatedly send lightning payments to recipients specified in the configuration.
 
 The data directories of the services can be found in `/var/lib` on the deployed machines.
 
