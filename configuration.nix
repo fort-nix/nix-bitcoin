@@ -2,7 +2,9 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, ... }: { imports = [ ./modules/nix-bitcoin.nix
+{ config, pkgs, ... }: {
+  imports = [
+    ./modules/nix-bitcoin.nix
     # FIXME: Uncomment next line to import your hardware configuration. If so,
     # add the hardware configuration file to the same directory as this file.
     # This is not needed when deploying to a virtual box.
