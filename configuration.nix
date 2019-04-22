@@ -59,8 +59,9 @@
   # services.nix-bitcoin-webindex.enable = true;
 
   ### RECURRING-DONATIONS
-  # Enable this module to send recurring donations. Only enable this if
-  # clightning is enabled.
+  # Enable this module to send recurring donations. This is EXPERIMENTAL; it's
+  # not guaranteed that payments are succeeding or that you will notice payment
+  # failure. Only enable this if clightning is enabled.
   # services.recurring-donations.enable = true;
   # Specify the receivers of the donations. By default donations are every
   # Monday at a randomized time.
