@@ -16,7 +16,7 @@ let
         return
       fi
       # Decode invoice and compare amount with requested amount
-      DECODED_AMOUNT=$($LNCLI decodepay "$INVOICE" | jq -r '.amount_msat' | head -c 4)
+      DECODED_AMOUNT=$($LNCLI decodepay "$INVOICE" | jq -r '.amount_msat' | head -c -8)
       if [ -z "$DECODED_AMOUNT" ] || [ "$DECODED_AMOUNT" = "null" ]; then
         echo "ERROR: did not get response from clightning"
         return
