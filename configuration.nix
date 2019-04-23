@@ -64,10 +64,12 @@
   # failure. Only enable this if clightning is enabled.
   # services.recurring-donations.enable = true;
   # Specify the receivers of the donations. By default donations are every
-  # Monday at a randomized time.
+  # Monday at a randomized time. Check `journalctl -eu recurring-donations` or
+  # `lightning-cli listpayments` for successful lightning donations.
   # services.recurring-donations.tallycoin = {
+  #   "<receiver name>" = <amount you wish to donate in sat>"
+  #   "<additional receiver name>" = <amount you wish to donate in sat>;
   #   "djbooth007" = 1000;
-  #   "hillebrandmax" = 1000;
   # };
 
   # FIXME: Define your hostname.
