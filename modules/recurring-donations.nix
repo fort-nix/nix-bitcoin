@@ -101,6 +101,7 @@ in {
         Unit = "recurring-donations.service";
         OnCalendar = cfg.interval;
         RandomizedDelaySec = toString cfg.randomizedDelaySec;
+        Persistent = true;
       };
       wantedBy = [ "multi-user.target" ];
     };
