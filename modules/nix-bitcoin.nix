@@ -26,6 +26,7 @@ in {
     ./spark-wallet.nix
     ./electrs.nix
     ./onion-chef.nix
+    ./recurring-donations.nix
   ];
 
   options.services.nix-bitcoin = {
