@@ -1,7 +1,7 @@
 { pkgs }:
 
 with pkgs;
-rustPlatform_1_31.buildRustPackage rec {
+rustPlatform.buildRustPackage rec {
     name = "electrs-${version}";
     version = "0.5.0";    
 
