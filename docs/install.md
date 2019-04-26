@@ -55,24 +55,24 @@ The following steps are meant to be run on the machine you deploy from, not the 
 	sudo apt-get install curl git gnupg2 dirmngr
 	```
 
-2. Install Latest Nix with GPG Verification
+2. Install latest Nix in "multi-user mode" with GPG Verification
 
 	```
 	curl -o install-nix-2.2.1 https://nixos.org/nix/install
 	curl -o install-nix-2.2.1.sig https://nixos.org/nix/install.sig
 	gpg2 --recv-keys B541D55301270E0BCF15CA5D8170B4726D7198DE
 	gpg2 --verify ./install-nix-2.2.1.sig
-	sh ./install-nix-2.2.1
-	. /home/user/.nix-profile/etc/profile.d/nix.sh
+	sh ./install-nix-2.2.1 --daemon
 	```
+	Then follow the instructions. Open a new terminal window when you're done.
 
-	Sandboxing is enabled by default on Nix <2.2. This may cause problems on your system. If you get an error similar to
+	If you get an error similar to
 	```
 	error: cloning builder process: Operation not permitted
 	error: unable to start build process
 	/tmp/nix-binary-tarball-unpack.hqawN4uSPr/unpack/nix-2.2.1-x86_64-linux/install: unable to install Nix into your default profile
 	```
-	try installing as root or building as user (see https://nixos.org/nix/manual/#conf-sandbox for more information).
+	you're likely not installing as multi-user because you forgot to pass the `--daemon` flag to the install script.
 
 ## 3. Nixops deployment
 
@@ -255,19 +255,18 @@ On the machine you are deploying from:
 	curl -o install-nix-2.2.1.sig https://nixos.org/nix/install.sig
 	gpg2 --recv-keys B541D55301270E0BCF15CA5D8170B4726D7198DE
 	gpg2 --verify ./install-nix-2.2.1.sig
-	sh ./install-nix-2.2.1
+	sh ./install-nix-2.2.1 --daemon
 	. /home/user/.nix-profile/etc/profile.d/nix.sh
 	```
+	Then follow the instructions. Open a new terminal window when you're done.
 
-	Sandboxing is enabled by default on Nix <2.2. This may cause problems on your system. If you get an error similar to
-
+	If you get an error similar to
 	```
 	error: cloning builder process: Operation not permitted
 	error: unable to start build process
 	/tmp/nix-binary-tarball-unpack.hqawN4uSPr/unpack/nix-2.2.1-x86_64-linux/install: unable to install Nix into your default profile
 	```
-
-	try installing as root or building as user (see https://nixos.org/nix/manual/#conf-sandbox for more information).
+	you're likely not installing as multi-user because you forgot to pass the `--daemon` flag to the install script.
 
 3. Clone this project
 
