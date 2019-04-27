@@ -91,7 +91,7 @@ Connect to electrs
 
 	On electrum wallet laptop
 	```
-	electrum --oneserver --server=<ELECTRS_ONION>:50002:s
+	electrum --oneserver --server=<ELECTRS_ONION>:s
 	```
 
 	On electrum android phone

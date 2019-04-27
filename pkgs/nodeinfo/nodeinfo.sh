@@ -32,7 +32,7 @@ fi
 ELECTRS_ONION_FILE=/var/lib/onion-chef/operator/electrs
 if [ -e "$ELECTRS_ONION_FILE" ]; then
     ELECTRS_ONION="$(cat $ELECTRS_ONION_FILE)"
-    echo ELECTRS_ONION="$ELECTRS_ONION"
+    echo ELECTRS_ONION="$ELECTRS_ONION:50002"
 fi
 
 SSHD_ONION_FILE=/var/lib/onion-chef/operator/sshd

@@ -21,6 +21,9 @@ let
         <h3>
           lightning node: CLIGHTNING_ID
         </h3>
+        <h3>
+          ${optionalString config.services.electrs.enable "electrum server: ELECTRS_ONION"}
+        </h3>
         </p>
       </body>
     </html>
@@ -33,6 +36,7 @@ let
     nodeinfo
     . <(nodeinfo)
     sed -i "s/CLIGHTNING_ID/$CLIGHTNING_ID/g" /var/www/index.html
+    sed -i "s/ELECTRS_ONION/$ELECTRS_ONION/g" /var/www/index.html
   '';
 in {
   options.services.nix-bitcoin-webindex = {
