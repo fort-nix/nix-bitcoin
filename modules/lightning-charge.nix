@@ -3,6 +3,7 @@
 with lib;
 
 let
+  nix-bitcoin-services = import ./nix-bitcoin-services.nix;
   cfg = config.services.lightning-charge;
 in {
   options.services.lightning-charge = {
@@ -37,11 +38,7 @@ in {
           User = "clightning";
           Restart = "on-failure";
           RestartSec = "10s";
-          PrivateTmp = "true";
-          ProtectSystem = "full";
-          NoNewPrivileges = "true";
-          PrivateDevices = "true";
-      };
+      } // nix-bitcoin-services.defaultHardening;
     };
   };
 }

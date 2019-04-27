@@ -8,6 +8,7 @@
 with lib;
 
 let
+  nix-bitcoin-services = import ./nix-bitcoin-services.nix;
   cfg = config.services.onion-chef;
   dataDir = "/var/lib/onion-chef/";
   onion-chef-script = pkgs.writeScript "onion-chef.sh" ''
@@ -77,11 +78,7 @@ in {
         ExecStart = "${pkgs.bash}/bin/bash ${onion-chef-script}";
         User = "root";
         Type = "oneshot";
-        PrivateTmp = "true";
-        ProtectSystem = "full";
-        NoNewPrivileges = "true";
-        PrivateDevices = "true";
-      };
+      } // nix-bitcoin-services.defaultHardening;
     };
   };
 }

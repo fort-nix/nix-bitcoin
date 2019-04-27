@@ -3,6 +3,7 @@
 with lib;
 
 let
+  nix-bitcoin-services = import ./nix-bitcoin-services.nix;
   cfg = config.services.bitcoind;
   pidFile = "${cfg.dataDir}/bitcoind.pid";
   configFile = pkgs.writeText "bitcoin.conf" ''
@@ -235,7 +236,7 @@ in {
 
         # Permission for preStart
         PermissionsStartOnly = "true";
-      };
+      } // nix-bitcoin-services.defaultHardening;
     };
     systemd.services.bitcoind-import-banlist = {
       description = "Bitcoin daemon banlist importer";
@@ -269,16 +270,9 @@ in {
         ExecStart = "${pkgs.bash}/bin/bash ${pkgs.banlist}/bin/banlist ${pkgs.altcoins.bitcoind}";
         StateDirectory = "bitcoind";
 
-        # Hardening measures
-        PrivateTmp = "true";
-        ProtectSystem = "full";
-        NoNewPrivileges = "true";
-        PrivateDevices = "true";
-        MemoryDenyWriteExecute = "true";
-
         # Permission for preStart
         PermissionsStartOnly = "true";
-      };
+      } // nix-bitcoin-services.defaultHardening;
     };
 
     users.users.${cfg.user} = {

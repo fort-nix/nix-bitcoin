@@ -3,6 +3,7 @@
 with lib;
 
 let
+  nix-bitcoin-services = import ./nix-bitcoin-services.nix;
   cfg = config.services.spark-wallet;
   dataDir = "/var/lib/spark-wallet/";
   onion-chef-service = (if cfg.onion-service then [ "onion-chef.service" ] else []);
@@ -63,11 +64,7 @@ in {
         User = "clightning";
         Restart = "on-failure";
         RestartSec = "10s";
-        PrivateTmp = "true";
-        ProtectSystem = "full";
-        NoNewPrivileges = "true";
-        PrivateDevices = "true";
-      };
+      } // nix-bitcoin-services.defaultHardening;
     };
   };
 }

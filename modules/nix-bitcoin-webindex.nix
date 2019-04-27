@@ -3,6 +3,7 @@
 with lib;
 
 let
+  nix-bitcoin-services = import ./nix-bitcoin-services.nix;
   cfg = config.services.nix-bitcoin-webindex;
   indexFile = pkgs.writeText "index.html" ''
     <html>
@@ -80,7 +81,7 @@ in {
         RemainAfterExit="yes";
         Restart = "on-failure";
         RestartSec = "10s";
-      };
+      } // nix-bitcoin-services.defaultHardening;
     };
   };
 }

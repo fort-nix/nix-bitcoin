@@ -3,6 +3,7 @@
 with lib;
 
 let
+  nix-bitcoin-services = import ./nix-bitcoin-services.nix;
   cfg = config.services.liquidd;
   pidFile = "${cfg.dataDir}/liquidd.pid";
   configFile = pkgs.writeText "liquid.conf" ''
@@ -195,16 +196,9 @@ in {
         PIDFile = "${pidFile}";
         Restart = "on-failure";
 
-        # Hardening measures
-        PrivateTmp = "true";
-        ProtectSystem = "full";
-        NoNewPrivileges = "true";
-        PrivateDevices = "true";
-        MemoryDenyWriteExecute = "true";
-
         # Permission for preStart
         PermissionsStartOnly = "true";
-      };
+      } // nix-bitcoin-services.defaultHardening;
     };
     users.users.${cfg.user} = {
       name = cfg.user;

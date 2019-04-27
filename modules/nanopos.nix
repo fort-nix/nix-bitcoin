@@ -3,6 +3,7 @@
 with lib;
 
 let
+  nix-bitcoin-services = import ./nix-bitcoin-services.nix;
   cfg = config.services.nanopos;
   defaultItemsFile = pkgs.writeText "items.yaml" ''
     tea:
@@ -73,11 +74,7 @@ in {
         User = "nanopos";
         Restart = "on-failure";
         RestartSec = "10s";
-        PrivateTmp = "true";
-        ProtectSystem = "full";
-        NoNewPrivileges = "true";
-        PrivateDevices = "true";
-      };
+      } // nix-bitcoin-services.defaultHardening;
     };
   };
 }

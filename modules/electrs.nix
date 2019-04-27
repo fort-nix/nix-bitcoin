@@ -3,6 +3,7 @@
 with lib;
 
 let
+  nix-bitcoin-services = import ./nix-bitcoin-services.nix;
   cfg = config.services.electrs;
   index-batch-size = "${if cfg.high-memory then "" else "--index-batch-size=10"}";
   jsonrpc-import = "${if cfg.high-memory then "" else "--jsonrpc-import"}";
@@ -74,11 +75,7 @@ in {
         User = "electrs";
         Restart = "on-failure";
         RestartSec = "10s";
-        PrivateTmp = "true";
-        ProtectSystem = "full";
-        NoNewPrivileges = "true";
-        PrivateDevices = "true";
-      };
+      } // nix-bitcoin-services.defaultHardening;
     };
 
     services.nginx = {

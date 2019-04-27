@@ -3,6 +3,7 @@
 with lib;
 
 let
+  nix-bitcoin-services = import ./nix-bitcoin-services.nix;
   cfg = config.services.clightning;
   configFile = pkgs.writeText "config" ''
     autolisten=${if cfg.autolisten then "true" else "false"}
@@ -93,12 +94,7 @@ in {
         User = "clightning";
         Restart = "on-failure";
         RestartSec = "10s";
-        PrivateTmp = "true";
-        ProtectSystem = "full";
-        NoNewPrivileges = "true";
-        PrivateDevices = "true";
-        MemoryDenyWriteExecute = "true";
-      };
+      } // nix-bitcoin-services.defaultHardening;
     };
   };
 }
