@@ -74,7 +74,7 @@ in {
         User = "nanopos";
         Restart = "on-failure";
         RestartSec = "10s";
-      } // nix-bitcoin-services.defaultHardening;
+      } // nix-bitcoin-services.nodeHardening;
     };
   };
 }
