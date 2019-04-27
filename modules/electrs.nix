@@ -32,6 +32,16 @@ in {
         default = 50001;
         description = "Override the default port on which to listen for connections.";
     };
+    onionport = mkOption {
+        type = types.ints.u16;
+        default = 50002;
+        description = "Override the default port on which to listen for connections.";
+    };
+    nginxport = mkOption {
+        type = types.ints.u16;
+        default = 50003;
+        description = "Override the default port on which to listen for connections.";
+    };
   };
 
   config = mkIf cfg.enable {
@@ -48,7 +58,7 @@ in {
     systemd.services.electrs = {
       description = "Run electrs";
       wantedBy = [ "multi-user.target" ];
-      requires = [ "bitcoind.service" ];
+      requires = [ "bitcoind.service" "nginx.service"];
       after = [ "bitcoind.service" ];
       # create shell script to start up electrs safely with password parameter
       preStart = ''
@@ -69,6 +79,29 @@ in {
         NoNewPrivileges = "true";
         PrivateDevices = "true";
       };
+    };
+
+    services.nginx = {
+      enable = true;
+      appendConfig = ''
+        stream {
+          upstream electrs {
+            server 127.0.0.1:${toString config.services.electrs.port};
+          }
+
+          server {
+            listen ${toString config.services.electrs.nginxport} ssl;
+            proxy_pass electrs;
+
+            ssl_certificate /secrets/ssl_certificate;
+            ssl_certificate_key /secrets/ssl_certificate_key;
+            ssl_session_cache shared:SSL:1m;
+            ssl_session_timeout 4h;
+            ssl_protocols TLSv1 TLSv1.1 TLSv1.2 TLSv1.3;
+            ssl_prefer_server_ciphers on;
+          }
+        }
+      '';
     };
   };
 }

@@ -36,6 +36,20 @@ let
     group = "clightning";
     permissions = "0440";
   };
+  ssl_certificate_key = {
+    keyFile = ../secrets/ssl_certificate_key.key;
+    destDir = "/secrets/";
+    user = "nginx";
+    group = "root";
+    permissions = "0440";
+  };
+  ssl_certificate = {
+    keyFile = ../secrets/ssl_certificate.crt;
+    destDir = "/secrets/";
+    user = "nginx";
+    group = "root";
+    permissions = "0440";
+  };
 in {
   network.description = "Bitcoin Core node";
 
@@ -50,6 +64,7 @@ in {
       // (if (config.services.lightning-charge.enable) then { inherit lightning-charge-api-token; } else { })
       // (if (config.services.nanopos.enable) then { inherit lightning-charge-api-token-for-nanopos; } else { })
       // (if (config.services.liquidd.enable) then { inherit liquid-rpcpassword; } else { })
-      // (if (config.services.spark-wallet.enable) then { inherit spark-wallet-login; } else { });
+      // (if (config.services.spark-wallet.enable) then { inherit spark-wallet-login; } else { })
+      // (if (config.services.electrs.enable) then { inherit ssl_certificate_key ssl_certificate; } else { });
     } // (bitcoin-node { inherit config pkgs; });
 }

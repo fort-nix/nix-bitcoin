@@ -89,9 +89,19 @@ Connect to electrs
 
 4. Connect to electrs
 
-	On electrum wallet machine
+	On electrum wallet laptop
 	```
-	electrum --oneserver --server=<ELECTRS_ONION>:50001:t
+	electrum --oneserver --server=<ELECTRS_ONION>:50002:s
+	```
+
+	On electrum android phone
+	```
+	Three dots in the upper-right-hand corner
+	Network
+	Server > Enter <ELECTRS_ONION>
+	Back
+	Auto-connect: OFF
+	One-server mode: ON
 	```
 
 Connect to nix-bitcoin node through ssh Tor Hidden Service

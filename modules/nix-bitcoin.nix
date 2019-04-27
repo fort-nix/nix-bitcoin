@@ -146,10 +146,12 @@ in {
      
     services.spark-wallet.onion-service = true;
     services.electrs.port = 50001;
+    services.electrs.onionport = 50002;
+    services.electrs.nginxport = 50003;
     services.electrs.high-memory = false;
     services.tor.hiddenServices.electrs = {
       map = [{
-        port = config.services.electrs.port; toPort = config.services.electrs.port;
+        port = config.services.electrs.onionport; toPort = config.services.electrs.nginxport;
       }];
       version = 3;
     };
