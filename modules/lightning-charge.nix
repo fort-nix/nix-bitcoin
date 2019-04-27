@@ -3,7 +3,7 @@
 with lib;
 
 let
-  nix-bitcoin-services = import ./nix-bitcoin-services.nix;
+  nix-bitcoin-services = pkgs.callPackage ./nix-bitcoin-services.nix { };
   cfg = config.services.lightning-charge;
 in {
   options.services.lightning-charge = {
@@ -38,7 +38,9 @@ in {
           User = "clightning";
           Restart = "on-failure";
           RestartSec = "10s";
-      } // nix-bitcoin-services.nodeHardening;
+      } // nix-bitcoin-services.defaultHardening
+        // nix-bitcoin-services.node
+        // nix-bitcoin-services.allowTor;
     };
   };
 }

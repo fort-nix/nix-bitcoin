@@ -3,7 +3,7 @@
 with lib;
 
 let
-  nix-bitcoin-services = import ./nix-bitcoin-services.nix;
+  nix-bitcoin-services = pkgs.callPackage ./nix-bitcoin-services.nix { };
   cfg = config.services.clightning;
   configFile = pkgs.writeText "config" ''
     autolisten=${if cfg.autolisten then "true" else "false"}
@@ -57,6 +57,7 @@ in {
       default = "/var/lib/clightning";
       description = "The data directory for clightning.";
     };
+    enforceTor =  nix-bitcoin-services.enforceTor;
   };
 
   config = mkIf cfg.enable {
@@ -94,7 +95,11 @@ in {
         User = "clightning";
         Restart = "on-failure";
         RestartSec = "10s";
-      } // nix-bitcoin-services.defaultHardening;
+      } // nix-bitcoin-services.defaultHardening
+        // (if cfg.enforceTor
+          then nix-bitcoin-services.allowTor
+          else nix-bitcoin-services.allowAnyIP
+        );
     };
   };
 }

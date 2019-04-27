@@ -3,7 +3,7 @@
 with lib;
 
 let
-  nix-bitcoin-services = import ./nix-bitcoin-services.nix;
+  nix-bitcoin-services = pkgs.callPackage ./nix-bitcoin-services.nix { };
   cfg = config.services.liquidd;
   pidFile = "${cfg.dataDir}/liquidd.pid";
   configFile = pkgs.writeText "liquid.conf" ''
@@ -166,6 +166,7 @@ in {
           to stay under the specified target size in MiB)
         '';
       };
+      enforceTor =  nix-bitcoin-services.enforceTor;
     };
   };
 
@@ -198,7 +199,11 @@ in {
 
         # Permission for preStart
         PermissionsStartOnly = "true";
-      } // nix-bitcoin-services.defaultHardening;
+      } // nix-bitcoin-services.defaultHardening
+        // (if cfg.enforceTor
+          then nix-bitcoin-services.allowTor
+          else nix-bitcoin-services.allowAnyIP
+        );
     };
     users.users.${cfg.user} = {
       name = cfg.user;

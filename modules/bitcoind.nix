@@ -3,7 +3,7 @@
 with lib;
 
 let
-  nix-bitcoin-services = import ./nix-bitcoin-services.nix;
+  nix-bitcoin-services = pkgs.callPackage ./nix-bitcoin-services.nix { };
   cfg = config.services.bitcoind;
   pidFile = "${cfg.dataDir}/bitcoind.pid";
   configFile = pkgs.writeText "bitcoin.conf" ''
@@ -193,6 +193,7 @@ in {
           to stay under the specified target size in MiB)
         '';
       };
+      enforceTor =  nix-bitcoin-services.enforceTor;
     };
   };
 
@@ -236,7 +237,11 @@ in {
 
         # Permission for preStart
         PermissionsStartOnly = "true";
-      } // nix-bitcoin-services.defaultHardening;
+      } // nix-bitcoin-services.defaultHardening
+        // (if cfg.enforceTor
+          then nix-bitcoin-services.allowTor
+          else nix-bitcoin-services.allowAnyIP
+        );
     };
     systemd.services.bitcoind-import-banlist = {
       description = "Bitcoin daemon banlist importer";
@@ -272,7 +277,8 @@ in {
 
         # Permission for preStart
         PermissionsStartOnly = "true";
-      } // nix-bitcoin-services.defaultHardening;
+      } // nix-bitcoin-services.defaultHardening
+        // nix-bitcoin-services.allowTor;
     };
 
     users.users.${cfg.user} = {

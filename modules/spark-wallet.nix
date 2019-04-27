@@ -3,7 +3,7 @@
 with lib;
 
 let
-  nix-bitcoin-services = import ./nix-bitcoin-services.nix;
+  nix-bitcoin-services = pkgs.callPackage ./nix-bitcoin-services.nix { };
   cfg = config.services.spark-wallet;
   dataDir = "/var/lib/spark-wallet/";
   onion-chef-service = (if cfg.onion-service then [ "onion-chef.service" ] else []);
@@ -64,7 +64,9 @@ in {
         User = "clightning";
         Restart = "on-failure";
         RestartSec = "10s";
-      } // nix-bitcoin-services.nodeHardening;
+      } // nix-bitcoin-services.defaultHardening
+        // nix-bitcoin-services.node
+        // nix-bitcoin-services.allowTor;
     };
   };
 }

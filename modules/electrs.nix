@@ -3,7 +3,7 @@
 with lib;
 
 let
-  nix-bitcoin-services = import ./nix-bitcoin-services.nix;
+  nix-bitcoin-services = pkgs.callPackage ./nix-bitcoin-services.nix { };
   cfg = config.services.electrs;
   index-batch-size = "${if cfg.high-memory then "" else "--index-batch-size=10"}";
   jsonrpc-import = "${if cfg.high-memory then "" else "--jsonrpc-import"}";
@@ -43,6 +43,7 @@ in {
         default = 50003;
         description = "Override the default port on which to listen for connections.";
     };
+    enforceTor =  nix-bitcoin-services.enforceTor;
   };
 
   config = mkIf cfg.enable {
@@ -75,7 +76,11 @@ in {
         User = "electrs";
         Restart = "on-failure";
         RestartSec = "10s";
-      } // nix-bitcoin-services.defaultHardening;
+      } // nix-bitcoin-services.defaultHardening
+        // (if cfg.enforceTor
+          then nix-bitcoin-services.allowTor
+          else nix-bitcoin-services.allowAnyIP
+        );
     };
 
     services.nginx = {
