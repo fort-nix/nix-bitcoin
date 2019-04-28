@@ -25,6 +25,7 @@ The following steps are meant to be run on the machine you deploy from, not the 
 	wget https://www.virtualbox.org/download/oracle_vbox_2016.asc
 	gpg2 oracle_vbox_2016.asc
 	```
+
 	Proceed _only_ if fingerprint reads B9F8 D658 297A F3EF C18D  5CDF A2F6 83C5 2980 AECF
 
 	```
@@ -41,10 +42,8 @@ The following steps are meant to be run on the machine you deploy from, not the 
 3. Create Host Adapter in VirtualBox
 
 	```
-	Open VirtualBox
-	File -> Host Network Manager -> Create
+	vboxmanage hostonlyif create
 	```
-	This should create a host adapter named vboxnet0
 
 ## 2. Nix installation
 The following steps are meant to be run on the machine you deploy from, not the machine you deploy to.
@@ -58,12 +57,13 @@ The following steps are meant to be run on the machine you deploy from, not the 
 2. Install latest Nix in "multi-user mode" with GPG Verification
 
 	```
-	curl -o install-nix-2.2.1 https://nixos.org/nix/install
-	curl -o install-nix-2.2.1.sig https://nixos.org/nix/install.sig
+	curl -o install-nix https://nixos.org/nix/install
+	curl -o install-nix.sig https://nixos.org/nix/install.sig
 	gpg2 --recv-keys B541D55301270E0BCF15CA5D8170B4726D7198DE
-	gpg2 --verify ./install-nix-2.2.1.sig
-	sh ./install-nix-2.2.1 --daemon
+	gpg2 --verify ./install-nix.sig
+	sh ./install-nix --daemon
 	```
+
 	Then follow the instructions. Open a new terminal window when you're done.
 
 	If you get an error similar to
@@ -80,7 +80,7 @@ The following steps are meant to be run on the machine you deploy from, not the 
 
 	```
 	cd
-	git clone https://github.com/jonasnick/nix-bitcoin
+	git clone https://github.com/fort-nix/nix-bitcoin
 	cd ~/nix-bitcoin
 	```
 
@@ -89,6 +89,9 @@ The following steps are meant to be run on the machine you deploy from, not the 
 	```
 	nix-shell
 	```
+
+	This will set up your nix-bitcoin environment and might take a while without giving an output.
+
 3. Create nixops deployment in nix-shell.
 
 	```
@@ -130,6 +133,7 @@ This is borrowed from the [NixOS manual](https://nixos.org/nixos/manual/index.ht
 	```
 	dd if=nixos-graphical-18.09.2257.235487585ed-x86_64-linux.iso of=/dev/sdX
 	```
+
 	Replace /dev/sdX with the correct device name. You can find this using `sudo fdisk -l`
 
 3. Boot the system
@@ -251,13 +255,14 @@ On the machine you are deploying from:
 2. Install Latest Nix with GPG Verification
 
 	```
-	curl -o install-nix-2.2.1 https://nixos.org/nix/install
-	curl -o install-nix-2.2.1.sig https://nixos.org/nix/install.sig
+	curl -o install-nix https://nixos.org/nix/install
+	curl -o install-nix.sig https://nixos.org/nix/install.sig
 	gpg2 --recv-keys B541D55301270E0BCF15CA5D8170B4726D7198DE
-	gpg2 --verify ./install-nix-2.2.1.sig
-	sh ./install-nix-2.2.1 --daemon
+	gpg2 --verify ./install-nix.sig
+	sh ./install-nix --daemon
 	. /home/user/.nix-profile/etc/profile.d/nix.sh
 	```
+
 	Then follow the instructions. Open a new terminal window when you're done.
 
 	If you get an error similar to
@@ -272,7 +277,7 @@ On the machine you are deploying from:
 
 	```
 	cd
-	git clone https://github.com/jonasnick/nix-bitcoin
+	git clone https://github.com/fort-nix/nix-bitcoin
 	cd ~/nix-bitcoin
 	```
 
@@ -320,11 +325,15 @@ On the machine you are deploying from:
 	``` 
 
 8. Setup environment
+
 	```
 	nix-shell
 	```
 
+	This will set up your nix-bitcoin environment and might take a while without giving an output.
+
 9. Create nixops deployment in nix-shell.
+
 	```
 	nixops create network/network.nix network/network-nixos.nix -d bitcoin-node
 	```
@@ -336,6 +345,7 @@ On the machine you are deploying from:
 	```
 	nixops deploy -d bitcoin-node
 	```
+
 	This will now create a nix-bitcoin node on the target machine.
 
 12. Nixops automatically creates an ssh key for use with `nixops ssh`. Access `bitcoin-node` through ssh in nix-shell with
