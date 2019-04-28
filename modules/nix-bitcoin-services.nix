@@ -14,6 +14,7 @@ let
       ProtectKernelModules = "true";
       ProtectControlGroups = "true";
       RestrictAddressFamilies = "AF_UNIX AF_INET AF_INET6";
+      RestrictNamespaces = "true";
       LockPersonality = "true";
       IPAddressDeny = "any";
   };
