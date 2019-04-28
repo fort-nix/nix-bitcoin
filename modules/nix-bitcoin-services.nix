@@ -24,7 +24,9 @@ in
   # node applications apparently rely on memory write execute
   node = { MemoryDenyWriteExecute = "false"; };
   # Allow tor traffic. Allow takes precedence over Deny.
-  allowTor = { IPAddressAllow = "127.0.0.1/32"; };
+  allowTor = {
+    IPAddressAllow = "127.0.0.1/32 ::1/128";
+  };
   # Allow any traffic
   allowAnyIP = { IPAddressAllow = "any"; };
 
