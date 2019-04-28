@@ -10,6 +10,8 @@ Have a look at the options in the [NixOps manual](https://nixos.org/nixops/manua
 
 Tutorial: install and configure NixOS for nix-bitcoin on VirtualBox
 ---
+Requires at least 250GB of free disk space.
+
 ## 1. VirtualBox installation
 The following steps are meant to be run on the machine you deploy from, not the machine you deploy to.
 
