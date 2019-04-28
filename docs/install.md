@@ -165,6 +165,10 @@ This is borrowed from the [NixOS manual](https://nixos.org/nixos/manual/index.ht
 	swapon /dev/sda2
 	```
 
+4. Option 3: Set up encrypted partitions:
+
+    Follow the guide at https://gist.github.com/martijnvermaat/76f2e24d0239470dd71050358b4d5134.
+
 5. Generate NixOS config
 
 	```

@@ -207,7 +207,6 @@ in {
     };
     users.users.${cfg.user} = {
       name = cfg.user;
-      #uid  = config.ids.uids.liquid;
       group = cfg.group;
       extraGroups = [ "keys" ];
       description = "Liquid daemon user";
@@ -215,7 +214,6 @@ in {
     };
     users.groups.${cfg.group} = {
       name = cfg.group;
-      #gid = config.ids.gids.liquid;
     };
   };
 }
