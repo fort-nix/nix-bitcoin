@@ -65,7 +65,7 @@ in {
         Restart = "on-failure";
         RestartSec = "10s";
       } // nix-bitcoin-services.defaultHardening
-        // nix-bitcoin-services.node
+        // nix-bitcoin-services.nodejs
         // nix-bitcoin-services.allowTor;
     };
   };
