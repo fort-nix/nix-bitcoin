@@ -3,6 +3,7 @@
 with lib;
 
 let
+  nix-bitcoin-services = pkgs.callPackage ./nix-bitcoin-services.nix { };
   cfg = config.services.liquidd;
   pidFile = "${cfg.dataDir}/liquidd.pid";
   configFile = pkgs.writeText "liquid.conf" ''
@@ -165,6 +166,7 @@ in {
           to stay under the specified target size in MiB)
         '';
       };
+      enforceTor =  nix-bitcoin-services.enforceTor;
     };
   };
 
@@ -195,20 +197,16 @@ in {
         PIDFile = "${pidFile}";
         Restart = "on-failure";
 
-        # Hardening measures
-        PrivateTmp = "true";
-        ProtectSystem = "full";
-        NoNewPrivileges = "true";
-        PrivateDevices = "true";
-        MemoryDenyWriteExecute = "true";
-
         # Permission for preStart
         PermissionsStartOnly = "true";
-      };
+      } // nix-bitcoin-services.defaultHardening
+        // (if cfg.enforceTor
+          then nix-bitcoin-services.allowTor
+          else nix-bitcoin-services.allowAnyIP
+        );
     };
     users.users.${cfg.user} = {
       name = cfg.user;
-      #uid  = config.ids.uids.liquid;
       group = cfg.group;
       extraGroups = [ "keys" ];
       description = "Liquid daemon user";
@@ -216,7 +214,6 @@ in {
     };
     users.groups.${cfg.group} = {
       name = cfg.group;
-      #gid = config.ids.gids.liquid;
     };
   };
 }

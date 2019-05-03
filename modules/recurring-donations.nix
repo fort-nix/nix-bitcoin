@@ -3,6 +3,7 @@
 with lib;
 
 let
+  nix-bitcoin-services = pkgs.callPackage ./nix-bitcoin-services.nix { };
   cfg = config.services.recurring-donations;
   recurring-donations-script = pkgs.writeScript "recurring-donations.sh" ''
     LNCLI="lightning-cli --lightning-dir=${config.services.clightning.dataDir}"
@@ -88,11 +89,8 @@ in {
         # working inside the shell script
         User = "clightning";
         Type = "oneshot";
-        PrivateTmp = "true";
-        ProtectSystem = "full";
-        NoNewPrivileges = "true";
-        PrivateDevices = "true";
-      };
+      } // nix-bitcoin-services.defaultHardening
+        // nix-bitcoin-services.allowTor;
     };
     systemd.timers.recurring-donations = {
       requires = [ "clightning.service" ];

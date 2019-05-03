@@ -1,7 +1,7 @@
 nix-bitcoin
 ===
 
-Nix packages and nixos modules for easily installing Bitcoin nodes and higher layer protocols.
+Nix packages and nixos modules for easily installing Bitcoin nodes and higher layer protocols with an emphasis on security.
 This is a work in progress - don't expect it to be bug free or secure.
 
 The default configuration sets up a Bitcoin Core node and c-lightning. The user can enable spark-wallet in `configuration.nix` to make c-lightning accessible with a smartphone using spark-wallet.
@@ -48,6 +48,19 @@ Installation
 The easiest way is to run `nix-shell` (on a Linux machine) in the nix-bitcoin directory and then create a [NixOps](https://nixos.org/nixops/manual/) deployment with the provided `network.nix` in the `network` directory.
 Fix the FIXMEs in configuration.nix and deploy with nixops in nix-shell.
 See [install.md](docs/install.md) for a detailed tutorial.
+
+Security
+---
+* Nix package manager, NixOS and packages can be built from source to reduce reliance on binary caches.
+* Builds happen in a [sandboxed environment](https://nixos.org/nix/manual/).
+* Packages dependencies are [pinned](pkgs/nixpkgs-pinned.nix). Most packages are built from the [nixos stable channel](https://github.com/NixOS/nixpkgs-channels/tree/nixos-19.03), with a few exceptions that are built from the nixpkgs unstable channel.
+* nix-bitcoin merge commits are signed.
+* nix-bitcoin is built with a [hardened kernel](https://github.com/NixOS/nixpkgs/blob/master/nixos/modules/profiles/hardened.nix) by default.
+* Services operate with least privileges. They each have their own user and are restricted further with [systemd options](modules/nix-bitcoin-services.nix).
+* There's a non-root user *operator* to interact with the various services.
+
+Note that nix-bitcoin is still experimental.
+Also, by design if the machine you're deploying *from* is insecure, there is nothing nix-bitcoin can do to protect itself.
 
 Hardware requirements
 ---

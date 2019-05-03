@@ -3,6 +3,7 @@
 with lib;
 
 let
+  nix-bitcoin-services = pkgs.callPackage ./nix-bitcoin-services.nix { };
   cfg = config.services.nix-bitcoin-webindex;
   indexFile = pkgs.writeText "index.html" ''
     <html>
@@ -43,6 +44,7 @@ in {
         If enabled, the webindex service will be installed.
       '';
     };
+    enforceTor =  nix-bitcoin-services.enforceTor;
   };
 
   config = mkIf cfg.enable {
@@ -80,7 +82,11 @@ in {
         RemainAfterExit="yes";
         Restart = "on-failure";
         RestartSec = "10s";
-      };
+      } // nix-bitcoin-services.defaultHardening
+        // (if cfg.enforceTor
+          then nix-bitcoin-services.allowTor
+          else nix-bitcoin-services.allowAnyIP
+        );
     };
   };
 }

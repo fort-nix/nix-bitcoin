@@ -60,6 +60,7 @@ in {
     services.bitcoind.sysperms = if config.services.electrs.enable then true else null;
     services.bitcoind.disablewallet = if config.services.electrs.enable then true else null;
     services.bitcoind.proxy = config.services.tor.client.socksListenAddress;
+    services.bitcoind.enforceTor = true;
     services.bitcoind.port = 8333;
     services.bitcoind.rpcuser = "bitcoinrpc";
     services.bitcoind.extraConfig = ''
@@ -82,6 +83,7 @@ in {
     # clightning
     services.clightning.bitcoin-rpcuser = config.services.bitcoind.rpcuser;
     services.clightning.proxy = config.services.tor.client.socksListenAddress;
+    services.clightning.enforceTor = true;
     services.clightning.always-use-proxy = true;
     services.clightning.bind-addr = "127.0.0.1:9735";
     services.tor.hiddenServices.clightning = {
@@ -128,6 +130,8 @@ in {
       };
     };
 
+    services.nix-bitcoin-webindex.enforceTor = true;
+
     services.liquidd.rpcuser = "liquidrpc";
     services.liquidd.prune = 1000;
     services.liquidd.extraConfig = "
@@ -136,6 +140,7 @@ in {
     ";
     services.liquidd.listen = true;
     services.liquidd.proxy = config.services.tor.client.socksListenAddress;
+    services.liquidd.enforceTor = true;
     services.liquidd.port = 7042;
     services.tor.hiddenServices.liquidd = {
       map = [{
@@ -143,9 +148,10 @@ in {
       }];
       version = 3;
     };
-     
+
     services.spark-wallet.onion-service = true;
     services.electrs.port = 50001;
+    services.electrs.enforceTor = true;
     services.electrs.onionport = 50002;
     services.electrs.nginxport = 50003;
     services.electrs.high-memory = false;
