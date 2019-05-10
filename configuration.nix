@@ -84,7 +84,8 @@
   # Ledger must be initialized through the official ledger live app and the Bitcoin app must
   # be installed and running on the device.
   # services.hardware-wallets.ledger = true;
-  # Trezor can be initialized with the trezorctl command in nix-bitcoin.
+  # Trezor can be initialized with the trezorctl command in nix-bitcoin. More information can 
+  # be found in `docs/usage.md`.
   # services.hardware-wallets.trezor = true;
 
   # FIXME: Define your hostname.
