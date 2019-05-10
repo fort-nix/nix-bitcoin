@@ -38,7 +38,8 @@
 
   ### ELECTRS
   # Enable this module to use electrs, an efficient re-implementation of
-  # Electrum Server in Rust.
+  # Electrum Server in Rust. Only enable this if hardware wallets are 
+  # disabled.
   # services.electrs.enable = true;
 
   ### LIQUIDD
@@ -80,7 +81,7 @@
 
   ### Hardware wallets
   # Enable this module to allow using hardware wallets. See https://github.com/bitcoin-core/HWI
-  # for more information.
+  # for more information. Only enable this if electrs is disabled.
   # Ledger must be initialized through the official ledger live app and the Bitcoin app must
   # be installed and running on the device.
   # services.hardware-wallets.ledger = true;
