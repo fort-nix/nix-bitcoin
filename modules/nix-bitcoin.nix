@@ -88,7 +88,7 @@ in {
     services.clightning.bind-addr = "127.0.0.1:9735";
     services.tor.hiddenServices.clightning = {
       map = [{
-        port = 9375; toPort = 9375;
+        port = 9735; toPort = 9735;
       }];
       version = 3;
     };
