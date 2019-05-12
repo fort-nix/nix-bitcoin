@@ -78,6 +78,15 @@
   #   "djbooth007" = 1000;
   # };
 
+  ### Hardware wallets
+  # Enable this module to allow using hardware wallets. See https://github.com/bitcoin-core/HWI
+  # for more information.
+  # Ledger must be initialized through the official ledger live app and the Bitcoin app must
+  # be installed and running on the device.
+  # services.hardware-wallets.ledger = true;
+  # Trezor can be initialized with the trezorctl command in nix-bitcoin.
+  # services.hardware-wallets.trezor = true;
+
   # FIXME: Define your hostname.
   networking.hostName = "nix-bitcoin";
   time.timeZone = "UTC";
@@ -95,7 +104,6 @@
 
   # FIXME: Add custom options (like boot options, output of
   # nixos-generate-config, etc.):
-
 
   # If the hardened profile is imported above, we need to explicitly allow
   # user namespaces to enable sanboxed builds and services.

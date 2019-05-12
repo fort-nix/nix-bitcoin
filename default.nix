@@ -11,4 +11,5 @@
   spark-wallet = pkgs.callPackage ./pkgs/spark-wallet { };
   electrs = pkgs.callPackage ./pkgs/electrs { };
   liquidd = pkgs.callPackage ./pkgs/liquidd { };
+  hwi = pkgs.callPackage ./pkgs/hwi { };
 }

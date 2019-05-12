@@ -27,6 +27,7 @@ in {
     ./electrs.nix
     ./onion-chef.nix
     ./recurring-donations.nix
+    ./hardware-wallets.nix
   ];
 
   options.services.nix-bitcoin = {
@@ -98,7 +99,9 @@ in {
       isNormalUser = true;
       extraGroups = [ config.services.bitcoind.group ]
         ++ (if config.services.clightning.enable then [ "clightning" ] else [ ])
-        ++ (if config.services.liquidd.enable then [ config.services.liquidd.group ] else [ ]);
+        ++ (if config.services.liquidd.enable then [ config.services.liquidd.group ] else [ ])
+        ++ (if (config.services.hardware-wallets.ledger || config.services.hardware-wallets.trezor)
+          then [ config.services.hardware-wallets.group ] else [ ]);
     };
     # Give operator access to onion hostnames
     services.onion-chef.enable = true;
@@ -174,7 +177,15 @@ in {
     ++ optionals config.services.nix-bitcoin-webindex.enable [nginx]
     ++ optionals config.services.liquidd.enable [liquidd]
     ++ optionals config.services.spark-wallet.enable [spark-wallet]
-    ++ optionals config.services.electrs.enable [electrs];
+    ++ optionals config.services.electrs.enable [electrs]
+    ++ optionals (config.services.hardware-wallets.ledger || config.services.hardware-wallets.trezor) [
+        hwi
+        # To allow debugging issues with lsusb:
+        usbutils
+    ]
+    ++ optionals config.services.hardware-wallets.trezor [
+        python35.pkgs.trezor
+    ];
   };
 }
 
