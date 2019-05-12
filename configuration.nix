@@ -93,12 +93,6 @@
     vim
   ];
 
-  # FIXME: Turn on the binary cache by commenting out the next line. When the
-  # binary cache is enabled you are retrieving builds from a trusted third
-  # party which can compromise your system. As a result, the cache should only
-  # be enabled to speed up deployment of test systems.
-  nix.binaryCaches = [];
-
   # FIXME: Add custom options (like boot options, output of
   # nixos-generate-config, etc.):
 

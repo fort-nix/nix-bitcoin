@@ -47,6 +47,7 @@ The following steps are meant to be run on the machine you deploy from, not the 
 
 ## 2. Nix installation
 The following steps are meant to be run on the machine you deploy from, not the machine you deploy to.
+You can also build Nix from source by following the instructions at https://nixos.org/nix/manual/#ch-installing-source.
 
 1. Install Dependencies (Debian 9 stretch)
 
@@ -73,6 +74,12 @@ The following steps are meant to be run on the machine you deploy from, not the 
 	/tmp/nix-binary-tarball-unpack.hqawN4uSPr/unpack/nix-2.2.1-x86_64-linux/install: unable to install Nix into your default profile
 	```
 	you're likely not installing as multi-user because you forgot to pass the `--daemon` flag to the install script.
+
+3. Optional: Disallow substitutes
+
+	You can put `substitute = false` to your `nix.conf` usually found in `/etc/nix/` to build the packages from source.
+	This eliminates an attack vector where nix's build server or binary cache is compromised.
+
 
 ## 3. Nixops deployment
 
@@ -127,6 +134,7 @@ This is borrowed from the [NixOS manual](https://nixos.org/nixos/manual/index.ht
 	```
 	wget https://releases.nixos.org/nixos/18.09/nixos-18.09.2257.235487585ed/nixos-graphical-18.09.2257.235487585ed-x86_64-linux.iso
 	```
+	Alternatively you can build NixOS from source by following the instructions at https://nixos.org/nixos/manual/index.html#sec-building-cd.
 
 2. Write NixOS iso to install media (USB/CD). For example:
 
@@ -249,6 +257,7 @@ This is borrowed from the [NixOS manual](https://nixos.org/nixos/manual/index.ht
 ## 2. nix-bitcoin installation
 
 On the machine you are deploying from:
+You can also build Nix from source by following the instructions at https://nixos.org/nix/manual/#ch-installing-source.
 
 1. Install Dependencies (Debian 9 stretch)
 
@@ -277,7 +286,12 @@ On the machine you are deploying from:
 	```
 	you're likely not installing as multi-user because you forgot to pass the `--daemon` flag to the install script.
 
-3. Clone this project
+3. Optional: Disallow substitutes
+
+	You can put `substitute = false` to your `nix.conf` usually found in `/etc/nix/` to build the packages from source.
+	This eliminates an attack vector where nix's build server or binary cache is compromised.
+
+4. Clone this project
 
 	```
 	cd
@@ -285,7 +299,7 @@ On the machine you are deploying from:
 	cd ~/nix-bitcoin
 	```
 
-4. Create network file
+5. Create network file
 
 	```
 	nano network/network-nixos.nix
@@ -302,22 +316,22 @@ On the machine you are deploying from:
 
 	Replace 1.2.3.4 with NixOS machine's IP address.
 
-5. Edit `configuration.nix`
+6. Edit `configuration.nix`
 
 	```
 	nano configuration.nix
 	```
 
 	Uncomment `./hardware-configuration.nix` line by removing #.
-	
-6. Create `hardware-configuration.nix`
+
+7. Create `hardware-configuration.nix`
 
 	```
 	nano hardware-configuration.nix
 	```
 	Copy contents of NixOS machine's `hardware-configuration.nix` to file.
 
-7. Add boot option to `hardware-configuration.nix`
+8. Add boot option to `hardware-configuration.nix`
 
 	Option 1: Enable systemd boot for UEFI
 	```
@@ -326,9 +340,9 @@ On the machine you are deploying from:
 	Option 2: Set grub device for Legacy Boot (MBR)
 	```
 	boot.loader.grub.device = "/dev/sda":
-	``` 
+	```
 
-8. Setup environment
+9. Setup environment
 
 	```
 	nix-shell
@@ -336,23 +350,23 @@ On the machine you are deploying from:
 
 	This will set up your nix-bitcoin environment and might take a while without giving an output.
 
-9. Create nixops deployment in nix-shell.
+10. Create nixops deployment in nix-shell.
 
 	```
 	nixops create network/network.nix network/network-nixos.nix -d bitcoin-node
 	```
 
-10. Adjust configuration by opening `configuration.nix` and removing FIXMEs. Enable/disable the modules you want in `configuration.nix`.
+11. Adjust configuration by opening `configuration.nix` and removing FIXMEs. Enable/disable the modules you want in `configuration.nix`.
 
-11. Deploy Nixops in nix-shell
-	
+12. Deploy Nixops in nix-shell
+
 	```
 	nixops deploy -d bitcoin-node
 	```
 
 	This will now create a nix-bitcoin node on the target machine.
 
-12. Nixops automatically creates an ssh key for use with `nixops ssh`. Access `bitcoin-node` through ssh in nix-shell with
+13. Nixops automatically creates an ssh key for use with `nixops ssh`. Access `bitcoin-node` through ssh in nix-shell with
 
 	```
 	nixops ssh operator@bitcoin-node
