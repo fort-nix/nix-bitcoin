@@ -197,7 +197,7 @@ Initialize a Trezor for Bitcoin Core's Hardware Wallet Integration
 	Follow the on-screen instructions
 
 	**Caution: This command _will_ wipe your device. If you already store Bitcoin on it, only do this with the recovery seed nearby.**
-	
+
 5. Set up your Trezor, if this is a fresh device
 
 	```

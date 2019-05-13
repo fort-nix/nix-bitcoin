@@ -38,7 +38,7 @@
 
   ### ELECTRS
   # Enable this module to use electrs, an efficient re-implementation of
-  # Electrum Server in Rust. Only enable this if hardware wallets are 
+  # Electrum Server in Rust. Only enable this if hardware wallets are
   # disabled.
   # services.electrs.enable = true;
 
@@ -85,8 +85,8 @@
   # Ledger must be initialized through the official ledger live app and the Bitcoin app must
   # be installed and running on the device.
   # services.hardware-wallets.ledger = true;
-  # Trezor can be initialized with the trezorctl command in nix-bitcoin. More information can 
-  # be found in `docs/usage.md`.
+  # Trezor can be initialized with the trezorctl command in nix-bitcoin. More information in
+  # `docs/usage.md`.
   # services.hardware-wallets.trezor = true;
 
   # FIXME: Define your hostname.

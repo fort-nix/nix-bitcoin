@@ -25,8 +25,7 @@ It should be a reproducible and extensible platform for applications building on
 Available modules
 ---
 By default the `configuration.nix` provides:
-* bitcoind (pruned) with outbound connections through Tor and inbound connections through a hidden
-      service. By default loaded with banlist of spy nodes.
+* bitcoind with outbound connections through Tor and inbound connections through a hidden service. By default loaded with banlist of spy nodes.
 * [clightning](https://github.com/ElementsProject/lightning) with outbound connections through Tor, not listening
 * includes "nodeinfo" script which prints basic info about the node
 * adds non-root user "operator" which has access to bitcoin-cli and lightning-cli
@@ -40,6 +39,8 @@ In `configuration.nix` the user can enable:
 * [spark-wallet](https://github.com/shesek/spark-wallet)
 * [electrs](https://github.com/romanz/electrs)
 * recurring-donations, a module to repeatedly send lightning payments to recipients specified in the configuration.
+* [bitcoin-core-hwi](https://github.com/bitcoin-core/HWI).
+  * You no longer need extra software to connect your hardware wallet to Bitcoin Core. Use Bitcoin Core's own **H**ardware **W**allet **I**nterface with one `configuration.nix` setting.
 
 The data directories of the services can be found in `/var/lib` on the deployed machines.
 

@@ -341,7 +341,7 @@ You can also build Nix from source by following the instructions at https://nixo
 	```
 	```
 	boot.loader.grub.device = "/dev/sda";
-	``` 
+	```
 
 9. Setup environment
 
