@@ -149,7 +149,7 @@ Connect to nix-bitcoin node through ssh Tor Hidden Service
 
 6. Now you can run `nixops deploy -d bitcoin-node` and it will connect through the ssh tunnel you established in step iv. This also allows you to do more complex ssh setups that `nixops ssh` doesn't support. An example would be authenticating with [Trezor's ssh agent](https://github.com/romanz/trezor-agent), which provides extra security.
 
-Initialize a Trezor for Bitcoin Core's Hardware Wallet Integration
+Initialize a Trezor for Bitcoin Core's Hardware Wallet Interface
 ---
 
 1. Enable Trezor in `configuration.nix`
@@ -169,7 +169,7 @@ Initialize a Trezor for Bitcoin Core's Hardware Wallet Integration
 	nixops deploy -d bitcoin-node
 	```
 
-3. Check that your nix-bitcoin node recognizes the Trezor
+3. Check that your nix-bitcoin node recognizes your Trezor
 
 	```
 	nixops ssh operator@bitcoin-node
@@ -177,35 +177,35 @@ Initialize a Trezor for Bitcoin Core's Hardware Wallet Integration
 	```
 	Should show something relating to your Trezor
 
-3. Start the Trezor in bootloader mode
+4. If your Trezor has outdated firmware or is not yet initialized: Start your Trezor in bootloader mode
 
 	Trezor v1
 	```
-	Plug in the Trezor with both buttons depressed
+	Plug in your Trezor with both buttons depressed
 	```
 
 	Trezor v2
 	```
-	Start swiping your finger across the Trezor's touchscreen and plug in the USB cable when your finger is halfway through
+	Start swiping your finger across your Trezor's touchscreen and plug in the USB cable when your finger is halfway through
 	```
 
-4. Update your Trezor's firmware
+5. If your Trezor's firmware is outdated: Update your Trezor's firmware
 
 	```
 	trezorctl firmware-update
 	```
 	Follow the on-screen instructions
 
-	**Caution: This command _will_ wipe your device. If you already store Bitcoin on it, only do this with the recovery seed nearby.**
+	**Caution: This command _will_ wipe your Trezor. If you already store Bitcoin on it, only do this with the recovery seed nearby.**
 
-5. Set up your Trezor, if this is a fresh device
+6. If your Trezor is not yet initialized: Set up your Trezor
 
 	```
 	trezorctl reset-device -p
 	```
 	Follow the on-screen instructions
 
-6. Find your Trezor
+7. Find your Trezor
 
 	```
 	hwi enumerate
@@ -214,4 +214,4 @@ Initialize a Trezor for Bitcoin Core's Hardware Wallet Integration
 	hwi enumerate
 	```
 
-7. Follow Bitcoin Core's instructions on [Using Bitcoin Core with Hardware Wallets](https://github.com/bitcoin-core/HWI/blob/master/docs/bitcoin-core-usage.md) to use your Trezor with `bitcoin-cli` on your nix-bitcoin node
+8. Follow Bitcoin Core's instructions on [Using Bitcoin Core with Hardware Wallets](https://github.com/bitcoin-core/HWI/blob/master/docs/bitcoin-core-usage.md) to use your Trezor with `bitcoin-cli` on your nix-bitcoin node
