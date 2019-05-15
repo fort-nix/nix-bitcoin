@@ -132,14 +132,14 @@ This is borrowed from the [NixOS manual](https://nixos.org/nixos/manual/index.ht
 1. Obtain latest NixOS. For example:
 
 	```
-	wget https://releases.nixos.org/nixos/18.09/nixos-18.09.2257.235487585ed/nixos-graphical-18.09.2257.235487585ed-x86_64-linux.iso
+	wget https://releases.nixos.org/nixos/19.03/nixos-19.03.172538.7bb74e65365/nixos-minimal-19.03.172538.7bb74e65365-x86_64-linux.iso
 	```
 	Alternatively you can build NixOS from source by following the instructions at https://nixos.org/nixos/manual/index.html#sec-building-cd.
 
 2. Write NixOS iso to install media (USB/CD). For example:
 
 	```
-	dd if=nixos-graphical-18.09.2257.235487585ed-x86_64-linux.iso of=/dev/sdX
+	dd if=nixos-minimal-19.03.172538.7bb74e65365-x86_64-linux.iso of=/dev/sdX
 	```
 
 	Replace /dev/sdX with the correct device name. You can find this using `sudo fdisk -l`
@@ -309,7 +309,7 @@ You can also build Nix from source by following the instructions at https://nixo
 	{
 	  bitcoin-node =
 	    { config, pkgs, ... }:
-	    { deployment.targetHost = 1.2.3.4;
+	    { deployment.targetHost = "1.2.3.4";
 	    };
 	}
 	```
@@ -329,7 +329,7 @@ You can also build Nix from source by following the instructions at https://nixo
 	```
 	nano hardware-configuration.nix
 	```
-	Copy contents of NixOS machine's `hardware-configuration.nix` to file.
+	Copy contents of NixOS machine's `/etc/nixos/hardware-configuration.nix` to file.
 
 8. Add boot option to `hardware-configuration.nix`
 
@@ -339,7 +339,8 @@ You can also build Nix from source by following the instructions at https://nixo
 	```
 	Option 2: Set grub device for Legacy Boot (MBR)
 	```
-	boot.loader.grub.device = "/dev/sda":
+	```
+	boot.loader.grub.device = "/dev/sda";
 	```
 
 9. Setup environment
