@@ -166,7 +166,7 @@ in {
     };
     environment.systemPackages = with pkgs; [
       tor
-      bitcoin
+      altcoins.bitcoind
       nodeinfo
       banlist
       jq
