@@ -12,8 +12,8 @@ in {
 
   nixpkgs.config.packageOverrides = pkgs: {
     # Use bitcoin and clightning from unstable
-    bitcoin = nixpkgs-unstable.bitcoin.override { };
-    altcoins.bitcoind = nixpkgs-unstable.altcoins.bitcoind.override { };
+    bitcoin = nixpkgs-unstable.bitcoin.override { miniupnpc = null; };
+    altcoins.bitcoind = nixpkgs-unstable.altcoins.bitcoind.override { miniupnpc = null; };
     clightning = nixpkgs-unstable.clightning.override { };
   };
 }
