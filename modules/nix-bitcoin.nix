@@ -172,6 +172,7 @@ in {
       nodeinfo
       banlist
       jq
+      qrencode
     ]
     ++ optionals config.services.clightning.enable [clightning]
     ++ optionals config.services.lightning-charge.enable [lightning-charge]
