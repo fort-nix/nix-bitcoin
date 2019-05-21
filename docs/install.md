@@ -128,7 +128,9 @@ Tutorial: install and configure NixOS for nix-bitcoin on your own hardware
 
 ## 0. Preparation
 
-1. Optional: Disable Simultaneous Multi-Threading (SMT) in the BIOS
+1. Optional: Make sure you have the latest firmware for your system (BIOS, microcode updates).
+
+2. Optional: Disable Simultaneous Multi-Threading (SMT) in the BIOS
 
     Researchers recommend disabling (SMT), also known as Hyper-Threading Technology in the Intel® world to significantly reduce the impact of speculative exacution-based attacks (https://mdsattacks.com/).
 
