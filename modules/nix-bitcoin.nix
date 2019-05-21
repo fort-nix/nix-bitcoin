@@ -68,6 +68,8 @@ in {
       assumevalid=0000000000000000000726d186d6298b5054b9a5c49639752294b322a305d240
       addnode=ecoc5q34tmbq54wl.onion
       discover=0
+      addresstype=bech32
+      changetype=bech32
     '';
     services.bitcoind.prune = 0;
     services.bitcoind.dbCache = 1000;
@@ -170,6 +172,7 @@ in {
       nodeinfo
       banlist
       jq
+      qrencode
     ]
     ++ optionals config.services.clightning.enable [clightning]
     ++ optionals config.services.lightning-charge.enable [lightning-charge]
