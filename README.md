@@ -52,13 +52,10 @@ See [install.md](docs/install.md) for a detailed tutorial.
 
 Security
 ---
-* Nix package manager, NixOS and packages can be built from source to reduce reliance on binary caches.
-* Builds happen in a [sandboxed environment](https://nixos.org/nix/manual/).
-* Packages dependencies are [pinned](pkgs/nixpkgs-pinned.nix). Most packages are built from the [nixos stable channel](https://github.com/NixOS/nixpkgs-channels/tree/nixos-19.03), with a few exceptions that are built from the nixpkgs unstable channel.
-* nix-bitcoin merge commits are signed.
-* nix-bitcoin is built with a [hardened kernel](https://github.com/NixOS/nixpkgs/blob/master/nixos/modules/profiles/hardened.nix) by default.
-* Services operate with least privileges. They each have their own user and are restricted further with [systemd options](modules/nix-bitcoin-services.nix).
-* There's a non-root user *operator* to interact with the various services.
+* **Simplicity:** Only services you select in `configuration.nix` and their dependencies are installed, packages and dependencies are [pinned](pkgs/nixpkgs-pinned.nix), most packages are built from the [nixos stable channel](https://github.com/NixOS/nixpkgs-channels/tree/nixos-19.03), with a few exceptions that are built from the nixpkgs unstable channel, builds happen in a [sandboxed environment](https://nixos.org/nix/manual/), code is continiously reviewed and refined.
+* **Integrity:** Nix package manager, NixOS and packages can be built from source to reduce reliance on binary caches, nix-bitcoin merge commits are signed, all commits are approved by multiple nix-bitcoin developers, upstream packages are cryptographically verified where possible, we use this software ourselves.
+* **Principle of Least Privilege:** Services operate with least privileges; they each have their own user and are restricted further with [systemd options](modules/nix-bitcoin-services.nix), there's a non-root user *operator* to interact with the various services.
+* **Defense-in-depth:** nix-bitcoin is built with a [hardened kernel](https://github.com/NixOS/nixpkgs/blob/master/nixos/modules/profiles/hardened.nix) by default, services are confined through discretionary access control, Linux namespaces, and seccomp-bpf with continuous improvements.
 
 Note that nix-bitcoin is still experimental.
 Also, by design if the machine you're deploying *from* is insecure, there is nothing nix-bitcoin can do to protect itself.
