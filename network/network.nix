@@ -40,14 +40,14 @@ let
     keyFile = ../secrets/ssl_certificate_key.key;
     destDir = "/secrets/";
     user = "nginx";
-    group = "root";
+    group = "nginx";
     permissions = "0440";
   };
   ssl_certificate = {
     keyFile = ../secrets/ssl_certificate.crt;
     destDir = "/secrets/";
     user = "nginx";
-    group = "root";
+    group = "nginx";
     permissions = "0440";
   };
 in {

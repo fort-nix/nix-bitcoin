@@ -21,6 +21,7 @@ in {
     ./clightning.nix
     ./lightning-charge.nix
     ./nanopos.nix
+    ./nginx.nix
     ./nix-bitcoin-webindex.nix
     ./liquid.nix
     ./spark-wallet.nix
@@ -134,6 +135,8 @@ in {
         type = "oneshot";
       };
     };
+
+    services.nginx.enforceTor = true;
 
     services.nix-bitcoin-webindex.enforceTor = true;
 
