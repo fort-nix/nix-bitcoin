@@ -2,7 +2,7 @@ Updating
 ---
 Run `git pull` in the nix-bitcoin directory, enter the nix shell with `nix-shell` and redeploy with `nixops deploy -d bitcoin-node`.
 
-## Verifying GPG Signatures (recommended)
+### Verifying GPG Signatures (recommended)
 1. Import jonasnick's gpg key
 
 	```
@@ -30,6 +30,11 @@ Run `nodeinfo` to see your onion addresses for the webindex, spark, etc. if they
 
 Connect to spark-wallet
 ---
+### Requirements
+* Android phone
+* [Orbot](https://guardianproject.info/apps/orbot/) installed from [F-Droid](https://guardianproject.info/fdroid) (recommended) or [Google Play](https://play.google.com/store/apps/details?id=org.torproject.android&hl=en)
+* [Spark-wallet](https://github.com/shesek/spark-wallet) installed from [direct download](https://github.com/shesek/spark-wallet/releases) or [Google Play](https://play.google.com/store/apps/details?id=com.spark.wallet)
+
 1. Enable spark-wallet in `configuration.nix`
 	
 	Change 
@@ -47,14 +52,23 @@ Connect to spark-wallet
 	nixops deploy -d bitcoin-node
 	```
 
-3. Get the onion address, access key and QR access code for the spark wallet android app
+3. Enable Orbot VPN for spark-wallet
+
+	```
+	Open Orbot app
+	Turn on "VPN Mode"
+	Select Gear icon under "Tor-Enabled Apps"
+	Toggle checkbox under Spark icon
+	``` 
+
+4. Get the onion address, access key and QR access code for the spark wallet android app
 
 	```
 	journalctl -eu spark-wallet
 	```
 	Note: The qr code might have issues scanning if you have a light terminal theme. Try setting it to dark or highlightning the entire output to invert the colors.
 
-4. Connect to spark-wallet android app
+5. Connect to spark-wallet android app
 
 	```
 	Server Settings
@@ -64,6 +78,15 @@ Connect to spark-wallet
 
 Connect to electrs
 ---
+### Requirements Android
+* Android phone
+* [Orbot](https://guardianproject.info/apps/orbot/) installed from [F-Droid](https://guardianproject.info/fdroid) (recommended) or [Google Play](https://play.google.com/store/apps/details?id=org.torproject.android&hl=en)
+* [Electrum mobile app](https://electrum.org/#home) installed from [direct download](https://electrum.org/#download) or [Google Play](https://play.google.com/store/apps/details?id=org.electrum.electrum)
+
+### Requirements Desktop
+* [Tor](https://www.torproject.org/) installed from [source](https://www.torproject.org/docs/tor-doc-unix.html.en) or [repository](https://www.torproject.org/docs/debian.html.en)
+* [Electrum](https://electrum.org/#download) installed
+
 1. Enable electrs in `configuration.nix`
 	
 	Change 
@@ -91,15 +114,18 @@ Connect to electrs
 
 	On electrum wallet laptop
 	```
-	electrum --oneserver --server=<ELECTRS_ONION>:50002:s
+	electrum --oneserver --server=<ELECTRS_ONION>:50002:s --proxy=socks5:localhost:9050
 	```
 
 	On electrum android phone
 	```
 	Three dots in the upper-right-hand corner
 	Network
-	Server > Enter <ELECTRS_ONION>
-	Back
+	Proxy mode: socks5, Host: 127.0.0.1, Port: 9050
+	Ok
+	Server
+	Host: <ELECTRS_ONION>, Port: 50002
+	Ok
 	Auto-connect: OFF
 	One-server mode: ON
 	```
