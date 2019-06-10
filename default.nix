@@ -9,7 +9,7 @@
   lightning-charge = pkgs.callPackage ./pkgs/lightning-charge { };
   nanopos = pkgs.callPackage ./pkgs/nanopos { };
   spark-wallet = pkgs.callPackage ./pkgs/spark-wallet { };
-  electrs = pkgs.callPackage ./pkgs/electrs { };
+  electrs = (pkgs.callPackage ./pkgs/electrs { }).rootCrate.build;
   liquidd = pkgs.callPackage ./pkgs/liquidd { };
   hwi = pkgs.callPackage ./pkgs/hwi { };
 }
