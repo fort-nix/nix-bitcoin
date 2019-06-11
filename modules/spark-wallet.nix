@@ -15,6 +15,9 @@ let
       CMD="$CMD --public-url http://$(cat /var/lib/onion-chef/clightning/spark-wallet)"
       ''
     }
+    # Use rate provide wasabi because default (bitstamp) doesn't accept
+    # connections through Tor and add proxy for rate lookup.
+    CMD="$CMD --rate-provider wasabi --proxy socks5h://${config.services.tor.client.socksListenAddress}"
     echo Running $CMD
     $CMD
   '';
@@ -45,6 +48,8 @@ in {
 
   config = mkIf cfg.enable {
     services.tor.enable = cfg.onion-service;
+    # requires client functionality for Bitcoin rate lookup
+    services.tor.client.enable = true;
     services.tor.hiddenServices.spark-wallet = mkIf cfg.onion-service {
       map = [{
         port = 80; toPort = 9737;
