@@ -8,13 +8,13 @@ let
 in
 buildPythonPackage rec {
   pname = "hwi";
-  version = "1.0.0";
+  version = "1.0.1";
 
   src = fetchFromGitHub {
     owner = "bitcoin-core";
     repo = "HWI";
-    rev = "4dd56fda3cd9cade8abc482e43e7733ddc8360a9";
-    sha256 = "1xy2iq95b8a4cm9k5yzsi8lx1ha0dral3lhshbl1mfm1fi9ch3nk";
+    rev = version;
+    sha256 = "0m3p72r8ghzwwsmc7y0dzxn0wzaplqqq1q0cd327fnnljddp5b10";
   };
 
   # TODO: enable tests
