@@ -115,7 +115,15 @@ You can also build Nix from source by following the instructions at https://nixo
 
 	This will now create a nix-bitcoin node on the target machine.
 
-6. Nixops automatically creates an ssh key for use with `nixops ssh`. Access `bitcoin-node` through ssh in nix-shell with
+6. Resize the virtualbox disk
+    
+	```
+	./contrib/vbox-resize-disk1.sh
+	```
+
+	NixOps provides a virtualbox disk thats 50gb in size, but we need more than that to house the Bitcoin blockchain. By default, his script will resize the disk to 300gb. Run it with `-h` to see options. Make sure to run this from within your nix-shell.
+
+7. Nixops automatically creates an ssh key for use with `nixops ssh`. Access `bitcoin-node` through ssh in nix-shell with
 
 	```
 	nixops ssh operator@bitcoin-node
