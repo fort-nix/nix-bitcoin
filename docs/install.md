@@ -9,6 +9,8 @@ Have a look at the options in the [NixOps manual](https://nixos.org/nixops/manua
 2. [Install and configure NixOS for nix-bitcoin on VirtualBox (macOS host)](#tutorial-install-and-configure-nixos-for-nix-bitcoin-on-virtualbox-macOS-host)
 3. [Install and configure NixOS for nix-bitcoin on your own hardware](#tutorial-install-and-configure-nixos-for-nix-bitcoin-on-your-own-hardware)
 
+----
+
 Tutorial: install and configure NixOS for nix-bitcoin on VirtualBox
 ---
 ## 1. VirtualBox installation
@@ -122,7 +124,7 @@ You can also build Nix from source by following the instructions at https://nixo
 	./contrib/vbox-resize-disk1.sh
 	```
 
-	NixOps provides a virtualbox disk thats 50gb in size, but we need more than that to house the Bitcoin blockchain. By default, his script will resize the disk to 300gb. Run it with `-h` to see options. Make sure to run this from within your nix-shell.
+	NixOps provides a virtualbox disk thats 50gb in size, but we need more than that to house the Bitcoin blockchain. By default, this script will resize the disk to 300gb. Run it with `-h` to see options. Make sure to run this from within your nix-shell.
 
 7. Nixops automatically creates an ssh key for use with `nixops ssh`. Access `bitcoin-node` through ssh in nix-shell with
 
@@ -132,9 +134,11 @@ You can also build Nix from source by following the instructions at https://nixo
 
 See [usage.md](usage.md) for usage instructions, such as how to update.
 
+----
+
 Tutorial: install and configure NixOS for nix-bitcoin on VirtualBox (macOS host)
 ---
-## 1. VirtualBox installation
+## 1. VirtualBox installation (macOS)
 The following steps are meant to be run on the machine you deploy from, not the machine you deploy to.
 
 1. Download and install VirtualBox
@@ -148,25 +152,9 @@ The following steps are meant to be run on the machine you deploy from, not the 
 	vboxmanage hostonlyif create
 	```
 
-## 2. Nix installation
-The following steps are meant to be run on the machine you deploy from, not the machine you deploy to. You can also build Nix from source by following the instructions at https://nixos.org/nix/manual/#ch-installing-source.
+## 2. Nix installation (macOS)
 
-1. Install latest Nix in "multi-user mode" with GPG Verification
-
-	```
-	curl -o install-nix https://nixos.org/nix/install
-	curl -o install-nix.sig https://nixos.org/nix/install.sig
-	gpg2 --recv-keys B541D55301270E0BCF15CA5D8170B4726D7198DE
-	gpg2 --verify ./install-nix.sig
-	sh ./install-nix --daemon
-	```
-
-	Then follow the instructions. Open a new terminal window when you're done. Make sure that `nix-shell -p nix-info --run "nix-info -m"` executes successfully. 
-
-2. Optional: Disallow substitutes
-
-	You can put `substitute = false` to your `nix.conf` usually found in `/etc/nix/` to build the packages from source.
-	This eliminates an attack vector where nix's build server or binary cache is compromised.
+Follow the instructions from [Nix installation on debian](#2-nix-installation). You will may need to replace `gpg2` with `gpg`.
 
 ## 3. LinuxKit Nix installation
 In order to build binaries for your linux (NixOS) virtual machine on a macOS host machine, you need to use [linuxkit-nix](https://github.com/nix-community/linuxkit-nix). It uses hyperkit to spin up a separate VM on which it builds binaries. An alternative solution is [nix-docker-build-slave](https://github.com/LnL7/nix-docker/blob/master/start-docker-nix-build-slave).
@@ -188,47 +176,11 @@ In order to build binaries for your linux (NixOS) virtual machine on a macOS hos
 
 	As the installer says, run a `nix-build` to make sure that you are able to build linux binaries. The `example.nix` is specifically configured to force a x86_64-linux build. Remove the generated `result` folder afterwards.
 
-## 4. Nixops deployment
+## 4. Nixops deployment (macOS)
 
-1. Clone this project
+Follow the instructions from [Nixops deployment on debian](#3-nixops-deployment). Add  `--option system x86_64-linux` to the `nixops deploy` command in step 5 to force your system to use linuxkit-nix.
 
-	```
-	cd
-	git clone https://github.com/fort-nix/nix-bitcoin
-	cd ~/nix-bitcoin
-	```
-
-2. Setup environment
-
-	```
-	nix-shell
-	```
-
-	This will set up your nix-bitcoin environment and might take a while without giving an output.
-
-3. Create nixops deployment in nix-shell.
-
-	```
-	nixops create network/network.nix network/network-vbox.nix -d bitcoin-node
-	```
-
-4. Adjust configuration by opening `configuration.nix` and removing FIXMEs. Enable/disable the modules you want in `configuration.nix`.
-
-5. Deploy Nixops in nix-shell
-
-	```
-	nixops deploy -d bitcoin-node --option system x86_64-linux
-	```
-
-	This will now create a nix-bitcoin node on the target machine. The `--option system x86_64-linux` is necessary for `linuxkit-nix` to work.
-
-6. Nixops automatically creates an ssh key for use with `nixops ssh`. Access `bitcoin-node` through ssh in nix-shell with
-
-	```
-	nixops ssh operator@bitcoin-node
-	```
-
-See [usage.md](usage.md) for usage instructions, such as how to update.
+----
 
 Tutorial: install and configure NixOS for nix-bitcoin on your own hardware
 ---
