@@ -180,11 +180,10 @@ in {
       preStart = ''
         if ! test -e ${cfg.dataDir}; then
           mkdir -m 0770 -p '${cfg.dataDir}'
-          chown '${cfg.user}:${cfg.group}' '${cfg.dataDir}'
         fi
         cp '${configFile}' '${cfg.dataDir}/liquid.conf'
         chmod o-rw  '${cfg.dataDir}/liquid.conf'
-        chown '${cfg.user}:${cfg.group}' '${cfg.dataDir}/liquid.conf'
+        chown '${cfg.user}:${cfg.group}' '${cfg.dataDir}'
         echo "rpcpassword=$(cat /secrets/liquid-rpcpassword)" >> '${cfg.dataDir}/liquid.conf'
         echo "mainchainrpcpassword=$(cat /secrets/bitcoin-rpcpassword)" >> '${cfg.dataDir}/liquid.conf'
       '';
