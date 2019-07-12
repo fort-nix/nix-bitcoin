@@ -1,4 +1,8 @@
 { pkgs ? import <nixpkgs> {} }:
+
+let
+  dotnet = pkgs.callPackage ./build-support/dotnet { };
+in
 {
   # 'lib', 'modules' and 'overlays' are special, see
   # https://github.com/nix-community/NUR for more.
