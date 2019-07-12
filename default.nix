@@ -12,6 +12,10 @@ in
     inherit dotnet;
   };
 
+  nbxplorer = pkgs.callPackage ./pkgs/nbxplorer {
+    inherit dotnet;
+  };
+
   nodeinfo = pkgs.callPackage ./pkgs/nodeinfo { };
   banlist = pkgs.callPackage ./pkgs/banlist { };
   lightning-charge = pkgs.callPackage ./pkgs/lightning-charge { };
