@@ -8,6 +8,10 @@ in
   # https://github.com/nix-community/NUR for more.
   modules = import ./modules; # NixOS modules
 
+  btcpayserver = pkgs.callPackage ./pkgs/btcpayserver {
+    inherit dotnet;
+  };
+
   nodeinfo = pkgs.callPackage ./pkgs/nodeinfo { };
   banlist = pkgs.callPackage ./pkgs/banlist { };
   lightning-charge = pkgs.callPackage ./pkgs/lightning-charge { };
