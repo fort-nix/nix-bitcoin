@@ -24,7 +24,7 @@ while getopts ":d:m:s:f:yh" opt; do
       echo "Options:"
       echo "  -d <deployment>  NixOps deployment name. Default: bitcoin-node."
       echo "  -m <machine>     NixOps machine name. Default: bitcoin-node."
-      echo "  -s <size>        New disk size in megabytes. Default: 307200 (300gb)."
+      echo "  -s <size>        New disk size in megabytes. Default: 358400 (350gb)."
       echo "  -f <file>        Path to vbox disk file/VDI. Default: read from nixops export."
       echo "  -y               Don't ask for confirmation."
       exit 0
@@ -42,7 +42,7 @@ done
 
 DEPLOYMENT=${DEPLOYMENT:-"bitcoin-node"}
 MACHINE=${MACHINE:-"bitcoin-node"}
-NEW_SIZE=${NEW_SIZE:-307200}
+NEW_SIZE=${NEW_SIZE:-358400}
 DISK_FILE=${DISK_FILE:-$(nixops export -d $DEPLOYMENT | jq -r '..|."virtualbox.disks"?|select(.!=null)' | jq -r .disk1.path)}
 
 echo "Resizing virtualbox disk for use with nixops and nix-bitcoin."
@@ -67,7 +67,7 @@ nixops start -d $DEPLOYMENT
 
 # (
 # echo d # [d]elete 50gb partition
-# echo n # [n]ew partitoin
+# echo n # [n]ew partition
 # echo p # [p]rimary partition
 # echo   # partition number (Accept default: 1)
 # echo   # first sector (Accept default: 1)

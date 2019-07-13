@@ -124,7 +124,7 @@ You can also build Nix from source by following the instructions at https://nixo
 	./contrib/vbox-resize-disk1.sh
 	```
 
-	NixOps provides a virtualbox disk thats 50gb in size, but we need more than that to house the Bitcoin blockchain. By default, this script will resize the disk to 300gb. Run it with `-h` to see options. Make sure to run this from within your nix-shell.
+	NixOps provides a virtualbox disk thats 50gb in size, but we need more than that to house the Bitcoin blockchain. By default, this script will resize the disk to 350gb. Run it with `-h` to see options. Make sure to run this from within your nix-shell.
 
 7. Nixops automatically creates an ssh key for use with `nixops ssh`. Access `bitcoin-node` through ssh in nix-shell with
 
@@ -171,7 +171,7 @@ In order to build binaries for your linux (NixOS) virtual machine on a macOS hos
 2. Confirm that nix-linuxkit works
 
     ```
-	nix-build /Users/lev/.cache/nix-linuxkit-builder/example.nix
+	nix-build ~/.cache/nix-linuxkit-builder/example.nix
 	```
 
 	As the installer says, run a `nix-build` to make sure that you are able to build linux binaries. The `example.nix` is specifically configured to force a x86_64-linux build. Remove the generated `result` folder afterwards.
@@ -191,7 +191,7 @@ Tutorial: install and configure NixOS for nix-bitcoin on your own hardware
 
 2. Optional: Disable Simultaneous Multi-Threading (SMT) in the BIOS
 
-    Researchers recommend disabling (SMT), also known as Hyper-Threading Technology in the Intel® world to significantly reduce the impact of speculative exacution-based attacks (https://mdsattacks.com/).
+    Researchers recommend disabling (SMT), also known as Hyper-Threading Technology in the Intel® world to significantly reduce the impact of speculative execution-based attacks (https://mdsattacks.com/).
 
 ## 1. NixOS installation
 
