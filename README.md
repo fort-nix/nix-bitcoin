@@ -74,7 +74,9 @@ For usage instructions, such as how to connect to spark-wallet, electrs and the 
 
 Troubleshooting
 ---
-If you are having problems with nix-bitcoin check the [FAQ](docs/faq.md) or submit an issue. We are always happy to help.
+If you are having problems with nix-bitcoin check the [FAQ](docs/faq.md) or submit an issue.
+There's also a `#nix-bitcoin` IRC channel on freenode.
+We are always happy to help.
 
 Docs
 ---
