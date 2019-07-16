@@ -12,4 +12,5 @@
   electrs = (pkgs.callPackage ./pkgs/electrs { }).rootCrate.build;
   liquidd = pkgs.callPackage ./pkgs/liquidd { };
   hwi = pkgs.callPackage ./pkgs/hwi { };
+  pylightning = pkgs.callPackage ./pkgs/pylightning { };
 }
