@@ -1,6 +1,4 @@
-{ lib, python35 }:
-
-with python35.pkgs;
+{ lib, buildPythonPackage, fetchPypi }:
 
 buildPythonPackage rec {
   pname = "pylightning";
