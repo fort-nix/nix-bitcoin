@@ -66,7 +66,7 @@ Hardware requirements
   * Bitcoin Core pruning is not supported at the moment because it's not supported by c-lightning. It's possible to use pruning but you need to know what you're doing.
 * RAM: 2GB of memory. ECC memory is better.
 
-Tested hardware includes [pcengine's apu2c4](https://pcengines.ch/apu2c4.htm)
+Tested hardware includes [pcengine's apu2c4](https://pcengines.ch/apu2c4.htm), [GB-BACE-3150](https://www.gigabyte.com/Mini-PcBarebone/GB-BACE-3150-rev-10), [GB-BACE-3160](https://www.gigabyte.com/de/Mini-PcBarebone/GB-BACE-3160-rev-10#ov)
 
 Usage
 ---
