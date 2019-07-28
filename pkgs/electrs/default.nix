@@ -23,7 +23,7 @@ rec {
     # Use this attribute to refer to the derivation building your root crate package.
     # You can override the features with rootCrate.build.override { features = [ "default" "feature1" ... ]; }.
     build = buildRustCrateWithFeatures {
-      packageId = "electrs 0.6.2 (registry+https://github.com/romanz/electrs)";
+      packageId = "electrs 0.7.1 (registry+https://github.com/romanz/electrs)";
       features = rootFeatures;
     };
   };
@@ -35,7 +35,7 @@ rec {
   workspaceMembers = {
     "electrs" = {
       build = buildRustCrateWithFeatures {
-        packageId = "electrs 0.6.2 (registry+https://github.com/romanz/electrs)";
+        packageId = "electrs 0.7.1 (registry+https://github.com/romanz/electrs)";
         features = rootFeatures;
       };
     };
@@ -845,13 +845,13 @@ rec {
           "default" = [ "use_std" ];
         };
       };
-    "electrs 0.6.2 (registry+https://github.com/romanz/electrs)"
+    "electrs 0.7.1 (registry+https://github.com/romanz/electrs)"
       = rec {
         name = "electrs-${version}";
         crateName = "electrs";
-        version = "0.6.2";
+        version = "0.7.1";
         edition = "2018";
-        sha256 = "1jymbyrj79x3cm2c6rq4b35v2060as1qjn9b6rbz87if0b7zp3bg";
+        sha256 = "0wdl6znxc088ncz0yn8kkvg5pyhlcw6dm6yyxabc5xi99fwqq4fd";
         authors = [
           "Roman Zeyde <me@romanzey.de>"
         ];
