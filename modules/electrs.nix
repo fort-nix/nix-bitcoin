@@ -21,6 +21,16 @@ in {
       default = "/var/lib/electrs";
       description = "The data directory for electrs.";
     };
+    user = mkOption {
+      type = types.str;
+      default = "electrs";
+      description = "The user as which to run electrs.";
+    };
+    group = mkOption {
+      type = types.str;
+      default = cfg.user;
+      description = "The group as which to run electrs.";
+    };
     high-memory = mkOption {
       type = types.bool;
       default = false;
@@ -47,14 +57,15 @@ in {
   };
 
   config = mkIf cfg.enable {
-    users.users.electrs = {
+    users.users.${cfg.user} = {
+        name = cfg.user;
         description = "electrs User";
-        group = "electrs";
+        group = cfg.group;
         extraGroups = [ "bitcoinrpc" "keys" "bitcoin"];
         home = cfg.dataDir;
     };
     users.groups.electrs = {
-      name = "electrs";
+      name = cfg.group;
     };   
 
     systemd.services.electrs = {
@@ -65,14 +76,14 @@ in {
       # create shell script to start up electrs safely with password parameter
       preStart = ''
         mkdir -m 0770 -p ${cfg.dataDir}
-        chown 'electrs:electrs' ${cfg.dataDir}
-        echo "${pkgs.electrs}/bin/electrs -vvv ${index-batch-size} ${jsonrpc-import} --timestamp --db-dir ${cfg.dataDir} --daemon-dir /var/lib/bitcoind --cookie=${config.services.bitcoind.rpcuser}:$(cat /secrets/bitcoin-rpcpassword) --electrum-rpc-addr=127.0.0.1:${toString cfg.port}" > /var/lib/electrs/startscript.sh
-        chown -R 'electrs:electrs' ${cfg.dataDir}
-        chmod u+x ${cfg.dataDir}/startscript.sh
+        chown -R '${cfg.user}:${cfg.group}' ${cfg.dataDir}
+        echo "${pkgs.electrs}/bin/electrs -vvv ${index-batch-size} ${jsonrpc-import} --timestamp --db-dir ${cfg.dataDir} --daemon-dir /var/lib/bitcoind --cookie=${config.services.bitcoind.rpcuser}:$(cat /secrets/bitcoin-rpcpassword) --electrum-rpc-addr=127.0.0.1:${toString cfg.port}" > /run/electrs/startscript.sh
         '';	
-      serviceConfig = {
+      serviceConfig = rec {
+        RuntimeDirectory = "electrs";
+        RuntimeDirectoryMode = "700";
         PermissionsStartOnly = "true";
-        ExecStart = "${pkgs.bash}/bin/bash ${cfg.dataDir}/startscript.sh";
+        ExecStart = "${pkgs.bash}/bin/bash /run/${RuntimeDirectory}/startscript.sh";
         User = "electrs";
         Restart = "on-failure";
         RestartSec = "10s";
