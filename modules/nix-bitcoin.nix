@@ -113,7 +113,7 @@ in {
       alias bitcoin-cli='bitcoin-cli -datadir=${config.services.bitcoind.dataDir}'
       alias lightning-cli='sudo -u clightning lightning-cli --lightning-dir=${config.services.clightning.dataDir}'
     '' + (if config.services.liquidd.enable then ''
-      alias liquid-cli='liquid-cli -datadir=${config.services.liquidd.dataDir}'
+      alias elements-cli='elements-cli -datadir=${config.services.liquidd.dataDir}'
     '' else "");
     # Unfortunately c-lightning doesn't allow setting the permissions of the rpc socket
     # https://github.com/ElementsProject/lightning/issues/1366
@@ -179,7 +179,7 @@ in {
     ++ optionals config.services.lightning-charge.enable [lightning-charge]
     ++ optionals config.services.nanopos.enable [nanopos]
     ++ optionals config.services.nix-bitcoin-webindex.enable [nginx]
-    ++ optionals config.services.liquidd.enable [liquidd]
+    ++ optionals config.services.liquidd.enable [elementsd]
     ++ optionals config.services.spark-wallet.enable [spark-wallet]
     ++ optionals config.services.electrs.enable [electrs]
     ++ optionals (config.services.hardware-wallets.ledger || config.services.hardware-wallets.trezor) [
