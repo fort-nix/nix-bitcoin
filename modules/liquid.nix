@@ -191,7 +191,7 @@ in {
         fi
         cp '${configFile}' '${cfg.dataDir}/liquid.conf'
         chmod o-rw  '${cfg.dataDir}/liquid.conf'
-        chown '${cfg.user}:${cfg.group}' '${cfg.dataDir}'
+        chown -R '${cfg.user}:${cfg.group}' '${cfg.dataDir}'
         echo "rpcpassword=$(cat /secrets/liquid-rpcpassword)" >> '${cfg.dataDir}/liquid.conf'
         echo "mainchainrpcpassword=$(cat /secrets/bitcoin-rpcpassword)" >> '${cfg.dataDir}/liquid.conf'
       '';
