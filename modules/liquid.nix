@@ -10,6 +10,7 @@ let
     ${optionalString cfg.testnet "testnet=1"}
     ${optionalString (cfg.dbCache != null) "dbcache=${toString cfg.dbCache}"}
     ${optionalString (cfg.prune != null) "prune=${toString cfg.prune}"}
+    ${optionalString (cfg.validatepegin != null) "validatepegin=${if cfg.validatepegin then "1" else "0"}"}
 
     # Connection options
     ${optionalString (cfg.port != null) "port=${toString cfg.port}"}
@@ -164,6 +165,13 @@ in {
           the entire blockchain. ("disable" = disable pruning blocks, "manual"
           = allow manual pruning via RPC, >=550 = automatically prune block files
           to stay under the specified target size in MiB)
+        '';
+      };
+      validatepegin = mkOption {
+        type = types.nullOr types.bool;
+        default = null;
+        description = ''
+          Validate pegin claims. All functionaries must run this.
         '';
       };
       enforceTor =  nix-bitcoin-services.enforceTor;

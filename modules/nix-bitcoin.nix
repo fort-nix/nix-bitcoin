@@ -143,6 +143,7 @@ in {
       mainchainrpcuser=${config.services.bitcoind.rpcuser}
       mainchainrpcport=8332
     ";
+    services.liquidd.validatepegin = true;
     services.liquidd.listen = true;
     services.liquidd.proxy = config.services.tor.client.socksListenAddress;
     services.liquidd.enforceTor = true;
