@@ -13,4 +13,5 @@
   elementsd = pkgs.callPackage ./pkgs/elementsd { };
   hwi = pkgs.callPackage ./pkgs/hwi { };
   pylightning = pkgs.python3Packages.callPackage ./pkgs/pylightning { };
+  liquid-swap = pkgs.python3Packages.callPackage ./pkgs/liquid-swap { };
 }
