@@ -43,10 +43,10 @@
   # services.electrs.enable = true;
 
   ### LIQUIDD
-  # Enable this module to use Liquid, a sidechain for an inter-exchange
-  # settlement network linking together cryptocurrency exchanges and
-  # institutions around the world. Liquid is accessed with the elements-cli
-  # tool run as user operator.
+  # Enable this module to use liquidd, an elements daemon providing access
+  # to the Liquid elements platform sidechain, a sidechain for an
+  # inter-exchange settlement network linking together institutions around the
+  # world.
   services.liquidd.enable = true;
 
   ### LIGHTNING CHARGE

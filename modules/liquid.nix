@@ -61,7 +61,7 @@ in {
   options = {
 
     services.liquidd = {
-      enable = mkEnableOption "Liquid sidechain";
+      enable = mkEnableOption "An elements daemon providing access to the Liquid elements platform sidechain";
 
       extraConfig = mkOption {
         type = types.lines;
@@ -140,7 +140,7 @@ in {
         type = types.bool;
         default = false;
         description = ''
-          If enabled, the liquid service will listen.
+          If enabled, the liquidd service will listen.
         '';
       };
       dbCache = mkOption {
@@ -182,7 +182,7 @@ in {
   config = mkIf cfg.enable {
     environment.systemPackages = [ pkgs.elementsd ];
     systemd.services.liquidd = {
-      description = "Elements daemon providing access the Liquid sidechain";
+      description = "An elements daemon providing access to the Liquid elements platform sidechain";
       requires = [ "liquid-rpcpassword-key.service" ];
       after = [ "network.target" "liquid-rpcpassword-key.service" ];
       wantedBy = [ "multi-user.target" ];
@@ -217,7 +217,7 @@ in {
       name = cfg.user;
       group = cfg.group;
       extraGroups = [ "keys" ];
-      description = "Liquid sidechain user";
+      description = "Liquidd user";
       home = cfg.dataDir;
     };
     users.groups.${cfg.group} = {
