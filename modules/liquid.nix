@@ -7,6 +7,7 @@ let
   cfg = config.services.liquidd;
   pidFile = "${cfg.dataDir}/liquidd.pid";
   configFile = pkgs.writeText "elements.conf" ''
+    chain=liquidv1
     ${optionalString cfg.testnet "testnet=1"}
     ${optionalString (cfg.dbCache != null) "dbcache=${toString cfg.dbCache}"}
     ${optionalString (cfg.prune != null) "prune=${toString cfg.prune}"}
@@ -60,7 +61,7 @@ in {
   options = {
 
     services.liquidd = {
-      enable = mkEnableOption "Liquid daemon";
+      enable = mkEnableOption "Liquid sidechain";
 
       extraConfig = mkOption {
         type = types.lines;
@@ -181,7 +182,7 @@ in {
   config = mkIf cfg.enable {
     environment.systemPackages = [ pkgs.elementsd ];
     systemd.services.liquidd = {
-      description = "Liquid daemon";
+      description = "Elements daemon providing access the Liquid sidechain";
       requires = [ "liquid-rpcpassword-key.service" ];
       after = [ "network.target" "liquid-rpcpassword-key.service" ];
       wantedBy = [ "multi-user.target" ];
@@ -216,7 +217,7 @@ in {
       name = cfg.user;
       group = cfg.group;
       extraGroups = [ "keys" ];
-      description = "Liquid daemon user";
+      description = "Liquid sidechain user";
       home = cfg.dataDir;
     };
     users.groups.${cfg.group} = {
