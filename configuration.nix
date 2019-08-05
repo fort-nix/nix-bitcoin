@@ -30,6 +30,15 @@
   # default nix-bitcoin nodes offer outgoing connectivity.
   # services.clightning.autolisten = true;
 
+  ### LND
+  # Disable clightning and uncomment the following line in order to enable lnd,
+  # a lightning implementation written in Go.
+  # services.lnd.enable = assert (!config.services.clightning.enable); true;
+  # WARNING: If you use lnd, you should manually backup your wallet mnemonic
+  # seed. In order to do so, you can run the following command after the
+  # lnd service starts:
+  # nixops scp --from bitcoin-node /secrets/lnd-seed-mnemonic ./secrets/lnd-seed-mnemonic
+
   ### SPARK WALLET
   # Enable this module to use spark-wallet, a minimalistic wallet GUI for
   # c-lightning, accessible over the web or through mobile and desktop apps.

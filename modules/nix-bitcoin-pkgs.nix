@@ -15,5 +15,6 @@ in {
     bitcoin = nixpkgs-unstable.bitcoin.override { miniupnpc = null; };
     altcoins.bitcoind = nixpkgs-unstable.altcoins.bitcoind.override { miniupnpc = null; };
     clightning = nixpkgs-unstable.clightning.override { };
+    lnd = nixpkgs-unstable.lnd.override { };
   };
 }

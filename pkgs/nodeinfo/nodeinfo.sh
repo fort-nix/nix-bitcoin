@@ -2,14 +2,21 @@ set -e
 set -o pipefail
 
 BITCOIND_ONION="$(cat /var/lib/onion-chef/operator/bitcoind)"
-CLIGHTNING_NODEID=$(sudo -u clightning lightning-cli --lightning-dir=/var/lib/clightning getinfo | jq -r '.id')
-CLIGHTNING_ONION="$(cat /var/lib/onion-chef/operator/clightning)"
-CLIGHTNING_ID="$CLIGHTNING_NODEID@$CLIGHTNING_ONION:9735"
-
 echo BITCOIND_ONION="$BITCOIND_ONION"
-echo CLIGHTNING_NODEID="$CLIGHTNING_NODEID"
-echo CLIGHTNING_ONION="$CLIGHTNING_ONION"
-echo CLIGHTNING_ID="$CLIGHTNING_ID"
+
+if [ -x "$(command -v clightning)" ]; then
+    CLIGHTNING_NODEID=$(sudo -u clightning lightning-cli --lightning-dir=/var/lib/clightning getinfo | jq -r '.id')
+    CLIGHTNING_ONION="$(cat /var/lib/onion-chef/operator/clightning)"
+    CLIGHTNING_ID="$CLIGHTNING_NODEID@$CLIGHTNING_ONION:9735"
+    echo CLIGHTNING_NODEID="$CLIGHTNING_NODEID"
+    echo CLIGHTNING_ONION="$CLIGHTNING_ONION"
+    echo CLIGHTNING_ID="$CLIGHTNING_ID"
+fi
+
+if [ -x "$(command -v lncli)" ]; then
+    LND_NODEID=$(sudo -u lnd lncli --tlscertpath /secrets/lnd_cert --macaroonpath /var/lib/lnd/chain/bitcoin/mainnet/admin.macaroon getinfo | jq -r '.uris[0]')
+    echo LND_NODEID="$LND_NODEID"
+fi
 
 NGINX_ONION_FILE=/var/lib/onion-chef/operator/nginx
 if [ -e "$NGINX_ONION_FILE" ]; then

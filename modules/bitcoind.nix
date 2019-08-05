@@ -193,6 +193,18 @@ in {
           to stay under the specified target size in MiB)
         '';
       };
+      zmqpubrawblock = mkOption {
+        type = types.nullOr types.string;
+        default = null;
+        example = "tcp://127.0.0.1:28332";
+        description = "ZMQ address for zmqpubrawblock notifications";
+      };
+      zmqpubrawtx = mkOption {
+        type = types.nullOr types.string;
+        default = null;
+        example = "tcp://127.0.0.1:28333";
+        description = "ZMQ address for zmqpubrawtx notifications";
+      };
       enforceTor =  nix-bitcoin-services.enforceTor;
     };
   };
@@ -239,7 +251,7 @@ in {
         // (if cfg.enforceTor
           then nix-bitcoin-services.allowTor
           else nix-bitcoin-services.allowAnyIP
-        );
+        ) // optionals config.services.lnd.enable nix-bitcoin-services.allowAnyProtocol;  # FOR ZMQ
     };
     systemd.services.bitcoind-import-banlist = {
       description = "Bitcoin daemon banlist importer";
