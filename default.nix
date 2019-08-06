@@ -10,7 +10,7 @@
   nanopos = pkgs.callPackage ./pkgs/nanopos { };
   spark-wallet = pkgs.callPackage ./pkgs/spark-wallet { };
   electrs = (pkgs.callPackage ./pkgs/electrs { }).rootCrate.build;
-  liquidd = pkgs.callPackage ./pkgs/liquidd { };
+  elementsd = pkgs.callPackage ./pkgs/elementsd { };
   hwi = pkgs.callPackage ./pkgs/hwi { };
   pylightning = pkgs.python3Packages.callPackage ./pkgs/pylightning { };
 }

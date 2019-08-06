@@ -6,7 +6,7 @@ This is a work in progress - don't expect it to be bug free or secure.
 
 The default configuration sets up a Bitcoin Core node and c-lightning. The user can enable spark-wallet in `configuration.nix` to make c-lightning accessible with a smartphone using spark-wallet.
 A simple webpage shows the lightning nodeid and links to nanopos letting the user receive donations.
-It also includes liquid-daemon.
+It also includes elements-daemon.
 Outbound peer-to-peer traffic is forced through Tor, and listening services are bound to onion addresses.
 
 A demo installation is running at [http://6tr4dg3f2oa7slotdjp4syvnzzcry2lqqlcvqkfxdavxo6jsuxwqpxad.onion](http://6tr4dg3f2oa7slotdjp4syvnzzcry2lqqlcvqkfxdavxo6jsuxwqpxad.onion).
@@ -32,7 +32,7 @@ By default the `configuration.nix` provides:
 
 In `configuration.nix` the user can enable:
 * a clightning hidden service
-* [liquid-daemon](https://github.com/blockstream/liquid)
+* [liquid](https://github.com/elementsproject/elements)
 * [lightning charge](https://github.com/ElementsProject/lightning-charge)
 * [nanopos](https://github.com/ElementsProject/nanopos)
 * an index page using nginx to display node information and link to nanopos
