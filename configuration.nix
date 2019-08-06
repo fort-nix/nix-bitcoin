@@ -47,7 +47,7 @@
   # settlement network linking together cryptocurrency exchanges and
   # institutions around the world. Liquid is accessed with the elements-cli
   # tool run as user operator.
-  services.liquidd.enable = true;
+  # services.liquidd.enable = true;
 
   ### LIGHTNING CHARGE
   # Enable this module to use lightning-charge, a simple drop-in solution for
