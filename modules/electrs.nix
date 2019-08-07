@@ -53,7 +53,7 @@ in {
         default = 50003;
         description = "Port on which to listen for TLS client connections.";
     };
-    enforceTor =  nix-bitcoin-services.enforceTor;
+    enforceTor = nix-bitcoin-services.enforceTor;
   };
 
   config = mkIf cfg.enable {
