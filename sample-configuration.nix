@@ -36,11 +36,26 @@
   # Only enable this if clightning is enabled.
   # services.spark-wallet.enable = true;
 
+
   ### ELECTRS
   # Enable this module to use electrs, an efficient re-implementation of
   # Electrum Server in Rust. Only enable this if hardware wallets are
   # disabled.
   # services.electrs.enable = true;
+
+  # If enabled, electrs will sync faster on high-memory systems (≥ 8GB).
+  # services.electrs.high-memory = true;
+
+  # Only allow peer connections through tor
+  services.electrs.enforceTor = true;
+
+  # Port for tor client connections (default: 50002)
+  # services.electrs.onionport = 50002;
+
+  # Internal ports (not exposed)
+  # services.electrs.port = 50001
+  # services.electrs.nginxport = 50003;
+
 
   ### LIQUIDD
   # Enable this module to use Liquid, a sidechain for an inter-exchange
