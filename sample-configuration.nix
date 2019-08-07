@@ -53,9 +53,13 @@
   # Port for tor client connections (default: 50002)
   # services.electrs.onionport = 50002;
 
-  # Internal ports (not exposed)
-  # services.electrs.port = 50001
+  # Expose nginxport (default: 50003) for clearnet client connections
+  # (not recommended)
+  # services.electrs.expose-clearnet-nginxport = true;
   # services.electrs.nginxport = 50003;
+
+  # Internal RPC port (not exposed)
+  # services.electrs.port = 50001
 
 
   ### LIQUIDD

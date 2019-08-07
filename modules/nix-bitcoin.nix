@@ -4,6 +4,7 @@ with lib;
 
 let
   cfg = config.services.nix-bitcoin;
+  electrs-cfg = config.services.electrs;
   operatorCopySSH = pkgs.writeText "operator-copy-ssh.sh" '' 
     mkdir -p ${config.users.users.operator.home}/.ssh
     if [ -e "${config.users.users.root.home}/.vbox-nixops-client-key" ]; then
@@ -42,6 +43,8 @@ in {
 
   config = mkIf cfg.enable {
     networking.firewall.enable = true;
+    networking.firewall.allowedTCPPorts = [ ]
+      ++ optionals (electrs-cfg.enable && electrs-cfg.expose-clearnet-nginxport) [ electrs-cfg.nginxport ];
 
     # Tor
     services.tor.enable = true;
@@ -58,8 +61,8 @@ in {
     # bitcoind
     services.bitcoind.enable = true;
     services.bitcoind.listen = true;
-    services.bitcoind.sysperms = if config.services.electrs.enable then true else null;
-    services.bitcoind.disablewallet = if config.services.electrs.enable then true else null;
+    services.bitcoind.sysperms = if electrs-cfg.enable then true else null;
+    services.bitcoind.disablewallet = if electrs-cfg.enable then true else null;
     services.bitcoind.proxy = config.services.tor.client.socksListenAddress;
     services.bitcoind.port = 8333;
     services.bitcoind.rpcuser = "bitcoinrpc";
@@ -156,7 +159,7 @@ in {
 
     services.tor.hiddenServices.electrs = {
       map = [{
-        port = config.services.electrs.onionport; toPort = config.services.electrs.nginxport;
+        port = electrs-cfg.onionport; toPort = electrs-cfg.nginxport;
       }];
       version = 3;
     };
@@ -174,7 +177,7 @@ in {
     ++ optionals config.services.nix-bitcoin-webindex.enable [nginx]
     ++ optionals config.services.liquidd.enable [elementsd]
     ++ optionals config.services.spark-wallet.enable [spark-wallet]
-    ++ optionals config.services.electrs.enable [electrs]
+    ++ optionals electrs-cfg.enable [electrs]
     ++ optionals (config.services.hardware-wallets.ledger || config.services.hardware-wallets.trezor) [
         hwi
         # To allow debugging issues with lsusb:

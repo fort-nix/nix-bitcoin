@@ -53,6 +53,13 @@ in {
         default = 50003;
         description = "Port on which to listen for TLS client connections.";
     };
+    expose-clearnet-nginxport = mkOption {
+      type = types.bool;
+      default = false;
+      description = ''
+        If enabled, client connections are allowed through clearnet on port nginxport.
+      '';
+    };
     enforceTor = nix-bitcoin-services.enforceTor;
   };
 
