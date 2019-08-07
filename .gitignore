@@ -1,1 +1,4 @@
 secrets/
+configuration.nix
+network/network-nixos.nix
+hardware-configuration.nix

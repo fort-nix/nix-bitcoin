@@ -108,7 +108,11 @@ You can also build Nix from source by following the instructions at https://nixo
 	nixops create network/network.nix network/network-vbox.nix -d bitcoin-node
 	```
 
-4. Adjust configuration by opening `configuration.nix` and removing FIXMEs. Enable/disable the modules you want in `configuration.nix`.
+4. Create `configuration.nix` using `sample-configuration.nix`.
+	```
+	cp sample-configuration.nix configuration.nix
+	```
+	Adjust configuration by opening `configuration.nix` and removing FIXMEs. Enable/disable the modules you want in `configuration.nix`.
 
 5. Deploy Nixops in nix-shell
 
