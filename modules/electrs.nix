@@ -41,17 +41,17 @@ in {
     port = mkOption {
         type = types.ints.u16;
         default = 50001;
-        description = "Override the default port on which to listen for connections.";
+        description = "RPC port.";
     };
     onionport = mkOption {
         type = types.ints.u16;
         default = 50002;
-        description = "Override the default port on which to listen for connections.";
+        description = "Port on which to listen for tor client connections.";
     };
     nginxport = mkOption {
         type = types.ints.u16;
         default = 50003;
-        description = "Override the default port on which to listen for connections.";
+        description = "Port on which to listen for TLS client connections.";
     };
     enforceTor =  nix-bitcoin-services.enforceTor;
   };
