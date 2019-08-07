@@ -46,8 +46,9 @@
   # If enabled, electrs will sync faster on high-memory systems (≥ 8GB).
   # services.electrs.high-memory = true;
 
-  # Only allow peer connections through tor
-  services.electrs.enforceTor = true;
+  # Uncomment if you want to allow peer connections without tor
+  # (not recommended)
+  # services.electrs.enforceTor = false;
 
   # Port for tor client connections (default: 50002)
   # services.electrs.onionport = 50002;
