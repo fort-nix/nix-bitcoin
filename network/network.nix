@@ -36,15 +36,15 @@ let
     group = "clightning";
     permissions = "0440";
   };
-  ssl_certificate_key = {
-    keyFile = ../secrets/ssl_certificate_key.key;
+  nginx_key = {
+    keyFile = ../secrets/nginx.key;
     destDir = "/secrets/";
     user = "nginx";
     group = "root";
     permissions = "0440";
   };
-  ssl_certificate = {
-    keyFile = ../secrets/ssl_certificate.crt;
+  nginx_cert = {
+    keyFile = ../secrets/nginx.cert;
     destDir = "/secrets/";
     user = "nginx";
     group = "root";
@@ -65,6 +65,6 @@ in {
       // (if (config.services.nanopos.enable) then { inherit lightning-charge-api-token-for-nanopos; } else { })
       // (if (config.services.liquidd.enable) then { inherit liquid-rpcpassword; } else { })
       // (if (config.services.spark-wallet.enable) then { inherit spark-wallet-login; } else { })
-      // (if (config.services.electrs.enable) then { inherit ssl_certificate_key ssl_certificate; } else { });
+      // (if (config.services.electrs.enable) then { inherit nginx_key nginx_cert; } else { });
     } // (bitcoin-node { inherit config pkgs; });
 }
