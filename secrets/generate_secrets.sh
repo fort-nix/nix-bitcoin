@@ -22,4 +22,5 @@ echo Generate Self-Signed Cert
 openssl genrsa -out secrets/nginx.key 2048
 openssl req -new -key secrets/nginx.key -out secrets/nginx.csr -subj "/C=KN"
 openssl x509 -req -days 1825 -in secrets/nginx.csr -signkey secrets/nginx.key -out secrets/nginx.cert
+rm secrets/nginx.csr
 echo Done
