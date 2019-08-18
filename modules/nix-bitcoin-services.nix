@@ -32,14 +32,14 @@ in
   # Allow any traffic
   allowAnyIP = { IPAddressAllow = "any"; };
 
-   enforceTor = mkOption {
-     type = types.bool;
-     default = false;
-     description = ''
-       "Whether to force Tor on a service by only allowing connections from and
-       to 127.0.0.1;";
-     '';
-   };
+  enforceTor = mkOption {
+    type = types.bool;
+    default = false;
+    description = ''
+      "Whether to force Tor on a service by only allowing connections from and
+      to 127.0.0.1;";
+    '';
+  };
 }
 
 

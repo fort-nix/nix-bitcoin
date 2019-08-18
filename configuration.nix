@@ -41,6 +41,8 @@
   # Electrum Server in Rust. Only enable this if hardware wallets are
   # disabled.
   # services.electrs.enable = true;
+  # If you have ≥8GB memory, enable this option so electrs will sync faster.
+  # services.electrs.high-memory = true;
 
   ### LIQUIDD
   # Enable this module to use Liquid, a sidechain for an inter-exchange
