@@ -1,3 +1,6 @@
+# See `man systemd.exec` and `man systemd.resource-control` for an explanation
+# of the various systemd options available through this module.
+
 { config, lib, pkgs, ... }:
 
 with lib;
@@ -41,6 +44,3 @@ in
     '';
   };
 }
-
-
-
