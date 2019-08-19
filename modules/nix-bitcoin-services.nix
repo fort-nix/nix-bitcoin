@@ -31,6 +31,7 @@ in
   };
   # Allow any traffic
   allowAnyIP = { IPAddressAllow = "any"; };
+  allowAnyProtocol = { RestrictAddressFamilies = "~"; };
 
   enforceTor = mkOption {
     type = types.bool;
