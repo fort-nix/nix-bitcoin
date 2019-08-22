@@ -28,26 +28,30 @@ let
 #!/bin/sh
 
 set -e
+umask 377
 
 ${pkgs.coreutils}/bin/sleep 5
 
-if [ ! -f ${cfg.dataDir}/chain/bitcoin/mainnet/wallet.db ]
+if [ ! -f /secrets/lnd-seed-mnemonic ]
 then
-  ${pkgs.coreutils}/bin/echo creating LND wallet
+  ${pkgs.coreutils}/bin/echo Creating lnd seed
 
   ${pkgs.curl}/bin/curl -s \
   --cacert /secrets/lnd_cert \
   -X GET https://127.0.0.1:8080/v1/genseed | ${pkgs.jq}/bin/jq -c '.cipher_seed_mnemonic' > /secrets/lnd-seed-mnemonic
+fi
+
+if [ ! -f ${cfg.dataDir}/chain/bitcoin/mainnet/wallet.db ]
+then
+  ${pkgs.coreutils}/bin/echo Creating lnd wallet
 
   ${pkgs.curl}/bin/curl -s \
   --cacert /secrets/lnd_cert \
   -X POST -d "{\"wallet_password\": \"$(${pkgs.coreutils}/bin/cat /secrets/lnd-wallet-password | ${pkgs.coreutils}/bin/tr -d '\n' | ${pkgs.coreutils}/bin/base64 -w0)\", \
   \"cipher_seed_mnemonic\": $(${pkgs.coreutils}/bin/cat /secrets/lnd-seed-mnemonic | ${pkgs.coreutils}/bin/tr -d '\n')}" \
   https://127.0.0.1:8080/v1/initwallet
-
-  ${pkgs.coreutils}/bin/echo wallet created
 else
-  ${pkgs.coreutils}/bin/echo unlocking wallet
+  ${pkgs.coreutils}/bin/echo Unlocking lnd wallet
 
   ${pkgs.curl}/bin/curl -s \
       -H "Grpc-Metadata-macaroon: $(${pkgs.xxd}/bin/xxd -ps -u -c 1000 ${cfg.dataDir}/chain/bitcoin/mainnet/admin.macaroon)" \
@@ -55,8 +59,6 @@ else
       -X POST \
       -d "{\"wallet_password\": \"$(${pkgs.coreutils}/bin/cat /secrets/lnd-wallet-password | ${pkgs.coreutils}/bin/tr -d '\n' | ${pkgs.coreutils}/bin/base64 -w0)\"}" \
       https://127.0.0.1:8080/v1/unlockwallet
-
-  ${pkgs.coreutils}/bin/echo wallet unlocked
 fi
 
 exit 0
