@@ -7,6 +7,7 @@ let
   cfg = config.services.lnd;
   configFile = pkgs.writeText "lnd.conf" ''
     datadir=${cfg.dataDir}
+    logdir=${cfg.dataDir}/logs
     bitcoin.mainnet=1
     tlscertpath=/secrets/lnd_cert
     tlskeypath=/secrets/lnd_key
@@ -17,6 +18,7 @@ let
     tor.active=true
     tor.v3=true
     tor.streamisolation=true
+    tor.privatekeypath=${cfg.dataDir}/v3_onion_private_key
 
     bitcoind.rpcuser=${config.services.bitcoind.rpcuser}
     bitcoind.zmqpubrawblock=${config.services.bitcoind.zmqpubrawblock}
