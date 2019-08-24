@@ -34,10 +34,14 @@
   # Disable clightning and uncomment the following line in order to enable lnd,
   # a lightning implementation written in Go.
   # services.lnd.enable = assert (!config.services.clightning.enable); true;
-  # WARNING: If you use lnd, you should manually backup your wallet mnemonic
-  # seed. In order to do so, you can run the following command after the
-  # lnd service starts:
+  ## WARNING
+  # If you use lnd, you should manually backup your wallet mnemonic
+  # seed. This will allow you to recover on-chain funds. You can run the
+  # following command after the lnd service starts:
   # nixops scp --from bitcoin-node /secrets/lnd-seed-mnemonic ./secrets/lnd-seed-mnemonic
+  # You should also backup your channel state after opening new channels.
+  # This will allow you to recover off-chain funds, by force-closing channels.
+  # nixops scp --from bitcoin-node /var/lib/lnd/chain/bitcoin/mainnet/channel.backup /my-backup-path/channel.backup
 
   ### SPARK WALLET
   # Enable this module to use spark-wallet, a minimalistic wallet GUI for
