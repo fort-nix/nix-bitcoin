@@ -124,7 +124,7 @@ in {
     };
     # Give operator access to onion hostnames
     services.onion-chef.enable = true;
-    services.onion-chef.access.operator = [ "bitcoind" "clightning" "lnd" "nginx" "liquidd" "spark-wallet" "electrs" "sshd" ];
+    services.onion-chef.access.operator = [ "bitcoind" "clightning" "nginx" "liquidd" "spark-wallet" "electrs" "sshd" ];
 
     environment.interactiveShellInit = ''
       alias bitcoin-cli='bitcoin-cli -datadir=${config.services.bitcoind.dataDir}'
