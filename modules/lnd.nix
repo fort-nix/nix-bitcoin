@@ -56,7 +56,7 @@ else
   ${pkgs.coreutils}/bin/echo Unlocking lnd wallet
 
   ${pkgs.curl}/bin/curl -s \
-      -H "Grpc-Metadata-macaroon: $(${pkgs.xxd}/bin/xxd -ps -u -c 1000 ${cfg.dataDir}/chain/bitcoin/mainnet/admin.macaroon)" \
+      -H "Grpc-Metadata-macaroon: $(${pkgs.xxd}/bin/xxd -ps -u -c 99999 ${cfg.dataDir}/chain/bitcoin/mainnet/admin.macaroon)" \
       --cacert /secrets/lnd_cert \
       -X POST \
       -d "{\"wallet_password\": \"$(${pkgs.coreutils}/bin/cat /secrets/lnd-wallet-password | ${pkgs.coreutils}/bin/tr -d '\n' | ${pkgs.coreutils}/bin/base64 -w0)\"}" \
