@@ -105,12 +105,6 @@ in {
 
     # lnd
     services.lnd.enforceTor = true;
-    services.tor.hiddenServices.lnd = {
-      map = [{
-        port = 9735; toPort = 9735;
-      }];
-      version = 3;
-    };
 
     # Create user operator which can use bitcoin-cli and lightning-cli
     users.users.operator = {
