@@ -27,7 +27,7 @@
     ```
     * **A:** This is issue https://github.com/NixOS/nixops/issues/908. The machine needs to be rebooted. You can do that by running `nixops deploy` with the `--force-reboot` flag once.
 * **Q:** I'm deploying to virtualbox it's not able to connect anymore.
-    * **A:** Maybe the IP address of the box changed. Run `nixops deploy --check` to update nixops with the new IP address. Sometimes you also need to remove the old IP address from `~/.ssh/known_hosts`.
+    * **A:** Maybe the IP address of the box changed. Run `nixops deploy --check` to update nixops with the new IP address. Sometimes you need to run `nixops modify -d <deployment> network/network.nix network/network-vbox.nix`. Sometimes you also need to remove the old IP address from `~/.ssh/known_hosts`.
 * **Q:** The clightning service is running but when I try to use it (f.e. by running `lightning-cli getinfo` as user operator) all I get is `lightning-cli: Connecting to 'lightning-rpc': Connection refused`.
     * **A:** Check your clightning logs with `journalctl -eu clightning`. Do you see something like `bitcoin-cli getblock ... false` failed? Are you using pruned mode? That means that clightning hasn't seen all the blocks it needs to and it can't get that block because your node is pruned. If you're just setting up a new node you can `systemctl stop clightning` and wipe your `/var/lib/clightning` directory. Otherwise you need to reindex the Bitcoin node.
 * **Q:** My disk space is getting low due to nix.
