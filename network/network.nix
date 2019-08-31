@@ -7,6 +7,13 @@ let
     group = "bitcoinrpc";
     permissions = "0440";
   };
+  lnd-wallet-password = {
+    text = secrets.lnd-wallet-password;
+    destDir = "/secrets/";
+    user = "lnd";
+    group = "lnd";
+    permissions = "0440";
+  };
   lightning-charge-api-token = {
     text = "API_TOKEN=" + secrets.lightning-charge-api-token;
     destDir = "/secrets/";
@@ -36,18 +43,32 @@ let
     group = "clightning";
     permissions = "0440";
   };
-  ssl_certificate_key = {
-    keyFile = ../secrets/ssl_certificate_key.key;
+  nginx_key = {
+    keyFile = ../secrets/nginx.key;
     destDir = "/secrets/";
     user = "nginx";
     group = "root";
     permissions = "0440";
   };
-  ssl_certificate = {
-    keyFile = ../secrets/ssl_certificate.crt;
+  nginx_cert = {
+    keyFile = ../secrets/nginx.cert;
     destDir = "/secrets/";
     user = "nginx";
     group = "root";
+    permissions = "0440";
+  };
+  lnd_key = {
+    keyFile = ../secrets/lnd.key;
+    destDir = "/secrets/";
+    user = "lnd";
+    group = "lnd";
+    permissions = "0440";
+  };
+  lnd_cert = {
+    keyFile = ../secrets/lnd.cert;
+    destDir = "/secrets/";
+    user = "lnd";
+    group = "lnd";
     permissions = "0440";
   };
 in {
@@ -61,10 +82,11 @@ in {
       deployment.keys = {
         inherit bitcoin-rpcpassword;
       }
+      // (if (config.services.lnd.enable) then { inherit lnd-wallet-password lnd_key lnd_cert; } else { })
       // (if (config.services.lightning-charge.enable) then { inherit lightning-charge-api-token; } else { })
       // (if (config.services.nanopos.enable) then { inherit lightning-charge-api-token-for-nanopos; } else { })
       // (if (config.services.liquidd.enable) then { inherit liquid-rpcpassword; } else { })
       // (if (config.services.spark-wallet.enable) then { inherit spark-wallet-login; } else { })
-      // (if (config.services.electrs.enable) then { inherit ssl_certificate_key ssl_certificate; } else { });
+      // (if (config.services.electrs.enable) then { inherit nginx_key nginx_cert; } else { });
     } // (bitcoin-node { inherit config pkgs; });
 }

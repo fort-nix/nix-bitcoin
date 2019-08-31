@@ -28,6 +28,7 @@ in {
     ./onion-chef.nix
     ./recurring-donations.nix
     ./hardware-wallets.nix
+    ./lnd.nix
   ];
 
   options.services.nix-bitcoin = {
@@ -46,6 +47,8 @@ in {
     # Tor
     services.tor.enable = true;
     services.tor.client.enable = true;
+    # LND uses ControlPort to create onion services
+    services.tor.controlPort = if config.services.lnd.enable then 9051 else null;
 
     # Tor SSH service
     services.tor.hiddenServices.sshd = {
@@ -64,12 +67,16 @@ in {
     services.bitcoind.enforceTor = true;
     services.bitcoind.port = 8333;
     services.bitcoind.rpcuser = "bitcoinrpc";
+    services.bitcoind.zmqpubrawblock = "tcp://127.0.0.1:28332";
+    services.bitcoind.zmqpubrawtx = "tcp://127.0.0.1:28333";
     services.bitcoind.extraConfig = ''
       assumevalid=0000000000000000000726d186d6298b5054b9a5c49639752294b322a305d240
       addnode=ecoc5q34tmbq54wl.onion
       discover=0
       addresstype=bech32
       changetype=bech32
+      ${optionalString (config.services.lnd.enable) "zmqpubrawblock=${config.services.bitcoind.zmqpubrawblock}"}
+      ${optionalString (config.services.lnd.enable) "zmqpubrawtx=${config.services.bitcoind.zmqpubrawtx}"}
     '';
     services.bitcoind.prune = 0;
     services.bitcoind.dbCache = 1000;
@@ -96,11 +103,15 @@ in {
       version = 3;
     };
 
+    # lnd
+    services.lnd.enforceTor = true;
+
     # Create user operator which can use bitcoin-cli and lightning-cli
     users.users.operator = {
       isNormalUser = true;
       extraGroups = [ config.services.bitcoind.group ]
         ++ (if config.services.clightning.enable then [ "clightning" ] else [ ])
+        ++ (if config.services.lnd.enable then [ "lnd" ] else [ ])
         ++ (if config.services.liquidd.enable then [ config.services.liquidd.group ] else [ ])
         ++ (if (config.services.hardware-wallets.ledger || config.services.hardware-wallets.trezor)
           then [ config.services.hardware-wallets.group ] else [ ]);
@@ -111,16 +122,25 @@ in {
 
     environment.interactiveShellInit = ''
       alias bitcoin-cli='bitcoin-cli -datadir=${config.services.bitcoind.dataDir}'
-      alias lightning-cli='sudo -u clightning lightning-cli --lightning-dir=${config.services.clightning.dataDir}'
-    '' + (if config.services.liquidd.enable then ''
-      alias elements-cli='elements-cli -datadir=${config.services.liquidd.dataDir}'
-      alias liquidswap-cli='liquidswap-cli -c ${config.services.liquidd.dataDir}/elements.conf'
-    '' else "");
+      ${optionalString (config.services.clightning.enable) ''
+        alias lightning-cli='sudo -u clightning lightning-cli --lightning-dir=${config.services.clightning.dataDir}'
+      ''}
+      ${optionalString (config.services.lnd.enable) ''
+        alias lncli='sudo -u lnd lncli --tlscertpath /secrets/lnd_cert --macaroonpath ${config.services.lnd.dataDir}/chain/bitcoin/mainnet/admin.macaroon'
+      ''}
+      ${optionalString (config.services.liquidd.enable) ''
+        alias elements-cli='elements-cli -datadir=${config.services.liquidd.dataDir}'
+        alias liquidswap-cli='liquidswap-cli -c ${config.services.liquidd.dataDir}/elements.conf'
+      ''}
+    '';
     # Unfortunately c-lightning doesn't allow setting the permissions of the rpc socket
     # https://github.com/ElementsProject/lightning/issues/1366
     security.sudo.configFile = (
       if config.services.clightning.enable then ''
         operator    ALL=(clightning) NOPASSWD: ALL
+      ''
+      else if config.services.lnd.enable then ''
+        operator    ALL=(lnd) NOPASSWD: ALL
       ''
       else ""
     );
@@ -176,6 +196,7 @@ in {
       qrencode
     ]
     ++ optionals config.services.clightning.enable [clightning]
+    ++ optionals config.services.lnd.enable [lnd]
     ++ optionals config.services.lightning-charge.enable [lightning-charge]
     ++ optionals config.services.nanopos.enable [nanopos]
     ++ optionals config.services.nix-bitcoin-webindex.enable [nginx]

@@ -106,8 +106,8 @@ in {
             listen ${toString config.services.electrs.nginxport} ssl;
             proxy_pass electrs;
 
-            ssl_certificate /secrets/ssl_certificate;
-            ssl_certificate_key /secrets/ssl_certificate_key;
+            ssl_certificate /secrets/nginx_cert;
+            ssl_certificate_key /secrets/nginx_key;
             ssl_session_cache shared:SSL:1m;
             ssl_session_timeout 4h;
             ssl_protocols TLSv1 TLSv1.1 TLSv1.2 TLSv1.3;
