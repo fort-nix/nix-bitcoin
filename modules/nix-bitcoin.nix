@@ -75,8 +75,6 @@ in {
       discover=0
       addresstype=bech32
       changetype=bech32
-      ${optionalString (config.services.lnd.enable) "zmqpubrawblock=${config.services.bitcoind.zmqpubrawblock}"}
-      ${optionalString (config.services.lnd.enable) "zmqpubrawtx=${config.services.bitcoind.zmqpubrawtx}"}
     '';
     services.bitcoind.prune = 0;
     services.bitcoind.dbCache = 1000;
