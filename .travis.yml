@@ -30,8 +30,6 @@ env:
   - PKG=elementsd STABLE=1
   - PKG=elementsd STABLE=0
   - PKG=electrs STABLE=1
-  global:
-    secure: "bC32LNscv/BXG5fxQuO2laB4cU5lB1bMeYymZk5c/ZFwXMeK5L4DBmU8VXQANTsZA9bJcqWAcwWVu11jxan3n8lCNsAB/6JcRSluPzOkpwewldurwEMT8OUO2GP85zVjPmGEO8tyZL+yTWZr+3dRZgi7zi+rYTtDx8uhg7qH/g8zsZMLCHYi2eNQpiIFl8VnzX1gIGN83FSBMq9HdWinOD+Te+cpGcKnXcnd0LjMmFD3dD1d4Bs4TL1j36owRLPugD0lZbi9W6NipIaQShc30f5+34DoUWV8/Q9UxFvbPsmnDJ4hY7RRssQP1DbanzEAnjiB//PLmzNzAHJrw4eS3AScnTaZD7Tly/0VqQG7tXk1kheSvrmWkrQ/jeF0R5v+YW/e563sPs+J4QFxteCIUP5EPKohsmK4Jw6kB9rBH/RK4RDRCdhsneum4HTDJNXBFZH6jpa0B2L1nFZ9NmLgeO1dcPlSrVKIMvcZ5wGXsLjyalo4yrUSsGuT2a+96cKtfj936H70GPjGnzZq2QwbxJ6UOd02JPEEHHhe0WrKGut9qk+Rb3hPcgvrkhVLvHGY0N98DzpuR86UTWsRm7trTD69H49sjToVbx/ylOAvhkdK3Jv3+EpYNdkKIX6AYdIV32CTkk/Zmrig0ov2mQsnbWY5BB6ycSBAfIJu0/enhR8=" # nix-bitcoin cachix signing key
 script: |
   printf '%s (%s)\n' "$NIX_PATH" "$VER"
-  nix-build -A $PKG | cachix push nix-bitcoin
+  nix-build -A $PKG
