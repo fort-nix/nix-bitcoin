@@ -4,7 +4,7 @@ set -o pipefail
 BITCOIND_ONION="$(cat /var/lib/onion-chef/operator/bitcoind)"
 echo BITCOIND_ONION="$BITCOIND_ONION"
 
-if [ -x "$(command -v clightning)" ]; then
+if [ -x "$(command -v lightning-cli)" ]; then
     CLIGHTNING_NODEID=$(sudo -u clightning lightning-cli --lightning-dir=/var/lib/clightning getinfo | jq -r '.id')
     CLIGHTNING_ONION="$(cat /var/lib/onion-chef/operator/clightning)"
     CLIGHTNING_ID="$CLIGHTNING_NODEID@$CLIGHTNING_ONION:9735"
