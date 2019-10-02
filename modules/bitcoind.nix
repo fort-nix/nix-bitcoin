@@ -65,8 +65,8 @@ in {
 
       package = mkOption {
         type = types.package;
-        default = pkgs.altcoins.bitcoind;
-        defaultText = "pkgs.altcoins.bitcoind";
+        default = pkgs.blockchains.bitcoind;
+        defaultText = "pkgs.blockchains.bitcoind";
         description = "The package providing bitcoin binaries.";
       };
       extraConfig = mkOption {
@@ -282,7 +282,7 @@ in {
         Type = "simple";
         User = "${cfg.user}";
         Group = "${cfg.group}";
-        ExecStart = "${pkgs.bash}/bin/bash ${pkgs.banlist}/bin/banlist ${pkgs.altcoins.bitcoind}";
+        ExecStart = "${pkgs.bash}/bin/bash ${pkgs.banlist}/bin/banlist ${pkgs.blockchains.bitcoind}";
         StateDirectory = "bitcoind";
 
         # Permission for preStart

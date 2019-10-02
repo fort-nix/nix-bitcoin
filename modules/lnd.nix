@@ -104,7 +104,7 @@ in {
 
     systemd.services.lnd = {
       description = "Run LND";
-      path  = [ pkgs.altcoins.bitcoind ];
+      path  = [ pkgs.blockchains.bitcoind ];
       wantedBy = [ "multi-user.target" ];
       requires = [ "bitcoind.service" ];
       after = [ "bitcoind.service" ];
