@@ -1,32 +1,46 @@
-{ stdenv, fetchurl, pkgconfig, autoreconfHook, openssl, db48, boost, zeromq
-, zlib, qtbase ? null, qttools ? null, utillinux, protobuf, python3, qrencode, libevent
-}:
+{ stdenv, fetchurl, pkgconfig, autoreconfHook, openssl, db48, boost, zeromq, rapidcheck
+, zlib, miniupnpc, qtbase ? null, qttools ? null, wrapQtAppsHook ? null, utillinux, protobuf, python3, qrencode, libevent
+, withGui }:
 
 with stdenv.lib;
 stdenv.mkDerivation rec{
-  name = "elements-" + version;
-  version = "0.17.0.1";
+  name = "elements" + (toString (optional (!withGui) "d")) + "-" + version;
+  version = "0.18.1.1";
 
   src = fetchurl {
     urls = [
             "https://github.com/ElementsProject/elements/archive/elements-${version}.tar.gz"
            ];
-    sha256 = "e106c26e7aaff043d389d70f0c5e246f556bce77c885dbfedddc67fcb45aeca0";
-  };
+    sha256 = "1a2eef6a5ba4bd844047175e0ebf965b46b6f3a9e44b56017962c42d56a33a87";
+   };
 
-  nativeBuildInputs = [ pkgconfig autoreconfHook ]
-                   ++ optionals doCheck [ python3 ];
+  nativeBuildInputs =
+    [ pkgconfig autoreconfHook ]
+    ++ optional withGui wrapQtAppsHook;
   buildInputs = [ openssl db48 boost zlib zeromq
-                  protobuf libevent]
-                  ++ optionals stdenv.isLinux [ utillinux ];
+                  miniupnpc protobuf libevent]
+                  ++ optionals stdenv.isLinux [ utillinux ]
+                  ++ optionals withGui [ qtbase qttools qrencode ];
 
   configureFlags = [ "--with-boost-libdir=${boost.out}/lib"
                      "--disable-bench"
                    ] ++ optionals (!doCheck) [
                      "--disable-tests"
                      "--disable-gui-tests"
-                   ];
+                   ]
+                     ++ optionals withGui [ "--with-gui=qt5"
+                                            "--with-qt-bindir=${qtbase.dev}/bin:${qttools.dev}/bin"
+                                          ];
+
+  checkInputs = [ rapidcheck python3 ];
+
   doCheck = true;
+
+  checkFlags =
+    [ "LC_ALL=C.UTF-8" ]
+    # QT_PLUGIN_PATH needs to be set when executing QT, which is needed when testing Bitcoin's GUI.
+    # See also https://github.com/NixOS/nixpkgs/issues/24256
+    ++ optional withGui "QT_PLUGIN_PATH=${qtbase}/${qtbase.qtPluginPrefix}";
 
   enableParallelBuilding = true;
 
