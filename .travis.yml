@@ -26,7 +26,6 @@ env:
   - PKG=nanopos STABLE=1
   - PKG=nanopos STABLE=0
   - PKG=spark-wallet STABLE=1
-  - PKG=spark-wallet STABLE=0
   - PKG=elementsd STABLE=1
   - PKG=elementsd STABLE=0
   - PKG=electrs STABLE=1
