@@ -29,6 +29,7 @@ env:
   - PKG=elementsd STABLE=1
   - PKG=elementsd STABLE=0
   - PKG=electrs STABLE=1
+  - PKG=liquid-swap STABLE=1
 script: |
   printf '%s (%s)\n' "$NIX_PATH" "$VER"
   nix-build -A $PKG
