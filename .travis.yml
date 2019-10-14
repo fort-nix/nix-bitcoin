@@ -26,10 +26,10 @@ env:
   - PKG=nanopos STABLE=1
   - PKG=nanopos STABLE=0
   - PKG=spark-wallet STABLE=1
-  - PKG=spark-wallet STABLE=0
   - PKG=elementsd STABLE=1
   - PKG=elementsd STABLE=0
   - PKG=electrs STABLE=1
+  - PKG=liquid-swap STABLE=1
 script: |
   printf '%s (%s)\n' "$NIX_PATH" "$VER"
   nix-build -A $PKG
