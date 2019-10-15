@@ -3,10 +3,7 @@ let
   nixpkgs-pinned = import ../pkgs/nixpkgs-pinned.nix;
   nixpkgs-unstable = import nixpkgs-pinned.nixpkgs-unstable { };
 in {
-  disabledModules = [ "services/security/tor.nix" "services/networking/bitcoind.nix" ];
-  imports = [
-    (nixpkgs-pinned.nixpkgs-unstable + "/nixos/modules/services/security/tor.nix")
-  ];
+  disabledModules = [ "services/networking/bitcoind.nix" ];
 
   nixpkgs.overlays = [ (import ../overlay.nix) ];
 
