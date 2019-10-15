@@ -111,12 +111,12 @@ in {
       };
 
       rpcuser = mkOption {
-          type = types.nullOr types.string;
+          type = types.nullOr types.str;
           default = null;
           description = "Username for JSON-RPC connections";
       };
       rpcpassword = mkOption {
-          type = types.nullOr types.string;
+          type = types.nullOr types.str;
           default = null;
           description = "Password for JSON-RPC connections";
       };
@@ -132,7 +132,7 @@ in {
         description = "Override the default port on which to listen for connections.";
       };
       proxy = mkOption {
-        type = types.nullOr types.string;
+        type = types.nullOr types.str;
         default = null;
         description = "Connect through SOCKS5 proxy";
       };

@@ -61,7 +61,7 @@ in {
       '';
     };
     interval = mkOption {
-      type = types.string;
+      type = types.str;
       default = "Mon *-*-* 00:00:00";
       description = ''
         Schedules the donations. Default is weekly on Mon 00:00:00. See `man

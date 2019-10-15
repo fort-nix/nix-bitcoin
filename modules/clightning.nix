@@ -30,7 +30,7 @@ in {
       '';
     };
     proxy = mkOption {
-      type = types.nullOr types.string;
+      type = types.nullOr types.str;
       default = null;
       description = "Set a socks proxy to use to connect to Tor nodes (or for all connections if *always-use-proxy* is set)";
     };
@@ -42,12 +42,12 @@ in {
       '';
     };
     bind-addr = mkOption {
-      type = types.nullOr types.string;
+      type = types.nullOr types.str;
       default = null;
       description = "Set an IP address or UNIX domain socket to listen to";
     };
     bitcoin-rpcuser = mkOption {
-      type = types.string;
+      type = types.str;
       description = ''
         Bitcoin RPC user
       '';

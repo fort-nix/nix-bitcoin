@@ -23,7 +23,7 @@ in {
       '';
     };
     group = mkOption {
-      type = types.string;
+      type = types.str;
       default = "hardware-wallets";
       description = ''
         Group the hardware wallet udev rules apply to.
