@@ -209,7 +209,7 @@ in {
         usbutils
     ]
     ++ optionals config.services.hardware-wallets.trezor [
-        python35.pkgs.trezor
+        python3.pkgs.trezor
     ];
   };
 }
