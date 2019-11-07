@@ -15,7 +15,7 @@ in {
       '';
     };
     clightning-datadir = mkOption {
-      type = types.string;
+      type = types.str;
       default = "/var/lib/clighting/";
       description = ''
         Data directory of the clightning service
