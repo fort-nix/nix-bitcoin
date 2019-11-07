@@ -253,9 +253,9 @@ in {
         PermissionsStartOnly = "true";
       } // nix-bitcoin-services.defaultHardening
         // (if cfg.enforceTor
-          then nix-bitcoin-services.allowTor
-          else nix-bitcoin-services.allowAnyIP
-        ) // optionalAttrs config.services.lnd.enable nix-bitcoin-services.allowAnyProtocol;  # FOR ZMQ
+            then nix-bitcoin-services.allowTor
+            else nix-bitcoin-services.allowAnyIP)
+        // optionalAttrs (cfg.zmqpubrawblock != null || cfg.zmqpubrawtx != null) nix-bitcoin-services.allowAnyProtocol;
     };
     systemd.services.bitcoind-import-banlist = {
       description = "Bitcoin daemon banlist importer";
