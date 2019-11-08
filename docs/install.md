@@ -118,15 +118,7 @@ You can also build Nix from source by following the instructions at https://nixo
 
 	This will now create a nix-bitcoin node on the target machine.
 
-6. Resize the virtualbox disk
-    
-	```
-	./contrib/vbox-resize-disk1.sh
-	```
-
-	NixOps provides a virtualbox disk thats 50gb in size, but we need more than that to house the Bitcoin blockchain. By default, this script will resize the disk to 350gb. Run it with `-h` to see options. Make sure to run this from within your nix-shell.
-
-7. Nixops automatically creates an ssh key for use with `nixops ssh`. Access `bitcoin-node` through ssh in nix-shell with
+6. Nixops automatically creates an ssh key for use with `nixops ssh`. Access `bitcoin-node` through ssh in nix-shell with
 
 	```
 	nixops ssh operator@bitcoin-node
@@ -134,6 +126,10 @@ You can also build Nix from source by following the instructions at https://nixo
 
 See [usage.md](usage.md) for usage instructions, such as how to update.
 
+To resize the VM disk image, you can use this helper script from within nix-shell:
+```
+./contrib/vbox-resize-disk1.sh --help
+```
 ----
 
 Tutorial: install and configure NixOS for nix-bitcoin on VirtualBox (macOS host)
