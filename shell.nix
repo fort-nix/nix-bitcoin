@@ -6,7 +6,9 @@ with import nixpkgs { };
 stdenv.mkDerivation rec {
   name = "nix-bitcoin-environment";
 
-  buildInputs = [ pkgs.nixops pkgs.figlet pkgs.apg pkgs.openssl ];
+  nixops19_09 = callPackage ./pkgs/nixops {};
+
+  buildInputs = with pkgs; [ nixops19_09 figlet apg openssl ];
 
   shellHook = ''
     export NIX_PATH="nixpkgs=${nixpkgs}:."
