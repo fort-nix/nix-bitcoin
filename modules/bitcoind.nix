@@ -27,6 +27,10 @@ let
     ${optionalString (cfg.rpcuser != null) "rpcuser=${cfg.rpcuser}"}
     ${optionalString (cfg.rpcpassword != null) "rpcpassword=${cfg.rpcpassword}"}
 
+    # ZMQ options
+    ${optionalString (cfg.zmqpubrawblock != null) "zmqpubrawblock=${cfg.zmqpubrawblock}"}
+    ${optionalString (cfg.zmqpubrawtx != null) "zmqpubrawtx=${cfg.zmqpubrawtx}"}
+
     # Extra config options (from bitcoind nixos service)
     ${cfg.extraConfig}
   '';
@@ -249,9 +253,9 @@ in {
         PermissionsStartOnly = "true";
       } // nix-bitcoin-services.defaultHardening
         // (if cfg.enforceTor
-          then nix-bitcoin-services.allowTor
-          else nix-bitcoin-services.allowAnyIP
-        ) // optionalAttrs config.services.lnd.enable nix-bitcoin-services.allowAnyProtocol;  # FOR ZMQ
+            then nix-bitcoin-services.allowTor
+            else nix-bitcoin-services.allowAnyIP)
+        // optionalAttrs (cfg.zmqpubrawblock != null || cfg.zmqpubrawtx != null) nix-bitcoin-services.allowAnyProtocol;
     };
     systemd.services.bitcoind-import-banlist = {
       description = "Bitcoin daemon banlist importer";
