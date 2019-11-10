@@ -1,0 +1,34 @@
+--- a/release.nix
++++ b/release.nix
+@@ -1,6 +1,7 @@
+ { nixopsSrc ? { outPath = ./.; revCount = 0; shortRev = "abcdef"; rev = "HEAD"; }
+ , officialRelease ? false
+ , nixpkgs ? <nixpkgs>
++, pluginData
+ , p ? (p: [ ])
+ }:
+
+@@ -10,11 +11,10 @@ let
+
+   allPlugins = let
+     plugins = let
+-      allPluginVers = import ./data.nix;
++      allPluginVers = pluginData;
+       fetch = v:
+         pkgs.fetchFromGitHub {
+-          inherit (v) owner repo sha256;
+-          rev = "v${v.version}";
++          inherit (v) owner repo sha256 rev;
+         };
+       srcDrv = v: (fetch v) + "/release.nix";
+     in self: let
+@@ -83,4 +83,4 @@
+# Remove annoying debug message that's shown in nix-shell while evaluating this file
+           pysqlite
+           typing
+           pluggy
+-        ] ++ pkgs.lib.traceValFn (x: "Using plugins: " + builtins.toJSON x) (map (d: d.build.${system}) (p allPlugins));
++        ] ++ (map (d: d.build.${system}) (p allPlugins));
+
+
+       # For "nix-build --run-env".
