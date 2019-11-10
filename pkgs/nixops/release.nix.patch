@@ -22,7 +22,7 @@
          };
        srcDrv = v: (fetch v) + "/release.nix";
      in self: let
-@@ -83,4 +83,4 @@
+@@ -83,7 +83,7 @@
 # Remove annoying debug message that's shown in nix-shell while evaluating this file
            pysqlite
            typing
