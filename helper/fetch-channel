@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+rev=$1
+sha256=$(nix-prefetch-url --unpack https://github.com/nixos/nixpkgs-channels/archive/$rev.tar.gz)
+echo "rev = \"$rev\";"
+echo "sha256 = \"$sha256\";"
