@@ -128,7 +128,7 @@ See [usage.md](usage.md) for usage instructions, such as how to update.
 
 To resize the VM disk image, you can use this helper script from within nix-shell:
 ```
-./contrib/vbox-resize-disk1.sh --help
+./helper/vbox-resize-disk1.sh --help
 ```
 ----
 
