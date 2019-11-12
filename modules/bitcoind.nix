@@ -209,6 +209,14 @@ in {
         example = "tcp://127.0.0.1:28333";
         description = "ZMQ address for zmqpubrawtx notifications";
       };
+      cli = mkOption {
+        type = types.package;
+        readOnly = true;
+        default = pkgs.writeScriptBin "bitcoin-cli" ''
+          exec ${cfg.package}/bin/bitcoin-cli -datadir='${cfg.dataDir}' "$@"
+        '';
+        description = "Binary to connect with the bitcoind instance.";
+      };
       enforceTor =  nix-bitcoin-services.enforceTor;
     };
   };
