@@ -272,32 +272,18 @@ in {
       wantedBy = [ "bitcoind.service" ];
       bindsTo = [ "bitcoind.service" ];
       after = [ "bitcoind.service" ];
-      preStart = ''
-        set +e
-        echo "Checking that bitcoind is up"
-        # Give bitcoind time to create pid file
-        sleep 2
-        while true
-        do
-            '${cfg.package}'/bin/bitcoin-cli -datadir='${cfg.dataDir}' getnetworkinfo > /dev/null
-            if [ "$?" -eq 0 ]; then
-              break
-            fi
-            sleep 1
+      script = ''
+        cd ${cfg.cli}/bin
+        # Poll until bitcoind accepts commands. This can take a long time.
+        while ! ./bitcoin-cli getnetworkinfo &> /dev/null; do
+          sleep 1
         done
+        echo "Importing node banlist..."
+        . ${./banlist.cli.txt}
       '';
-
       serviceConfig = {
         User = "${cfg.user}";
         Group = "${cfg.group}";
-        script = ''
-          echo "Importing node banlist..."
-          cd ${cfg.cli}/bin
-          . ${./banlist.cli.txt}
-        '';
-
-        # Permission for preStart
-        PermissionsStartOnly = "true";
       } // nix-bitcoin-services.defaultHardening
         // nix-bitcoin-services.allowTor;
     };
