@@ -238,7 +238,6 @@ in {
         User = "${cfg.user}";
         Group = "${cfg.group}";
         ExecStart = "${cfg.package}/bin/bitcoind ${cmdlineOptions}";
-        StateDirectory = "bitcoind";
         PIDFile = "${pidFile}";
         Restart = "on-failure";
 
@@ -287,7 +286,6 @@ in {
         User = "${cfg.user}";
         Group = "${cfg.group}";
         ExecStart = "${pkgs.bash}/bin/bash ${pkgs.banlist}/bin/banlist ${pkgs.blockchains.bitcoind}";
-        StateDirectory = "bitcoind";
 
         # Permission for preStart
         PermissionsStartOnly = "true";
