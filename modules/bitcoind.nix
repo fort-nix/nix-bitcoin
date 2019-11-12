@@ -269,9 +269,9 @@ in {
     # wget https://people.xiph.org/~greg/banlist.cli.txt
     systemd.services.bitcoind-import-banlist = {
       description = "Bitcoin daemon banlist importer";
-      requires = [ "bitcoind.service" ];
+      wantedBy = [ "bitcoind.service" ];
+      bindsTo = [ "bitcoind.service" ];
       after = [ "bitcoind.service" ];
-      wantedBy = [ "multi-user.target" ];
       preStart = ''
         set +e
         echo "Checking that bitcoind is up"
@@ -279,12 +279,6 @@ in {
         sleep 2
         while true
         do
-            pid=$(cat ${pidFile})
-            ${pkgs.ps}/bin/ps -p "$pid" > /dev/null
-            if [ "$?" -ne 0 ]; then
-              echo "bitcoind already exited"
-              break
-            fi
             '${cfg.package}'/bin/bitcoin-cli -datadir='${cfg.dataDir}' getnetworkinfo > /dev/null
             if [ "$?" -eq 0 ]; then
               break
@@ -294,7 +288,6 @@ in {
       '';
 
       serviceConfig = {
-        Type = "simple";
         User = "${cfg.user}";
         Group = "${cfg.group}";
         script = ''
