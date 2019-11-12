@@ -264,6 +264,9 @@ in {
             else nix-bitcoin-services.allowAnyIP)
         // optionalAttrs (cfg.zmqpubrawblock != null || cfg.zmqpubrawtx != null) nix-bitcoin-services.allowAnyProtocol;
     };
+
+    # Use this to update the banlist:
+    # wget https://people.xiph.org/~greg/banlist.cli.txt
     systemd.services.bitcoind-import-banlist = {
       description = "Bitcoin daemon banlist importer";
       requires = [ "bitcoind.service" ];
@@ -289,11 +292,16 @@ in {
             sleep 1
         done
       '';
+
       serviceConfig = {
         Type = "simple";
         User = "${cfg.user}";
         Group = "${cfg.group}";
-        ExecStart = "${pkgs.bash}/bin/bash ${pkgs.banlist}/bin/banlist ${pkgs.blockchains.bitcoind}";
+        script = ''
+          echo "Importing node banlist..."
+          cd ${cfg.cli}/bin
+          . ${./banlist.cli.txt}
+        '';
 
         # Permission for preStart
         PermissionsStartOnly = "true";

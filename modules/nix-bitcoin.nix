@@ -189,7 +189,6 @@ in {
       blockchains.bitcoind
       (hiPrio config.services.bitcoind.cli)
       nodeinfo
-      banlist
       jq
       qrencode
     ]
