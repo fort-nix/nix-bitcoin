@@ -279,7 +279,9 @@ in {
           sleep 1
         done
         echo "Importing node banlist..."
+        set +e
         . ${./banlist.cli.txt}
+        true
       '';
       serviceConfig = {
         User = "${cfg.user}";
