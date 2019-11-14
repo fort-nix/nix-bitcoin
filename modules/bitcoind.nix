@@ -279,9 +279,13 @@ in {
           sleep 1
         done
         echo "Importing node banlist..."
-        set +e
-        . ${./banlist.cli.txt}
-        true
+        cat ${./banlist.cli.txt} | while read line; do
+            if ! err=$(eval "$line" 2>&1) && [[ $err != *already\ banned* ]]; then
+                # unexpected error
+                echo "$err"
+                exit 1
+            fi
+        done
       '';
       serviceConfig = {
         User = "${cfg.user}";
