@@ -119,7 +119,6 @@ in {
     services.onion-chef.access.operator = [ "bitcoind" "clightning" "nginx" "liquidd" "spark-wallet" "electrs" "sshd" ];
 
     environment.interactiveShellInit = ''
-      alias bitcoin-cli='bitcoin-cli -datadir=${config.services.bitcoind.dataDir}'
       ${optionalString (config.services.clightning.enable) ''
         alias lightning-cli='sudo -u clightning lightning-cli --lightning-dir=${config.services.clightning.dataDir}'
       ''}
@@ -188,8 +187,8 @@ in {
     environment.systemPackages = with pkgs; [
       tor
       blockchains.bitcoind
+      (hiPrio config.services.bitcoind.cli)
       nodeinfo
-      banlist
       jq
       qrencode
     ]

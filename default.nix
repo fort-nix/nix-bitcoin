@@ -5,7 +5,6 @@
   modules = import ./modules; # NixOS modules
 
   nodeinfo = pkgs.callPackage ./pkgs/nodeinfo { };
-  banlist = pkgs.callPackage ./pkgs/banlist { };
   lightning-charge = pkgs.callPackage ./pkgs/lightning-charge { };
   nanopos = pkgs.callPackage ./pkgs/nanopos { };
   spark-wallet = pkgs.callPackage ./pkgs/spark-wallet { };

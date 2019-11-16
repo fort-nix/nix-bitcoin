@@ -209,6 +209,14 @@ in {
         example = "tcp://127.0.0.1:28333";
         description = "ZMQ address for zmqpubrawtx notifications";
       };
+      cli = mkOption {
+        type = types.package;
+        readOnly = true;
+        default = pkgs.writeScriptBin "bitcoin-cli" ''
+          exec ${cfg.package}/bin/bitcoin-cli -datadir='${cfg.dataDir}' "$@"
+        '';
+        description = "Binary to connect with the bitcoind instance.";
+      };
       enforceTor =  nix-bitcoin-services.enforceTor;
     };
   };
@@ -238,7 +246,6 @@ in {
         User = "${cfg.user}";
         Group = "${cfg.group}";
         ExecStart = "${cfg.package}/bin/bitcoind ${cmdlineOptions}";
-        StateDirectory = "bitcoind";
         PIDFile = "${pidFile}";
         Restart = "on-failure";
 
@@ -257,40 +264,32 @@ in {
             else nix-bitcoin-services.allowAnyIP)
         // optionalAttrs (cfg.zmqpubrawblock != null || cfg.zmqpubrawtx != null) nix-bitcoin-services.allowAnyProtocol;
     };
+
+    # Use this to update the banlist:
+    # wget https://people.xiph.org/~greg/banlist.cli.txt
     systemd.services.bitcoind-import-banlist = {
       description = "Bitcoin daemon banlist importer";
-      requires = [ "bitcoind.service" ];
+      wantedBy = [ "bitcoind.service" ];
+      bindsTo = [ "bitcoind.service" ];
       after = [ "bitcoind.service" ];
-      wantedBy = [ "multi-user.target" ];
-      preStart = ''
-        set +e
-        echo "Checking that bitcoind is up"
-        # Give bitcoind time to create pid file
-        sleep 2
-        while true
-        do
-            pid=$(cat ${pidFile})
-            ${pkgs.ps}/bin/ps -p "$pid" > /dev/null
-            if [ "$?" -ne 0 ]; then
-              echo "bitcoind already exited"
-              break
+      script = ''
+        cd ${cfg.cli}/bin
+        # Poll until bitcoind accepts commands. This can take a long time.
+        while ! ./bitcoin-cli getnetworkinfo &> /dev/null; do
+          sleep 1
+        done
+        echo "Importing node banlist..."
+        cat ${./banlist.cli.txt} | while read line; do
+            if ! err=$(eval "$line" 2>&1) && [[ $err != *already\ banned* ]]; then
+                # unexpected error
+                echo "$err"
+                exit 1
             fi
-            '${cfg.package}'/bin/bitcoin-cli -datadir='${cfg.dataDir}' getnetworkinfo > /dev/null
-            if [ "$?" -eq 0 ]; then
-              break
-            fi
-            sleep 1
         done
       '';
       serviceConfig = {
-        Type = "simple";
         User = "${cfg.user}";
         Group = "${cfg.group}";
-        ExecStart = "${pkgs.bash}/bin/bash ${pkgs.banlist}/bin/banlist ${pkgs.blockchains.bitcoind}";
-        StateDirectory = "bitcoind";
-
-        # Permission for preStart
-        PermissionsStartOnly = "true";
       } // nix-bitcoin-services.defaultHardening
         // nix-bitcoin-services.allowTor;
     };
