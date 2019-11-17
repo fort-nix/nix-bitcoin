@@ -1,20 +1,20 @@
-{ stdenv, fetchurl, fetchFromGitHub, python35 }:
+{ stdenv, fetchurl, fetchFromGitHub, python3 }:
 
 with stdenv.lib;
-with python35.pkgs;
+with python3.pkgs;
 
 let
   buildInputs = [ mnemonic ecdsa typing-extensions hidapi libusb1 pyaes ];
 in
 buildPythonPackage rec {
   pname = "hwi";
-  version = "1.0.1";
+  version = "1.0.3";
 
   src = fetchFromGitHub {
     owner = "bitcoin-core";
     repo = "HWI";
     rev = version;
-    sha256 = "0m3p72r8ghzwwsmc7y0dzxn0wzaplqqq1q0cd327fnnljddp5b10";
+    sha256 = "1xb8w6w6j6vv2ik2bb25y2w6m0gikmh5446jar0frfp6r6das5nn";
   };
 
   # TODO: enable tests
