@@ -57,6 +57,16 @@ in {
       default = "/var/lib/clightning";
       description = "The data directory for clightning.";
     };
+    cli = mkOption {
+      readOnly = true;
+      default = pkgs.writeScriptBin "lightning-cli"
+      # Switch user because c-lightning doesn't allow setting the permissions of the rpc socket
+      # https://github.com/ElementsProject/lightning/issues/1366
+      ''
+        exec sudo -u clightning ${pkgs.nix-bitcoin.clightning}/bin/lightning-cli --lightning-dir='${cfg.dataDir}' "$@"
+      '';
+      description = "Binary to connect with the clightning instance.";
+    };
     enforceTor =  nix-bitcoin-services.enforceTor;
   };
 
