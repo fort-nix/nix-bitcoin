@@ -15,21 +15,7 @@ let
     chown -R operator ${config.users.users.operator.home}/.ssh
   '';
 in {
-  imports = [
-    ./nix-bitcoin-pkgs.nix
-    ./bitcoind.nix
-    ./clightning.nix
-    ./lightning-charge.nix
-    ./nanopos.nix
-    ./nix-bitcoin-webindex.nix
-    ./liquid.nix
-    ./spark-wallet.nix
-    ./electrs.nix
-    ./onion-chef.nix
-    ./recurring-donations.nix
-    ./hardware-wallets.nix
-    ./lnd.nix
-  ];
+  imports = [ ./modules.nix ];
 
   options.services.nix-bitcoin = {
     enable = mkOption {
@@ -207,4 +193,3 @@ in {
     ];
   };
 }
-
