@@ -1,9 +1,10 @@
 #!/bin/sh
 
-SECRETSFILE=secrets.nix
+opensslConf=${1:-openssl.cnf}
+secretsFile=secrets.nix
 
-if [ ! -e "$SECRETSFILE" ]; then
-    echo Write secrets to $SECRETSFILE
+if [ ! -e "$secretsFile" ]; then
+    echo Write secrets to $secretsFile
     makepw="apg -m 20 -x 20 -M Ncl -n 1"
     {
         echo \{
@@ -13,10 +14,10 @@ if [ ! -e "$SECRETSFILE" ]; then
         echo "  liquidrpcpassword = \"$($makepw)\";"
         echo "  spark-wallet-password = \"$($makepw)\";"
         echo \}
-    } >> $SECRETSFILE
+    } >> $secretsFile
     echo Done
 else
-    echo $SECRETSFILE already exists. Skipping.
+    echo $secretsFile already exists. Skipping.
 fi
 
 if [ ! -e nginx.key ] || [ ! -e nginx.cert ]; then
@@ -33,8 +34,8 @@ fi
 if [ ! -e lnd.key ] || [ ! -e lnd.cert ]; then
     echo Generate LND compatible TLS Cert
     openssl ecparam -genkey -name prime256v1 -out lnd.key
-    openssl req -config openssl.cnf -new -sha256 -key lnd.key -out lnd.csr -subj '/CN=localhost/O=lnd'
-    openssl req -config openssl.cnf -x509 -sha256 -days 1825 -key lnd.key -in lnd.csr -out lnd.cert
+    openssl req -config $opensslConf -new -sha256 -key lnd.key -out lnd.csr -subj '/CN=localhost/O=lnd'
+    openssl req -config $opensslConf -x509 -sha256 -days 1825 -key lnd.key -in lnd.csr -out lnd.cert
     rm lnd.csr
     echo Done
 else
