@@ -23,6 +23,7 @@ in {
     ./recurring-donations.nix
     ./hardware-wallets.nix
     ./lnd.nix
+    ./secrets/setup-secrets.nix
   ];
 
   disabledModules = [ "services/networking/bitcoind.nix" ];
