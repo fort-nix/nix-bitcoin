@@ -155,32 +155,31 @@ in {
       }];
       version = 3;
     };
-    environment.systemPackages = with pkgs; with nix-bitcoin; [
+    environment.systemPackages = with pkgs; with nix-bitcoin; let
+      s = config.services;
+    in
+    [
       tor
       bitcoind
-      (hiPrio config.services.bitcoind.cli)
+      (hiPrio s.bitcoind.cli)
       nodeinfo
       jq
       qrencode
     ]
-    ++ optionals config.services.clightning.enable [clightning (hiPrio config.services.clightning.cli)]
-    ++ optionals config.services.lnd.enable [lnd (hiPrio config.services.lnd.cli)]
-    ++ optionals config.services.lightning-charge.enable [lightning-charge]
-    ++ optionals config.services.nanopos.enable [nanopos]
-    ++ optionals config.services.nix-bitcoin-webindex.enable [nginx]
-    ++ optionals config.services.liquidd.enable [
-         elementsd
-         (hiPrio config.services.liquidd.cli)
-         (hiPrio config.services.liquidd.swap-cli)
-       ]
-    ++ optionals config.services.spark-wallet.enable [spark-wallet]
-    ++ optionals config.services.electrs.enable [electrs]
-    ++ optionals (config.services.hardware-wallets.ledger || config.services.hardware-wallets.trezor) [
+    ++ optionals s.clightning.enable [clightning (hiPrio s.clightning.cli)]
+    ++ optionals s.lnd.enable [lnd (hiPrio s.lnd.cli)]
+    ++ optionals s.lightning-charge.enable [lightning-charge]
+    ++ optionals s.nanopos.enable [nanopos]
+    ++ optionals s.nix-bitcoin-webindex.enable [nginx]
+    ++ optionals s.liquidd.enable [elementsd (hiPrio s.liquidd.cli) (hiPrio s.liquidd.swap-cli)]
+    ++ optionals s.spark-wallet.enable [spark-wallet]
+    ++ optionals s.electrs.enable [electrs]
+    ++ optionals (s.hardware-wallets.ledger || s.hardware-wallets.trezor) [
         hwi
-        # To allow debugging issues with lsusb:
+        # To allow debugging issues with lsusb
         usbutils
     ]
-    ++ optionals config.services.hardware-wallets.trezor [
+    ++ optionals s.hardware-wallets.trezor [
         python3.pkgs.trezor
     ];
   };
