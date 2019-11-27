@@ -175,6 +175,20 @@ in {
           Validate pegin claims. All functionaries must run this.
         '';
       };
+      cli = mkOption {
+        readOnly = true;
+        default = pkgs.writeScriptBin "elements-cli" ''
+          exec ${pkgs.nix-bitcoin.elementsd}/bin/elements-cli -datadir='${cfg.dataDir}' "$@"
+        '';
+        description = "Binary to connect with the liquidd instance.";
+      };
+      swap-cli = mkOption {
+        readOnly = true;
+        default = pkgs.writeScriptBin "liquidswap-cli" ''
+          exec ${pkgs.nix-bitcoin.liquid-swap}/bin/liquidswap-cli -c '${cfg.dataDir}/elements.conf' "$@"
+        '';
+        description = "Binary for managing liquid swaps.";
+      };
       enforceTor =  nix-bitcoin-services.enforceTor;
     };
   };

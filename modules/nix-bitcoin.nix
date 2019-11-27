@@ -101,12 +101,6 @@ in {
     services.onion-chef.enable = true;
     services.onion-chef.access.operator = [ "bitcoind" "clightning" "nginx" "liquidd" "spark-wallet" "electrs" "sshd" ];
 
-    environment.interactiveShellInit = ''
-      ${optionalString (config.services.liquidd.enable) ''
-        alias elements-cli='elements-cli -datadir=${config.services.liquidd.dataDir}'
-        alias liquidswap-cli='liquidswap-cli -c ${config.services.liquidd.dataDir}/elements.conf'
-      ''}
-    '';
     # Unfortunately c-lightning doesn't allow setting the permissions of the rpc socket
     # https://github.com/ElementsProject/lightning/issues/1366
     security.sudo.configFile = (
@@ -174,7 +168,11 @@ in {
     ++ optionals config.services.lightning-charge.enable [lightning-charge]
     ++ optionals config.services.nanopos.enable [nanopos]
     ++ optionals config.services.nix-bitcoin-webindex.enable [nginx]
-    ++ optionals config.services.liquidd.enable [elementsd liquid-swap]
+    ++ optionals config.services.liquidd.enable [
+         elementsd
+         (hiPrio config.services.liquidd.cli)
+         (hiPrio config.services.liquidd.swap-cli)
+       ]
     ++ optionals config.services.spark-wallet.enable [spark-wallet]
     ++ optionals config.services.electrs.enable [electrs]
     ++ optionals (config.services.hardware-wallets.ledger || config.services.hardware-wallets.trezor) [
