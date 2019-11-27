@@ -44,28 +44,28 @@ let
     permissions = "0440";
   };
   nginx_key = {
-    keyFile = ../secrets/nginx.key;
+    keyFile = toString ../../secrets/nginx.key;
     destDir = "/secrets/";
     user = "nginx";
     group = "root";
     permissions = "0440";
   };
   nginx_cert = {
-    keyFile = ../secrets/nginx.cert;
+    keyFile = toString ../../secrets/nginx.cert;
     destDir = "/secrets/";
     user = "nginx";
     group = "root";
     permissions = "0440";
   };
   lnd_key = {
-    keyFile = ../secrets/lnd.key;
+    keyFile = toString ../../secrets/lnd.key;
     destDir = "/secrets/";
     user = "lnd";
     group = "lnd";
     permissions = "0440";
   };
   lnd_cert = {
-    keyFile = ../secrets/lnd.cert;
+    keyFile = toString ../../secrets/lnd.cert;
     destDir = "/secrets/";
     user = "lnd";
     group = "lnd";
