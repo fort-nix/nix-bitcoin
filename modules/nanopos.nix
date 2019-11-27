@@ -65,7 +65,7 @@ in {
       after = [ "lightning-charge.service" ];
       serviceConfig = {
         EnvironmentFile = "/secrets/lightning-charge-api-token-for-nanopos";
-        ExecStart = "${pkgs.nanopos}/bin/nanopos -y ${cfg.itemsFile} -p ${toString cfg.port} --show-bolt11";
+        ExecStart = "${pkgs.nix-bitcoin.nanopos}/bin/nanopos -y ${cfg.itemsFile} -p ${toString cfg.port} --show-bolt11";
 
         User = "nanopos";
         Restart = "on-failure";

@@ -71,7 +71,7 @@ in {
 
     systemd.services.clightning = {
       description = "Run clightningd";
-      path  = [ pkgs.blockchains.bitcoind ];
+      path  = [ pkgs.nix-bitcoin.bitcoind ];
       wantedBy = [ "multi-user.target" ];
       requires = [ "bitcoind.service" ];
       after = [ "bitcoind.service" ];
@@ -87,7 +87,7 @@ in {
         '';
       serviceConfig = {
         PermissionsStartOnly = "true";
-        ExecStart = "${pkgs.clightning}/bin/lightningd --lightning-dir=${cfg.dataDir}";
+        ExecStart = "${pkgs.nix-bitcoin.clightning}/bin/lightningd --lightning-dir=${cfg.dataDir}";
         User = "clightning";
         Restart = "on-failure";
         RestartSec = "10s";

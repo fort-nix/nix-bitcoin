@@ -102,7 +102,7 @@ in {
 
     systemd.services.lnd = {
       description = "Run LND";
-      path  = [ pkgs.blockchains.bitcoind ];
+      path  = [ pkgs.nix-bitcoin.bitcoind ];
       wantedBy = [ "multi-user.target" ];
       requires = [ "bitcoind.service" ];
       after = [ "bitcoind.service" ];
@@ -115,7 +115,7 @@ in {
       '';
       serviceConfig = {
         PermissionsStartOnly = "true";
-        ExecStart = "${pkgs.lnd}/bin/lnd --configfile=${cfg.dataDir}/lnd.conf";
+        ExecStart = "${pkgs.nix-bitcoin.lnd}/bin/lnd --configfile=${cfg.dataDir}/lnd.conf";
         ExecStartPost = "${pkgs.bash}/bin/bash ${init-lnd-wallet-script}";
         User = "lnd";
         Restart = "on-failure";

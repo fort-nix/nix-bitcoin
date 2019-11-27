@@ -180,7 +180,7 @@ in {
   };
 
   config = mkIf cfg.enable {
-    environment.systemPackages = [ pkgs.elementsd ];
+    environment.systemPackages = [ pkgs.nix-bitcoin.elementsd ];
     systemd.services.liquidd = {
       description = "Elements daemon providing access to the Liquid sidechain";
       requires = [ "bitcoind.service" ];
@@ -200,7 +200,7 @@ in {
         Type = "simple";
         User = "${cfg.user}";
         Group = "${cfg.group}";
-        ExecStart = "${pkgs.elementsd}/bin/elementsd ${cmdlineOptions}";
+        ExecStart = "${pkgs.nix-bitcoin.elementsd}/bin/elementsd ${cmdlineOptions}";
         StateDirectory = "liquidd";
         PIDFile = "${pidFile}";
         Restart = "on-failure";

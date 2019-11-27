@@ -82,7 +82,7 @@ in {
       description = "Run recurring-donations";
       requires = [ "clightning.service" ];
       after = [ "clightning.service" ];
-      path  = [ pkgs.clightning pkgs.curl pkgs.torsocks pkgs.sudo pkgs.jq ];
+      path = with pkgs; [ nix-bitcoin.clightning curl torsocks sudo jq ];
       serviceConfig = {
         ExecStart = "${pkgs.bash}/bin/bash ${recurring-donations-script}";
         # TODO: would be better if this was operator, but I don't get sudo

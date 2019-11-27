@@ -167,9 +167,9 @@ in {
       }];
       version = 3;
     };
-    environment.systemPackages = with pkgs; [
+    environment.systemPackages = with pkgs; with nix-bitcoin; [
       tor
-      blockchains.bitcoind
+      bitcoind
       (hiPrio config.services.bitcoind.cli)
       nodeinfo
       jq

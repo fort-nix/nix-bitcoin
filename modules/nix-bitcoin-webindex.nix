@@ -74,7 +74,7 @@ in {
       description = "Get node info";
       wantedBy = [ "multi-user.target" ];
       after = [ "nodeinfo.service" ];
-      path  = [ pkgs.nodeinfo pkgs.clightning pkgs.jq pkgs.sudo ];
+      path  = with pkgs; [ nix-bitcoin.nodeinfo nix-bitcoin.clightning jq sudo ];
       serviceConfig = {
         ExecStart="${pkgs.bash}/bin/bash ${createWebIndex}";
         User = "root";

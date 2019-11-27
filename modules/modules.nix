@@ -27,5 +27,7 @@ in {
 
   disabledModules = [ "services/networking/bitcoind.nix" ];
 
-  nixpkgs.overlays = [ (self: super: allPackages super) ];
+  nixpkgs.overlays = [ (self: super: {
+    nix-bitcoin = allPackages super;
+  }) ];
 }

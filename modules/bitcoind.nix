@@ -69,7 +69,7 @@ in {
 
       package = mkOption {
         type = types.package;
-        default = pkgs.blockchains.bitcoind;
+        default = pkgs.nix-bitcoin.bitcoind;
         defaultText = "pkgs.blockchains.bitcoind";
         description = "The package providing bitcoin binaries.";
       };
