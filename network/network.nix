@@ -75,10 +75,9 @@ in {
   network.description = "Bitcoin Core node";
 
   bitcoin-node =
-    { config, pkgs, ... }:
-    let
-      bitcoin-node = import ../configuration.nix;
-    in {
+    { config, pkgs, ... }: {
+      imports = [ ../configuration.nix ];
+
       deployment.keys = {
         inherit bitcoin-rpcpassword;
       }
@@ -88,5 +87,5 @@ in {
       // (if (config.services.liquidd.enable) then { inherit liquid-rpcpassword; } else { })
       // (if (config.services.spark-wallet.enable) then { inherit spark-wallet-login; } else { })
       // (if (config.services.electrs.enable) then { inherit nginx_key nginx_cert; } else { });
-    } // (bitcoin-node { inherit config pkgs; });
+    };
 }
