@@ -67,9 +67,7 @@ in {
         extraGroups = [ "bitcoinrpc" "keys" ];
         home = cfg.dataDir;
     };
-    users.groups.clightning = {
-      name = "clightning";
-    };
+    users.groups.clightning = {};
 
     systemd.services.clightning = {
       description = "Run clightningd";

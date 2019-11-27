@@ -58,15 +58,12 @@ in {
 
   config = mkIf cfg.enable {
     users.users.${cfg.user} = {
-        name = cfg.user;
         description = "electrs User";
         group = cfg.group;
         extraGroups = [ "bitcoinrpc" "keys" "bitcoin"];
         home = cfg.dataDir;
     };
-    users.groups.electrs = {
-      name = cfg.group;
-    };   
+    users.groups.${cfg.group} = {};
 
     systemd.services.electrs = {
       description = "Run electrs";

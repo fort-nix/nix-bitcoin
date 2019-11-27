@@ -52,15 +52,12 @@ in {
   };
 
   config = mkIf cfg.enable {
-    users.users.nanopos =
-      {
+    users.users.nanopos = {
         description = "nanopos User";
         group = "nanopos";
         extraGroups = [ "keys" ];
     };
-    users.groups.nanopos = {
-      name = "nanopos";
-    };
+    users.groups.nanopos = {};
 
     systemd.services.nanopos = {
       description = "Run nanopos";

@@ -98,9 +98,7 @@ in {
         extraGroups = [ "bitcoinrpc" "keys" ];
         home = cfg.dataDir;
     };
-    users.groups.lnd = {
-      name = "lnd";
-    };
+    users.groups.lnd = {};
 
     systemd.services.lnd = {
       description = "Run LND";

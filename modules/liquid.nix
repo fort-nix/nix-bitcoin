@@ -214,14 +214,11 @@ in {
         );
     };
     users.users.${cfg.user} = {
-      name = cfg.user;
       group = cfg.group;
       extraGroups = [ "keys" ];
       description = "Liquid sidechain user";
       home = cfg.dataDir;
     };
-    users.groups.${cfg.group} = {
-      name = cfg.group;
-    };
+    users.groups.${cfg.group} = {};
   };
 }
