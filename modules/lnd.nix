@@ -102,7 +102,9 @@ in {
           then nix-bitcoin-services.allowTor
           else nix-bitcoin-services.allowAnyIP
         ) // nix-bitcoin-services.allowAnyProtocol;  # For ZMQ
-      postStart = ''
+      postStart = let
+        mainnetDir = "${cfg.dataDir}/chain/bitcoin/mainnet";
+      in ''
         umask 377
 
         attempts=50
@@ -112,26 +114,32 @@ in {
         done
 
         if [[ ! -f /secrets/lnd-seed-mnemonic ]]; then
-          echo Creating lnd seed
+          echo Create lnd seed
 
           ${pkgs.curl}/bin/curl -s \
             --cacert /secrets/lnd_cert \
             -X GET https://127.0.0.1:8080/v1/genseed | ${pkgs.jq}/bin/jq -c '.cipher_seed_mnemonic' > /secrets/lnd-seed-mnemonic
         fi
 
-        if [[ ! -f ${cfg.dataDir}/chain/bitcoin/mainnet/wallet.db ]]; then
-          echo Creating lnd wallet
+        if [[ ! -f ${mainnetDir}/wallet.db ]]; then
+          echo Create lnd wallet
 
           ${pkgs.curl}/bin/curl -s --output /dev/null --show-error \
             --cacert /secrets/lnd_cert \
             -X POST -d "{\"wallet_password\": \"$(cat /secrets/lnd-wallet-password | tr -d '\n' | base64 -w0)\", \
             \"cipher_seed_mnemonic\": $(cat /secrets/lnd-seed-mnemonic | tr -d '\n')}" \
             https://127.0.0.1:8080/v1/initwallet
+
+          # Guarantees that RPC calls with cfg.cli succeed after the service is started
+          echo Wait until wallet is created
+          while [[ ! -f ${mainnetDir}/admin.macaroon ]]; do
+            sleep 0.1
+          done
         else
-          echo Unlocking lnd wallet
+          echo Unlock lnd wallet
 
           ${pkgs.curl}/bin/curl -s \
-            -H "Grpc-Metadata-macaroon: $(${pkgs.xxd}/bin/xxd -ps -u -c 99999 ${cfg.dataDir}/chain/bitcoin/mainnet/admin.macaroon)" \
+            -H "Grpc-Metadata-macaroon: $(${pkgs.xxd}/bin/xxd -ps -u -c 99999 '${mainnetDir}/admin.macaroon')" \
             --cacert /secrets/lnd_cert \
             -X POST \
             -d "{\"wallet_password\": \"$(cat /secrets/lnd-wallet-password | tr -d '\n' | base64 -w0)\"}" \
