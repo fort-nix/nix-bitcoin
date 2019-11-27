@@ -115,9 +115,9 @@ in {
         if [[ ! -f ${cfg.dataDir}/chain/bitcoin/mainnet/wallet.db ]]; then
           echo Creating lnd wallet
 
-          ${pkgs.curl}/bin/curl -s \
+          ${pkgs.curl}/bin/curl -s --output /dev/null --show-error \
             --cacert /secrets/lnd_cert \
-            -X POST -d "{\"wallet_password\": \"$(cat /secrets/lnd-wallet-password | tr -d '\n' |base64 -w0)\", \
+            -X POST -d "{\"wallet_password\": \"$(cat /secrets/lnd-wallet-password | tr -d '\n' | base64 -w0)\", \
             \"cipher_seed_mnemonic\": $(cat /secrets/lnd-seed-mnemonic | tr -d '\n')}" \
             https://127.0.0.1:8080/v1/initwallet
         else
