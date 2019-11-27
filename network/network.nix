@@ -1,75 +1,56 @@
 let
   secrets = import ../secrets/secrets.nix;
-  bitcoin-rpcpassword = {
+
+  secretsDir = "/secrets/";
+  secret = { text ? null, keyFile ? null, user, group ? user }: {
+    inherit text user group;
+    destDir = secretsDir;
+    permissions = "0440";
+  };
+
+  bitcoin-rpcpassword = secret {
     text = secrets.bitcoinrpcpassword;
-    destDir = "/secrets/";
     user = "bitcoin";
     group = "bitcoinrpc";
-    permissions = "0440";
   };
-  lnd-wallet-password = {
+  lnd-wallet-password = secret {
     text = secrets.lnd-wallet-password;
-    destDir = "/secrets/";
     user = "lnd";
-    group = "lnd";
-    permissions = "0440";
   };
-  lightning-charge-api-token = {
+  lightning-charge-api-token = secret {
     text = "API_TOKEN=" + secrets.lightning-charge-api-token;
-    destDir = "/secrets/";
     user = "clightning";
-    group = "clightning";
-    permissions = "0440";
   };
   # variable is called CHARGE_TOKEN instead of API_TOKEN
-  lightning-charge-api-token-for-nanopos = {
+  lightning-charge-api-token-for-nanopos = secret {
     text = "CHARGE_TOKEN=" + secrets.lightning-charge-api-token;
-    destDir = "/secrets/";
     user = "nanopos";
-    group = "nanopos";
-    permissions = "0440";
   };
-  liquid-rpcpassword = {
+  liquid-rpcpassword = secret {
     text = secrets.liquidrpcpassword;
-    destDir = "/secrets/";
     user = "liquid";
-    group = "liquid";
-    permissions = "0440";
   };
-  spark-wallet-login = {
+  spark-wallet-login = secret {
     text = "login=" + "spark-wallet:" + secrets.spark-wallet-password;
-    destDir = "/secrets/";
     user = "clightning";
-    group = "clightning";
-    permissions = "0440";
   };
-  nginx_key = {
+  nginx_key = secret {
     keyFile = toString ../../secrets/nginx.key;
-    destDir = "/secrets/";
     user = "nginx";
     group = "root";
-    permissions = "0440";
   };
-  nginx_cert = {
+  nginx_cert = secret {
     keyFile = toString ../../secrets/nginx.cert;
-    destDir = "/secrets/";
     user = "nginx";
     group = "root";
-    permissions = "0440";
   };
-  lnd_key = {
+  lnd_key = secret {
     keyFile = toString ../../secrets/lnd.key;
-    destDir = "/secrets/";
     user = "lnd";
-    group = "lnd";
-    permissions = "0440";
   };
-  lnd_cert = {
+  lnd_cert = secret {
     keyFile = toString ../../secrets/lnd.cert;
-    destDir = "/secrets/";
     user = "lnd";
-    group = "lnd";
-    permissions = "0440";
   };
 in {
   network.description = "Bitcoin Core node";
