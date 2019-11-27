@@ -301,5 +301,6 @@ in {
       home = cfg.dataDir;
     };
     users.groups.${cfg.group} = {};
+    users.groups.bitcoinrpc = {};
   };
 }

@@ -85,9 +85,6 @@ in {
       version = 3;
     };
 
-    # Add bitcoinrpc group
-    users.groups.bitcoinrpc = {};
-
     # clightning
     services.clightning.bitcoin-rpcuser = config.services.bitcoind.rpcuser;
     services.clightning.proxy = config.services.tor.client.socksListenAddress;
