@@ -4,13 +4,14 @@ SECRETSFILE=secrets/secrets.nix
 
 if [ ! -e "$SECRETSFILE" ]; then
     echo Write secrets to $SECRETSFILE
+    makepw="apg -m 20 -x 20 -M Ncl -n 1"
     {
         echo \{
-        echo "  bitcoinrpcpassword = \"$(apg -m 20 -x 20 -M Ncl -n 1)\";"
-        echo "  lnd-wallet-password = \"$(apg -m 20 -x 20 -M Ncl -n 1)\";"
-        echo "  lightning-charge-api-token = \"$(apg -m 20 -x 20 -M Ncl -n 1)\";"
-        echo "  liquidrpcpassword = \"$(apg -m 20 -x 20 -M Ncl -n 1)\";"
-        echo "  spark-wallet-password = \"$(apg -m 20 -x 20 -M Ncl -n 1)\";"
+        echo "  bitcoinrpcpassword = \"$($makepw)\";"
+        echo "  lnd-wallet-password = \"$($makepw)\";"
+        echo "  lightning-charge-api-token = \"$($makepw)\";"
+        echo "  liquidrpcpassword = \"$($makepw)\";"
+        echo "  spark-wallet-password = \"$($makepw)\";"
         echo \}
     } >> $SECRETSFILE
     echo Done
