@@ -70,14 +70,13 @@ in {
   config = mkIf cfg.enable {
     systemd.services.onion-chef = {
       description = "Run onion-chef";
-      wantedBy = [ "multi-user.target" ];
-      requires = [ "tor.service" ];
-      partOf = [ "tor.service" ];
+      wantedBy = [ "tor.service" ];
+      bindsTo = [ "tor.service" ];
       after = [ "tor.service" ];
       serviceConfig = {
         ExecStart = "${pkgs.bash}/bin/bash ${onion-chef-script}";
-        User = "root";
         Type = "oneshot";
+        RemainAfterExit = true;
       } // nix-bitcoin-services.defaultHardening;
     };
   };
