@@ -19,7 +19,7 @@ let
     listen=${if cfg.listen then "1" else "0"}
 
     # RPC server options
-    ${optionalString (cfg.rpc.port != null) "rpcport=${toString cfg.rpc.port}"}
+    rpcport=${toString cfg.rpc.port}
     ${concatMapStringsSep  "\n"
       (rpcUser: "rpcauth=${rpcUser.name}:${rpcUser.passwordHMAC}")
       (attrValues cfg.rpc.users)
@@ -108,9 +108,9 @@ in {
 
       rpc = {
         port = mkOption {
-          type = types.nullOr types.ints.u16;
-          default = null;
-          description = "Override the default port on which to listen for JSON-RPC connections.";
+          type = types.ints.u16;
+          default = 8332;
+          description = "Port on which to listen for JSON-RPC connections.";
         };
         users = mkOption {
           default = {};
@@ -240,6 +240,12 @@ in {
         chown -R '${cfg.user}:${cfg.group}' '${cfg.dataDir}'
         echo "rpcpassword=$(cat /secrets/bitcoin-rpcpassword)" >> '${cfg.dataDir}/bitcoin.conf'
         chmod -R g+rX '${cfg.dataDir}/blocks'
+      '';
+      # Wait until RPC port is open. This usually takes just a few ms.
+      postStart = ''
+        while ! { exec 3>/dev/tcp/127.0.0.1/${toString cfg.rpc.port}; } &>/dev/null; do
+          sleep 0.05
+        done
       '';
       serviceConfig = {
         Type = "simple";
