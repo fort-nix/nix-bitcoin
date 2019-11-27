@@ -137,6 +137,11 @@ in {
             -d "{\"wallet_password\": \"$(cat /secrets/lnd-wallet-password | tr -d '\n' | base64 -w0)\"}" \
             https://127.0.0.1:8080/v1/unlockwallet
         fi
+
+        # Wait until the RPC port is open
+        while ! { exec 3>/dev/tcp/127.0.0.1/${toString cfg.rpcPort}; } &>/dev/null; do
+          sleep 0.1
+        done
       '';
     };
   };
