@@ -9,4 +9,5 @@
   hwi = pkgs.callPackage ./hwi { };
   pylightning = pkgs.python3Packages.callPackage ./pylightning { };
   liquid-swap = pkgs.python3Packages.callPackage ./liquid-swap { };
+  generate-secrets = pkgs.callPackage ./generate-secrets { };
 }
