@@ -14,7 +14,7 @@ if [ -x "$(command -v lightning-cli)" ]; then
 fi
 
 if [ -x "$(command -v lncli)" ]; then
-    LND_NODEID=$(sudo -u lnd lncli --tlscertpath /secrets/lnd_cert --macaroonpath /var/lib/lnd/chain/bitcoin/mainnet/admin.macaroon getinfo | jq -r '.uris[0]')
+    LND_NODEID=$(lncli getinfo | jq -r '.uris[0]')
     echo LND_NODEID="$LND_NODEID"
 fi
 

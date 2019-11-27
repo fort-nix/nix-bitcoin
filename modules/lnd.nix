@@ -88,6 +88,16 @@ in {
         '';
         description = "Additional configurations to be appended to <filename>lnd.conf</filename>.";
       };
+    cli = mkOption {
+      readOnly = true;
+      default = pkgs.writeScriptBin "lncli"
+      # Switch user because lnd makes datadir contents readable by user only
+      ''
+        exec sudo -u lnd ${pkgs.nix-bitcoin.lnd}/bin/lncli --tlscertpath /secrets/lnd_cert \
+          --macaroonpath '${cfg.dataDir}/chain/bitcoin/mainnet/admin.macaroon' "$@"
+      '';
+      description = "Binary to connect with the lnd instance.";
+    };
     enforceTor =  nix-bitcoin-services.enforceTor;
   };
 

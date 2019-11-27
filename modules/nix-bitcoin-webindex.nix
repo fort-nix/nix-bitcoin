@@ -77,6 +77,7 @@ in {
       path  = with pkgs; [
         nix-bitcoin.nodeinfo
         config.services.clightning.cli
+        config.services.lnd.cli
         jq
         sudo
       ];

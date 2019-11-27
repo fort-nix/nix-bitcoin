@@ -102,9 +102,6 @@ in {
     services.onion-chef.access.operator = [ "bitcoind" "clightning" "nginx" "liquidd" "spark-wallet" "electrs" "sshd" ];
 
     environment.interactiveShellInit = ''
-      ${optionalString (config.services.lnd.enable) ''
-        alias lncli='sudo -u lnd lncli --tlscertpath /secrets/lnd_cert --macaroonpath ${config.services.lnd.dataDir}/chain/bitcoin/mainnet/admin.macaroon'
-      ''}
       ${optionalString (config.services.liquidd.enable) ''
         alias elements-cli='elements-cli -datadir=${config.services.liquidd.dataDir}'
         alias liquidswap-cli='liquidswap-cli -c ${config.services.liquidd.dataDir}/elements.conf'
@@ -173,7 +170,7 @@ in {
       qrencode
     ]
     ++ optionals config.services.clightning.enable [clightning (hiPrio config.services.clightning.cli)]
-    ++ optionals config.services.lnd.enable [lnd]
+    ++ optionals config.services.lnd.enable [lnd (hiPrio config.services.lnd.cli)]
     ++ optionals config.services.lightning-charge.enable [lightning-charge]
     ++ optionals config.services.nanopos.enable [nanopos]
     ++ optionals config.services.nix-bitcoin-webindex.enable [nginx]
