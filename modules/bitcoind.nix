@@ -3,8 +3,8 @@
 with lib;
 
 let
-  nix-bitcoin-services = pkgs.callPackage ./nix-bitcoin-services.nix { };
   cfg = config.services.bitcoind;
+  inherit (config) nix-bitcoin-services;
   pidFile = "${cfg.dataDir}/bitcoind.pid";
   configFile = pkgs.writeText "bitcoin.conf" ''
     ${optionalString cfg.testnet "testnet=1"}

@@ -3,8 +3,8 @@
 with lib;
 
 let
-  nix-bitcoin-services = pkgs.callPackage ./nix-bitcoin-services.nix { };
   cfg = config.services.liquidd;
+  inherit (config) nix-bitcoin-services;
   pidFile = "${cfg.dataDir}/liquidd.pid";
   configFile = pkgs.writeText "elements.conf" ''
     chain=liquidv1

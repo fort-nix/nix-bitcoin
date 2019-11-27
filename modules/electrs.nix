@@ -3,8 +3,8 @@
 with lib;
 
 let
-  nix-bitcoin-services = pkgs.callPackage ./nix-bitcoin-services.nix { };
   cfg = config.services.electrs;
+  inherit (config) nix-bitcoin-services;
   index-batch-size = "${if cfg.high-memory then "" else "--index-batch-size=10"}";
   jsonrpc-import = "${if cfg.high-memory then "" else "--jsonrpc-import"}";
 in {

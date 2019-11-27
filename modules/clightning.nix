@@ -3,8 +3,8 @@
 with lib;
 
 let
-  nix-bitcoin-services = pkgs.callPackage ./nix-bitcoin-services.nix { };
   cfg = config.services.clightning;
+  inherit (config) nix-bitcoin-services;
   configFile = pkgs.writeText "config" ''
     autolisten=${if cfg.autolisten then "true" else "false"}
     network=bitcoin

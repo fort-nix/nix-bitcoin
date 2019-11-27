@@ -3,8 +3,8 @@
 with lib;
 
 let
-  nix-bitcoin-services = pkgs.callPackage ./nix-bitcoin-services.nix { };
   cfg = config.services.nix-bitcoin-webindex;
+  inherit (config) nix-bitcoin-services;
   indexFile = pkgs.writeText "index.html" ''
     <html>
       <body>

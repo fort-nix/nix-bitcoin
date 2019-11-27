@@ -3,8 +3,8 @@
 with lib;
 
 let
-  nix-bitcoin-services = pkgs.callPackage ./nix-bitcoin-services.nix { };
   cfg = config.services.lightning-charge;
+  inherit (config) nix-bitcoin-services;
 in {
   options.services.lightning-charge = {
     enable = mkOption {

@@ -8,8 +8,8 @@
 with lib;
 
 let
-  nix-bitcoin-services = pkgs.callPackage ./nix-bitcoin-services.nix { };
   cfg = config.services.onion-chef;
+  inherit (config) nix-bitcoin-services;
   dataDir = "/var/lib/onion-chef/";
   onion-chef-script = pkgs.writeScript "onion-chef.sh" ''
     # wait until tor is up

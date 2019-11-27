@@ -3,8 +3,8 @@
 with lib;
 
 let
-  nix-bitcoin-services = pkgs.callPackage ./nix-bitcoin-services.nix { };
   cfg = config.services.recurring-donations;
+  inherit (config) nix-bitcoin-services;
   recurring-donations-script = pkgs.writeScript "recurring-donations.sh" ''
     LNCLI="lightning-cli --lightning-dir=${config.services.clightning.dataDir}"
     pay_tallycoin() {

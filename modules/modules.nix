@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 let
   nixpkgs-pinned = import ../pkgs/nixpkgs-pinned.nix;
   unstable = import nixpkgs-pinned.nixpkgs-unstable {};
@@ -27,7 +27,16 @@ in {
 
   disabledModules = [ "services/networking/bitcoind.nix" ];
 
-  nixpkgs.overlays = [ (self: super: {
-    nix-bitcoin = allPackages super;
-  }) ];
+  options = {
+    nix-bitcoin-services = lib.mkOption {
+      readOnly = true;
+      default = import ./nix-bitcoin-services.nix lib;
+    };
+  };
+
+  config = {
+    nixpkgs.overlays = [ (self: super: {
+      nix-bitcoin = allPackages super;
+    }) ];
+  };
 }

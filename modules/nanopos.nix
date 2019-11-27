@@ -3,8 +3,8 @@
 with lib;
 
 let
-  nix-bitcoin-services = pkgs.callPackage ./nix-bitcoin-services.nix { };
   cfg = config.services.nanopos;
+  inherit (config) nix-bitcoin-services;
   defaultItemsFile = pkgs.writeText "items.yaml" ''
     tea:
       price: 0.02 # denominated in the currency specified by --currency
