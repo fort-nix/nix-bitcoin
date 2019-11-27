@@ -106,6 +106,11 @@ in {
           then nix-bitcoin-services.allowTor
           else nix-bitcoin-services.allowAnyIP
         );
+      # Wait until the rpc socket appears
+      postStart = ''
+        while read f; do [[ $f == lightning-rpc ]] && break; done \
+          < <(${pkgs.inotifyTools}/bin/inotifywait --quiet --monitor -e create,moved_to --format '%f' '${cfg.dataDir}')
+      '';
     };
   };
 }
