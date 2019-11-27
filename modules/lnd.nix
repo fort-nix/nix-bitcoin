@@ -12,6 +12,8 @@ let
     tlscertpath=/secrets/lnd_cert
     tlskeypath=/secrets/lnd_key
 
+    rpclisten=localhost:${toString cfg.rpcPort}
+
     bitcoin.active=1
     bitcoin.node=bitcoind
 
@@ -40,6 +42,11 @@ in {
       type = types.path;
       default = "/var/lib/lnd";
       description = "The data directory for LND.";
+    };
+    rpcPort = mkOption {
+      type = types.ints.u16;
+      default = 10009;
+      description = "Port on which to listen for gRPC connections.";
     };
     extraConfig = mkOption {
         type = types.lines;
