@@ -103,15 +103,13 @@ in {
 
     # Unfortunately c-lightning doesn't allow setting the permissions of the rpc socket
     # https://github.com/ElementsProject/lightning/issues/1366
-    security.sudo.configFile = (
-      if config.services.clightning.enable then ''
-        operator    ALL=(clightning) NOPASSWD: ALL
-      ''
-      else if config.services.lnd.enable then ''
-        operator    ALL=(lnd) NOPASSWD: ALL
-      ''
-      else ""
-    );
+    security.sudo.configFile =
+     (optionalString config.services.clightning.enable ''
+       operator    ALL=(clightning) NOPASSWD: ALL
+     '') +
+     (optionalString config.services.lnd.enable ''
+       operator    ALL=(lnd) NOPASSWD: ALL
+     '');
 
     # Give root ssh access to the operator account
     systemd.services.copy-root-authorized-keys = {
