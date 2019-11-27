@@ -98,7 +98,11 @@ in {
       postStart = ''
         umask 377
 
-        sleep 5
+        attempts=50
+        while ! { exec 3>/dev/tcp/127.0.0.1/8080 && exec 3>&-; } &>/dev/null; do
+              ((attempts-- == 0)) && { echo "lnd REST service unreachable"; exit 1; }
+              sleep 0.1
+        done
 
         if [[ ! -f /secrets/lnd-seed-mnemonic ]]; then
           echo Creating lnd seed
