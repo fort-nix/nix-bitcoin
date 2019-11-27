@@ -18,6 +18,6 @@ stdenv.mkDerivation rec {
     # keys already added to my ssh-agent.
     export SSH_AUTH_SOCK=""
     figlet "nix-bitcoin"
-    ./secrets/generate_secrets.sh
+    (cd secrets; ./generate_secrets.sh)
   '';
 }

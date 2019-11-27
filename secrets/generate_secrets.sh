@@ -1,6 +1,6 @@
 #!/bin/sh
 
-SECRETSFILE=secrets/secrets.nix
+SECRETSFILE=secrets.nix
 
 if [ ! -e "$SECRETSFILE" ]; then
     echo Write secrets to $SECRETSFILE
@@ -19,23 +19,23 @@ else
     echo $SECRETSFILE already exists. Skipping.
 fi
 
-if [ ! -e secrets/nginx.key ] || [ ! -e secrets/nginx.cert ]; then
+if [ ! -e nginx.key ] || [ ! -e nginx.cert ]; then
     echo Generate Nginx Self-Signed Cert
-    openssl genrsa -out secrets/nginx.key 2048
-    openssl req -new -key secrets/nginx.key -out secrets/nginx.csr -subj "/C=KN"
-    openssl x509 -req -days 1825 -in secrets/nginx.csr -signkey secrets/nginx.key -out secrets/nginx.cert
-    rm secrets/nginx.csr
+    openssl genrsa -out nginx.key 2048
+    openssl req -new -key nginx.key -out nginx.csr -subj "/C=KN"
+    openssl x509 -req -days 1825 -in nginx.csr -signkey nginx.key -out nginx.cert
+    rm nginx.csr
     echo Done
 else
     echo Nginx Cert already exists. Skipping.
 fi
 
-if [ ! -e secrets/lnd.key ] || [ ! -e secrets/lnd.cert ]; then
+if [ ! -e lnd.key ] || [ ! -e lnd.cert ]; then
     echo Generate LND compatible TLS Cert
-    openssl ecparam -genkey -name prime256v1 -out secrets/lnd.key
-    openssl req -config secrets/openssl.cnf -new -sha256 -key secrets/lnd.key -out secrets/lnd.csr -subj '/CN=localhost/O=lnd'
-    openssl req -config secrets/openssl.cnf -x509 -sha256 -days 1825 -key secrets/lnd.key -in secrets/lnd.csr -out secrets/lnd.cert
-    rm secrets/lnd.csr
+    openssl ecparam -genkey -name prime256v1 -out lnd.key
+    openssl req -config openssl.cnf -new -sha256 -key lnd.key -out lnd.csr -subj '/CN=localhost/O=lnd'
+    openssl req -config openssl.cnf -x509 -sha256 -days 1825 -key lnd.key -in lnd.csr -out lnd.cert
+    rm lnd.csr
     echo Done
 else
     echo LND cert already exists. Skipping.
