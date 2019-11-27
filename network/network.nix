@@ -75,7 +75,7 @@ in {
   network.description = "Bitcoin Core node";
 
   bitcoin-node =
-    { config, pkgs, ... }: {
+    { config, pkgs, lib, ... }: {
       imports = [ ../configuration.nix ];
 
       deployment.keys = {
@@ -87,5 +87,22 @@ in {
       // (if (config.services.liquidd.enable) then { inherit liquid-rpcpassword; } else { })
       // (if (config.services.spark-wallet.enable) then { inherit spark-wallet-login; } else { })
       // (if (config.services.electrs.enable) then { inherit nginx_key nginx_cert; } else { });
+
+      # nixops makes the secrets directory accessible only for users with group 'key'.
+      # For compatibility with other deployment methods besides nixops, we forego the
+      # use of the 'key' group and make the secrets dir world-readable instead.
+      # This is safe because all containing files have their specific private
+      # permissions set.
+      systemd.services.allowSecretsDirAccess = {
+        requires = [ "keys.target" ];
+        after = [ "keys.target" ];
+        script = "chmod o+x /secrets";
+        serviceConfig.Type = "oneshot";
+      };
+
+      systemd.targets.nix-bitcoin-secrets = {
+        requires = [ "allowSecretsDirAccess.service" ];
+        after = [ "allowSecretsDirAccess.service" ];
+      };
     };
 }

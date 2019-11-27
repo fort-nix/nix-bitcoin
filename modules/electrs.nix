@@ -60,7 +60,7 @@ in {
     users.users.${cfg.user} = {
         description = "electrs User";
         group = cfg.group;
-        extraGroups = [ "bitcoinrpc" "keys" "bitcoin"];
+        extraGroups = [ "bitcoinrpc" "bitcoin"];
         home = cfg.dataDir;
     };
     users.groups.${cfg.group} = {};
@@ -112,6 +112,10 @@ in {
           }
         }
       '';
+    };
+    systemd.services.nginx = {
+      requires = [ "nix-bitcoin-secrets.target" ];
+      after = [ "nix-bitcoin-secrets.target" ];
     };
   };
 }

@@ -55,7 +55,6 @@ in {
     users.users.nanopos = {
         description = "nanopos User";
         group = "nanopos";
-        extraGroups = [ "keys" ];
     };
     users.groups.nanopos = {};
 

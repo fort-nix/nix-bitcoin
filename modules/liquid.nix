@@ -183,8 +183,8 @@ in {
     environment.systemPackages = [ pkgs.elementsd ];
     systemd.services.liquidd = {
       description = "Elements daemon providing access to the Liquid sidechain";
-      requires = [ "liquid-rpcpassword-key.service" ];
-      after = [ "network.target" "liquid-rpcpassword-key.service" ];
+      requires = [ "bitcoind.service" ];
+      after = [ "bitcoind.service" ];
       wantedBy = [ "multi-user.target" ];
       preStart = ''
         if ! test -e ${cfg.dataDir}; then
@@ -215,7 +215,6 @@ in {
     };
     users.users.${cfg.user} = {
       group = cfg.group;
-      extraGroups = [ "keys" ];
       description = "Liquid sidechain user";
       home = cfg.dataDir;
     };

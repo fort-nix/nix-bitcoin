@@ -225,8 +225,8 @@ in {
     environment.systemPackages = [ cfg.package ];
     systemd.services.bitcoind = {
       description = "Bitcoin daemon";
-      requires = [ "bitcoin-rpcpassword-key.service" ];
-      after = [ "network.target" "bitcoin-rpcpassword-key.service" ];
+      requires = [ "nix-bitcoin-secrets.target" ];
+      after = [ "network.target" "nix-bitcoin-secrets.target" ];
       wantedBy = [ "multi-user.target" ];
       preStart = ''
         if ! test -e ${cfg.dataDir}; then
@@ -296,7 +296,6 @@ in {
 
     users.users.${cfg.user} = {
       group = cfg.group;
-      extraGroups = [ "keys" ];
       description = "Bitcoin daemon user";
       home = cfg.dataDir;
     };

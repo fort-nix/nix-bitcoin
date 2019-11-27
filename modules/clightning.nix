@@ -64,7 +64,7 @@ in {
     users.users.clightning = {
         description = "clightning User";
         group = "clightning";
-        extraGroups = [ "bitcoinrpc" "keys" ];
+        extraGroups = [ "bitcoinrpc" ];
         home = cfg.dataDir;
     };
     users.groups.clightning = {};

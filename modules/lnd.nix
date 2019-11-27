@@ -95,7 +95,7 @@ in {
     users.users.lnd = {
         description = "LND User";
         group = "lnd";
-        extraGroups = [ "bitcoinrpc" "keys" ];
+        extraGroups = [ "bitcoinrpc" ];
         home = cfg.dataDir;
     };
     users.groups.lnd = {};
