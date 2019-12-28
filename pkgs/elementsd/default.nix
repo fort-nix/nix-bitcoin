@@ -5,13 +5,13 @@
 with stdenv.lib;
 stdenv.mkDerivation rec{
   name = "elements" + (toString (optional (!withGui) "d")) + "-" + version;
-  version = "0.18.1.1";
+  version = "0.18.1.3";
 
   src = fetchurl {
     urls = [
             "https://github.com/ElementsProject/elements/archive/elements-${version}.tar.gz"
            ];
-    sha256 = "1a2eef6a5ba4bd844047175e0ebf965b46b6f3a9e44b56017962c42d56a33a87";
+    sha256 = "b51d6ee89cf97ae3b19263dc23c576fd690386b1b2850360d595e24159fc0452";
    };
 
   nativeBuildInputs =
