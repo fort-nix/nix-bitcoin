@@ -32,9 +32,9 @@ in {
     };
     ln-path = mkOption {
       type = types.path;
-      default = "/var/lib/clightning";
+      default = "${config.services.clightning.dataDir}/bitcoin";
       description = ''
-        "The path of the clightning data directory.";
+        "The path of the clightning network data directory.";
       '';
     };
     onion-service = mkOption {

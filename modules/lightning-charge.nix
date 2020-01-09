@@ -31,7 +31,7 @@ in {
       after = [ "clightning.service" ];
       serviceConfig = {
           EnvironmentFile = "${config.nix-bitcoin.secretsDir}/lightning-charge-env";
-          ExecStart = "${pkgs.nix-bitcoin.lightning-charge}/bin/charged -l ${config.services.clightning.dataDir} -d ${config.services.clightning.dataDir}/lightning-charge.db";
+          ExecStart = "${pkgs.nix-bitcoin.lightning-charge}/bin/charged -l ${config.services.clightning.dataDir}/bitcoin -d ${config.services.clightning.dataDir}/lightning-charge.db";
           # Unfortunately c-lightning doesn't allow setting the permissions of the rpc socket,
           # so this must run as the clightning user
           # https://github.com/ElementsProject/lightning/issues/1366
