@@ -70,7 +70,7 @@ in {
     services.bitcoind.zmqpubrawblock = "tcp://127.0.0.1:28332";
     services.bitcoind.zmqpubrawtx = "tcp://127.0.0.1:28333";
     services.bitcoind.extraConfig = ''
-      assumevalid=0000000000000000000726d186d6298b5054b9a5c49639752294b322a305d240
+      assumevalid=00000000000000000000e5abc3a74fe27dc0ead9c70ea1deb456f11c15fd7bc6
       addnode=ecoc5q34tmbq54wl.onion
       discover=0
       addresstype=bech32
