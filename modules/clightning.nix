@@ -92,7 +92,7 @@ in {
         # give group read access to allow using lightning-cli
         chmod u=rw,g=r,o= ${cfg.dataDir}/config
         # The RPC socket has to be removed otherwise we might have stale sockets
-        rm -f ${cfg.dataDir}/lightning-rpc
+        rm -f ${cfg.dataDir}/bitcoin/lightning-rpc
         echo "bitcoin-rpcpassword=$(cat ${config.nix-bitcoin.secretsDir}/bitcoin-rpcpassword)" >> '${cfg.dataDir}/config'
         '';
       serviceConfig = {
@@ -108,8 +108,9 @@ in {
         );
       # Wait until the rpc socket appears
       postStart = ''
-        while read f; do [[ $f == lightning-rpc ]] && break; done \
-          < <(${pkgs.inotifyTools}/bin/inotifywait --quiet --monitor -e create,moved_to --format '%f' '${cfg.dataDir}')
+        while [[ ! -e ${cfg.dataDir}/bitcoin/lightning-rpc ]]; do
+            sleep 0.1
+        done
       '';
     };
   };
