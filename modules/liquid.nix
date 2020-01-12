@@ -233,5 +233,6 @@ in {
       home = cfg.dataDir;
     };
     users.groups.${cfg.group} = {};
+    nix-bitcoin.secrets.liquid-rpcpassword.user = "liquid";
   };
 }

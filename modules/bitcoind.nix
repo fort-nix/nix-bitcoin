@@ -307,5 +307,10 @@ in {
     };
     users.groups.${cfg.group} = {};
     users.groups.bitcoinrpc = {};
+
+    nix-bitcoin.secrets.bitcoin-rpcpassword = {
+      user = "bitcoin";
+      group = "bitcoinrpc";
+    };
   };
 }

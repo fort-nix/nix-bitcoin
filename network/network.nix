@@ -5,10 +5,11 @@
     { config, pkgs, lib, ... }: {
       imports = [ ../configuration.nix ];
 
-      deployment.keys = (import ../modules/secrets/make-secrets.nix {
-        inherit config;
-        secretsFile = ../secrets/secrets.nix;
-      }).activeSecrets;
+      deployment.keys = builtins.mapAttrs (n: v: {
+        keyFile = "${toString ../secrets}/${n}";
+        destDir = "/secrets/";
+        inherit (v) user group permissions;
+      }) config.nix-bitcoin.secrets;
 
       # nixops makes the secrets directory accessible only for users with group 'key'.
       # For compatibility with other deployment methods besides nixops, we forego the

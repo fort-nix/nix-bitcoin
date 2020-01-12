@@ -9,8 +9,8 @@ let
     datadir=${cfg.dataDir}
     logdir=${cfg.dataDir}/logs
     bitcoin.mainnet=1
-    tlscertpath=/secrets/lnd_cert
-    tlskeypath=/secrets/lnd_key
+    tlscertpath=/secrets/lnd-cert
+    tlskeypath=/secrets/lnd-key
 
     rpclisten=localhost:${toString cfg.rpcPort}
 
@@ -61,7 +61,7 @@ in {
       default = pkgs.writeScriptBin "lncli"
       # Switch user because lnd makes datadir contents readable by user only
       ''
-        exec sudo -u lnd ${pkgs.nix-bitcoin.lnd}/bin/lncli --tlscertpath /secrets/lnd_cert \
+        exec sudo -u lnd ${pkgs.nix-bitcoin.lnd}/bin/lncli --tlscertpath /secrets/lnd-cert \
           --macaroonpath '${cfg.dataDir}/chain/bitcoin/mainnet/admin.macaroon' "$@"
       '';
       description = "Binary to connect with the lnd instance.";
@@ -109,7 +109,7 @@ in {
           echo Create lnd seed
 
           ${pkgs.curl}/bin/curl -s \
-            --cacert /secrets/lnd_cert \
+            --cacert /secrets/lnd-cert \
             -X GET https://127.0.0.1:8080/v1/genseed | ${pkgs.jq}/bin/jq -c '.cipher_seed_mnemonic' > /secrets/lnd-seed-mnemonic
         fi
 
@@ -117,7 +117,7 @@ in {
           echo Create lnd wallet
 
           ${pkgs.curl}/bin/curl -s --output /dev/null --show-error \
-            --cacert /secrets/lnd_cert \
+            --cacert /secrets/lnd-cert \
             -X POST -d "{\"wallet_password\": \"$(cat /secrets/lnd-wallet-password | tr -d '\n' | base64 -w0)\", \
             \"cipher_seed_mnemonic\": $(cat /secrets/lnd-seed-mnemonic | tr -d '\n')}" \
             https://127.0.0.1:8080/v1/initwallet
@@ -132,7 +132,7 @@ in {
 
           ${pkgs.curl}/bin/curl -s \
             -H "Grpc-Metadata-macaroon: $(${pkgs.xxd}/bin/xxd -ps -u -c 99999 '${mainnetDir}/admin.macaroon')" \
-            --cacert /secrets/lnd_cert \
+            --cacert /secrets/lnd-cert \
             -X POST \
             -d "{\"wallet_password\": \"$(cat /secrets/lnd-wallet-password | tr -d '\n' | base64 -w0)\"}" \
             https://127.0.0.1:8080/v1/unlockwallet
@@ -151,5 +151,10 @@ in {
       home = cfg.dataDir;
     };
     users.groups.lnd = {};
+    nix-bitcoin.secrets = {
+      lnd-wallet-password.user = "lnd";
+      lnd-key.user = "lnd";
+      lnd-cert.user = "lnd";
+    };
   };
 }

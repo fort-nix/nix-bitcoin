@@ -58,7 +58,7 @@ in {
       requires = [ "lightning-charge.service" ];
       after = [ "lightning-charge.service" ];
       serviceConfig = {
-        EnvironmentFile = "/secrets/lightning-charge-api-token-for-nanopos";
+        EnvironmentFile = "/secrets/nanopos-env";
         ExecStart = "${pkgs.nix-bitcoin.nanopos}/bin/nanopos -y ${cfg.itemsFile} -p ${toString cfg.port} --show-bolt11";
 
         User = "nanopos";
@@ -73,5 +73,6 @@ in {
       group = "nanopos";
     };
     users.groups.nanopos = {};
+    nix-bitcoin.secrets.nanopos-env.user = "nanopos";
   };
 }

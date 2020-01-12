@@ -103,8 +103,8 @@ in {
             listen ${toString config.services.electrs.nginxport} ssl;
             proxy_pass electrs;
 
-            ssl_certificate /secrets/nginx_cert;
-            ssl_certificate_key /secrets/nginx_key;
+            ssl_certificate /secrets/nginx-cert;
+            ssl_certificate_key /secrets/nginx-key;
             ssl_session_cache shared:SSL:1m;
             ssl_session_timeout 4h;
             ssl_protocols TLSv1 TLSv1.1 TLSv1.2 TLSv1.3;
@@ -116,6 +116,13 @@ in {
     systemd.services.nginx = {
       requires = [ "nix-bitcoin-secrets.target" ];
       after = [ "nix-bitcoin-secrets.target" ];
+    };
+    nix-bitcoin.secrets = rec {
+      nginx-key = {
+        user = "nginx";
+        group = "root";
+      };
+      nginx-cert = nginx-key;
     };
   };
 }

@@ -73,5 +73,6 @@ in {
         // nix-bitcoin-services.nodejs
         // nix-bitcoin-services.allowTor;
     };
+    nix-bitcoin.secrets.spark-wallet-login.user = "clightning";
   };
 }

@@ -7,7 +7,7 @@ stdenv.mkDerivation rec {
   name = "nix-bitcoin-environment";
 
   nixops19_09 = callPackage ./pkgs/nixops {};
-  generate-secrets = callPackage ./pkgs/generate-secrets {};
+  make-secrets = callPackage ./pkgs/generate-secrets/update-and-generate.nix {};
 
   buildInputs = [ nixops19_09 figlet ];
 
@@ -19,6 +19,6 @@ stdenv.mkDerivation rec {
     # keys already added to my ssh-agent.
     export SSH_AUTH_SOCK=""
     figlet "nix-bitcoin"
-    (mkdir -p secrets; cd secrets; ${generate-secrets})
+    (mkdir -p secrets; cd secrets; ${make-secrets})
   '';
 }
