@@ -1,8 +1,5 @@
 language: shell
 
-# broken:
-#   - PKG=electrs STABLE=0
-
 install:
     # Retry installing nix due to nondeterministic error
     #   Fatal error: glibc detected an invalid stdio handle
@@ -28,6 +25,8 @@ env:
   - PKG=elementsd STABLE=1
   - PKG=elementsd STABLE=0
   - PKG=electrs STABLE=1
+  # broken
+  # - PKG=electrs STABLE=0
   - PKG=liquid-swap STABLE=1
 script:
   - printf '%s (%s)\n' "$NIX_PATH" "$VER"
