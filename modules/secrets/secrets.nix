@@ -3,14 +3,18 @@
 with lib;
 let
   cfg = config.nix-bitcoin;
-  secretsDir = "/secrets/"; # TODO: make this an option
-
   setupSecrets = concatStrings (mapAttrsToList (n: v: ''
     setupSecret ${n} ${v.user} ${v.group} ${v.permissions} }
   '') cfg.secrets);
 in
 {
   options.nix-bitcoin = {
+    secretsDir = mkOption {
+      type = types.path;
+      default = "/etc/nix-bitcoin-secrets";
+      description = "Directory to store secrets";
+    };
+
     secrets = mkOption {
       default = {};
       type = with types; attrsOf (submodule (
@@ -68,7 +72,7 @@ in
             processedFiles+=("$file")
         }
 
-        dir="${secretsDir}"
+        dir="${cfg.secretsDir}"
         if [[ ! -e $dir ]]; then
           echo "Error: Secrets dir '$dir' is missing"
           exit 1

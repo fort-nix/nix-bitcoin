@@ -5,12 +5,13 @@ with lib;
 let
   cfg = config.services.lnd;
   inherit (config) nix-bitcoin-services;
+  secretsDir = config.nix-bitcoin.secretsDir;
   configFile = pkgs.writeText "lnd.conf" ''
     datadir=${cfg.dataDir}
     logdir=${cfg.dataDir}/logs
     bitcoin.mainnet=1
-    tlscertpath=/secrets/lnd-cert
-    tlskeypath=/secrets/lnd-key
+    tlscertpath=${secretsDir}/lnd-cert
+    tlskeypath=${secretsDir}/lnd-key
 
     rpclisten=localhost:${toString cfg.rpcPort}
 
@@ -61,7 +62,7 @@ in {
       default = pkgs.writeScriptBin "lncli"
       # Switch user because lnd makes datadir contents readable by user only
       ''
-        exec sudo -u lnd ${pkgs.nix-bitcoin.lnd}/bin/lncli --tlscertpath /secrets/lnd-cert \
+        exec sudo -u lnd ${pkgs.nix-bitcoin.lnd}/bin/lncli --tlscertpath ${secretsDir}/lnd-cert \
           --macaroonpath '${cfg.dataDir}/chain/bitcoin/mainnet/admin.macaroon' "$@"
       '';
       description = "Binary to connect with the lnd instance.";
@@ -81,7 +82,7 @@ in {
         cp ${configFile} ${cfg.dataDir}/lnd.conf
         chown -R 'lnd:lnd' '${cfg.dataDir}'
         chmod u=rw,g=r,o= ${cfg.dataDir}/lnd.conf
-        echo "bitcoind.rpcpass=$(cat /secrets/bitcoin-rpcpassword)" >> '${cfg.dataDir}/lnd.conf'
+        echo "bitcoind.rpcpass=$(cat ${secretsDir}/bitcoin-rpcpassword)" >> '${cfg.dataDir}/lnd.conf'
       '';
       serviceConfig = {
         PermissionsStartOnly = "true";
@@ -105,21 +106,21 @@ in {
               sleep 0.1
         done
 
-        if [[ ! -f /secrets/lnd-seed-mnemonic ]]; then
+        if [[ ! -f ${secretsDir}/lnd-seed-mnemonic ]]; then
           echo Create lnd seed
 
           ${pkgs.curl}/bin/curl -s \
-            --cacert /secrets/lnd-cert \
-            -X GET https://127.0.0.1:8080/v1/genseed | ${pkgs.jq}/bin/jq -c '.cipher_seed_mnemonic' > /secrets/lnd-seed-mnemonic
+            --cacert ${secretsDir}/lnd-cert \
+            -X GET https://127.0.0.1:8080/v1/genseed | ${pkgs.jq}/bin/jq -c '.cipher_seed_mnemonic' > ${secretsDir}/lnd-seed-mnemonic
         fi
 
         if [[ ! -f ${mainnetDir}/wallet.db ]]; then
           echo Create lnd wallet
 
           ${pkgs.curl}/bin/curl -s --output /dev/null --show-error \
-            --cacert /secrets/lnd-cert \
-            -X POST -d "{\"wallet_password\": \"$(cat /secrets/lnd-wallet-password | tr -d '\n' | base64 -w0)\", \
-            \"cipher_seed_mnemonic\": $(cat /secrets/lnd-seed-mnemonic | tr -d '\n')}" \
+            --cacert ${secretsDir}/lnd-cert \
+            -X POST -d "{\"wallet_password\": \"$(cat ${secretsDir}/lnd-wallet-password | tr -d '\n' | base64 -w0)\", \
+            \"cipher_seed_mnemonic\": $(cat ${secretsDir}/lnd-seed-mnemonic | tr -d '\n')}" \
             https://127.0.0.1:8080/v1/initwallet
 
           # Guarantees that RPC calls with cfg.cli succeed after the service is started
@@ -132,9 +133,9 @@ in {
 
           ${pkgs.curl}/bin/curl -s \
             -H "Grpc-Metadata-macaroon: $(${pkgs.xxd}/bin/xxd -ps -u -c 99999 '${mainnetDir}/admin.macaroon')" \
-            --cacert /secrets/lnd-cert \
+            --cacert ${secretsDir}/lnd-cert \
             -X POST \
-            -d "{\"wallet_password\": \"$(cat /secrets/lnd-wallet-password | tr -d '\n' | base64 -w0)\"}" \
+            -d "{\"wallet_password\": \"$(cat ${secretsDir}/lnd-wallet-password | tr -d '\n' | base64 -w0)\"}" \
             https://127.0.0.1:8080/v1/unlockwallet
         fi
 

@@ -93,7 +93,7 @@ in {
         chmod u=rw,g=r,o= ${cfg.dataDir}/config
         # The RPC socket has to be removed otherwise we might have stale sockets
         rm -f ${cfg.dataDir}/lightning-rpc
-        echo "bitcoin-rpcpassword=$(cat /secrets/bitcoin-rpcpassword)" >> '${cfg.dataDir}/config'
+        echo "bitcoin-rpcpassword=$(cat ${config.nix-bitcoin.secretsDir}/bitcoin-rpcpassword)" >> '${cfg.dataDir}/config'
         '';
       serviceConfig = {
         PermissionsStartOnly = "true";

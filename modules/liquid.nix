@@ -5,6 +5,7 @@ with lib;
 let
   cfg = config.services.liquidd;
   inherit (config) nix-bitcoin-services;
+  secretsDir = config.nix-bitcoin.secretsDir;
   pidFile = "${cfg.dataDir}/liquidd.pid";
   configFile = pkgs.writeText "elements.conf" ''
     chain=liquidv1
@@ -207,8 +208,8 @@ in {
         cp '${configFile}' '${cfg.dataDir}/elements.conf'
         chmod o-rw  '${cfg.dataDir}/elements.conf'
         chown -R '${cfg.user}:${cfg.group}' '${cfg.dataDir}'
-        echo "rpcpassword=$(cat /secrets/liquid-rpcpassword)" >> '${cfg.dataDir}/elements.conf'
-        echo "mainchainrpcpassword=$(cat /secrets/bitcoin-rpcpassword)" >> '${cfg.dataDir}/elements.conf'
+        echo "rpcpassword=$(cat ${secretsDir}/liquid-rpcpassword)" >> '${cfg.dataDir}/elements.conf'
+        echo "mainchainrpcpassword=$(cat ${secretsDir}/bitcoin-rpcpassword)" >> '${cfg.dataDir}/elements.conf'
       '';
       serviceConfig = {
         Type = "simple";

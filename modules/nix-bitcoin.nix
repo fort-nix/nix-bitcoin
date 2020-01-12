@@ -28,6 +28,8 @@ in {
   };
 
   config = mkIf cfg.enable {
+    nix-bitcoin.secretsDir = mkDefault "/secrets";
+
     networking.firewall.enable = true;
 
     # Tor

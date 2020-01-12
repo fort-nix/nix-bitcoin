@@ -5,9 +5,6 @@
 # generated secrets.
 
 with lib;
-let
-  secretsDir = "/secrets/"; # TODO: make this an option
-in
 {
   nix-bitcoin.setup-secrets = true;
 
@@ -19,8 +16,8 @@ in
        RemainAfterExit = true;
     } // config.nix-bitcoin-services.defaultHardening;
     script = ''
-      mkdir -p "${secretsDir}"
-      cd "${secretsDir}"
+      mkdir -p "${config.nix-bitcoin.secretsDir}"
+      cd "${config.nix-bitcoin.secretsDir}"
       chown root: .
       chmod 0700 .
       ${pkgs.nix-bitcoin.generate-secrets}

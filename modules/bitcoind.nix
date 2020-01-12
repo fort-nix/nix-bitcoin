@@ -238,7 +238,7 @@ in {
         cp '${cfg.configFileOption}' '${cfg.dataDir}/bitcoin.conf'
         chmod o-rw  '${cfg.dataDir}/bitcoin.conf'
         chown -R '${cfg.user}:${cfg.group}' '${cfg.dataDir}'
-        echo "rpcpassword=$(cat /secrets/bitcoin-rpcpassword)" >> '${cfg.dataDir}/bitcoin.conf'
+        echo "rpcpassword=$(cat ${config.nix-bitcoin.secretsDir}/bitcoin-rpcpassword)" >> '${cfg.dataDir}/bitcoin.conf'
         chmod -R g+rX '${cfg.dataDir}/blocks'
       '';
       # Wait until RPC port is open. This usually takes just a few ms.

@@ -7,7 +7,7 @@
 
       deployment.keys = builtins.mapAttrs (n: v: {
         keyFile = "${toString ../secrets}/${n}";
-        destDir = "/secrets/";
+        destDir = config.nix-bitcoin.secretsDir;
         inherit (v) user group permissions;
       }) config.nix-bitcoin.secrets;
 
@@ -19,7 +19,7 @@
       systemd.services.allowSecretsDirAccess = {
         requires = [ "keys.target" ];
         after = [ "keys.target" ];
-        script = "chmod o+x /secrets";
+        script = "chmod o+x ${config.nix-bitcoin.secretsDir}";
         serviceConfig.Type = "oneshot";
       };
 
