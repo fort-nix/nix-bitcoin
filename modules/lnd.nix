@@ -70,14 +70,6 @@ in {
   };
 
   config = mkIf cfg.enable {
-    users.users.lnd = {
-        description = "LND User";
-        group = "lnd";
-        extraGroups = [ "bitcoinrpc" ];
-        home = cfg.dataDir;
-    };
-    users.groups.lnd = {};
-
     systemd.services.lnd = {
       description = "Run LND";
       path  = [ pkgs.nix-bitcoin.bitcoind ];
@@ -152,5 +144,12 @@ in {
         done
       '';
     };
+    users.users.lnd = {
+      description = "LND User";
+      group = "lnd";
+      extraGroups = [ "bitcoinrpc" ];
+      home = cfg.dataDir;
+    };
+    users.groups.lnd = {};
   };
 }

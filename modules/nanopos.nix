@@ -52,12 +52,6 @@ in {
   };
 
   config = mkIf cfg.enable {
-    users.users.nanopos = {
-        description = "nanopos User";
-        group = "nanopos";
-    };
-    users.groups.nanopos = {};
-
     systemd.services.nanopos = {
       description = "Run nanopos";
       wantedBy = [ "multi-user.target" ];
@@ -74,5 +68,10 @@ in {
         // nix-bitcoin-services.nodejs
         // nix-bitcoin-services.allowTor;
     };
+    users.users.nanopos = {
+      description = "nanopos User";
+      group = "nanopos";
+    };
+    users.groups.nanopos = {};
   };
 }
