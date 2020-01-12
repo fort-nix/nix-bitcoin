@@ -1,4 +1,4 @@
-language: minimal
+language: shell
 
 # broken:
 #   - PKG=electrs STABLE=0
@@ -17,7 +17,7 @@ install:
   - if [[ $STABLE == 0 ]]; then export NIX_PATH="nixpkgs=$(nix eval --raw -f pkgs/nixpkgs-pinned.nix nixpkgs-unstable)"; fi
   - VER="$(nix eval nixpkgs.lib.version)"
 env:
-  matrix:
+  jobs:
   - PKG=nodeinfo STABLE=1
   - PKG=hwi STABLE=1
   - PKG=lightning-charge STABLE=1
