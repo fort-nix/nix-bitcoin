@@ -3,8 +3,8 @@
 with lib;
 
 let
-  nix-bitcoin-services = pkgs.callPackage ./nix-bitcoin-services.nix { };
   cfg = config.services.lightning-charge;
+  inherit (config) nix-bitcoin-services;
 in {
   options.services.lightning-charge = {
     enable = mkOption {
@@ -30,8 +30,8 @@ in {
       requires = [ "clightning.service" ];
       after = [ "clightning.service" ];
       serviceConfig = {
-          EnvironmentFile = "/secrets/lightning-charge-api-token";
-          ExecStart = "${pkgs.lightning-charge}/bin/charged -l ${config.services.clightning.dataDir} -d ${config.services.clightning.dataDir}/lightning-charge.db";
+          EnvironmentFile = "${config.nix-bitcoin.secretsDir}/lightning-charge-env";
+          ExecStart = "${pkgs.nix-bitcoin.lightning-charge}/bin/charged -l ${config.services.clightning.dataDir} -d ${config.services.clightning.dataDir}/lightning-charge.db";
           # Unfortunately c-lightning doesn't allow setting the permissions of the rpc socket,
           # so this must run as the clightning user
           # https://github.com/ElementsProject/lightning/issues/1366
@@ -42,5 +42,6 @@ in {
         // nix-bitcoin-services.nodejs
         // nix-bitcoin-services.allowTor;
     };
+    nix-bitcoin.secrets.lightning-charge-env.user = "clightning";
   };
 }

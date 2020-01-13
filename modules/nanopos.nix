@@ -3,8 +3,8 @@
 with lib;
 
 let
-  nix-bitcoin-services = pkgs.callPackage ./nix-bitcoin-services.nix { };
   cfg = config.services.nanopos;
+  inherit (config) nix-bitcoin-services;
   defaultItemsFile = pkgs.writeText "items.yaml" ''
     tea:
       price: 0.02 # denominated in the currency specified by --currency
@@ -52,24 +52,14 @@ in {
   };
 
   config = mkIf cfg.enable {
-    users.users.nanopos =
-      {
-        description = "nanopos User";
-        group = "nanopos";
-        extraGroups = [ "keys" ];
-    };
-    users.groups.nanopos = {
-      name = "nanopos";
-    };
-
     systemd.services.nanopos = {
       description = "Run nanopos";
       wantedBy = [ "multi-user.target" ];
       requires = [ "lightning-charge.service" ];
       after = [ "lightning-charge.service" ];
       serviceConfig = {
-        EnvironmentFile = "/secrets/lightning-charge-api-token-for-nanopos";
-        ExecStart = "${pkgs.nanopos}/bin/nanopos -y ${cfg.itemsFile} -p ${toString cfg.port} --show-bolt11";
+        EnvironmentFile = "${config.nix-bitcoin.secretsDir}/nanopos-env";
+        ExecStart = "${pkgs.nix-bitcoin.nanopos}/bin/nanopos -y ${cfg.itemsFile} -p ${toString cfg.port} --show-bolt11";
 
         User = "nanopos";
         Restart = "on-failure";
@@ -78,5 +68,11 @@ in {
         // nix-bitcoin-services.nodejs
         // nix-bitcoin-services.allowTor;
     };
+    users.users.nanopos = {
+      description = "nanopos User";
+      group = "nanopos";
+    };
+    users.groups.nanopos = {};
+    nix-bitcoin.secrets.nanopos-env.user = "nanopos";
   };
 }

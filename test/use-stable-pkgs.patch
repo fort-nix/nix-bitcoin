@@ -1,0 +1,41 @@
+--- a/nixos/lib/build-vms.nix
++++ b/nixos/lib/build-vms.nix
+@@ -30,10 +30,10 @@ rec {
+   buildVM =
+     nodes: configurations:
+ 
+-    import ./eval-config.nix {
++    import <nixpkgs/nixos/lib/eval-config.nix> {
+       inherit system;
+       modules = configurations ++ extraConfigurations;
+-      baseModules =  (import ../modules/module-list.nix) ++
++      baseModules = (import <nixpkgs/nixos/modules/module-list.nix>) ++
+         [ ../modules/virtualisation/qemu-vm.nix
+           ../modules/testing/test-instrumentation.nix # !!! should only get added for automated test runs
+           { key = "no-manual"; documentation.nixos.enable = false; }
+
+
+services.connman doesn't exist in stable nixpkgs
+--- a/nixos/modules/virtualisation/qemu-vm.nix
++++ b/nixos/modules/virtualisation/qemu-vm.nix
+@@ -620,7 +620,6 @@ in
+ 
+     # Wireless won't work in the VM.
+     networking.wireless.enable = mkVMOverride false;
+-    services.connman.enable = mkVMOverride false;
+ 
+     # Speed up booting by not waiting for ARP.
+     networking.dhcpcd.extraConfig = "noarp";
+
+The test driver assumed coreutils to be in PATH. This fix will be ported to upstream.
+--- a/nixos/lib/testing-python.nix
++++ b/nixos/lib/testing-python.nix
+@@ -155,7 +155,7 @@ in rec {
+             --add-flags "''${vms[*]}" \
+             ${lib.optionalString enableOCR
+               "--prefix PATH : '${ocrProg}/bin:${imagemagick_tiff}/bin'"} \
+-            --run "export testScript=\"\$(cat $out/test-script)\"" \
++            --run "export testScript=\"\$(${coreutils}/bin/cat $out/test-script)\"" \
+             --set VLANS '${toString vlans}'
+           ln -s ${testDriver}/bin/nixos-test-driver $out/bin/nixos-run-vms
+           wrapProgram $out/bin/nixos-run-vms \

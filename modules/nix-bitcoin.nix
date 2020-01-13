@@ -15,21 +15,7 @@ let
     chown -R operator ${config.users.users.operator.home}/.ssh
   '';
 in {
-  imports = [
-    ./nix-bitcoin-pkgs.nix
-    ./bitcoind.nix
-    ./clightning.nix
-    ./lightning-charge.nix
-    ./nanopos.nix
-    ./nix-bitcoin-webindex.nix
-    ./liquid.nix
-    ./spark-wallet.nix
-    ./electrs.nix
-    ./onion-chef.nix
-    ./recurring-donations.nix
-    ./hardware-wallets.nix
-    ./lnd.nix
-  ];
+  imports = [ ./modules.nix ];
 
   options.services.nix-bitcoin = {
     enable = mkOption {
@@ -42,6 +28,8 @@ in {
   };
 
   config = mkIf cfg.enable {
+    nix-bitcoin.secretsDir = mkDefault "/secrets";
+
     networking.firewall.enable = true;
 
     # Tor
@@ -85,9 +73,6 @@ in {
       version = 3;
     };
 
-    # Add bitcoinrpc group
-    users.groups.bitcoinrpc = {};
-
     # clightning
     services.clightning.bitcoin-rpcuser = config.services.bitcoind.rpcuser;
     services.clightning.proxy = config.services.tor.client.socksListenAddress;
@@ -118,29 +103,15 @@ in {
     services.onion-chef.enable = true;
     services.onion-chef.access.operator = [ "bitcoind" "clightning" "nginx" "liquidd" "spark-wallet" "electrs" "sshd" ];
 
-    environment.interactiveShellInit = ''
-      ${optionalString (config.services.clightning.enable) ''
-        alias lightning-cli='sudo -u clightning lightning-cli --lightning-dir=${config.services.clightning.dataDir}'
-      ''}
-      ${optionalString (config.services.lnd.enable) ''
-        alias lncli='sudo -u lnd lncli --tlscertpath /secrets/lnd_cert --macaroonpath ${config.services.lnd.dataDir}/chain/bitcoin/mainnet/admin.macaroon'
-      ''}
-      ${optionalString (config.services.liquidd.enable) ''
-        alias elements-cli='elements-cli -datadir=${config.services.liquidd.dataDir}'
-        alias liquidswap-cli='liquidswap-cli -c ${config.services.liquidd.dataDir}/elements.conf'
-      ''}
-    '';
     # Unfortunately c-lightning doesn't allow setting the permissions of the rpc socket
     # https://github.com/ElementsProject/lightning/issues/1366
-    security.sudo.configFile = (
-      if config.services.clightning.enable then ''
-        operator    ALL=(clightning) NOPASSWD: ALL
-      ''
-      else if config.services.lnd.enable then ''
-        operator    ALL=(lnd) NOPASSWD: ALL
-      ''
-      else ""
-    );
+    security.sudo.configFile =
+     (optionalString config.services.clightning.enable ''
+       operator    ALL=(clightning) NOPASSWD: ALL
+     '') +
+     (optionalString config.services.lnd.enable ''
+       operator    ALL=(lnd) NOPASSWD: ALL
+     '');
 
     # Give root ssh access to the operator account
     systemd.services.copy-root-authorized-keys = {
@@ -184,30 +155,32 @@ in {
       }];
       version = 3;
     };
-    environment.systemPackages = with pkgs; [
+    environment.systemPackages = with pkgs; with nix-bitcoin; let
+      s = config.services;
+    in
+    [
       tor
-      blockchains.bitcoind
-      (hiPrio config.services.bitcoind.cli)
+      bitcoind
+      (hiPrio s.bitcoind.cli)
       nodeinfo
       jq
       qrencode
     ]
-    ++ optionals config.services.clightning.enable [clightning]
-    ++ optionals config.services.lnd.enable [lnd]
-    ++ optionals config.services.lightning-charge.enable [lightning-charge]
-    ++ optionals config.services.nanopos.enable [nanopos]
-    ++ optionals config.services.nix-bitcoin-webindex.enable [nginx]
-    ++ optionals config.services.liquidd.enable [elementsd liquid-swap]
-    ++ optionals config.services.spark-wallet.enable [spark-wallet]
-    ++ optionals config.services.electrs.enable [electrs]
-    ++ optionals (config.services.hardware-wallets.ledger || config.services.hardware-wallets.trezor) [
+    ++ optionals s.clightning.enable [clightning (hiPrio s.clightning.cli)]
+    ++ optionals s.lnd.enable [lnd (hiPrio s.lnd.cli)]
+    ++ optionals s.lightning-charge.enable [lightning-charge]
+    ++ optionals s.nanopos.enable [nanopos]
+    ++ optionals s.nix-bitcoin-webindex.enable [nginx]
+    ++ optionals s.liquidd.enable [elementsd (hiPrio s.liquidd.cli) (hiPrio s.liquidd.swap-cli)]
+    ++ optionals s.spark-wallet.enable [spark-wallet]
+    ++ optionals s.electrs.enable [electrs]
+    ++ optionals (s.hardware-wallets.ledger || s.hardware-wallets.trezor) [
         hwi
-        # To allow debugging issues with lsusb:
+        # To allow debugging issues with lsusb
         usbutils
     ]
-    ++ optionals config.services.hardware-wallets.trezor [
+    ++ optionals s.hardware-wallets.trezor [
         python3.pkgs.trezor
     ];
   };
 }
-

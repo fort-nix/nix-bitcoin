@@ -3,8 +3,8 @@
 with lib;
 
 let
-  nix-bitcoin-services = pkgs.callPackage ./nix-bitcoin-services.nix { };
   cfg = config.services.clightning;
+  inherit (config) nix-bitcoin-services;
   configFile = pkgs.writeText "config" ''
     autolisten=${if cfg.autolisten then "true" else "false"}
     network=bitcoin
@@ -57,6 +57,16 @@ in {
       default = "/var/lib/clightning";
       description = "The data directory for clightning.";
     };
+    cli = mkOption {
+      readOnly = true;
+      default = pkgs.writeScriptBin "lightning-cli"
+      # Switch user because c-lightning doesn't allow setting the permissions of the rpc socket
+      # https://github.com/ElementsProject/lightning/issues/1366
+      ''
+        exec sudo -u clightning ${pkgs.nix-bitcoin.clightning}/bin/lightning-cli --lightning-dir='${cfg.dataDir}' "$@"
+      '';
+      description = "Binary to connect with the clightning instance.";
+    };
     enforceTor =  nix-bitcoin-services.enforceTor;
   };
 
@@ -64,16 +74,14 @@ in {
     users.users.clightning = {
         description = "clightning User";
         group = "clightning";
-        extraGroups = [ "bitcoinrpc" "keys" ];
+        extraGroups = [ "bitcoinrpc" ];
         home = cfg.dataDir;
     };
-    users.groups.clightning = {
-      name = "clightning";
-    };
+    users.groups.clightning = {};
 
     systemd.services.clightning = {
       description = "Run clightningd";
-      path  = [ pkgs.blockchains.bitcoind ];
+      path  = [ pkgs.nix-bitcoin.bitcoind ];
       wantedBy = [ "multi-user.target" ];
       requires = [ "bitcoind.service" ];
       after = [ "bitcoind.service" ];
@@ -85,11 +93,11 @@ in {
         chmod u=rw,g=r,o= ${cfg.dataDir}/config
         # The RPC socket has to be removed otherwise we might have stale sockets
         rm -f ${cfg.dataDir}/lightning-rpc
-        echo "bitcoin-rpcpassword=$(cat /secrets/bitcoin-rpcpassword)" >> '${cfg.dataDir}/config'
+        echo "bitcoin-rpcpassword=$(cat ${config.nix-bitcoin.secretsDir}/bitcoin-rpcpassword)" >> '${cfg.dataDir}/config'
         '';
       serviceConfig = {
         PermissionsStartOnly = "true";
-        ExecStart = "${pkgs.clightning}/bin/lightningd --lightning-dir=${cfg.dataDir}";
+        ExecStart = "${pkgs.nix-bitcoin.clightning}/bin/lightningd --lightning-dir=${cfg.dataDir}";
         User = "clightning";
         Restart = "on-failure";
         RestartSec = "10s";
@@ -98,6 +106,11 @@ in {
           then nix-bitcoin-services.allowTor
           else nix-bitcoin-services.allowAnyIP
         );
+      # Wait until the rpc socket appears
+      postStart = ''
+        while read f; do [[ $f == lightning-rpc ]] && break; done \
+          < <(${pkgs.inotifyTools}/bin/inotifywait --quiet --monitor -e create,moved_to --format '%f' '${cfg.dataDir}')
+      '';
     };
   };
 }

@@ -3,8 +3,9 @@
 with lib;
 
 let
-  nix-bitcoin-services = pkgs.callPackage ./nix-bitcoin-services.nix { };
   cfg = config.services.electrs;
+  inherit (config) nix-bitcoin-services;
+  secretsDir = config.nix-bitcoin.secretsDir;
   index-batch-size = "${if cfg.high-memory then "" else "--index-batch-size=10"}";
   jsonrpc-import = "${if cfg.high-memory then "" else "--jsonrpc-import"}";
 in {
@@ -58,15 +59,12 @@ in {
 
   config = mkIf cfg.enable {
     users.users.${cfg.user} = {
-        name = cfg.user;
         description = "electrs User";
         group = cfg.group;
-        extraGroups = [ "bitcoinrpc" "keys" "bitcoin"];
+        extraGroups = [ "bitcoinrpc" "bitcoin"];
         home = cfg.dataDir;
     };
-    users.groups.electrs = {
-      name = cfg.group;
-    };   
+    users.groups.${cfg.group} = {};
 
     systemd.services.electrs = {
       description = "Run electrs";
@@ -77,7 +75,7 @@ in {
       preStart = ''
         mkdir -m 0770 -p ${cfg.dataDir}
         chown -R '${cfg.user}:${cfg.group}' ${cfg.dataDir}
-        echo "${pkgs.electrs}/bin/electrs -vvv ${index-batch-size} ${jsonrpc-import} --timestamp --db-dir ${cfg.dataDir} --daemon-dir /var/lib/bitcoind --cookie=${config.services.bitcoind.rpcuser}:$(cat /secrets/bitcoin-rpcpassword) --electrum-rpc-addr=127.0.0.1:${toString cfg.port}" > /run/electrs/startscript.sh
+        echo "${pkgs.nix-bitcoin.electrs}/bin/electrs -vvv ${index-batch-size} ${jsonrpc-import} --timestamp --db-dir ${cfg.dataDir} --daemon-dir /var/lib/bitcoind --cookie=${config.services.bitcoind.rpcuser}:$(cat ${secretsDir}/bitcoin-rpcpassword) --electrum-rpc-addr=127.0.0.1:${toString cfg.port}" > /run/electrs/startscript.sh
         '';	
       serviceConfig = rec {
         RuntimeDirectory = "electrs";
@@ -106,8 +104,8 @@ in {
             listen ${toString config.services.electrs.nginxport} ssl;
             proxy_pass electrs;
 
-            ssl_certificate /secrets/nginx_cert;
-            ssl_certificate_key /secrets/nginx_key;
+            ssl_certificate ${secretsDir}/nginx-cert;
+            ssl_certificate_key ${secretsDir}/nginx-key;
             ssl_session_cache shared:SSL:1m;
             ssl_session_timeout 4h;
             ssl_protocols TLSv1 TLSv1.1 TLSv1.2 TLSv1.3;
@@ -115,6 +113,17 @@ in {
           }
         }
       '';
+    };
+    systemd.services.nginx = {
+      requires = [ "nix-bitcoin-secrets.target" ];
+      after = [ "nix-bitcoin-secrets.target" ];
+    };
+    nix-bitcoin.secrets = rec {
+      nginx-key = {
+        user = "nginx";
+        group = "root";
+      };
+      nginx-cert = nginx-key;
     };
   };
 }

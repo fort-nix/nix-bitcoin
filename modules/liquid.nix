@@ -3,8 +3,9 @@
 with lib;
 
 let
-  nix-bitcoin-services = pkgs.callPackage ./nix-bitcoin-services.nix { };
   cfg = config.services.liquidd;
+  inherit (config) nix-bitcoin-services;
+  secretsDir = config.nix-bitcoin.secretsDir;
   pidFile = "${cfg.dataDir}/liquidd.pid";
   configFile = pkgs.writeText "elements.conf" ''
     chain=liquidv1
@@ -175,16 +176,30 @@ in {
           Validate pegin claims. All functionaries must run this.
         '';
       };
+      cli = mkOption {
+        readOnly = true;
+        default = pkgs.writeScriptBin "elements-cli" ''
+          exec ${pkgs.nix-bitcoin.elementsd}/bin/elements-cli -datadir='${cfg.dataDir}' "$@"
+        '';
+        description = "Binary to connect with the liquidd instance.";
+      };
+      swap-cli = mkOption {
+        readOnly = true;
+        default = pkgs.writeScriptBin "liquidswap-cli" ''
+          exec ${pkgs.nix-bitcoin.liquid-swap}/bin/liquidswap-cli -c '${cfg.dataDir}/elements.conf' "$@"
+        '';
+        description = "Binary for managing liquid swaps.";
+      };
       enforceTor =  nix-bitcoin-services.enforceTor;
     };
   };
 
   config = mkIf cfg.enable {
-    environment.systemPackages = [ pkgs.elementsd ];
+    environment.systemPackages = [ pkgs.nix-bitcoin.elementsd ];
     systemd.services.liquidd = {
       description = "Elements daemon providing access to the Liquid sidechain";
-      requires = [ "liquid-rpcpassword-key.service" ];
-      after = [ "network.target" "liquid-rpcpassword-key.service" ];
+      requires = [ "bitcoind.service" ];
+      after = [ "bitcoind.service" ];
       wantedBy = [ "multi-user.target" ];
       preStart = ''
         if ! test -e ${cfg.dataDir}; then
@@ -193,14 +208,14 @@ in {
         cp '${configFile}' '${cfg.dataDir}/elements.conf'
         chmod o-rw  '${cfg.dataDir}/elements.conf'
         chown -R '${cfg.user}:${cfg.group}' '${cfg.dataDir}'
-        echo "rpcpassword=$(cat /secrets/liquid-rpcpassword)" >> '${cfg.dataDir}/elements.conf'
-        echo "mainchainrpcpassword=$(cat /secrets/bitcoin-rpcpassword)" >> '${cfg.dataDir}/elements.conf'
+        echo "rpcpassword=$(cat ${secretsDir}/liquid-rpcpassword)" >> '${cfg.dataDir}/elements.conf'
+        echo "mainchainrpcpassword=$(cat ${secretsDir}/bitcoin-rpcpassword)" >> '${cfg.dataDir}/elements.conf'
       '';
       serviceConfig = {
         Type = "simple";
         User = "${cfg.user}";
         Group = "${cfg.group}";
-        ExecStart = "${pkgs.elementsd}/bin/elementsd ${cmdlineOptions}";
+        ExecStart = "${pkgs.nix-bitcoin.elementsd}/bin/elementsd ${cmdlineOptions}";
         StateDirectory = "liquidd";
         PIDFile = "${pidFile}";
         Restart = "on-failure";
@@ -214,14 +229,11 @@ in {
         );
     };
     users.users.${cfg.user} = {
-      name = cfg.user;
       group = cfg.group;
-      extraGroups = [ "keys" ];
       description = "Liquid sidechain user";
       home = cfg.dataDir;
     };
-    users.groups.${cfg.group} = {
-      name = cfg.group;
-    };
+    users.groups.${cfg.group} = {};
+    nix-bitcoin.secrets.liquid-rpcpassword.user = "liquid";
   };
 }

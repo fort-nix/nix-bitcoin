@@ -32,3 +32,14 @@
 
 
        # For "nix-build --run-env".
+
+--- a/nixops/backends/__init__.py
++++ b/nixops/backends/__init__.py
+@@ -24,6 +24,7 @@ class MachineDefinition(nixops.resources.ResourceDefinition):
+             opts = {}
+             for (key, xmlType) in (('text',        'string'),
+                                    ('keyFile',     'path'),
++                                   ('keyFile',     'string'),
+                                    ('destDir',     'string'),
+                                    ('user',        'string'),
+                                    ('group',       'string'),

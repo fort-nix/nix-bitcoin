@@ -8,8 +8,8 @@
 with lib;
 
 let
-  nix-bitcoin-services = pkgs.callPackage ./nix-bitcoin-services.nix { };
   cfg = config.services.onion-chef;
+  inherit (config) nix-bitcoin-services;
   dataDir = "/var/lib/onion-chef/";
   onion-chef-script = pkgs.writeScript "onion-chef.sh" ''
     # wait until tor is up
@@ -70,14 +70,13 @@ in {
   config = mkIf cfg.enable {
     systemd.services.onion-chef = {
       description = "Run onion-chef";
-      wantedBy = [ "multi-user.target" ];
-      requires = [ "tor.service" ];
-      partOf = [ "tor.service" ];
+      wantedBy = [ "tor.service" ];
+      bindsTo = [ "tor.service" ];
       after = [ "tor.service" ];
       serviceConfig = {
         ExecStart = "${pkgs.bash}/bin/bash ${onion-chef-script}";
-        User = "root";
         Type = "oneshot";
+        RemainAfterExit = true;
       } // nix-bitcoin-services.defaultHardening;
     };
   };

@@ -3,8 +3,8 @@
 with lib;
 
 let
-  nix-bitcoin-services = pkgs.callPackage ./nix-bitcoin-services.nix { };
   cfg = config.services.nix-bitcoin-webindex;
+  inherit (config) nix-bitcoin-services;
   indexFile = pkgs.writeText "index.html" ''
     <html>
       <body>
@@ -74,7 +74,13 @@ in {
       description = "Get node info";
       wantedBy = [ "multi-user.target" ];
       after = [ "nodeinfo.service" ];
-      path  = [ pkgs.nodeinfo pkgs.clightning pkgs.jq pkgs.sudo ];
+      path  = with pkgs; [
+        nix-bitcoin.nodeinfo
+        config.services.clightning.cli
+        config.services.lnd.cli
+        jq
+        sudo
+      ];
       serviceConfig = {
         ExecStart="${pkgs.bash}/bin/bash ${createWebIndex}";
         User = "root";

@@ -3,8 +3,8 @@
 with lib;
 
 let
-  nix-bitcoin-services = pkgs.callPackage ./nix-bitcoin-services.nix { };
   cfg = config.services.bitcoind;
+  inherit (config) nix-bitcoin-services;
   pidFile = "${cfg.dataDir}/bitcoind.pid";
   configFile = pkgs.writeText "bitcoin.conf" ''
     ${optionalString cfg.testnet "testnet=1"}
@@ -19,7 +19,7 @@ let
     listen=${if cfg.listen then "1" else "0"}
 
     # RPC server options
-    ${optionalString (cfg.rpc.port != null) "rpcport=${toString cfg.rpc.port}"}
+    rpcport=${toString cfg.rpc.port}
     ${concatMapStringsSep  "\n"
       (rpcUser: "rpcauth=${rpcUser.name}:${rpcUser.passwordHMAC}")
       (attrValues cfg.rpc.users)
@@ -69,7 +69,7 @@ in {
 
       package = mkOption {
         type = types.package;
-        default = pkgs.blockchains.bitcoind;
+        default = pkgs.nix-bitcoin.bitcoind;
         defaultText = "pkgs.blockchains.bitcoind";
         description = "The package providing bitcoin binaries.";
       };
@@ -108,9 +108,9 @@ in {
 
       rpc = {
         port = mkOption {
-          type = types.nullOr types.ints.u16;
-          default = null;
-          description = "Override the default port on which to listen for JSON-RPC connections.";
+          type = types.ints.u16;
+          default = 8332;
+          description = "Port on which to listen for JSON-RPC connections.";
         };
         users = mkOption {
           default = {};
@@ -225,8 +225,8 @@ in {
     environment.systemPackages = [ cfg.package ];
     systemd.services.bitcoind = {
       description = "Bitcoin daemon";
-      requires = [ "bitcoin-rpcpassword-key.service" ];
-      after = [ "network.target" "bitcoin-rpcpassword-key.service" ];
+      requires = [ "nix-bitcoin-secrets.target" ];
+      after = [ "network.target" "nix-bitcoin-secrets.target" ];
       wantedBy = [ "multi-user.target" ];
       preStart = ''
         if ! test -e ${cfg.dataDir}; then
@@ -238,8 +238,14 @@ in {
         cp '${cfg.configFileOption}' '${cfg.dataDir}/bitcoin.conf'
         chmod o-rw  '${cfg.dataDir}/bitcoin.conf'
         chown -R '${cfg.user}:${cfg.group}' '${cfg.dataDir}'
-        echo "rpcpassword=$(cat /secrets/bitcoin-rpcpassword)" >> '${cfg.dataDir}/bitcoin.conf'
+        echo "rpcpassword=$(cat ${config.nix-bitcoin.secretsDir}/bitcoin-rpcpassword)" >> '${cfg.dataDir}/bitcoin.conf'
         chmod -R g+rX '${cfg.dataDir}/blocks'
+      '';
+      # Wait until RPC port is open. This usually takes just a few ms.
+      postStart = ''
+        while ! { exec 3>/dev/tcp/127.0.0.1/${toString cfg.rpc.port}; } &>/dev/null; do
+          sleep 0.05
+        done
       '';
       serviceConfig = {
         Type = "simple";
@@ -295,14 +301,16 @@ in {
     };
 
     users.users.${cfg.user} = {
-      name = cfg.user;
       group = cfg.group;
-      extraGroups = [ "keys" ];
       description = "Bitcoin daemon user";
       home = cfg.dataDir;
     };
-    users.groups.${cfg.group} = {
-      name = cfg.group;
+    users.groups.${cfg.group} = {};
+    users.groups.bitcoinrpc = {};
+
+    nix-bitcoin.secrets.bitcoin-rpcpassword = {
+      user = "bitcoin";
+      group = "bitcoinrpc";
     };
   };
 }

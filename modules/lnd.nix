@@ -3,14 +3,17 @@
 with lib;
 
 let
-  nix-bitcoin-services = pkgs.callPackage ./nix-bitcoin-services.nix { };
   cfg = config.services.lnd;
+  inherit (config) nix-bitcoin-services;
+  secretsDir = config.nix-bitcoin.secretsDir;
   configFile = pkgs.writeText "lnd.conf" ''
     datadir=${cfg.dataDir}
     logdir=${cfg.dataDir}/logs
     bitcoin.mainnet=1
-    tlscertpath=/secrets/lnd_cert
-    tlskeypath=/secrets/lnd_key
+    tlscertpath=${secretsDir}/lnd-cert
+    tlskeypath=${secretsDir}/lnd-key
+
+    rpclisten=localhost:${toString cfg.rpcPort}
 
     bitcoin.active=1
     bitcoin.node=bitcoind
@@ -26,45 +29,6 @@ let
 
     ${cfg.extraConfig}
   '';
-  init-lnd-wallet-script = pkgs.writeScript "init-lnd-wallet.sh" ''
-#!/bin/sh
-
-set -e
-umask 377
-
-${pkgs.coreutils}/bin/sleep 5
-
-if [ ! -f /secrets/lnd-seed-mnemonic ]
-then
-  ${pkgs.coreutils}/bin/echo Creating lnd seed
-
-  ${pkgs.curl}/bin/curl -s \
-  --cacert /secrets/lnd_cert \
-  -X GET https://127.0.0.1:8080/v1/genseed | ${pkgs.jq}/bin/jq -c '.cipher_seed_mnemonic' > /secrets/lnd-seed-mnemonic
-fi
-
-if [ ! -f ${cfg.dataDir}/chain/bitcoin/mainnet/wallet.db ]
-then
-  ${pkgs.coreutils}/bin/echo Creating lnd wallet
-
-  ${pkgs.curl}/bin/curl -s \
-  --cacert /secrets/lnd_cert \
-  -X POST -d "{\"wallet_password\": \"$(${pkgs.coreutils}/bin/cat /secrets/lnd-wallet-password | ${pkgs.coreutils}/bin/tr -d '\n' | ${pkgs.coreutils}/bin/base64 -w0)\", \
-  \"cipher_seed_mnemonic\": $(${pkgs.coreutils}/bin/cat /secrets/lnd-seed-mnemonic | ${pkgs.coreutils}/bin/tr -d '\n')}" \
-  https://127.0.0.1:8080/v1/initwallet
-else
-  ${pkgs.coreutils}/bin/echo Unlocking lnd wallet
-
-  ${pkgs.curl}/bin/curl -s \
-      -H "Grpc-Metadata-macaroon: $(${pkgs.xxd}/bin/xxd -ps -u -c 99999 ${cfg.dataDir}/chain/bitcoin/mainnet/admin.macaroon)" \
-      --cacert /secrets/lnd_cert \
-      -X POST \
-      -d "{\"wallet_password\": \"$(${pkgs.coreutils}/bin/cat /secrets/lnd-wallet-password | ${pkgs.coreutils}/bin/tr -d '\n' | ${pkgs.coreutils}/bin/base64 -w0)\"}" \
-      https://127.0.0.1:8080/v1/unlockwallet
-fi
-
-exit 0
-'';
 in {
 
   options.services.lnd = {
@@ -80,6 +44,11 @@ in {
       default = "/var/lib/lnd";
       description = "The data directory for LND.";
     };
+    rpcPort = mkOption {
+      type = types.ints.u16;
+      default = 10009;
+      description = "Port on which to listen for gRPC connections.";
+    };
     extraConfig = mkOption {
         type = types.lines;
         default = "";
@@ -88,23 +57,23 @@ in {
         '';
         description = "Additional configurations to be appended to <filename>lnd.conf</filename>.";
       };
+    cli = mkOption {
+      readOnly = true;
+      default = pkgs.writeScriptBin "lncli"
+      # Switch user because lnd makes datadir contents readable by user only
+      ''
+        exec sudo -u lnd ${pkgs.nix-bitcoin.lnd}/bin/lncli --tlscertpath ${secretsDir}/lnd-cert \
+          --macaroonpath '${cfg.dataDir}/chain/bitcoin/mainnet/admin.macaroon' "$@"
+      '';
+      description = "Binary to connect with the lnd instance.";
+    };
     enforceTor =  nix-bitcoin-services.enforceTor;
   };
 
   config = mkIf cfg.enable {
-    users.users.lnd = {
-        description = "LND User";
-        group = "lnd";
-        extraGroups = [ "bitcoinrpc" "keys" ];
-        home = cfg.dataDir;
-    };
-    users.groups.lnd = {
-      name = "lnd";
-    };
-
     systemd.services.lnd = {
       description = "Run LND";
-      path  = [ pkgs.blockchains.bitcoind ];
+      path  = [ pkgs.nix-bitcoin.bitcoind ];
       wantedBy = [ "multi-user.target" ];
       requires = [ "bitcoind.service" ];
       after = [ "bitcoind.service" ];
@@ -113,12 +82,11 @@ in {
         cp ${configFile} ${cfg.dataDir}/lnd.conf
         chown -R 'lnd:lnd' '${cfg.dataDir}'
         chmod u=rw,g=r,o= ${cfg.dataDir}/lnd.conf
-        echo "bitcoind.rpcpass=$(cat /secrets/bitcoin-rpcpassword)" >> '${cfg.dataDir}/lnd.conf'
+        echo "bitcoind.rpcpass=$(cat ${secretsDir}/bitcoin-rpcpassword)" >> '${cfg.dataDir}/lnd.conf'
       '';
       serviceConfig = {
         PermissionsStartOnly = "true";
-        ExecStart = "${pkgs.lnd}/bin/lnd --configfile=${cfg.dataDir}/lnd.conf";
-        ExecStartPost = "${pkgs.bash}/bin/bash ${init-lnd-wallet-script}";
+        ExecStart = "${pkgs.nix-bitcoin.lnd}/bin/lnd --configfile=${cfg.dataDir}/lnd.conf";
         User = "lnd";
         Restart = "on-failure";
         RestartSec = "10s";
@@ -127,6 +95,67 @@ in {
           then nix-bitcoin-services.allowTor
           else nix-bitcoin-services.allowAnyIP
         ) // nix-bitcoin-services.allowAnyProtocol;  # For ZMQ
+      postStart = let
+        mainnetDir = "${cfg.dataDir}/chain/bitcoin/mainnet";
+      in ''
+        umask 377
+
+        attempts=50
+        while ! { exec 3>/dev/tcp/127.0.0.1/8080 && exec 3>&-; } &>/dev/null; do
+              ((attempts-- == 0)) && { echo "lnd REST service unreachable"; exit 1; }
+              sleep 0.1
+        done
+
+        if [[ ! -f ${secretsDir}/lnd-seed-mnemonic ]]; then
+          echo Create lnd seed
+
+          ${pkgs.curl}/bin/curl -s \
+            --cacert ${secretsDir}/lnd-cert \
+            -X GET https://127.0.0.1:8080/v1/genseed | ${pkgs.jq}/bin/jq -c '.cipher_seed_mnemonic' > ${secretsDir}/lnd-seed-mnemonic
+        fi
+
+        if [[ ! -f ${mainnetDir}/wallet.db ]]; then
+          echo Create lnd wallet
+
+          ${pkgs.curl}/bin/curl -s --output /dev/null --show-error \
+            --cacert ${secretsDir}/lnd-cert \
+            -X POST -d "{\"wallet_password\": \"$(cat ${secretsDir}/lnd-wallet-password | tr -d '\n' | base64 -w0)\", \
+            \"cipher_seed_mnemonic\": $(cat ${secretsDir}/lnd-seed-mnemonic | tr -d '\n')}" \
+            https://127.0.0.1:8080/v1/initwallet
+
+          # Guarantees that RPC calls with cfg.cli succeed after the service is started
+          echo Wait until wallet is created
+          while [[ ! -f ${mainnetDir}/admin.macaroon ]]; do
+            sleep 0.1
+          done
+        else
+          echo Unlock lnd wallet
+
+          ${pkgs.curl}/bin/curl -s \
+            -H "Grpc-Metadata-macaroon: $(${pkgs.xxd}/bin/xxd -ps -u -c 99999 '${mainnetDir}/admin.macaroon')" \
+            --cacert ${secretsDir}/lnd-cert \
+            -X POST \
+            -d "{\"wallet_password\": \"$(cat ${secretsDir}/lnd-wallet-password | tr -d '\n' | base64 -w0)\"}" \
+            https://127.0.0.1:8080/v1/unlockwallet
+        fi
+
+        # Wait until the RPC port is open
+        while ! { exec 3>/dev/tcp/127.0.0.1/${toString cfg.rpcPort}; } &>/dev/null; do
+          sleep 0.1
+        done
+      '';
+    };
+    users.users.lnd = {
+      description = "LND User";
+      group = "lnd";
+      extraGroups = [ "bitcoinrpc" ];
+      home = cfg.dataDir;
+    };
+    users.groups.lnd = {};
+    nix-bitcoin.secrets = {
+      lnd-wallet-password.user = "lnd";
+      lnd-key.user = "lnd";
+      lnd-cert.user = "lnd";
     };
   };
 }

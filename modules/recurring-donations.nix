@@ -3,10 +3,10 @@
 with lib;
 
 let
-  nix-bitcoin-services = pkgs.callPackage ./nix-bitcoin-services.nix { };
   cfg = config.services.recurring-donations;
+  inherit (config) nix-bitcoin-services;
   recurring-donations-script = pkgs.writeScript "recurring-donations.sh" ''
-    LNCLI="lightning-cli --lightning-dir=${config.services.clightning.dataDir}"
+    LNCLI="${pkgs.nix-bitcoin.clightning}/bin/lightning-cli --lightning-dir=${config.services.clightning.dataDir}"
     pay_tallycoin() {
       NAME=$1
       AMOUNT=$2
@@ -82,7 +82,7 @@ in {
       description = "Run recurring-donations";
       requires = [ "clightning.service" ];
       after = [ "clightning.service" ];
-      path  = [ pkgs.clightning pkgs.curl pkgs.torsocks pkgs.sudo pkgs.jq ];
+      path = with pkgs; [ nix-bitcoin.clightning curl torsocks sudo jq ];
       serviceConfig = {
         ExecStart = "${pkgs.bash}/bin/bash ${recurring-donations-script}";
         # TODO: would be better if this was operator, but I don't get sudo
