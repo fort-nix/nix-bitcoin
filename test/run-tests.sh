@@ -24,10 +24,7 @@ memoryMiB=${memoryMiB:-2048}
 
 scriptDir=$(cd "${BASH_SOURCE[0]%/*}" && pwd)
 
-getPkgs() {
-    nix eval --raw -f "$scriptDir/../pkgs/nixpkgs-pinned.nix" $1
-}
-export NIX_PATH=nixpkgs=$(getPkgs nixpkgs):nixpkgs-unstable=$(getPkgs nixpkgs-unstable)
+export NIX_PATH=nixpkgs=$(nix eval --raw -f "$scriptDir/../pkgs/nixpkgs-pinned.nix" nixpkgs)
 
 # Run the test. No temporary files are left on the host system.
 run() {
