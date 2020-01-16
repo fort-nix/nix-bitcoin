@@ -2,20 +2,14 @@ testArgs:
 
 let
   pkgs = import <nixpkgs> { config = {}; overlays = []; };
+  unstable = (import ../pkgs/nixpkgs-pinned.nix).nixpkgs-unstable;
 
   # Stable nixpkgs doesn't yet include the Python testing framework.
   # Use unstable nixpkgs and patch it so that it uses stable nixpkgs for the VM
   # machine configuration.
-  testingPkgs = let
-    # unstable as of 2020-01-09
-    rev = "9beb0d1ac2ebd6063efbdc4d3631f8ce137bbf90";
-    src = builtins.fetchTarball {
-        url = "https://github.com/nixos/nixpkgs-channels/archive/${rev}.tar.gz";
-        sha256 = "1v95779di35qhrz70p2v27kmwm09h8pgh74i1wc72v0zp3bdrf50";
-    };
-  in
+  testingPkgs =
     pkgs.runCommand "nixpkgs-testing" {} ''
-    cp -r ${src} $out
+    cp -r ${unstable} $out
     cd $out
     chmod +w -R .
     patch -p1 < ${./use-stable-pkgs.patch}
