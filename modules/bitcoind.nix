@@ -20,7 +20,7 @@ let
     ${optionalString (cfg.proxy != null) "proxy=${cfg.proxy}"}
     listen=${if cfg.listen then "1" else "0"}
     ${optionalString (cfg.discover != null) "discover=${if cfg.discover then "1" else "0"}"}
-    ${optionalString (cfg.addnode != null) "addnode=${cfg.addnode}"}
+    ${lib.concatMapStrings (node: "addnode=${node}\n") cfg.addnodes}
 
 
     # RPC server options
@@ -221,20 +221,21 @@ in {
         type = types.nullOr types.str;
         default = null;
         example = "00000000000000000000e5abc3a74fe27dc0ead9c70ea1deb456f11c15fd7bc6";
-        description = "If this block is in the chain assume that it and its ancestors are valid and potentially skip their script verification";
+        description = ''
+          If this block is in the chain assume that it and its ancestors are
+          valid and potentially skip their script verification.
+        '';
       };
-      addnode = mkOption {
-        type = types.nullOr types.str;
-        default = null;
-        example = "ecoc5q34tmbq54wl.onion";
-        description = "Add a node to connect to and attempt to keep the connection open";
+      addnodes = mkOption {
+        type = types.listOf types.str;
+        default = [];
+        example = [ "ecoc5q34tmbq54wl.onion" ];
+        description = "Add nodes to connect to and attempt to keep the connections open";
       };
       discover = mkOption {
         type = types.nullOr types.bool;
         default = null;
-        description = ''
-          Discover own IP addresses
-        '';
+        description = "Discover own IP addresses";
       };
       addresstype = mkOption {
         type = types.nullOr types.str;
