@@ -85,7 +85,8 @@ exprForCI() {
     # Round down to nearest multiple of 50 MiB for improved test build caching
     ((memAvailableMiB = memAvailableKiB / (1024 * 50) * 50))
     ((memAvailableMiB < memoryMiB)) && memoryMiB=$memAvailableMiB
-    >&2 echo "Host memory: total $((memTotalKiB / 1024)) MiB, available $memAvailableMiB MiB, VM $memoryMiB MiB"
+    >&2 echo "VM stats: CPUs: $numCPUs, memory: $memoryMiB MiB"
+    >&2 echo "Host memory total: $((memTotalKiB / 1024)) MiB, available: $memAvailableMiB MiB"
     vmTestNixExpr
 }
 
