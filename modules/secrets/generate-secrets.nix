@@ -12,8 +12,8 @@ with lib;
     requiredBy = [ "setup-secrets.service" ];
     before = [ "setup-secrets.service" ];
     serviceConfig = {
-       Type = "oneshot";
-       RemainAfterExit = true;
+      Type = "oneshot";
+      RemainAfterExit = true;
     } // config.nix-bitcoin-services.defaultHardening;
     script = ''
       mkdir -p "${config.nix-bitcoin.secretsDir}"
