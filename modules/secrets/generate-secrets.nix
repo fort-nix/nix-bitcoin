@@ -14,7 +14,7 @@ with lib;
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
-    } // config.nix-bitcoin-services.defaultHardening;
+    };
     script = ''
       mkdir -p "${config.nix-bitcoin.secretsDir}"
       cd "${config.nix-bitcoin.secretsDir}"
