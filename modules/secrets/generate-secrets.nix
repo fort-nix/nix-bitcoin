@@ -12,9 +12,9 @@ with lib;
     requiredBy = [ "setup-secrets.service" ];
     before = [ "setup-secrets.service" ];
     serviceConfig = {
-       Type = "oneshot";
-       RemainAfterExit = true;
-    } // config.nix-bitcoin-services.defaultHardening;
+      Type = "oneshot";
+      RemainAfterExit = true;
+    };
     script = ''
       mkdir -p "${config.nix-bitcoin.secretsDir}"
       cd "${config.nix-bitcoin.secretsDir}"

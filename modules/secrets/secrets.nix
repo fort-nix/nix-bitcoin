@@ -56,7 +56,7 @@ in
       serviceConfig = {
          Type = "oneshot";
          RemainAfterExit = true;
-      } // config.nix-bitcoin-services.defaultHardening;
+      };
       script = ''
         setupSecret() {
             file="$1"
