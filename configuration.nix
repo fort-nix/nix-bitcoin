@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, ... }: {
+{ config, pkgs, lib, ... }: {
   imports = [
     ./modules/nix-bitcoin.nix
 
@@ -21,6 +21,17 @@
   # use the nix-bitcoin node configuration. Only disable this if you know what
   # you are doing.
   services.nix-bitcoin.enable = true;
+
+  ### BITCOIND
+  # Bitcoind is enabled by default if nix-bitcoin is enabled
+  #
+  # You can override default settings from nix-bitcoin.nix as follows
+  # services.bitcoind.prune = lib.mkForce 100000;
+  #
+  # You can add options that are not defined in modules/bitcoind.nix as follows
+  # services.bitcoind.extraConfig = ''
+  #   maxorphantx=110
+  # '';
 
   ### CLIGHTNING
   # Enable this module to use clightning, a Lightning Network implementation

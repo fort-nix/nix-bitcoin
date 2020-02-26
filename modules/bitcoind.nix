@@ -12,11 +12,16 @@ let
     ${optionalString (cfg.prune != null) "prune=${toString cfg.prune}"}
     ${optionalString (cfg.sysperms != null) "sysperms=${if cfg.sysperms then "1" else "0"}"}
     ${optionalString (cfg.disablewallet != null) "disablewallet=${if cfg.disablewallet then "1" else "0"}"}
+    ${optionalString (cfg.assumevalid != null) "assumevalid=${cfg.assumevalid}"}
+
 
     # Connection options
     ${optionalString (cfg.port != null) "port=${toString cfg.port}"}
     ${optionalString (cfg.proxy != null) "proxy=${cfg.proxy}"}
     listen=${if cfg.listen then "1" else "0"}
+    ${optionalString (cfg.discover != null) "discover=${if cfg.discover then "1" else "0"}"}
+    ${lib.concatMapStrings (node: "addnode=${node}\n") cfg.addnodes}
+
 
     # RPC server options
     rpcport=${toString cfg.rpc.port}
@@ -26,6 +31,9 @@ let
     }
     ${optionalString (cfg.rpcuser != null) "rpcuser=${cfg.rpcuser}"}
     ${optionalString (cfg.rpcpassword != null) "rpcpassword=${cfg.rpcpassword}"}
+
+    # Wallet options
+    ${optionalString (cfg.addresstype != null) "addresstype=${cfg.addresstype}"}
 
     # ZMQ options
     ${optionalString (cfg.zmqpubrawblock != null) "zmqpubrawblock=${cfg.zmqpubrawblock}"}
@@ -208,6 +216,32 @@ in {
         default = null;
         example = "tcp://127.0.0.1:28333";
         description = "ZMQ address for zmqpubrawtx notifications";
+      };
+      assumevalid = mkOption {
+        type = types.nullOr types.str;
+        default = null;
+        example = "00000000000000000000e5abc3a74fe27dc0ead9c70ea1deb456f11c15fd7bc6";
+        description = ''
+          If this block is in the chain assume that it and its ancestors are
+          valid and potentially skip their script verification.
+        '';
+      };
+      addnodes = mkOption {
+        type = types.listOf types.str;
+        default = [];
+        example = [ "ecoc5q34tmbq54wl.onion" ];
+        description = "Add nodes to connect to and attempt to keep the connections open";
+      };
+      discover = mkOption {
+        type = types.nullOr types.bool;
+        default = null;
+        description = "Discover own IP addresses";
+      };
+      addresstype = mkOption {
+        type = types.nullOr types.str;
+        default = null;
+        example = "bech32";
+        description = "What type of addresses to use";
       };
       cli = mkOption {
         type = types.package;
