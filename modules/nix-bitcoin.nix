@@ -54,7 +54,6 @@ in {
     services.bitcoind.proxy = config.services.tor.client.socksListenAddress;
     services.bitcoind.enforceTor = true;
     services.bitcoind.port = 8333;
-    services.bitcoind.rpcuser = "bitcoinrpc";
     services.bitcoind.zmqpubrawblock = "tcp://127.0.0.1:28332";
     services.bitcoind.zmqpubrawtx = "tcp://127.0.0.1:28333";
     services.bitcoind.assumevalid = "00000000000000000000e5abc3a74fe27dc0ead9c70ea1deb456f11c15fd7bc6";
@@ -145,10 +144,11 @@ in {
     services.electrs.port = 50001;
     services.electrs.enforceTor = true;
     services.electrs.onionport = 50002;
-    services.electrs.nginxport = 50003;
+    services.electrs.TLSProxy.enable = true;
+    services.electrs.TLSProxy.port = 50003;
     services.tor.hiddenServices.electrs = {
       map = [{
-        port = config.services.electrs.onionport; toPort = config.services.electrs.nginxport;
+        port = config.services.electrs.onionport; toPort = config.services.electrs.TLSProxy.port;
       }];
       version = 3;
     };
