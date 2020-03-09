@@ -50,19 +50,25 @@ in {
       description = "Port on which to listen for gRPC connections.";
     };
     extraConfig = mkOption {
-        type = types.lines;
-        default = "";
-        example = ''
-          autopilot.active=1
-        '';
-        description = "Additional configurations to be appended to <filename>lnd.conf</filename>.";
-      };
+      type = types.lines;
+      default = "";
+      example = ''
+        autopilot.active=1
+      '';
+      description = "Additional configurations to be appended to <filename>lnd.conf</filename>.";
+    };
+    package = mkOption {
+      type = types.package;
+      default = pkgs.nix-bitcoin.lnd;
+      defaultText = "pkgs.nix-bitcoin.lnd";
+      description = "The package providing lnd binaries.";
+    };
     cli = mkOption {
       readOnly = true;
       default = pkgs.writeScriptBin "lncli"
       # Switch user because lnd makes datadir contents readable by user only
       ''
-        exec sudo -u lnd ${pkgs.nix-bitcoin.lnd}/bin/lncli --tlscertpath ${secretsDir}/lnd-cert \
+        exec sudo -u lnd ${cfg.package}/bin/lncli --tlscertpath ${secretsDir}/lnd-cert \
           --macaroonpath '${cfg.dataDir}/chain/bitcoin/mainnet/admin.macaroon' "$@"
       '';
       description = "Binary to connect with the lnd instance.";
@@ -71,6 +77,7 @@ in {
   };
 
   config = mkIf cfg.enable {
+    environment.systemPackages = [ cfg.package ];
     systemd.services.lnd = {
       description = "Run LND";
       path  = [ pkgs.nix-bitcoin.bitcoind ];
@@ -86,7 +93,7 @@ in {
       '';
       serviceConfig = {
         PermissionsStartOnly = "true";
-        ExecStart = "${pkgs.nix-bitcoin.lnd}/bin/lnd --configfile=${cfg.dataDir}/lnd.conf";
+        ExecStart = "${cfg.package}/bin/lnd --configfile=${cfg.dataDir}/lnd.conf";
         User = "lnd";
         Restart = "on-failure";
         RestartSec = "10s";
