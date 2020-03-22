@@ -1,10 +1,12 @@
 let
-  # TODO:
-  # nix-bitcoin-path = builtins.fetchTarball {
-  #   url = "https://github.com/fort-nix/nix-bitcoin/archive/master.tar.gz";
-  #   sha256 = "1mlvfakjgbl67k4k9mgafp5gvi2gb2p57xwxwffqr4chx8g848n7";
-  # };
-  nix-bitcoin-path = ../.;
+  # This is either a path to a local nix-bitcoin source or an attribute set to
+  # be used as the fetchurl argument.
+  nix-bitcoin-release = import ./nix-bitcoin-release.nix;
+
+  nix-bitcoin-path =
+    if builtins.isAttrs nix-bitcoin-release then nix-bitcoin-unpacked
+    else nix-bitcoin-release;
+
   nixpkgs-path = (import "${toString nix-bitcoin-path}/pkgs/nixpkgs-pinned.nix").nixpkgs;
   nixpkgs = import nixpkgs-path {};
   nix-bitcoin = nixpkgs.callPackage nix-bitcoin-path {};
@@ -13,6 +15,10 @@ let
     url = "https://github.com/erikarvstedt/extra-container/archive/6cced2c26212cc1c8cc7cac3547660642eb87e71.tar.gz";
     sha256 = "0qr41mma2iwxckdhqfabw3vjcbp2ffvshnc3k11kwriwj14b766v";
   }) {};
+
+  nix-bitcoin-unpacked = (import <nixpkgs> {}).runCommand "nix-bitcoin-src" {} ''
+    mkdir $out; tar xf ${builtins.fetchurl nix-bitcoin-release} -C $out
+  '';
 in
 with nixpkgs;
 
@@ -23,6 +29,7 @@ stdenv.mkDerivation rec {
 
   shellHook = ''
     export NIX_PATH="nixpkgs=${nixpkgs-path}:nix-bitcoin=${toString nix-bitcoin-path}:."
+    alias fetch-release="${toString nix-bitcoin-path}/helper/fetch-release"
 
     # ssh-agent and nixops don't play well together (see
     # https://github.com/NixOS/nixops/issues/256). I'm getting `Received disconnect

@@ -1,28 +1,10 @@
 Updating
 ---
-Run `git pull` in the nix-bitcoin directory, enter the nix shell with `nix-shell` and redeploy with `nixops deploy -d bitcoin-node`.
+In your deployment directory, enter the nix shell with `nix-shell` and run
 
-### Verifying GPG Signatures (recommended)
-1. Import jonasnick's gpg key
-
-    ```
-    gpg2 --receive-key 36C71A37C9D988BDE82508D9B1A70E4F8DCD0366
-    ```
-
-2. Trust jonasnick's gpg key
-
-    ```
-    gpg2 --edit-key 36C71A37C9D988BDE82508D9B1A70E4F8DCD0366
-    trust
-    4
-    quit
-    ```
-
-3.  Verify commit after `git pull`
-
-    ```
-    git verify-commit <hash of latest commit>
-    ```
+```
+fetch-release > nix-bitcoin-release.nix
+```
 
 Nodeinfo
 ---

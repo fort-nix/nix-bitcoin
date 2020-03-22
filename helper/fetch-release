@@ -1,0 +1,36 @@
+#! /usr/bin/env nix-shell
+#! nix-shell -i bash -p bash coreutils curl jq gnugrep gnupg
+set -euo pipefail
+
+scriptDir=$(cd "${BASH_SOURCE[0]%/*}" && pwd)
+
+REPO=fort-nix/nix-bitcoin
+if [[ ! -v VERSION ]]; then
+    VERSION=$(curl --silent "https://api.github.com/repos/$REPO/releases/latest" | jq -r '.tag_name' | tail -c +2)
+fi
+
+TMPDIR=$(mktemp -d)
+GPG_HOME=$(mktemp -d)
+trap "rm -rf $TMPDIR $GPG_HOME" EXIT
+
+cd $TMPDIR
+BASEURL=https://github.com/$REPO/releases/download/v$VERSION
+curl --silent -L -O $BASEURL/SHA256SUMS.txt
+curl --silent -L -O $BASEURL/SHA256SUMS.txt.asc
+
+# Import key and verify fingerprint
+gpg --homedir $GPG_HOME --import "$scriptDir/key-jonasnick.bin" &> /dev/null
+gpg --homedir $GPG_HOME --list-keys 36C71A37C9D988BDE82508D9B1A70E4F8DCD0366 > /dev/null
+
+gpg --homedir $GPG_HOME --verify SHA256SUMS.txt.asc &> /dev/null || {
+    echo "ERROR: Signature verification failed. Please open an issue in the project repository."
+    exit 1
+}
+
+SHA256=$(cat SHA256SUMS.txt | grep -Eo '^[^ ]+')
+cat <<EOF
+{
+  url = "$BASEURL/nix-bitcoin-$VERSION.tar.gz";
+  sha256 = "$SHA256";
+}
+EOF
