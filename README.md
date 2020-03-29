@@ -24,8 +24,7 @@ It should be a reproducible and extensible platform for applications building on
 
 Example
 ---
-The easiest way is to try out nix-bitcoin is to use one of the provided examples.
-This requires that you either have NixOS installed or another Linux distribution with [Nix](https://nixos.org/nix/) and [VirtualBox](https://www.virtualbox.org).
+The easiest way to try out nix-bitcoin is to use one of the provided examples.
 
 ```
 git clone https://github.com/fort-nix/nix-bitcoin
@@ -33,8 +32,19 @@ cd examples/
 nix-shell
 ```
 
-Now you can run `./deploy-nixops.sh` to install nix-bitcoin in a VirtualBox or `./deploy-container.sh` to install in a [NixOS container](https://github.com/erikarvstedt/extra-container).
-This will set up a nix-bitcoin according to `examples/configuration.nix` and then shut down immediately.
+The following example scripts set up a nix-bitcoin node according to `examples/configuration.nix` and then
+shut down immediately. They leave no traces (outside of `/nix/store`) on the host system.
+
+- `./deploy-container.sh` creates a [NixOS container](https://github.com/erikarvstedt/extra-container).\
+  This is the fastest way to set up a node.\
+  Requires: [NixOS](https://nixos.org/)
+
+- `./deploy-qemu-vm.sh` creates a QEMU VM.\
+  Requires: [Nix](https://nixos.org/nix/)
+
+- `./deploy-nixops.sh` creates a VirtualBox VM via [NixOps](https://github.com/NixOS/nixops).\
+  NixOps can be used to deploy to various other backends like cloud providers.\
+  Requires: [Nix](https://nixos.org/nix/), [VirtualBox](https://www.virtualbox.org)
 
 Available modules
 ---
