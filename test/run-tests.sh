@@ -29,7 +29,7 @@ export NIX_PATH=nixpkgs=$(nix eval --raw -f "$scriptDir/../pkgs/nixpkgs-pinned.n
 # Run the test. No temporary files are left on the host system.
 run() {
     # TMPDIR is also used by the test driver for VM tmp files
-    export TMPDIR=$(mktemp -d -p /tmp nix-bitcoin-test.XXXXXX)
+    export TMPDIR=$(mktemp -d /tmp/nix-bitcoin-test.XXX)
     trap "rm -rf $TMPDIR" EXIT
 
     nix-build --out-link $TMPDIR/driver "$scriptDir/test.nix" -A driver
@@ -58,9 +58,12 @@ run() {
 
     echo "VM stats: CPUs: $numCPUs, memory: $memoryMiB MiB"
     [[ $NB_TEST_ENABLE_NETWORK ]] || QEMU_NET_OPTS='restrict=on'
+    cd $TMPDIR # The VM creates a VDE control socket in $PWD
     env -i \
         NIX_PATH="$NIX_PATH" \
         TMPDIR="$TMPDIR" \
+        USE_TMPDIR=1 \
+        NIX_DISK_IMAGE=$TMPDIR/img.qcow2 \
         tests="$tests" \
         QEMU_OPTS="-smp $numCPUs -m $memoryMiB -nographic $QEMU_OPTS"  \
         QEMU_NET_OPTS="$QEMU_NET_OPTS" \
