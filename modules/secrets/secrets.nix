@@ -47,7 +47,6 @@ in
     };
 
     # Operation of this service:
-    #  - Create missing secrets that are composed of attrs from secrets.nix
     #  - Set owner and permissions for all used secrets
     #  - Make all other secrets accessible to root only
     # For all steps make sure that no secrets are copied to the nix store.
