@@ -4,9 +4,9 @@ let
   nixBitcoinPkgsUnstable = import ./. { pkgs = unstable; };
 in
 {
-  bitcoin = unstable.bitcoin.override { miniupnpc = null; };
-  bitcoind = unstable.bitcoind.override { miniupnpc = null; };
   inherit (unstable)
+    bitcoin
+    bitcoind
     clightning
     lnd;
   inherit (nixBitcoinPkgsUnstable) electrs;
