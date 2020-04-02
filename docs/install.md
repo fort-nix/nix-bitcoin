@@ -58,14 +58,14 @@ You can also build Nix from source by following the instructions at https://nixo
     sudo apt-get install curl git gnupg2 dirmngr
     ```
 
-2. Install latest Nix in "multi-user mode" with GPG Verification
+2. Install latest Nix in "multi-user mode" with GPG Verification according to https://nixos.org/nix/download.html
 
     ```
-    curl -o install-nix https://nixos.org/nix/install
-    curl -o install-nix.sig https://nixos.org/nix/install.sig
+    curl -o install-nix-2.3.3 https://releases.nixos.org/nix/nix-2.3.3/install
+    curl -o install-nix-2.3.3.asc https://releases.nixos.org/nix/nix-2.3.3/install.asc
     gpg2 --recv-keys B541D55301270E0BCF15CA5D8170B4726D7198DE
-    gpg2 --verify ./install-nix.sig
-    sh ./install-nix --daemon
+    gpg2 --verify ./install-nix-2.3.3.asc
+    sh ./install-nix-2.3.3 --daemon
     ```
 
     Then follow the instructions. Open a new terminal window when you're done.
