@@ -14,14 +14,12 @@ let
     ${optionalString (cfg.disablewallet != null) "disablewallet=${if cfg.disablewallet then "1" else "0"}"}
     ${optionalString (cfg.assumevalid != null) "assumevalid=${cfg.assumevalid}"}
 
-
     # Connection options
     ${optionalString (cfg.port != null) "port=${toString cfg.port}"}
     ${optionalString (cfg.proxy != null) "proxy=${cfg.proxy}"}
     listen=${if cfg.listen then "1" else "0"}
     ${optionalString (cfg.discover != null) "discover=${if cfg.discover then "1" else "0"}"}
     ${lib.concatMapStrings (node: "addnode=${node}\n") cfg.addnodes}
-
 
     # RPC server options
     rpcport=${toString cfg.rpc.port}
@@ -39,7 +37,7 @@ let
     ${optionalString (cfg.zmqpubrawblock != null) "zmqpubrawblock=${cfg.zmqpubrawblock}"}
     ${optionalString (cfg.zmqpubrawtx != null) "zmqpubrawtx=${cfg.zmqpubrawtx}"}
 
-    # Extra config options (from bitcoind nixos service)
+    # Extra options
     ${cfg.extraConfig}
   '';
 in {
