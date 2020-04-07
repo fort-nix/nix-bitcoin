@@ -253,11 +253,12 @@ in {
         if ! test -e ${cfg.dataDir}/blocks; then
           mkdir -m 0770 -p '${cfg.dataDir}/blocks'
         fi
+        chmod -R g+rX '${cfg.dataDir}/blocks'
+
         cp '${configFile}' '${cfg.dataDir}/bitcoin.conf'
         chmod o-rw  '${cfg.dataDir}/bitcoin.conf'
         chown -R '${cfg.user}:${cfg.group}' '${cfg.dataDir}'
         echo "rpcpassword=$(cat ${config.nix-bitcoin.secretsDir}/bitcoin-rpcpassword)" >> '${cfg.dataDir}/bitcoin.conf'
-        chmod -R g+rX '${cfg.dataDir}/blocks'
       '';
       # Wait until RPC port is open. This usually takes just a few ms.
       postStart = ''
