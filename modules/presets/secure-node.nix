@@ -3,6 +3,8 @@
 with lib;
 
 let
+  cfg = config.services;
+
   mkHiddenService = map: {
     map = [ map ];
     version = 3;
@@ -46,7 +48,7 @@ in {
       enable = true;
       client.enable = true;
       # LND uses ControlPort to create onion services
-      controlPort = mkIf config.services.lnd.enable 9051;
+      controlPort = mkIf cfg.lnd.enable 9051;
 
       hiddenServices.sshd = mkHiddenService { port = 22; };
     };
@@ -55,9 +57,9 @@ in {
     services.bitcoind = {
       enable = true;
       listen = true;
-      sysperms = if config.services.electrs.enable then true else null;
-      disablewallet = if config.services.electrs.enable then true else null;
-      proxy = config.services.tor.client.socksListenAddress;
+      sysperms = if cfg.electrs.enable then true else null;
+      disablewallet = if cfg.electrs.enable then true else null;
+      proxy = cfg.tor.client.socksListenAddress;
       enforceTor = true;
       port = 8333;
       zmqpubrawblock = "tcp://127.0.0.1:28332";
@@ -69,17 +71,17 @@ in {
       prune = 0;
       dbCache = 1000;
     };
-    services.tor.hiddenServices.bitcoind = mkHiddenService { port = config.services.bitcoind.port; };
+    services.tor.hiddenServices.bitcoind = mkHiddenService { port = cfg.bitcoind.port; };
 
     # clightning
     services.clightning = {
-      bitcoin-rpcuser = config.services.bitcoind.rpcuser;
-      proxy = config.services.tor.client.socksListenAddress;
+      bitcoin-rpcuser = cfg.bitcoind.rpcuser;
+      proxy = cfg.tor.client.socksListenAddress;
       enforceTor = true;
       always-use-proxy = true;
-      bind-addr = "127.0.0.1:${toString config.services.clightning.onionport}";
+      bind-addr = "127.0.0.1:${toString cfg.clightning.onionport}";
     };
-    services.tor.hiddenServices.clightning = mkHiddenService { port = config.services.clightning.onionport; };
+    services.tor.hiddenServices.clightning = mkHiddenService { port = cfg.clightning.onionport; };
 
     # lnd
     services.lnd.enforceTor = true;
@@ -89,16 +91,16 @@ in {
       rpcuser = "liquidrpc";
       prune = 1000;
       extraConfig = "
-      mainchainrpcuser=${config.services.bitcoind.rpcuser}
+      mainchainrpcuser=${cfg.bitcoind.rpcuser}
       mainchainrpcport=8332
     ";
       validatepegin = true;
       listen = true;
-      proxy = config.services.tor.client.socksListenAddress;
+      proxy = cfg.tor.client.socksListenAddress;
       enforceTor = true;
       port = 7042;
     };
-    services.tor.hiddenServices.liquidd = mkHiddenService { port = config.services.liquidd.port; };
+    services.tor.hiddenServices.liquidd = mkHiddenService { port = cfg.liquidd.port; };
 
     # electrs
     services.electrs = {
@@ -108,8 +110,8 @@ in {
       TLSProxy.port = 50003;
     };
     services.tor.hiddenServices.electrs = mkHiddenService {
-      port = config.services.electrs.onionport;
-      toPort = config.services.electrs.TLSProxy.port;
+      port = cfg.electrs.onionport;
+      toPort = cfg.electrs.TLSProxy.port;
     };
 
     services.spark-wallet.onion-service = true;
@@ -117,43 +119,41 @@ in {
     services.nix-bitcoin-webindex.enforceTor = true;
 
 
-    environment.systemPackages = with pkgs; with nix-bitcoin; let
-      s = config.services;
-    in
+    environment.systemPackages = with pkgs; with nix-bitcoin;
     [
       tor
       bitcoind
-      (hiPrio s.bitcoind.cli)
+      (hiPrio cfg.bitcoind.cli)
       nodeinfo
       jq
       qrencode
     ]
-    ++ optionals s.clightning.enable [clightning (hiPrio s.clightning.cli)]
-    ++ optionals s.lnd.enable [lnd (hiPrio s.lnd.cli)]
-    ++ optionals s.lightning-charge.enable [lightning-charge]
-    ++ optionals s.nanopos.enable [nanopos]
-    ++ optionals s.nix-bitcoin-webindex.enable [nginx]
-    ++ optionals s.liquidd.enable [elementsd (hiPrio s.liquidd.cli) (hiPrio s.liquidd.swap-cli)]
-    ++ optionals s.spark-wallet.enable [spark-wallet]
-    ++ optionals s.electrs.enable [electrs]
-    ++ optionals (s.hardware-wallets.ledger || s.hardware-wallets.trezor) [
+    ++ optionals cfg.clightning.enable [clightning (hiPrio cfg.clightning.cli)]
+    ++ optionals cfg.lnd.enable [lnd (hiPrio cfg.lnd.cli)]
+    ++ optionals cfg.lightning-charge.enable [lightning-charge]
+    ++ optionals cfg.nanopos.enable [nanopos]
+    ++ optionals cfg.nix-bitcoin-webindex.enable [nginx]
+    ++ optionals cfg.liquidd.enable [elementsd (hiPrio cfg.liquidd.cli) (hiPrio cfg.liquidd.swap-cli)]
+    ++ optionals cfg.spark-wallet.enable [spark-wallet]
+    ++ optionals cfg.electrs.enable [electrs]
+    ++ optionals (cfg.hardware-wallets.ledger || cfg.hardware-wallets.trezor) [
         hwi
         # To allow debugging issues with lsusb
         usbutils
     ]
-    ++ optionals s.hardware-wallets.trezor [
+    ++ optionals cfg.hardware-wallets.trezor [
         python3.pkgs.trezor
     ];
 
     # Create user operator which can use bitcoin-cli and lightning-cli
     users.users.operator = {
       isNormalUser = true;
-      extraGroups = [ config.services.bitcoind.group ]
-        ++ (optionals config.services.clightning.enable [ "clightning" ])
-        ++ (optionals config.services.lnd.enable [ "lnd" ])
-        ++ (optionals config.services.liquidd.enable [ config.services.liquidd.group ])
-        ++ (optionals (config.services.hardware-wallets.ledger || config.services.hardware-wallets.trezor)
-            [ config.services.hardware-wallets.group ]);
+      extraGroups = [ cfg.bitcoind.group ]
+        ++ (optionals cfg.clightning.enable [ "clightning" ])
+        ++ (optionals cfg.lnd.enable [ "lnd" ])
+        ++ (optionals cfg.liquidd.enable [ cfg.liquidd.group ])
+        ++ (optionals (cfg.hardware-wallets.ledger || cfg.hardware-wallets.trezor)
+            [ cfg.hardware-wallets.group ]);
     };
     # Give operator access to onion hostnames
     services.onion-chef.enable = true;
@@ -162,10 +162,10 @@ in {
     # Unfortunately c-lightning doesn't allow setting the permissions of the rpc socket
     # https://github.com/ElementsProject/lightning/issues/1366
     security.sudo.configFile =
-     (optionalString config.services.clightning.enable ''
+     (optionalString cfg.clightning.enable ''
        operator    ALL=(clightning) NOPASSWD: ALL
      '') +
-     (optionalString config.services.lnd.enable ''
+     (optionalString cfg.lnd.enable ''
        operator    ALL=(lnd) NOPASSWD: ALL
      '');
 
