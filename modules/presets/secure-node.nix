@@ -22,6 +22,12 @@ in {
   imports = [ ../modules.nix ];
 
   options = {
+    services.clightning.onionport = mkOption {
+      type = types.ints.u16;
+      default = 9735;
+      description = "Port on which to listen for tor client connections.";
+    };
+
     services.electrs.onionport = mkOption {
       type = types.ints.u16;
       default = 50002;
@@ -71,9 +77,9 @@ in {
       proxy = config.services.tor.client.socksListenAddress;
       enforceTor = true;
       always-use-proxy = true;
-      bind-addr = "127.0.0.1:9735";
+      bind-addr = "127.0.0.1:${toString config.services.clightning.onionport}";
     };
-    services.tor.hiddenServices.clightning = mkHiddenService { port = 9735; };
+    services.tor.hiddenServices.clightning = mkHiddenService { port = config.services.clightning.onionport; };
 
     # lnd
     services.lnd.enforceTor = true;
