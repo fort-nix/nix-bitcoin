@@ -149,6 +149,14 @@ in {
           If enabled, the bitcoin service will listen.
         '';
       };
+      dataDirReadableByGroup = mkOption {
+        type = types.bool;
+        default = false;
+        description = ''
+          If enabled, data dir content is readable by the bitcoind service group.
+          Warning: This disables bitcoind's wallet support.
+        '';
+      };
       sysperms = mkOption {
         type = types.nullOr types.bool;
         default = null;
@@ -241,6 +249,12 @@ in {
 
   config = mkIf cfg.enable {
     environment.systemPackages = [ cfg.package (hiPrio cfg.cli) ];
+
+    services.bitcoind = mkIf cfg.dataDirReadableByGroup {
+      disablewallet = true;
+      sysperms = true;
+    };
+
     systemd.services.bitcoind = {
       description = "Bitcoin daemon";
       requires = [ "nix-bitcoin-secrets.target" ];
@@ -273,6 +287,7 @@ in {
         Group = "${cfg.group}";
         ExecStart = "${cfg.package}/bin/bitcoind -datadir='${cfg.dataDir}'";
         Restart = "on-failure";
+        UMask = mkIf cfg.dataDirReadableByGroup "0027";
 
         # Permission for preStart
         PermissionsStartOnly = "true";
