@@ -7,6 +7,9 @@ let
   inherit (config) nix-bitcoin-services;
 
   configFile = pkgs.writeText "bitcoin.conf" ''
+    # We're already logging via journald
+    nodebuglogfile=1
+
     ${optionalString cfg.testnet "testnet=1"}
     ${optionalString (cfg.dbCache != null) "dbcache=${toString cfg.dbCache}"}
     ${optionalString (cfg.prune != null) "prune=${toString cfg.prune}"}
