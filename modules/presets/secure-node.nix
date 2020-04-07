@@ -3,6 +3,11 @@
 with lib;
 
 let
+  mkHiddenService = map: {
+    map = [ map ];
+    version = 3;
+  };
+
   operatorCopySSH = pkgs.writeText "operator-copy-ssh.sh" ''
     mkdir -p ${config.users.users.operator.home}/.ssh
     if [ -e "${config.users.users.root.home}/.vbox-nixops-client-key" ]; then
@@ -29,10 +34,7 @@ in {
       # LND uses ControlPort to create onion services
       controlPort = mkIf config.services.lnd.enable 9051;
 
-      hiddenServices.sshd = {
-        map = [ { port = 22; } ];
-        version = 3;
-      };
+      hiddenServices.sshd = mkHiddenService { port = 22; };
     };
 
     # bitcoind
@@ -53,12 +55,7 @@ in {
       prune = 0;
       dbCache = 1000;
     };
-    services.tor.hiddenServices.bitcoind = {
-      map = [{
-        port = config.services.bitcoind.port;
-      }];
-      version = 3;
-    };
+    services.tor.hiddenServices.bitcoind = mkHiddenService { port = config.services.bitcoind.port; };
 
     # clightning
     services.clightning = {
@@ -68,12 +65,7 @@ in {
       always-use-proxy = true;
       bind-addr = "127.0.0.1:9735";
     };
-    services.tor.hiddenServices.clightning = {
-      map = [{
-        port = 9735; toPort = 9735;
-      }];
-      version = 3;
-    };
+    services.tor.hiddenServices.clightning = mkHiddenService { port = 9735; };
 
     # lnd
     services.lnd.enforceTor = true;
@@ -128,12 +120,7 @@ in {
       enforceTor = true;
       port = 7042;
     };
-    services.tor.hiddenServices.liquidd = {
-      map = [{
-        port = config.services.liquidd.port; toPort = config.services.liquidd.port;
-      }];
-      version = 3;
-    };
+    services.tor.hiddenServices.liquidd = mkHiddenService { port = config.services.liquidd.port; };
 
     services.spark-wallet.onion-service = true;
 
@@ -144,11 +131,9 @@ in {
       TLSProxy.enable = true;
       TLSProxy.port = 50003;
     };
-    services.tor.hiddenServices.electrs = {
-      map = [{
-        port = config.services.electrs.onionport; toPort = config.services.electrs.TLSProxy.port;
-      }];
-      version = 3;
+    services.tor.hiddenServices.electrs = mkHiddenService {
+      port = config.services.electrs.onionport;
+      toPort = config.services.electrs.TLSProxy.port;
     };
 
     environment.systemPackages = with pkgs; with nix-bitcoin; let
