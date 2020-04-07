@@ -282,13 +282,6 @@ in {
         ExecStart = "${cfg.package}/bin/bitcoind -datadir='${cfg.dataDir}'";
         Restart = "on-failure";
 
-        # Hardening measures
-        PrivateTmp = "true";
-        ProtectSystem = "full";
-        NoNewPrivileges = "true";
-        PrivateDevices = "true";
-        MemoryDenyWriteExecute = "true";
-
         # Permission for preStart
         PermissionsStartOnly = "true";
       } // nix-bitcoin-services.defaultHardening
