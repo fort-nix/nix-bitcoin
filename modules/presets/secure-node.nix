@@ -27,7 +27,7 @@ in {
       enable = true;
       client.enable = true;
       # LND uses ControlPort to create onion services
-      controlPort = if config.services.lnd.enable then 9051 else null;
+      controlPort = mkIf config.services.lnd.enable 9051;
 
       hiddenServices.sshd = {
         map = [ { port = 22; } ];
