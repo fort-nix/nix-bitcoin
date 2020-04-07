@@ -70,6 +70,68 @@ in {
     # lnd
     services.lnd.enforceTor = true;
 
+    # liquidd
+    services.liquidd = {
+      rpcuser = "liquidrpc";
+      prune = 1000;
+      extraConfig = "
+      mainchainrpcuser=${config.services.bitcoind.rpcuser}
+      mainchainrpcport=8332
+    ";
+      validatepegin = true;
+      listen = true;
+      proxy = config.services.tor.client.socksListenAddress;
+      enforceTor = true;
+      port = 7042;
+    };
+    services.tor.hiddenServices.liquidd = mkHiddenService { port = config.services.liquidd.port; };
+
+    # electrs
+    services.electrs = {
+      port = 50001;
+      enforceTor = true;
+      onionport = 50002;
+      TLSProxy.enable = true;
+      TLSProxy.port = 50003;
+    };
+    services.tor.hiddenServices.electrs = mkHiddenService {
+      port = config.services.electrs.onionport;
+      toPort = config.services.electrs.TLSProxy.port;
+    };
+
+    services.spark-wallet.onion-service = true;
+
+    services.nix-bitcoin-webindex.enforceTor = true;
+
+
+    environment.systemPackages = with pkgs; with nix-bitcoin; let
+      s = config.services;
+    in
+    [
+      tor
+      bitcoind
+      (hiPrio s.bitcoind.cli)
+      nodeinfo
+      jq
+      qrencode
+    ]
+    ++ optionals s.clightning.enable [clightning (hiPrio s.clightning.cli)]
+    ++ optionals s.lnd.enable [lnd (hiPrio s.lnd.cli)]
+    ++ optionals s.lightning-charge.enable [lightning-charge]
+    ++ optionals s.nanopos.enable [nanopos]
+    ++ optionals s.nix-bitcoin-webindex.enable [nginx]
+    ++ optionals s.liquidd.enable [elementsd (hiPrio s.liquidd.cli) (hiPrio s.liquidd.swap-cli)]
+    ++ optionals s.spark-wallet.enable [spark-wallet]
+    ++ optionals s.electrs.enable [electrs]
+    ++ optionals (s.hardware-wallets.ledger || s.hardware-wallets.trezor) [
+        hwi
+        # To allow debugging issues with lsusb
+        usbutils
+    ]
+    ++ optionals s.hardware-wallets.trezor [
+        python3.pkgs.trezor
+    ];
+
     # Create user operator which can use bitcoin-cli and lightning-cli
     users.users.operator = {
       isNormalUser = true;
@@ -104,64 +166,5 @@ in {
         type = "oneshot";
       };
     };
-
-    services.nix-bitcoin-webindex.enforceTor = true;
-
-    services.liquidd = {
-      rpcuser = "liquidrpc";
-      prune = 1000;
-      extraConfig = "
-      mainchainrpcuser=${config.services.bitcoind.rpcuser}
-      mainchainrpcport=8332
-    ";
-      validatepegin = true;
-      listen = true;
-      proxy = config.services.tor.client.socksListenAddress;
-      enforceTor = true;
-      port = 7042;
-    };
-    services.tor.hiddenServices.liquidd = mkHiddenService { port = config.services.liquidd.port; };
-
-    services.spark-wallet.onion-service = true;
-
-    services.electrs = {
-      port = 50001;
-      enforceTor = true;
-      onionport = 50002;
-      TLSProxy.enable = true;
-      TLSProxy.port = 50003;
-    };
-    services.tor.hiddenServices.electrs = mkHiddenService {
-      port = config.services.electrs.onionport;
-      toPort = config.services.electrs.TLSProxy.port;
-    };
-
-    environment.systemPackages = with pkgs; with nix-bitcoin; let
-      s = config.services;
-    in
-    [
-      tor
-      bitcoind
-      (hiPrio s.bitcoind.cli)
-      nodeinfo
-      jq
-      qrencode
-    ]
-    ++ optionals s.clightning.enable [clightning (hiPrio s.clightning.cli)]
-    ++ optionals s.lnd.enable [lnd (hiPrio s.lnd.cli)]
-    ++ optionals s.lightning-charge.enable [lightning-charge]
-    ++ optionals s.nanopos.enable [nanopos]
-    ++ optionals s.nix-bitcoin-webindex.enable [nginx]
-    ++ optionals s.liquidd.enable [elementsd (hiPrio s.liquidd.cli) (hiPrio s.liquidd.swap-cli)]
-    ++ optionals s.spark-wallet.enable [spark-wallet]
-    ++ optionals s.electrs.enable [electrs]
-    ++ optionals (s.hardware-wallets.ledger || s.hardware-wallets.trezor) [
-        hwi
-        # To allow debugging issues with lsusb
-        usbutils
-    ]
-    ++ optionals s.hardware-wallets.trezor [
-        python3.pkgs.trezor
-    ];
   };
 }
