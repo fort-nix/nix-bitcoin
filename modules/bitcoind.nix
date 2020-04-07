@@ -247,10 +247,10 @@ in {
       after = [ "network.target" "nix-bitcoin-secrets.target" ];
       wantedBy = [ "multi-user.target" ];
       preStart = ''
-        if ! test -e ${cfg.dataDir}; then
+        if [[ ! -e ${cfg.dataDir} ]]; then
           mkdir -m 0770 -p '${cfg.dataDir}'
         fi
-        if ! test -e ${cfg.dataDir}/blocks; then
+        if [[ ! -e ${cfg.dataDir}/blocks ]]; then
           mkdir -m 0770 -p '${cfg.dataDir}/blocks'
         fi
         chmod -R g+rX '${cfg.dataDir}/blocks'
