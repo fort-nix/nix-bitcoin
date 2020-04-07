@@ -3,7 +3,6 @@
 with lib;
 
 let
-  cfg = config.services.nix-bitcoin;
   operatorCopySSH = pkgs.writeText "operator-copy-ssh.sh" ''
     mkdir -p ${config.users.users.operator.home}/.ssh
     if [ -e "${config.users.users.root.home}/.vbox-nixops-client-key" ]; then

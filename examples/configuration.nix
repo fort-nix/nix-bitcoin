@@ -18,10 +18,7 @@
     #./hardware-configuration.nix
   ];
   # FIXME: Enable modules by uncommenting their respective line. Disable
-  # modules by commenting out their respective line.  Enable this module to
-  # use the nix-bitcoin node configuration. Only disable this if you know what
-  # you are doing.
-  services.nix-bitcoin.enable = true;
+  # modules by commenting out their respective line.
 
   ### BITCOIND
   # Bitcoind is enabled by default if nix-bitcoin is enabled

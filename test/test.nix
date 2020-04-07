@@ -16,7 +16,6 @@ import ./make-test.nix rec {
       # hardened
     ];
 
-    services.nix-bitcoin.enable = true;
     services.bitcoind.extraConfig = mkForce "connect=0";
 
     services.clightning.enable = true;
