@@ -4,7 +4,7 @@ with lib;
 
 let
   cfg = config.services.nix-bitcoin;
-  operatorCopySSH = pkgs.writeText "operator-copy-ssh.sh" '' 
+  operatorCopySSH = pkgs.writeText "operator-copy-ssh.sh" ''
     mkdir -p ${config.users.users.operator.home}/.ssh
     if [ -e "${config.users.users.root.home}/.vbox-nixops-client-key" ]; then
       cp ${config.users.users.root.home}/.vbox-nixops-client-key ${config.users.users.operator.home}/.ssh/authorized_keys
@@ -15,7 +15,7 @@ let
     chown -R operator ${config.users.users.operator.home}/.ssh
   '';
 in {
-  imports = [ ./modules.nix ];
+  imports = [ ../modules.nix ];
 
   options.services.nix-bitcoin = {
     enable = mkOption {
