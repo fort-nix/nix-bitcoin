@@ -90,10 +90,10 @@ in {
     services.liquidd = {
       rpcuser = "liquidrpc";
       prune = 1000;
-      extraConfig = "
-      mainchainrpcuser=${cfg.bitcoind.rpcuser}
-      mainchainrpcport=8332
-    ";
+      extraConfig = ''
+        mainchainrpcuser=${cfg.bitcoind.rpcuser}
+        mainchainrpcport=8332
+      '';
       validatepegin = true;
       listen = true;
       proxy = cfg.tor.client.socksListenAddress;
