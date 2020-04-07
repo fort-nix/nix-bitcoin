@@ -68,11 +68,6 @@ in {
         default = "/var/lib/bitcoind";
         description = "The data directory for bitcoind.";
       };
-      configFileOption = mkOption {
-        type = types.path;
-        default = configFile;
-        description = "The data directory for bitcoind.";
-      };
       user = mkOption {
         type = types.str;
         default = "bitcoin";
@@ -258,7 +253,7 @@ in {
         if ! test -e ${cfg.dataDir}/blocks; then
           mkdir -m 0770 -p '${cfg.dataDir}/blocks'
         fi
-        cp '${cfg.configFileOption}' '${cfg.dataDir}/bitcoin.conf'
+        cp '${configFile}' '${cfg.dataDir}/bitcoin.conf'
         chmod o-rw  '${cfg.dataDir}/bitcoin.conf'
         chown -R '${cfg.user}:${cfg.group}' '${cfg.dataDir}'
         echo "rpcpassword=$(cat ${config.nix-bitcoin.secretsDir}/bitcoin-rpcpassword)" >> '${cfg.dataDir}/bitcoin.conf'
