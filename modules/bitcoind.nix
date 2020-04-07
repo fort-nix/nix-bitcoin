@@ -253,12 +253,14 @@ in {
         if [[ ! -e ${cfg.dataDir}/blocks ]]; then
           mkdir -m 0770 -p '${cfg.dataDir}/blocks'
         fi
+        chown -R '${cfg.user}:${cfg.group}' '${cfg.dataDir}'
         chmod -R g+rX '${cfg.dataDir}/blocks'
 
-        cp '${configFile}' '${cfg.dataDir}/bitcoin.conf'
-        chmod o-rw  '${cfg.dataDir}/bitcoin.conf'
-        chown -R '${cfg.user}:${cfg.group}' '${cfg.dataDir}'
-        echo "rpcpassword=$(cat ${config.nix-bitcoin.secretsDir}/bitcoin-rpcpassword)" >> '${cfg.dataDir}/bitcoin.conf'
+        cfg=$(cat ${configFile}; printf "rpcpassword="; cat "${config.nix-bitcoin.secretsDir}/bitcoin-rpcpassword")
+        confFile='${cfg.dataDir}/bitcoin.conf'
+        if [[ ! -e $confFile || $cfg != $(cat $confFile) ]]; then
+          install -o '${cfg.user}' -g '${cfg.group}' -m 640  <(echo "$cfg") $confFile
+        fi
       '';
       # Wait until RPC port is open. This usually takes just a few ms.
       postStart = ''
