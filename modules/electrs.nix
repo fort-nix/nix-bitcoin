@@ -61,6 +61,8 @@ in {
   };
 
   config = mkIf cfg.enable (mkMerge [{
+    environment.systemPackages = [ pkgs.nix-bitcoin.electrs ];
+
     systemd.services.electrs = {
       description = "Electrs Electrum Server";
       wantedBy = [ "multi-user.target" ];

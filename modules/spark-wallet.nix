@@ -47,6 +47,7 @@ in {
   };
 
   config = mkIf cfg.enable {
+    environment.systemPackages = [ pkgs.nix-bitcoin.spark-wallet ];
     services.tor.enable = cfg.onion-service;
     # requires client functionality for Bitcoin rate lookup
     services.tor.client.enable = true;

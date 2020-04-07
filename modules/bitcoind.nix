@@ -256,7 +256,7 @@ in {
   };
 
   config = mkIf cfg.enable {
-    environment.systemPackages = [ cfg.package ];
+    environment.systemPackages = [ cfg.package (hiPrio cfg.cli) ];
     systemd.services.bitcoind = {
       description = "Bitcoin daemon";
       requires = [ "nix-bitcoin-secrets.target" ];

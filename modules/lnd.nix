@@ -77,7 +77,7 @@ in {
   };
 
   config = mkIf cfg.enable {
-    environment.systemPackages = [ cfg.package ];
+    environment.systemPackages = [ cfg.package (hiPrio cfg.cli) ];
     systemd.services.lnd = {
       description = "Run LND";
       path  = [ pkgs.nix-bitcoin.bitcoind ];

@@ -108,30 +108,11 @@ in {
     services.nix-bitcoin-webindex.enforceTor = true;
 
 
-    environment.systemPackages = with pkgs; with nix-bitcoin;
-    [
+    environment.systemPackages = with pkgs; [
       tor
-      bitcoind
-      (hiPrio cfg.bitcoind.cli)
-      nodeinfo
       jq
       qrencode
-    ]
-    ++ optionals cfg.clightning.enable [clightning (hiPrio cfg.clightning.cli)]
-    ++ optionals cfg.lnd.enable [lnd (hiPrio cfg.lnd.cli)]
-    ++ optionals cfg.lightning-charge.enable [lightning-charge]
-    ++ optionals cfg.nanopos.enable [nanopos]
-    ++ optionals cfg.nix-bitcoin-webindex.enable [nginx]
-    ++ optionals cfg.liquidd.enable [elementsd (hiPrio cfg.liquidd.cli) (hiPrio cfg.liquidd.swap-cli)]
-    ++ optionals cfg.spark-wallet.enable [spark-wallet]
-    ++ optionals cfg.electrs.enable [electrs]
-    ++ optionals (cfg.hardware-wallets.ledger || cfg.hardware-wallets.trezor) [
-        hwi
-        # To allow debugging issues with lsusb
-        usbutils
-    ]
-    ++ optionals cfg.hardware-wallets.trezor [
-        python3.pkgs.trezor
+      nix-bitcoin.nodeinfo
     ];
 
     # Create user operator which can use bitcoin-cli and lightning-cli
