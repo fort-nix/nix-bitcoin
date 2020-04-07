@@ -17,17 +17,8 @@ let
 in {
   imports = [ ../modules.nix ];
 
-  options.services.nix-bitcoin = {
-    enable = mkOption {
-      type = types.bool;
-      default = false;
-      description = ''
-        If enabled, the nix-bitcoin service will be installed.
-      '';
-    };
-  };
-
-  config = mkIf cfg.enable {
+  config =  {
+    # For backwards compatibility only
     nix-bitcoin.secretsDir = mkDefault "/secrets";
 
     networking.firewall.enable = true;
