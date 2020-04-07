@@ -41,9 +41,6 @@ let
     # Extra config options (from bitcoind nixos service)
     ${cfg.extraConfig}
   '';
-  cmdlineOptions = concatMapStringsSep " " (arg: "'${arg}'") [
-    "-datadir=${cfg.dataDir}"
-  ];
   hexStr = types.strMatching "[0-9a-f]+";
   rpcUserOpts = { name, ... }: {
     options = {
@@ -282,7 +279,7 @@ in {
       serviceConfig = {
         User = "${cfg.user}";
         Group = "${cfg.group}";
-        ExecStart = "${cfg.package}/bin/bitcoind ${cmdlineOptions}";
+        ExecStart = "${cfg.package}/bin/bitcoind -datadir='${cfg.dataDir}'";
         Restart = "on-failure";
 
         # Hardening measures
