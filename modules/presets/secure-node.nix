@@ -23,35 +23,36 @@ in {
     networking.firewall.enable = true;
 
     # Tor
-    services.tor.enable = true;
-    services.tor.client.enable = true;
-    # LND uses ControlPort to create onion services
-    services.tor.controlPort = if config.services.lnd.enable then 9051 else null;
+    services.tor = {
+      enable = true;
+      client.enable = true;
+      # LND uses ControlPort to create onion services
+      controlPort = if config.services.lnd.enable then 9051 else null;
 
-    # Tor SSH service
-    services.tor.hiddenServices.sshd = {
-      map = [{
-        port = 22;
-      }];
-      version = 3;
+      hiddenServices.sshd = {
+        map = [ { port = 22; } ];
+        version = 3;
+      };
     };
 
     # bitcoind
-    services.bitcoind.enable = true;
-    services.bitcoind.listen = true;
-    services.bitcoind.sysperms = if config.services.electrs.enable then true else null;
-    services.bitcoind.disablewallet = if config.services.electrs.enable then true else null;
-    services.bitcoind.proxy = config.services.tor.client.socksListenAddress;
-    services.bitcoind.enforceTor = true;
-    services.bitcoind.port = 8333;
-    services.bitcoind.zmqpubrawblock = "tcp://127.0.0.1:28332";
-    services.bitcoind.zmqpubrawtx = "tcp://127.0.0.1:28333";
-    services.bitcoind.assumevalid = "00000000000000000000e5abc3a74fe27dc0ead9c70ea1deb456f11c15fd7bc6";
-    services.bitcoind.addnodes = [ "ecoc5q34tmbq54wl.onion" ];
-    services.bitcoind.discover = false;
-    services.bitcoind.addresstype = "bech32";
-    services.bitcoind.prune = 0;
-    services.bitcoind.dbCache = 1000;
+    services.bitcoind = {
+      enable = true;
+      listen = true;
+      sysperms = if config.services.electrs.enable then true else null;
+      disablewallet = if config.services.electrs.enable then true else null;
+      proxy = config.services.tor.client.socksListenAddress;
+      enforceTor = true;
+      port = 8333;
+      zmqpubrawblock = "tcp://127.0.0.1:28332";
+      zmqpubrawtx = "tcp://127.0.0.1:28333";
+      assumevalid = "00000000000000000000e5abc3a74fe27dc0ead9c70ea1deb456f11c15fd7bc6";
+      addnodes = [ "ecoc5q34tmbq54wl.onion" ];
+      discover = false;
+      addresstype = "bech32";
+      prune = 0;
+      dbCache = 1000;
+    };
     services.tor.hiddenServices.bitcoind = {
       map = [{
         port = config.services.bitcoind.port;
@@ -60,11 +61,13 @@ in {
     };
 
     # clightning
-    services.clightning.bitcoin-rpcuser = config.services.bitcoind.rpcuser;
-    services.clightning.proxy = config.services.tor.client.socksListenAddress;
-    services.clightning.enforceTor = true;
-    services.clightning.always-use-proxy = true;
-    services.clightning.bind-addr = "127.0.0.1:9735";
+    services.clightning = {
+      bitcoin-rpcuser = config.services.bitcoind.rpcuser;
+      proxy = config.services.tor.client.socksListenAddress;
+      enforceTor = true;
+      always-use-proxy = true;
+      bind-addr = "127.0.0.1:9735";
+    };
     services.tor.hiddenServices.clightning = {
       map = [{
         port = 9735; toPort = 9735;
@@ -112,17 +115,19 @@ in {
 
     services.nix-bitcoin-webindex.enforceTor = true;
 
-    services.liquidd.rpcuser = "liquidrpc";
-    services.liquidd.prune = 1000;
-    services.liquidd.extraConfig = "
+    services.liquidd = {
+      rpcuser = "liquidrpc";
+      prune = 1000;
+      extraConfig = "
       mainchainrpcuser=${config.services.bitcoind.rpcuser}
       mainchainrpcport=8332
     ";
-    services.liquidd.validatepegin = true;
-    services.liquidd.listen = true;
-    services.liquidd.proxy = config.services.tor.client.socksListenAddress;
-    services.liquidd.enforceTor = true;
-    services.liquidd.port = 7042;
+      validatepegin = true;
+      listen = true;
+      proxy = config.services.tor.client.socksListenAddress;
+      enforceTor = true;
+      port = 7042;
+    };
     services.tor.hiddenServices.liquidd = {
       map = [{
         port = config.services.liquidd.port; toPort = config.services.liquidd.port;
@@ -131,17 +136,21 @@ in {
     };
 
     services.spark-wallet.onion-service = true;
-    services.electrs.port = 50001;
-    services.electrs.enforceTor = true;
-    services.electrs.onionport = 50002;
-    services.electrs.TLSProxy.enable = true;
-    services.electrs.TLSProxy.port = 50003;
+
+    services.electrs = {
+      port = 50001;
+      enforceTor = true;
+      onionport = 50002;
+      TLSProxy.enable = true;
+      TLSProxy.port = 50003;
+    };
     services.tor.hiddenServices.electrs = {
       map = [{
         port = config.services.electrs.onionport; toPort = config.services.electrs.TLSProxy.port;
       }];
       version = 3;
     };
+
     environment.systemPackages = with pkgs; with nix-bitcoin; let
       s = config.services;
     in
