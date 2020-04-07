@@ -44,11 +44,6 @@ in {
       default = 50001;
       description = "RPC port.";
     };
-    onionport = mkOption {
-      type = types.ints.u16;
-      default = 50002;
-      description = "Port on which to listen for tor client connections.";
-    };
     extraArgs = mkOption {
       type = types.separatedString " ";
       default = "";

@@ -21,6 +21,14 @@ let
 in {
   imports = [ ../modules.nix ];
 
+  options = {
+    services.electrs.onionport = mkOption {
+      type = types.ints.u16;
+      default = 50002;
+      description = "Port on which to listen for tor client connections.";
+    };
+  };
+
   config =  {
     # For backwards compatibility only
     nix-bitcoin.secretsDir = mkDefault "/secrets";
@@ -90,7 +98,6 @@ in {
     services.electrs = {
       port = 50001;
       enforceTor = true;
-      onionport = 50002;
       TLSProxy.enable = true;
       TLSProxy.port = 50003;
     };
