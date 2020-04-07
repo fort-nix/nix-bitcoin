@@ -5,6 +5,7 @@ with lib;
 let
   cfg = config.services.bitcoind;
   inherit (config) nix-bitcoin-services;
+
   configFile = pkgs.writeText "bitcoin.conf" ''
     ${optionalString cfg.testnet "testnet=1"}
     ${optionalString (cfg.dbCache != null) "dbcache=${toString cfg.dbCache}"}
@@ -43,10 +44,8 @@ let
   '';
 in {
   options = {
-
     services.bitcoind = {
       enable = mkEnableOption "Bitcoin daemon";
-
       package = mkOption {
         type = types.package;
         default = pkgs.nix-bitcoin.bitcoind;
@@ -60,7 +59,6 @@ in {
           par=16
           rpcthreads=16
           logips=1
-
         '';
         description = "Additional configurations to be appended to <filename>bitcoin.conf</filename>.";
       };
@@ -74,7 +72,6 @@ in {
         default = configFile;
         description = "The data directory for bitcoind.";
       };
-
       user = mkOption {
         type = types.str;
         default = "bitcoin";
@@ -85,7 +82,6 @@ in {
         default = cfg.user;
         description = "The group as which to run bitcoind.";
       };
-
       rpc = {
         port = mkOption {
           type = types.ints.u16;
@@ -125,7 +121,6 @@ in {
           '';
         };
       };
-
       rpcuser = mkOption {
           type = types.nullOr types.str;
           default = "bitcoinrpc";
@@ -136,7 +131,6 @@ in {
           default = null;
           description = "Password for JSON-RPC connections";
       };
-
       testnet = mkOption {
         type = types.bool;
         default = false;
@@ -163,14 +157,15 @@ in {
         type = types.nullOr types.bool;
         default = null;
         description = ''
-        Create new files with system default permissions, instead of umask 077 (only effective with disabled wallet functionality)
+          Create new files with system default permissions, instead of umask 077
+          (only effective with disabled wallet functionality)
         '';
       };
       disablewallet = mkOption {
         type = types.nullOr types.bool;
         default = null;
         description = ''
-        Do not load the wallet and disable wallet RPC calls
+          Do not load the wallet and disable wallet RPC calls
         '';
       };
       dbCache = mkOption {
