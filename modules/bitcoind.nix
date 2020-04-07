@@ -5,7 +5,6 @@ with lib;
 let
   cfg = config.services.bitcoind;
   inherit (config) nix-bitcoin-services;
-  pidFile = "${cfg.dataDir}/bitcoind.pid";
   configFile = pkgs.writeText "bitcoin.conf" ''
     ${optionalString cfg.testnet "testnet=1"}
     ${optionalString (cfg.dbCache != null) "dbcache=${toString cfg.dbCache}"}
@@ -44,7 +43,6 @@ let
   '';
   cmdlineOptions = concatMapStringsSep " " (arg: "'${arg}'") [
     "-datadir=${cfg.dataDir}"
-    "-pid=${pidFile}"
   ];
   hexStr = types.strMatching "[0-9a-f]+";
   rpcUserOpts = { name, ... }: {
@@ -282,11 +280,9 @@ in {
         done
       '';
       serviceConfig = {
-        Type = "simple";
         User = "${cfg.user}";
         Group = "${cfg.group}";
         ExecStart = "${cfg.package}/bin/bitcoind ${cmdlineOptions}";
-        PIDFile = "${pidFile}";
         Restart = "on-failure";
 
         # Hardening measures
