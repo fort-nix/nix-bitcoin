@@ -136,11 +136,11 @@ in {
     users.users.operator = {
       isNormalUser = true;
       extraGroups = [ config.services.bitcoind.group ]
-        ++ (if config.services.clightning.enable then [ "clightning" ] else [ ])
-        ++ (if config.services.lnd.enable then [ "lnd" ] else [ ])
-        ++ (if config.services.liquidd.enable then [ config.services.liquidd.group ] else [ ])
-        ++ (if (config.services.hardware-wallets.ledger || config.services.hardware-wallets.trezor)
-          then [ config.services.hardware-wallets.group ] else [ ]);
+        ++ (optionals config.services.clightning.enable [ "clightning" ])
+        ++ (optionals config.services.lnd.enable [ "lnd" ])
+        ++ (optionals config.services.liquidd.enable [ config.services.liquidd.group ])
+        ++ (optionals (config.services.hardware-wallets.ledger || config.services.hardware-wallets.trezor)
+            [ config.services.hardware-wallets.group ]);
     };
     # Give operator access to onion hostnames
     services.onion-chef.enable = true;
