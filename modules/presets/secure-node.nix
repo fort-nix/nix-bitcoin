@@ -9,17 +9,6 @@ let
     map = [ map ];
     version = 3;
   };
-
-  operatorCopySSH = pkgs.writeText "operator-copy-ssh.sh" ''
-    mkdir -p ${config.users.users.operator.home}/.ssh
-    if [ -e "${config.users.users.root.home}/.vbox-nixops-client-key" ]; then
-      cp ${config.users.users.root.home}/.vbox-nixops-client-key ${config.users.users.operator.home}/.ssh/authorized_keys
-    fi
-    if [ -e "/etc/ssh/authorized_keys.d/root" ]; then
-      cat /etc/ssh/authorized_keys.d/root >> ${config.users.users.operator.home}/.ssh/authorized_keys
-    fi
-    chown -R operator ${config.users.users.operator.home}/.ssh
-  '';
 in {
   imports = [ ../modules.nix ];
 
@@ -170,14 +159,24 @@ in {
      '');
 
     # Give root ssh access to the operator account
+    # FIXME: move this to deployment/nixops.nix after merging PR 'nix-bitcoin-as-module'
     systemd.services.copy-root-authorized-keys = {
       description = "Copy root authorized keys";
       wantedBy = [ "multi-user.target" ];
-      serviceConfig = {
-        ExecStart = "${pkgs.bash}/bin/bash \"${operatorCopySSH}\"";
-        user = "root";
-        type = "oneshot";
-      };
+      serviceConfig.type = "oneshot";
+      script =  let
+        operator = config.users.users.operator.home;
+        root = config.users.users.root.home;
+      in ''
+        mkdir -p ${operator}/.ssh
+        if [[ -e "${root}/.vbox-nixops-client-key" ]]; then
+          cp ${root}/.vbox-nixops-client-key ${operator}/.ssh/authorized_keys
+        fi
+        if [[ -e "/etc/ssh/authorized_keys.d/root" ]]; then
+          cat /etc/ssh/authorized_keys.d/root >> ${operator}/.ssh/authorized_keys
+        fi
+        chown -R operator ${operator}/.ssh
+      '';
     };
   };
 }
