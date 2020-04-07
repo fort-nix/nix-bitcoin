@@ -41,7 +41,6 @@ let
     # Extra config options (from bitcoind nixos service)
     ${cfg.extraConfig}
   '';
-  hexStr = types.strMatching "[0-9a-f]+";
   rpcUserOpts = { name, ... }: {
     options = {
       name = mkOption {
