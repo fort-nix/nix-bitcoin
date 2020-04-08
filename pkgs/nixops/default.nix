@@ -2,7 +2,7 @@
 # 19.09 demands a suitable base image (defined in nixops-vbox/nix/virtualbox.nix) to
 # start the virtualbox guest service during system activation.
 
-{ stdenv, nixops, runCommand, fetchFromGitHub }:
+{ pkgs, stdenv, runCommand, fetchFromGitHub }:
 
 let
   pluginData = {
@@ -46,6 +46,7 @@ let
   '';
 
   nixopsRelease = import "${src}/release.nix" {
+    nixpkgs = pkgs.path;
     inherit pluginData;
     p = (p: with p; [ aws hetzner vbox libvirtd ]);
   };
