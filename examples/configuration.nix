@@ -4,12 +4,13 @@
 
 { config, pkgs, lib, ... }: {
   imports = [
-    ./modules/nix-bitcoin.nix
+    <nix-bitcoin/modules/nix-bitcoin.nix>
 
-    # Use hardened kernel profile. See
-    # https://github.com/NixOS/nixpkgs/blob/master/nixos/modules/profiles/hardened.nix
-    # for the enabled options.
-     <nixpkgs/nixos/modules/profiles/hardened.nix>
+    # FIXME: The hardened kernel profile improves security but
+    # decreases performance by ~50%.
+    # Turn it off when not needed.
+    # Source: https://github.com/NixOS/nixpkgs/blob/master/nixos/modules/profiles/hardened.nix
+    <nixpkgs/nixos/modules/profiles/hardened.nix>
 
     # FIXME: Uncomment next line to import your hardware configuration. If so,
     # add the hardware configuration file to the same directory as this file.
