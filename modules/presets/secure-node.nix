@@ -118,7 +118,10 @@ in {
     # Create user 'operator' which can access the node's services
     users.users.operator = {
       isNormalUser = true;
-      extraGroups = [ cfg.bitcoind.group ]
+      extraGroups = [
+          "systemd-journal"
+          cfg.bitcoind.group
+        ]
         ++ (optionals cfg.clightning.enable [ "clightning" ])
         ++ (optionals cfg.lnd.enable [ "lnd" ])
         ++ (optionals cfg.liquidd.enable [ cfg.liquidd.group ])
