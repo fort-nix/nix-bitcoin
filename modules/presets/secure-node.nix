@@ -115,7 +115,7 @@ in {
       nix-bitcoin.nodeinfo
     ];
 
-    # Create user operator which can use bitcoin-cli and lightning-cli
+    # Create user 'operator' which can access the node's services
     users.users.operator = {
       isNormalUser = true;
       extraGroups = [ cfg.bitcoind.group ]
@@ -124,6 +124,7 @@ in {
         ++ (optionals cfg.liquidd.enable [ cfg.liquidd.group ])
         ++ (optionals (cfg.hardware-wallets.ledger || cfg.hardware-wallets.trezor)
             [ cfg.hardware-wallets.group ]);
+      openssh.authorizedKeys.keys = config.users.users.root.openssh.authorizedKeys.keys;
     };
     # Give operator access to onion hostnames
     services.onion-chef.enable = true;
@@ -139,25 +140,12 @@ in {
        operator    ALL=(lnd) NOPASSWD: ALL
      '');
 
-    # Give root ssh access to the operator account
-    # FIXME: move this to deployment/nixops.nix after merging PR 'nix-bitcoin-as-module'
-    systemd.services.copy-root-authorized-keys = {
-      description = "Copy root authorized keys";
-      wantedBy = [ "multi-user.target" ];
-      serviceConfig.type = "oneshot";
-      script =  let
-        operator = config.users.users.operator.home;
-        root = config.users.users.root.home;
-      in ''
-        mkdir -p ${operator}/.ssh
-        if [[ -e "${root}/.vbox-nixops-client-key" ]]; then
-          cp ${root}/.vbox-nixops-client-key ${operator}/.ssh/authorized_keys
-        fi
-        if [[ -e "/etc/ssh/authorized_keys.d/root" ]]; then
-          cat /etc/ssh/authorized_keys.d/root >> ${operator}/.ssh/authorized_keys
-        fi
-        chown -R operator ${operator}/.ssh
-      '';
-    };
+    # Enable nixops ssh for operator (`nixops ssh operator@mynode`) on nixops-vbox deployments
+    systemd.services.get-vbox-nixops-client-key =
+      mkIf (builtins.elem ".vbox-nixops-client-key" config.services.openssh.authorizedKeysFiles) {
+        postStart = ''
+          cp "${config.users.users.root.home}/.vbox-nixops-client-key" "${config.users.users.operator.home}"
+        '';
+      };
   };
 }
