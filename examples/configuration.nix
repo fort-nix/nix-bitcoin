@@ -4,7 +4,7 @@
 
 { config, pkgs, lib, ... }: {
   imports = [
-    <nix-bitcoin/modules/nix-bitcoin.nix>
+    <nix-bitcoin/modules/presets/secure-node.nix>
 
     # FIXME: The hardened kernel profile improves security but
     # decreases performance by ~50%.
@@ -18,15 +18,12 @@
     #./hardware-configuration.nix
   ];
   # FIXME: Enable modules by uncommenting their respective line. Disable
-  # modules by commenting out their respective line.  Enable this module to
-  # use the nix-bitcoin node configuration. Only disable this if you know what
-  # you are doing.
-  services.nix-bitcoin.enable = true;
+  # modules by commenting out their respective line.
 
   ### BITCOIND
   # Bitcoind is enabled by default if nix-bitcoin is enabled
   #
-  # You can override default settings from nix-bitcoin.nix as follows
+  # You can override default settings from secure-node.nix as follows
   # services.bitcoind.prune = lib.mkForce 100000;
   #
   # You can add options that are not defined in modules/bitcoind.nix as follows

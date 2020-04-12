@@ -10,13 +10,12 @@ import ./make-test.nix rec {
 
   machine = { pkgs, lib, ... }: with lib; {
     imports = [
-      ../modules/nix-bitcoin.nix
+      ../modules/presets/secure-node.nix
       ../modules/secrets/generate-secrets.nix
       # using the hardened profile increases total test duration by ~50%, so disable it for now
       # hardened
     ];
 
-    services.nix-bitcoin.enable = true;
     services.bitcoind.extraConfig = mkForce "connect=0";
 
     services.clightning.enable = true;

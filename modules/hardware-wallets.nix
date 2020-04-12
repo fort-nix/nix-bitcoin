@@ -32,11 +32,16 @@ in {
   };
 
   config = mkMerge [
-    {
-      # Create group
+    (mkIf (cfg.ledger || cfg.trezor) {
+      environment.systemPackages = with pkgs; [
+        nix-bitcoin.hwi
+        # Provides lsusb for debugging
+        usbutils
+      ];
       users.groups."${cfg.group}" = {};
-    }
+    })
     (mkIf cfg.ledger {
+
       # Ledger Nano S according to https://github.com/LedgerHQ/udev-rules/blob/master/add_udev_rules.sh
       # Don't use rules from nixpkgs because we want to use our own group.
       services.udev.packages = lib.singleton (pkgs.writeTextFile {
@@ -48,6 +53,7 @@ in {
       });
     })
     (mkIf cfg.trezor {
+      environment.systemPackages = [ pkgs.python3.pkgs.trezor ];
       # Don't use rules from nixpkgs because we want to use our own group.
       services.udev.packages = lib.singleton (pkgs.writeTextFile {
         name = "trezord-udev-rules";

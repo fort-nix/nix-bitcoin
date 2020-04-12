@@ -24,6 +24,7 @@ in {
   };
 
   config = mkIf cfg.enable {
+    environment.systemPackages = [ pkgs.nix-bitcoin.lightning-charge ];
     systemd.services.lightning-charge = {
       description = "Run lightning-charge";
       wantedBy = [ "multi-user.target" ];

@@ -195,7 +195,11 @@ in {
   };
 
   config = mkIf cfg.enable {
-    environment.systemPackages = [ pkgs.nix-bitcoin.elementsd ];
+    environment.systemPackages = [
+      pkgs.nix-bitcoin.elementsd
+      (hiPrio cfg.cli)
+      (hiPrio cfg.swap-cli)
+    ];
     systemd.services.liquidd = {
       description = "Elements daemon providing access to the Liquid sidechain";
       requires = [ "bitcoind.service" ];

@@ -44,11 +44,6 @@ in {
       default = 50001;
       description = "RPC port.";
     };
-    onionport = mkOption {
-      type = types.ints.u16;
-      default = 50002;
-      description = "Port on which to listen for tor client connections.";
-    };
     extraArgs = mkOption {
       type = types.separatedString " ";
       default = "";
@@ -66,6 +61,8 @@ in {
   };
 
   config = mkIf cfg.enable (mkMerge [{
+    environment.systemPackages = [ pkgs.nix-bitcoin.electrs ];
+
     systemd.services.electrs = {
       description = "Electrs Electrum Server";
       wantedBy = [ "multi-user.target" ];

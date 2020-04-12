@@ -52,6 +52,7 @@ in {
   };
 
   config = mkIf cfg.enable {
+    environment.systemPackages = [ pkgs.nix-bitcoin.nanopos ];
     systemd.services.nanopos = {
       description = "Run nanopos";
       wantedBy = [ "multi-user.target" ];
@@ -60,7 +61,6 @@ in {
       serviceConfig = {
         EnvironmentFile = "${config.nix-bitcoin.secretsDir}/nanopos-env";
         ExecStart = "${pkgs.nix-bitcoin.nanopos}/bin/nanopos -y ${cfg.itemsFile} -p ${toString cfg.port} --show-bolt11";
-
         User = "nanopos";
         Restart = "on-failure";
         RestartSec = "10s";
