@@ -37,14 +37,14 @@ nix-shell
 The following example scripts set up a nix-bitcoin node according to `examples/configuration.nix` and then
 shut down immediately. They leave no traces (outside of `/nix/store`) on the host system.
 
-- `./deploy-container.sh` creates a [NixOS container](https://github.com/erikarvstedt/extra-container).\
+- [`./deploy-container.sh`](examples/deploy-container.sh) creates a [NixOS container](https://github.com/erikarvstedt/extra-container).\
   This is the fastest way to set up a node.\
   Requires: [NixOS](https://nixos.org/)
 
-- `./deploy-qemu-vm.sh` creates a QEMU VM.\
+- [`./deploy-qemu-vm.sh`](examples/deploy-qemu-vm.sh) creates a QEMU VM.\
   Requires: [Nix](https://nixos.org/nix/)
 
-- `./deploy-nixops.sh` creates a VirtualBox VM via [NixOps](https://github.com/NixOS/nixops).\
+- [`./deploy-nixops.sh`](examples/deploy-nixops.sh) creates a VirtualBox VM via [NixOps](https://github.com/NixOS/nixops).\
   NixOps can be used to deploy to various other backends like cloud providers.\
   Requires: [Nix](https://nixos.org/nix/), [VirtualBox](https://www.virtualbox.org)
 
