@@ -5,8 +5,11 @@ with lib;
 let
   cfg = config.services.bitcoind;
   inherit (config) nix-bitcoin-services;
-  pidFile = "${cfg.dataDir}/bitcoind.pid";
+
   configFile = pkgs.writeText "bitcoin.conf" ''
+    # We're already logging via journald
+    nodebuglogfile=1
+
     ${optionalString cfg.testnet "testnet=1"}
     ${optionalString (cfg.dbCache != null) "dbcache=${toString cfg.dbCache}"}
     ${optionalString (cfg.prune != null) "prune=${toString cfg.prune}"}
@@ -14,14 +17,12 @@ let
     ${optionalString (cfg.disablewallet != null) "disablewallet=${if cfg.disablewallet then "1" else "0"}"}
     ${optionalString (cfg.assumevalid != null) "assumevalid=${cfg.assumevalid}"}
 
-
     # Connection options
     ${optionalString (cfg.port != null) "port=${toString cfg.port}"}
     ${optionalString (cfg.proxy != null) "proxy=${cfg.proxy}"}
     listen=${if cfg.listen then "1" else "0"}
     ${optionalString (cfg.discover != null) "discover=${if cfg.discover then "1" else "0"}"}
     ${lib.concatMapStrings (node: "addnode=${node}\n") cfg.addnodes}
-
 
     # RPC server options
     rpcport=${toString cfg.rpc.port}
@@ -39,42 +40,13 @@ let
     ${optionalString (cfg.zmqpubrawblock != null) "zmqpubrawblock=${cfg.zmqpubrawblock}"}
     ${optionalString (cfg.zmqpubrawtx != null) "zmqpubrawtx=${cfg.zmqpubrawtx}"}
 
-    # Extra config options (from bitcoind nixos service)
+    # Extra options
     ${cfg.extraConfig}
   '';
-  cmdlineOptions = concatMapStringsSep " " (arg: "'${arg}'") [
-    "-datadir=${cfg.dataDir}"
-    "-pid=${pidFile}"
-  ];
-  hexStr = types.strMatching "[0-9a-f]+";
-  rpcUserOpts = { name, ... }: {
-    options = {
-      name = mkOption {
-        type = types.str;
-        example = "alice";
-        description = ''
-          Username for JSON-RPC connections.
-        '';
-      };
-      passwordHMAC = mkOption {
-        type = with types; uniq (strMatching "[0-9a-f]+\\$[0-9a-f]{64}");
-        example = "f7efda5c189b999524f151318c0c86$d5b51b3beffbc02b724e5d095828e0bc8b2456e9ac8757ae3211a5d9b16a22ae";
-        description = ''
-          Password HMAC-SHA-256 for JSON-RPC connections. Must be a string of the
-          format <SALT-HEX>$<HMAC-HEX>.
-        '';
-      };
-    };
-    config = {
-      name = mkDefault name;
-    };
-  };
 in {
   options = {
-
     services.bitcoind = {
       enable = mkEnableOption "Bitcoin daemon";
-
       package = mkOption {
         type = types.package;
         default = pkgs.nix-bitcoin.bitcoind;
@@ -88,7 +60,6 @@ in {
           par=16
           rpcthreads=16
           logips=1
-
         '';
         description = "Additional configurations to be appended to <filename>bitcoin.conf</filename>.";
       };
@@ -97,12 +68,6 @@ in {
         default = "/var/lib/bitcoind";
         description = "The data directory for bitcoind.";
       };
-      configFileOption = mkOption {
-        type = types.path;
-        default = configFile;
-        description = "The data directory for bitcoind.";
-      };
-
       user = mkOption {
         type = types.str;
         default = "bitcoin";
@@ -113,7 +78,6 @@ in {
         default = cfg.user;
         description = "The group as which to run bitcoind.";
       };
-
       rpc = {
         port = mkOption {
           type = types.ints.u16;
@@ -126,13 +90,33 @@ in {
             alice.passwordHMAC = "f7efda5c189b999524f151318c0c86$d5b51b3beffbc02b724e5d095828e0bc8b2456e9ac8757ae3211a5d9b16a22ae";
             bob.passwordHMAC = "b2dd077cb54591a2f3139e69a897ac$4e71f08d48b4347cf8eff3815c0e25ae2e9a4340474079f55705f40574f4ec99";
           };
-          type = with types; loaOf (submodule rpcUserOpts);
+          type = with types; loaOf (submodule ({ name, ... }: {
+            options = {
+              name = mkOption {
+                type = types.str;
+                example = "alice";
+                description = ''
+                  Username for JSON-RPC connections.
+                '';
+              };
+              passwordHMAC = mkOption {
+                type = with types; uniq (strMatching "[0-9a-f]+\\$[0-9a-f]{64}");
+                example = "f7efda5c189b999524f151318c0c86$d5b51b3beffbc02b724e5d095828e0bc8b2456e9ac8757ae3211a5d9b16a22ae";
+                description = ''
+                  Password HMAC-SHA-256 for JSON-RPC connections. Must be a string of the
+                  format <SALT-HEX>$<HMAC-HEX>.
+                '';
+              };
+            };
+            config = {
+              name = mkDefault name;
+            };
+          }));
           description = ''
             RPC user information for JSON-RPC connnections.
           '';
         };
       };
-
       rpcuser = mkOption {
           type = types.nullOr types.str;
           default = "bitcoinrpc";
@@ -143,7 +127,6 @@ in {
           default = null;
           description = "Password for JSON-RPC connections";
       };
-
       testnet = mkOption {
         type = types.bool;
         default = false;
@@ -166,18 +149,27 @@ in {
           If enabled, the bitcoin service will listen.
         '';
       };
+      dataDirReadableByGroup = mkOption {
+        type = types.bool;
+        default = false;
+        description = ''
+          If enabled, data dir content is readable by the bitcoind service group.
+          Warning: This disables bitcoind's wallet support.
+        '';
+      };
       sysperms = mkOption {
         type = types.nullOr types.bool;
         default = null;
         description = ''
-        Create new files with system default permissions, instead of umask 077 (only effective with disabled wallet functionality)
+          Create new files with system default permissions, instead of umask 077
+          (only effective with disabled wallet functionality)
         '';
       };
       disablewallet = mkOption {
         type = types.nullOr types.bool;
         default = null;
         description = ''
-        Do not load the wallet and disable wallet RPC calls
+          Do not load the wallet and disable wallet RPC calls
         '';
       };
       dbCache = mkOption {
@@ -257,23 +249,32 @@ in {
 
   config = mkIf cfg.enable {
     environment.systemPackages = [ cfg.package (hiPrio cfg.cli) ];
+
+    services.bitcoind = mkIf cfg.dataDirReadableByGroup {
+      disablewallet = true;
+      sysperms = true;
+    };
+
     systemd.services.bitcoind = {
       description = "Bitcoin daemon";
       requires = [ "nix-bitcoin-secrets.target" ];
       after = [ "network.target" "nix-bitcoin-secrets.target" ];
       wantedBy = [ "multi-user.target" ];
       preStart = ''
-        if ! test -e ${cfg.dataDir}; then
+        if [[ ! -e ${cfg.dataDir} ]]; then
           mkdir -m 0770 -p '${cfg.dataDir}'
         fi
-        if ! test -e ${cfg.dataDir}/blocks; then
+        if [[ ! -e ${cfg.dataDir}/blocks ]]; then
           mkdir -m 0770 -p '${cfg.dataDir}/blocks'
         fi
-        cp '${cfg.configFileOption}' '${cfg.dataDir}/bitcoin.conf'
-        chmod o-rw  '${cfg.dataDir}/bitcoin.conf'
         chown -R '${cfg.user}:${cfg.group}' '${cfg.dataDir}'
-        echo "rpcpassword=$(cat ${config.nix-bitcoin.secretsDir}/bitcoin-rpcpassword)" >> '${cfg.dataDir}/bitcoin.conf'
         chmod -R g+rX '${cfg.dataDir}/blocks'
+
+        cfg=$(cat ${configFile}; printf "rpcpassword="; cat "${config.nix-bitcoin.secretsDir}/bitcoin-rpcpassword")
+        confFile='${cfg.dataDir}/bitcoin.conf'
+        if [[ ! -e $confFile || $cfg != $(cat $confFile) ]]; then
+          install -o '${cfg.user}' -g '${cfg.group}' -m 640  <(echo "$cfg") $confFile
+        fi
       '';
       # Wait until RPC port is open. This usually takes just a few ms.
       postStart = ''
@@ -282,19 +283,11 @@ in {
         done
       '';
       serviceConfig = {
-        Type = "simple";
         User = "${cfg.user}";
         Group = "${cfg.group}";
-        ExecStart = "${cfg.package}/bin/bitcoind ${cmdlineOptions}";
-        PIDFile = "${pidFile}";
+        ExecStart = "${cfg.package}/bin/bitcoind -datadir='${cfg.dataDir}'";
         Restart = "on-failure";
-
-        # Hardening measures
-        PrivateTmp = "true";
-        ProtectSystem = "full";
-        NoNewPrivileges = "true";
-        PrivateDevices = "true";
-        MemoryDenyWriteExecute = "true";
+        UMask = mkIf cfg.dataDirReadableByGroup "0027";
 
         # Permission for preStart
         PermissionsStartOnly = "true";

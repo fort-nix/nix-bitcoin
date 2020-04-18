@@ -46,8 +46,7 @@ in {
     services.bitcoind = {
       enable = true;
       listen = true;
-      sysperms = if cfg.electrs.enable then true else null;
-      disablewallet = if cfg.electrs.enable then true else null;
+      dataDirReadableByGroup = mkIf cfg.electrs.enable true;
       proxy = cfg.tor.client.socksListenAddress;
       enforceTor = true;
       port = 8333;

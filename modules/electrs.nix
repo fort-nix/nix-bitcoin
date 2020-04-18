@@ -81,7 +81,14 @@ in {
         PermissionsStartOnly = "true";
         ExecStart = ''
           ${pkgs.nix-bitcoin.electrs}/bin/electrs -vvv \
-          ${optionalString (!cfg.high-memory) "--jsonrpc-import --index-batch-size=10"} \
+          ${if cfg.high-memory then
+              traceIf (!config.services.bitcoind.dataDirReadableByGroup) ''
+                Warning: For optimal electrs syncing performance, enable services.bitcoind.dataDirReadableByGroup.
+                Note that this disables wallet support in bitcoind.
+              '' ""
+            else
+              "--jsonrpc-import --index-batch-size=10"
+          } \
           --db-dir '${cfg.dataDir}' --daemon-dir '${config.services.bitcoind.dataDir}' \
           --electrum-rpc-addr=${toString cfg.address}:${toString cfg.port} ${cfg.extraArgs}
         '';
