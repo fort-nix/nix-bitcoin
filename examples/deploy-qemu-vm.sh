@@ -90,4 +90,7 @@ echo
 echo "Node info:"
 c nodeinfo
 
+# Uncomment to start a shell session here
+# export -f c; bash -li
+
 # Cleanup happens at exit (see above)
