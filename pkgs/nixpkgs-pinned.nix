@@ -1,18 +1,25 @@
 let
   fetch = { rev, sha256 }:
-    builtins.fetchTarball {
+    builtins.fetchurl {
       url = "https://github.com/nixos/nixpkgs-channels/archive/${rev}.tar.gz";
       inherit sha256;
     };
 in
-{
-  # To update, run ../helper/fetch-channel REV
-  nixpkgs = fetch {
-    rev = "7829e5791ba1f6e6dbddbb9b43dda72024dd2bd1";
-    sha256 = "0hs9swpz0kibjc8l3nx4m10kig1fcjiyy35qy2zgzm0a33pj114w";
+rec {
+  # To update, run ../helper/wot-update-channels
+  nixpkgs-packed = fetch {
+    rev = "1d8a149ccea76b6fed87d2506391c2905a4c0440";
+    sha256 = "60e0a600776e0548e5540d83bffb8c958794a2057d5b0f7362113344bffbe0a7";
   };
-  nixpkgs-unstable = fetch {
-    rev = "8ba41a1e14961fe43523f29b8b39acb569b70e72";
-    sha256 = "0c2wn7si8vcx0yqwm92dpry8zqjglj9dfrvmww6ha6ihnjl6mfhh";
+  nixpkgs-unstable-packed = fetch {
+    rev = "a7971df962fd026843f1707c237294341920757e";
+    sha256 = "a5c40ca1a4a595cfea3596045c6da2db9556e3dd680e92123e45f848c36a578e";
   };
+
+  nixpkgs = (import <nixpkgs> {}).runCommand "nixpkgs-src" {} ''
+    mkdir $out; tar xf "${toString nixpkgs-packed }" --strip 1 -C $out
+  '';
+  nixpkgs-unstable = (import <nixpkgs> {}).runCommand "nixpkgs-unstable-src" {} ''
+    mkdir $out; tar xf "${toString nixpkgs-unstable-packed }" --strip 1 -C $out
+  '';
 }
