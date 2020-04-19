@@ -1,0 +1,109 @@
+#! /usr/bin/env nix-shell
+#! nix-shell -i bash -p git gnupg
+set -eo pipefail
+
+SCRIPTDIR="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
+TMPDIR="$(mktemp -d -p /tmp)"
+trap "rm -rf $TMPDIR" EXIT
+cd $TMPDIR
+
+# get gpg keys
+# maintainer list for age requirement: https://github.com/NixOS/nixpkgs/blob/40af53c5da0c6dbd1af29797222d22a68e8e60bd/maintainers/maintainer-list.nix
+export GNUPGHOME=$TMPDIR
+echo "Fetching Keyring"
+gpg --keyserver hkps://keys.openpgp.org --recv-keys 67FE98F28C44CF221828E12FD57EFA625C9A925F #Elis Hirwing
+gpg --keyserver hkps://keys.openpgp.org --recv-keys 8A39615DCE78AF082E23F303846FDED7792617B4 #Franz Pletz
+gpg --keyserver hkps://hkps.pool.sks-keyservers.net --recv-keys 3DEE1C556E1C3DC554F5875A003F2096411B5F92  #Joerg Thalheim
+gpg --keyserver hkps://keys.openpgp.org --recv-keys 389A78CBCD885E0C4701DEB9FD42C7D0D41494C8 #Will Dietz
+gpg --keyserver hkps://keys.openpgp.org --recv-keys 984E4BAD91274D0EAE47FF03438871E000AA178E #Justin Humm
+gpg --keyserver hkps://keys.openpgp.org --recv-keys B6006460B60A80E782062449E747DF1F9575A3AA #Vladimir Cunat
+gpg --keyserver hkps://hkps.pool.sks-keyservers.net --recv-keys 3E0DD320B2BEB411100DA4D5091DBF4D1FC46B8E #Maximilian Bosch
+gpg --keyserver hkps://keys.openpgp.org --recv-keys 86A74A5507D058D1322E37FD130826A6C2A389FD #Michael Weiss
+gpg --keyserver hkps://hkps.pool.sks-keyservers.net --recv-keys 8E64FBE545A394F5D35CD202F72C652AE7564ECC #Damien Cassou
+gpg --keyserver hkps://hkps.pool.sks-keyservers.net --recv-keys 00244EF5295026AA323A4BDB110BFAD44C6249B7 #Adam Hoese
+
+# nixpkgs-channels
+git clone https://github.com/NixOS/nixpkgs-channels.git
+cd $TMPDIR/nixpkgs-channels
+
+if [[ $1 == --verify ]]
+# nixpkgs-pinned.nix verification
+then
+  echo "Verifying nixpkgs-pinned.nix"
+
+  # nixpkgs-pinned.nix nixpkgs
+  pinnedstable=$(cd $SCRIPTDIR/../pkgs; grep -m1 "rev =" nixpkgs-pinned.nix | cut -d '"' -f 2 | tail -n1)
+  if [[ $(git show --quiet --format="%G?" $pinnedstable) == N ]]; then echo "Pinned nixpkgs not signed"; fi # check if there even is a signature
+  git verify-commit $pinnedstable &>/dev/null
+  pinnedstablehash=$(git archive --format tar.gz --prefix=nixpkgs-channels-${pinnedstable}/ ${pinnedstable} | sha256sum | cut -d\  -f1)
+  if [[ $(cd $SCRIPTDIR/../pkgs; grep -m1 "sha256 =" nixpkgs-pinned.nix | cut -d '"' -f 2 | tail -n1) == $pinnedstablehash ]]; then
+    echo "nixpkgs OK"
+  else
+    echo "nixpkgs verification failed"
+  fi
+
+  # nixpkgs-pinned.nix nixpkgs-unstable
+  pinnedunstable=$(grep -m2 "rev =" $SCRIPTDIR/../pkgs/nixpkgs-pinned.nix | cut -d '"' -f 2 | tail -n1)
+  if [[ $(git show --quiet --format="%G?" $pinnedunstable) == N ]]; then echo "Pinned nixpkgs-unstable not signed"; fi
+  git verify-commit $pinnedunstable &>/dev/null
+  pinnedunstablehash=$(git archive --format tar.gz --prefix=nixpkgs-channels-${pinnedunstable}/ ${pinnedunstable} | sha256sum | cut -d\  -f1)
+  if [[ $(cd $SCRIPTDIR/../pkgs; grep -m2 "sha256 =" nixpkgs-pinned.nix | cut -d '"' -f 2 | tail -n1) == $pinnedunstablehash ]]; then
+    echo "nixpkgs-unstable OK"
+  else
+    echo "nixpkgs-unstable verification failed"
+  fi
+
+# nixpkgs-pinned update
+else
+  echo "Getting latest signed commits"
+
+## nixpkgs
+  echo "Checking for properly signed commit in nixpkgs"
+  git checkout nixos-20.03
+  set +e
+  for i in {0..14}; do
+    nixpkgscommit=$(git log -n 1 --skip $i --pretty=format:"%H")
+    git verify-commit $nixpkgscommit &>/dev/null
+    if [[ $? -eq 0 ]]; then
+      export verifiedcommitnixpkgs=$nixpkgscommit
+      break
+    fi
+  done
+  set -e
+  if [[ -n "$verifiedcommitnixpkgs" ]]; then
+    echo -e "\n"
+    echo "  nixpkgs-packed = fetch {"
+    echo "    rev = \"$verifiedcommitnixpkgs\";"
+    echo "    sha256 = \"$(git archive --format tar.gz --prefix=nixpkgs-channels-${verifiedcommitnixpkgs}/ ${verifiedcommitnixpkgs} | sha256sum | cut -d\  -f1)\";"
+    echo "  };"
+    echo -e "\n"
+  else
+    echo "No recent properly signed commit found for nixpkgs"
+    exit
+  fi
+
+## nixpks-unstable
+  echo "Checking for properly signed commit in nixpkgs-unstable"
+  git checkout nixos-unstable
+  set +e
+  for u in {0..14}; do
+    nixpkgscommitunstable=$(git log -n 1 --skip $u --pretty=format:"%H")
+    git verify-commit $nixpkgscommitunstable &>/dev/null
+    if [[ $? -eq 0 ]]; then
+      export verifiedcommitnixpkgsunstable=$nixpkgscommitunstable
+      break
+    fi
+  done
+  set -e
+  if [[ -n "$verifiedcommitnixpkgsunstable" ]]; then
+    echo -e "\n"
+    echo "  nixpkgs-unstable-packed = fetch {"
+    echo "    rev = \"$verifiedcommitnixpkgsunstable\";"
+    echo "    sha256 = \"$(git archive --format tar.gz --prefix=nixpkgs-channels-${verifiedcommitnixpkgsunstable}/ ${verifiedcommitnixpkgsunstable} | sha256sum | cut -d\  -f1)\";"
+    echo "  };"
+    echo -e "\n"
+  else
+    echo "No recent properly signed commit found for nixpkgs-unstable"
+    exit
+  fi
+fi
