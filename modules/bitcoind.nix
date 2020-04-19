@@ -330,7 +330,6 @@ in {
     users.users.${cfg.user} = {
       group = cfg.group;
       description = "Bitcoin daemon user";
-      home = cfg.dataDir;
     };
     users.groups.${cfg.group} = {};
     users.groups.bitcoinrpc = {};

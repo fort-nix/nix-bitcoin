@@ -156,7 +156,7 @@ in {
       description = "LND User";
       group = "lnd";
       extraGroups = [ "bitcoinrpc" ];
-      home = cfg.dataDir;
+      home = cfg.dataDir; # lnd creates .lnd dir in HOME
     };
     users.groups.lnd = {};
     nix-bitcoin.secrets = {
