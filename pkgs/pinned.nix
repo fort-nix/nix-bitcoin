@@ -1,13 +1,18 @@
 let
   nixpkgsPinned = import ./nixpkgs-pinned.nix;
-  unstable = import nixpkgsPinned.nixpkgs-unstable { config = {}; overlays = []; };
-  nixBitcoinPkgsUnstable = import ./. { pkgs = unstable; };
+  nixpkgsStable = import nixpkgsPinned.nixpkgs { config = {}; overlays = []; };
+  nixpkgsUnstable = import nixpkgsPinned.nixpkgs-unstable { config = {}; overlays = []; };
+  nixBitcoinPkgsStable = import ./. { pkgs = nixpkgsStable; };
+  nixBitcoinPkgsUnstable = import ./. { pkgs = nixpkgsUnstable; };
 in
 {
-  inherit (unstable)
+  inherit (nixpkgsUnstable)
     bitcoin
     bitcoind
     clightning
     lnd;
   inherit (nixBitcoinPkgsUnstable) electrs;
+
+  stable = nixBitcoinPkgsStable;
+  unstable = nixBitcoinPkgsUnstable;
 }
