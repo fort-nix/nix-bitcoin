@@ -13,7 +13,8 @@ static char *allowed_netns[] = {
     "nb-lnd",
     "nb-lightning-loop",
     "nb-bitcoind",
-    "nb-liquidd"
+    "nb-liquidd",
+    "nb-joinmarket"
 };
 
 int is_netns_allowed(char *netns) {

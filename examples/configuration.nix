@@ -172,6 +172,16 @@
   # and electrs data directory, enable
   # services.backups.with-bulk-data = true;
 
+  ### JOINMARKET
+  # Enable this module to allow using JoinMarket's user interactive scripts (including
+  # tumbler.py).
+  # Note: JoinMarket has full access to bitcoind, including its wallet functionality.
+  # services.joinmarket.enable = true;
+  # Enable this option to enable the JoinMarket Yield Generator Bot. You will be able to
+  # earn sats by providing CoinJoin liquidity. This makes it impossible to use other
+  # scripts that access your wallet.
+  # services.joinmarket.yieldgenerator.enable = true;
+
   # FIXME: Define your hostname.
   networking.hostName = "nix-bitcoin";
   time.timeZone = "UTC";

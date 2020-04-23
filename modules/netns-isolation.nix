@@ -131,6 +131,7 @@ in {
           ${ip} link del nb-br
         '';
       };
+
     } //
     (let
       makeNetnsServices = n: v: let
@@ -242,6 +243,10 @@ in {
                       ++ optional (config.services.btcpayserver.lightningBackend == "lnd") "lnd";
         # communicates with clightning over rpc socket
       };
+      joinmarket = {
+        id = 25;
+        connections = [ "bitcoind" ];
+      };
     };
 
     services.bitcoind = {
@@ -314,6 +319,9 @@ in {
 
     services.nbxplorer.bind = netns.nbxplorer.address;
     services.btcpayserver.bind = netns.btcpayserver.address;
+
+    services.joinmarket.cliExec = mkCliExec "joinmarket";
+    systemd.services.joinmarket-yieldgenerator.serviceConfig.NetworkNamespacePath = "/var/run/netns/nb-joinmarket";
   }
   ]);
 }
