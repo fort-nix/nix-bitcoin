@@ -18,7 +18,7 @@ makePasswordSecret spark-wallet-password
 
 if [[ ! -e nginx-key || ! -e nginx-cert ]]; then
     openssl genrsa -out nginx-key 2048
-    openssl req -new -key nginx-key -out nginx.csr -subj "/C=KN"
+    openssl req -new -key nginx-key -out nginx.csr -subj '/CN=localhost/O=electrs'
     openssl x509 -req -days 1825 -in nginx.csr -signkey nginx-key -out nginx-cert
     rm nginx.csr
 fi
