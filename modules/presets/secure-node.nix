@@ -46,7 +46,7 @@ in {
     services.bitcoind = {
       enable = true;
       listen = true;
-      dataDirReadableByGroup = mkIf cfg.electrs.enable true;
+      dataDirReadableByGroup = mkIf cfg.electrs.high-memory true;
       proxy = cfg.tor.client.socksListenAddress;
       enforceTor = true;
       port = 8333;
