@@ -1,17 +1,16 @@
-{ lib, rustPlatform, clang, llvmPackages, fetchFromGitHub, pkgs }:
+{ lib, rustPlatform, llvmPackages, fetchurl, pkgs }:
 rustPlatform.buildRustPackage rec {
   pname = "electrs";
   version = "0.8.3";
 
-  src = fetchFromGitHub {
-    owner = "romanz";
-    repo = "electrs";
-    rev = "v${version}";
-    sha256 = "01993iv3kkf56s5x33gvk433zjwvqlfxa5vqrjl4ghr4i303ysc2";
+  src = fetchurl {
+    url = "https://github.com/romanz/electrs/archive/v${version}.tar.gz";
+    # Use ./get-sha256.sh to fetch latest (verified) sha256
+    sha256 = "6a00226907a0c36b10884e7dd9f87eb58123f089977a752b917d166af072ea3d";
   };
 
   # Needed for librocksdb-sys
-  buildInputs = [ clang ];
+  nativeBuildInputs = [ llvmPackages.clang ];
   LIBCLANG_PATH = "${llvmPackages.libclang}/lib";
 
   cargoSha256 = if pkgs ? cargo-vendor then
