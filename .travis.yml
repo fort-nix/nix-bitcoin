@@ -21,6 +21,7 @@ env:
   jobs:
   - TestModules=1 STABLE=1
   - PKG=hwi STABLE=1
+  - PKG=hwi STABLE=0
   - PKG=lightning-charge STABLE=1
   - PKG=lightning-charge STABLE=0
   - PKG=nanopos STABLE=1
