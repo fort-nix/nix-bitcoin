@@ -235,7 +235,6 @@ in {
     users.users.${cfg.user} = {
       group = cfg.group;
       description = "Liquid sidechain user";
-      home = cfg.dataDir;
     };
     users.groups.${cfg.group} = {};
     nix-bitcoin.secrets.liquid-rpcpassword.user = "liquid";

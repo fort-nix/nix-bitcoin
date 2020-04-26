@@ -107,7 +107,6 @@ in {
       description = "electrs User";
       group = cfg.group;
       extraGroups = [ "bitcoinrpc" "bitcoin"];
-      home = cfg.dataDir;
     };
     users.groups.${cfg.group} = {};
   }

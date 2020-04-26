@@ -8,6 +8,7 @@ let
   configFile = pkgs.writeText "config" ''
     autolisten=${if cfg.autolisten then "true" else "false"}
     network=bitcoin
+    bitcoin-datadir=${config.services.bitcoind.dataDir}
     ${optionalString (cfg.proxy != null) "proxy=${cfg.proxy}"}
     always-use-proxy=${if cfg.always-use-proxy then "true" else "false"}
     ${optionalString (cfg.bind-addr != null) "bind-addr=${cfg.bind-addr}"}
@@ -76,7 +77,6 @@ in {
         description = "clightning User";
         group = "clightning";
         extraGroups = [ "bitcoinrpc" ];
-        home = cfg.dataDir;
     };
     users.groups.clightning = {};
 
