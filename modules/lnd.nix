@@ -155,7 +155,6 @@ in {
     users.users.lnd = {
       description = "LND User";
       group = "lnd";
-      extraGroups = [ "bitcoinrpc" ];
       home = cfg.dataDir; # lnd creates .lnd dir in HOME
     };
     users.groups.lnd = {};
