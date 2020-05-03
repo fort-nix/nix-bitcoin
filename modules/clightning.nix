@@ -76,7 +76,6 @@ in {
     users.users.clightning = {
         description = "clightning User";
         group = "clightning";
-        extraGroups = [ "bitcoinrpc" ];
     };
     users.groups.clightning = {};
 
