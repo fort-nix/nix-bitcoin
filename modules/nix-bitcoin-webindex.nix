@@ -75,7 +75,7 @@ in {
       wantedBy = [ "multi-user.target" ];
       after = [ "nodeinfo.service" ];
       path  = with pkgs; [
-        nix-bitcoin.nodeinfo
+        config.programs.nodeinfo
         config.services.clightning.cli
         config.services.lnd.cli
         jq

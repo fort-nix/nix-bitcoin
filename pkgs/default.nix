@@ -1,6 +1,5 @@
 { pkgs ? import <nixpkgs> {} }:
 {
-  nodeinfo = pkgs.callPackage ./nodeinfo { };
   lightning-charge = pkgs.callPackage ./lightning-charge { };
   nanopos = pkgs.callPackage ./nanopos { };
   spark-wallet = pkgs.callPackage ./spark-wallet { };
