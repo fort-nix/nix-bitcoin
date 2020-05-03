@@ -268,7 +268,7 @@ in {
           mkdir -m 0770 -p '${cfg.dataDir}/blocks'
         fi
         chown -R '${cfg.user}:${cfg.group}' '${cfg.dataDir}'
-        chmod -R g+rX '${cfg.dataDir}/blocks'
+        ${optionalString cfg.dataDirReadableByGroup  "chmod -R g+rX '${cfg.dataDir}/blocks'"}
 
         cfg=$(cat ${configFile}; printf "rpcpassword="; cat "${config.nix-bitcoin.secretsDir}/bitcoin-rpcpassword")
         confFile='${cfg.dataDir}/bitcoin.conf'
