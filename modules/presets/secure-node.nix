@@ -99,7 +99,7 @@ in {
     };
     services.tor.hiddenServices.electrs = mkHiddenService {
       port = cfg.electrs.onionport;
-      toPort = cfg.electrs.TLSProxy.port;
+      toPort = if cfg.electrs.TLSProxy.enable then cfg.electrs.TLSProxy.port else cfg.electrs.port;
     };
 
     services.spark-wallet.onion-service = true;
