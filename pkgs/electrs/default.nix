@@ -13,8 +13,8 @@ rustPlatform.buildRustPackage rec {
   nativeBuildInputs = [ llvmPackages.clang ];
   LIBCLANG_PATH = "${llvmPackages.libclang}/lib";
 
-  cargoSha256 = if pkgs ? cargo-vendor then
-    # nixpkgs ≤ 19.09
+  cargoSha256 = if builtins.pathExists "${pkgs.path}/pkgs/build-support/rust/fetchcargo.nix" then
+    # nixpkgs ≤ 20.03
     "19qs8if8fmygv6j74s6iwzm534fybwasjvmzdqcl996xhg75w6gi"
   else
     # for recent nixpkgs with cargo-native vendoring (introduced in nixpkgs PR #69274)

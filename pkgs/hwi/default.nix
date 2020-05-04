@@ -1,12 +1,18 @@
 { stdenv, fetchurl, fetchFromGitHub, python3 }:
 
 with stdenv.lib;
-with python3.pkgs;
 
 let
-  buildInputs = [ mnemonic ecdsa typing-extensions hidapi libusb1 pyaes ];
+  python = python3.override {
+    packageOverrides = self: super: {
+      # HWI requires mnemonic <0.19 but nixpkgs has a newer version
+      mnemonic = self.callPackage ./mnemonic {};
+      # HWI requires ecdsa <0.14 but nixpkgs has a newer version
+      ecdsa = self.callPackage ./ecdsa {};
+    };
+  };
 in
-buildPythonPackage rec {
+python.pkgs.buildPythonPackage rec {
   pname = "hwi";
   version = "1.0.3";
 
@@ -20,8 +26,7 @@ buildPythonPackage rec {
   # TODO: enable tests
   doCheck = false;
 
-  inherit buildInputs;
-  propagatedBuildInputs = buildInputs;
+  propagatedBuildInputs = with python.pkgs; [ mnemonic ecdsa typing-extensions hidapi libusb1 pyaes ];
 
   meta = with lib; {
     homepage = https://github.com/bitcoin-core/hwi;
