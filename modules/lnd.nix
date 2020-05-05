@@ -78,6 +78,12 @@ in {
 
   config = mkIf cfg.enable {
     environment.systemPackages = [ cfg.package (hiPrio cfg.cli) ];
+
+    services.bitcoind = {
+      zmqpubrawblock = "tcp://127.0.0.1:28332";
+      zmqpubrawtx = "tcp://127.0.0.1:28333";
+    };
+
     systemd.services.lnd = {
       description = "Run LND";
       path  = [ pkgs.nix-bitcoin.bitcoind ];

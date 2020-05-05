@@ -60,8 +60,6 @@ in {
       proxy = cfg.tor.client.socksListenAddress;
       enforceTor = true;
       port = 8333;
-      zmqpubrawblock = "tcp://127.0.0.1:28332";
-      zmqpubrawtx = "tcp://127.0.0.1:28333";
       assumevalid = "00000000000000000000e5abc3a74fe27dc0ead9c70ea1deb456f11c15fd7bc6";
       addnodes = [ "ecoc5q34tmbq54wl.onion" ];
       discover = false;
