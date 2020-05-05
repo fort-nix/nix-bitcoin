@@ -88,6 +88,7 @@ in {
         RemainAfterExit="yes";
         Restart = "on-failure";
         RestartSec = "10s";
+        PrivateNetwork = "true"; # This service needs no network access
       } // (if cfg.enforceTor
           then nix-bitcoin-services.allowTor
           else nix-bitcoin-services.allowAnyIP

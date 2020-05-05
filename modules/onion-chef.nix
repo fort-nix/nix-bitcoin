@@ -77,6 +77,7 @@ in {
         ExecStart = "${pkgs.bash}/bin/bash ${onion-chef-script}";
         Type = "oneshot";
         RemainAfterExit = true;
+        PrivateNetwork = "true"; # This service needs no network access
       };
     };
   };
