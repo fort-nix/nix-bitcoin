@@ -92,6 +92,7 @@ in {
         Restart = "on-failure";
         RestartSec = "10s";
         PrivateNetwork = "true"; # This service needs no network access
+        ReadWritePaths = "/var/www";
         CapabilityBoundingSet = "CAP_SETUID CAP_SETGID CAP_SETPCAP CAP_SYS_ADMIN CAP_CHOWN CAP_FSETID CAP_SETFCAP CAP_DAC_OVERRIDE CAP_DAC_READ_SEARCH CAP_FOWNER CAP_IPC_OWNER";
       } // (if cfg.enforceTor
           then nix-bitcoin-services.allowTor

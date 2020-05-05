@@ -75,6 +75,7 @@ in {
         User = "spark-wallet";
         Restart = "on-failure";
         RestartSec = "10s";
+        ReadWritePaths = "/var/lib/onion-chef";
       } // nix-bitcoin-services.nodejs
         // nix-bitcoin-services.allowTor;
     };

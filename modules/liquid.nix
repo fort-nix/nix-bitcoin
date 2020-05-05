@@ -224,6 +224,7 @@ in {
         ExecStart = "${pkgs.nix-bitcoin.elementsd}/bin/elementsd ${cmdlineOptions}";
         PIDFile = "${pidFile}";
         Restart = "on-failure";
+        ReadWritePaths = "${cfg.dataDir}";
       } // (if cfg.enforceTor
           then nix-bitcoin-services.allowTor
           else nix-bitcoin-services.allowAnyIP

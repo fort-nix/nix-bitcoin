@@ -106,6 +106,7 @@ in {
         User = "lnd";
         Restart = "on-failure";
         RestartSec = "10s";
+        ProtectSystem = "full"; # ToDo: Make more restrictive
       } // (if cfg.enforceTor
           then nix-bitcoin-services.allowTor
           else nix-bitcoin-services.allowAnyIP

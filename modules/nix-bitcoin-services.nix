@@ -7,7 +7,7 @@ with lib;
 {
   defaultHardening = {
       PrivateTmp = "true";
-      ProtectSystem = "full";
+      ProtectSystem = "strict";
       ProtectHome = "true";
       NoNewPrivileges = "true";
       PrivateDevices = "true";

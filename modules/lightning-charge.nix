@@ -58,6 +58,7 @@ in {
           User = user;
           Restart = "on-failure";
           RestartSec = "10s";
+          ReadWritePaths = "${cfg.dataDir}";
       } // nix-bitcoin-services.nodejs
         // nix-bitcoin-services.allowTor;
     };

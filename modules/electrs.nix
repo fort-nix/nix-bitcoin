@@ -97,6 +97,7 @@ in {
         Group = cfg.group;
         Restart = "on-failure";
         RestartSec = "10s";
+        ReadWritePaths = "${cfg.dataDir} ${if cfg.high-memory then "${config.services.bitcoind.dataDir}" else ""}";
       } // (if cfg.enforceTor
           then nix-bitcoin-services.allowTor
           else nix-bitcoin-services.allowAnyIP
