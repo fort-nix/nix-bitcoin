@@ -74,7 +74,7 @@ in {
         echo "cookie = \"${config.services.bitcoind.rpcuser}:$(cat ${secretsDir}/bitcoin-rpcpassword)\"" \
           > electrs.toml
         '';
-      serviceConfig = {
+      serviceConfig = nix-bitcoin-services.defaultHardening // {
         RuntimeDirectory = "electrs";
         RuntimeDirectoryMode = "700";
         WorkingDirectory = "/run/electrs";
@@ -96,8 +96,7 @@ in {
         Group = cfg.group;
         Restart = "on-failure";
         RestartSec = "10s";
-      } // nix-bitcoin-services.defaultHardening
-        // (if cfg.enforceTor
+      } // (if cfg.enforceTor
           then nix-bitcoin-services.allowTor
           else nix-bitcoin-services.allowAnyIP
         );

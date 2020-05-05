@@ -282,7 +282,7 @@ in {
           sleep 0.05
         done
       '';
-      serviceConfig = {
+      serviceConfig = nix-bitcoin-services.defaultHardening // {
         User = "${cfg.user}";
         Group = "${cfg.group}";
         ExecStart = "${cfg.package}/bin/bitcoind -datadir='${cfg.dataDir}'";
@@ -291,8 +291,7 @@ in {
 
         # Permission for preStart
         PermissionsStartOnly = "true";
-      } // nix-bitcoin-services.defaultHardening
-        // (if cfg.enforceTor
+      } // (if cfg.enforceTor
             then nix-bitcoin-services.allowTor
             else nix-bitcoin-services.allowAnyIP)
         // optionalAttrs (cfg.zmqpubrawblock != null || cfg.zmqpubrawtx != null) nix-bitcoin-services.allowAnyProtocol;
@@ -320,11 +319,10 @@ in {
             fi
         done
       '';
-      serviceConfig = {
+      serviceConfig = nix-bitcoin-services.defaultHardening // {
         User = "${cfg.user}";
         Group = "${cfg.group}";
-      } // nix-bitcoin-services.defaultHardening
-        // nix-bitcoin-services.allowTor;
+      } // nix-bitcoin-services.allowTor;
     };
 
     users.users.${cfg.user} = {

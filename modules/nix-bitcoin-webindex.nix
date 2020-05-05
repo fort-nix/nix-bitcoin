@@ -81,15 +81,14 @@ in {
         jq
         sudo
       ];
-      serviceConfig = {
+      serviceConfig = nix-bitcoin-services.defaultHardening // {
         ExecStart="${pkgs.bash}/bin/bash ${createWebIndex}";
         User = "root";
         Type = "simple";
         RemainAfterExit="yes";
         Restart = "on-failure";
         RestartSec = "10s";
-      } // nix-bitcoin-services.defaultHardening
-        // (if cfg.enforceTor
+      } // (if cfg.enforceTor
           then nix-bitcoin-services.allowTor
           else nix-bitcoin-services.allowAnyIP
         );

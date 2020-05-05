@@ -58,14 +58,13 @@ in {
       wantedBy = [ "multi-user.target" ];
       requires = [ "lightning-charge.service" ];
       after = [ "lightning-charge.service" ];
-      serviceConfig = {
+      serviceConfig = nix-bitcoin-services.defaultHardening // {
         EnvironmentFile = "${config.nix-bitcoin.secretsDir}/nanopos-env";
         ExecStart = "${pkgs.nix-bitcoin.nanopos}/bin/nanopos -y ${cfg.itemsFile} -p ${toString cfg.port} --show-bolt11";
         User = "nanopos";
         Restart = "on-failure";
         RestartSec = "10s";
-      } // nix-bitcoin-services.defaultHardening
-        // nix-bitcoin-services.nodejs
+      } // nix-bitcoin-services.nodejs
         // nix-bitcoin-services.allowTor;
     };
     users.users.nanopos = {

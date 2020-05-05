@@ -215,7 +215,7 @@ in {
         echo "rpcpassword=$(cat ${secretsDir}/liquid-rpcpassword)" >> '${cfg.dataDir}/elements.conf'
         echo "mainchainrpcpassword=$(cat ${secretsDir}/bitcoin-rpcpassword)" >> '${cfg.dataDir}/elements.conf'
       '';
-      serviceConfig = {
+      serviceConfig = nix-bitcoin-services.defaultHardening // {
         Type = "simple";
         User = "${cfg.user}";
         Group = "${cfg.group}";
@@ -226,8 +226,7 @@ in {
 
         # Permission for preStart
         PermissionsStartOnly = "true";
-      } // nix-bitcoin-services.defaultHardening
-        // (if cfg.enforceTor
+      } // (if cfg.enforceTor
           then nix-bitcoin-services.allowTor
           else nix-bitcoin-services.allowAnyIP
         );

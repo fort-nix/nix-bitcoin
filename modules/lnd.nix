@@ -91,14 +91,13 @@ in {
         chmod u=rw,g=r,o= ${cfg.dataDir}/lnd.conf
         echo "bitcoind.rpcpass=$(cat ${secretsDir}/bitcoin-rpcpassword)" >> '${cfg.dataDir}/lnd.conf'
       '';
-      serviceConfig = {
+      serviceConfig = nix-bitcoin-services.defaultHardening // {
         PermissionsStartOnly = "true";
         ExecStart = "${cfg.package}/bin/lnd --configfile=${cfg.dataDir}/lnd.conf";
         User = "lnd";
         Restart = "on-failure";
         RestartSec = "10s";
-      } // nix-bitcoin-services.defaultHardening
-        // (if cfg.enforceTor
+      } // (if cfg.enforceTor
           then nix-bitcoin-services.allowTor
           else nix-bitcoin-services.allowAnyIP
         ) // nix-bitcoin-services.allowAnyProtocol;  # For ZMQ

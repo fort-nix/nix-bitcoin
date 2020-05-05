@@ -73,11 +73,11 @@ in {
       wantedBy = [ "tor.service" ];
       bindsTo = [ "tor.service" ];
       after = [ "tor.service" ];
-      serviceConfig = {
+      serviceConfig = nix-bitcoin-services.defaultHardening // {
         ExecStart = "${pkgs.bash}/bin/bash ${onion-chef-script}";
         Type = "oneshot";
         RemainAfterExit = true;
-      } // nix-bitcoin-services.defaultHardening;
+      };
     };
   };
 }

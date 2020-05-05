@@ -71,14 +71,13 @@ in {
       wantedBy = [ "multi-user.target" ];
       requires = [ "clightning.service" ] ++ onion-chef-service;
       after = [ "clightning.service" ]  ++ onion-chef-service;
-      serviceConfig = {
+      serviceConfig = nix-bitcoin-services.defaultHardening // {
         PermissionsStartOnly = "true";
         ExecStart = "${pkgs.bash}/bin/bash ${run-spark-wallet}";
         User = "spark-wallet";
         Restart = "on-failure";
         RestartSec = "10s";
-      } // nix-bitcoin-services.defaultHardening
-        // nix-bitcoin-services.nodejs
+      } // nix-bitcoin-services.nodejs
         // nix-bitcoin-services.allowTor;
     };
     nix-bitcoin.secrets.spark-wallet-login.user = "spark-wallet";
