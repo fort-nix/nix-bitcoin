@@ -78,6 +78,7 @@ in {
         Type = "oneshot";
         RemainAfterExit = true;
         PrivateNetwork = "true"; # This service needs no network access
+        CapabilityBoundingSet = "CAP_CHOWN CAP_FSETID CAP_SETFCAP CAP_DAC_OVERRIDE CAP_DAC_READ_SEARCH CAP_FOWNER CAP_IPC_OWNER";
       };
     };
   };
