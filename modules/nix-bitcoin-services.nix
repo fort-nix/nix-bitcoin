@@ -21,6 +21,10 @@ with lib;
       LockPersonality = "true";
       IPAddressDeny = "any";
       PrivateUsers = "true";
+      RestrictSUIDSGID = "true";
+      RemoveIPC = "true";
+      RestrictRealtime = "true";
+      ProtectHostname = "true";
       CapabilityBoundingSet = "";
       # @system-service whitelist and docker seccomp blacklist (except for "clone"
       # which is a core requirement for systemd services)
