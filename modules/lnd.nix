@@ -79,6 +79,10 @@ in {
   config = mkIf cfg.enable {
     environment.systemPackages = [ cfg.package (hiPrio cfg.cli) ];
 
+    systemd.tmpfiles.rules = [
+      "d '${cfg.dataDir}' 0770 lnd lnd - -"
+    ];
+
     services.bitcoind = {
       zmqpubrawblock = "tcp://127.0.0.1:28332";
       zmqpubrawtx = "tcp://127.0.0.1:28333";
@@ -91,7 +95,6 @@ in {
       requires = [ "bitcoind.service" ];
       after = [ "bitcoind.service" ];
       preStart = ''
-        mkdir -m 0770 -p ${cfg.dataDir}
         cp ${configFile} ${cfg.dataDir}/lnd.conf
         chown -R 'lnd:lnd' '${cfg.dataDir}'
         chmod u=rw,g=r,o= ${cfg.dataDir}/lnd.conf

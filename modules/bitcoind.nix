@@ -255,19 +255,17 @@ in {
       sysperms = true;
     };
 
+    systemd.tmpfiles.rules = [
+      "d '${cfg.dataDir}' 0770 ${cfg.user} ${cfg.group} - -"
+      "d '${cfg.dataDir}/blocks' 0770 ${cfg.user} ${cfg.group} - -"
+    ];
+
     systemd.services.bitcoind = {
       description = "Bitcoin daemon";
       requires = [ "nix-bitcoin-secrets.target" ];
       after = [ "network.target" "nix-bitcoin-secrets.target" ];
       wantedBy = [ "multi-user.target" ];
       preStart = ''
-        if [[ ! -e ${cfg.dataDir} ]]; then
-          mkdir -m 0770 -p '${cfg.dataDir}'
-        fi
-        if [[ ! -e ${cfg.dataDir}/blocks ]]; then
-          mkdir -m 0770 -p '${cfg.dataDir}/blocks'
-        fi
-        chown -R '${cfg.user}:${cfg.group}' '${cfg.dataDir}'
         ${optionalString cfg.dataDirReadableByGroup  "chmod -R g+rX '${cfg.dataDir}/blocks'"}
 
         cfg=$(cat ${configFile}; printf "rpcpassword="; cat "${config.nix-bitcoin.secretsDir}/bitcoin-rpcpassword")

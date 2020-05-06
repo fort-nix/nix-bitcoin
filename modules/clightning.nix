@@ -78,6 +78,10 @@ in {
     };
     users.groups.clightning = {};
 
+    systemd.tmpfiles.rules = [
+      "d '${cfg.dataDir}' 0770 ${config.users.users.clightning.name} ${config.users.users.clightning.group} - -"
+    ];
+
     systemd.services.clightning = {
       description = "Run clightningd";
       path  = [ pkgs.nix-bitcoin.bitcoind ];
@@ -85,7 +89,6 @@ in {
       requires = [ "bitcoind.service" ];
       after = [ "bitcoind.service" ];
       preStart = ''
-        mkdir -m 0770 -p ${cfg.dataDir}
         cp ${configFile} ${cfg.dataDir}/config
         chown -R 'clightning:clightning' '${cfg.dataDir}'
         # The RPC socket has to be removed otherwise we might have stale sockets

@@ -15,7 +15,6 @@ let
     # wait until tor is up
     until ls -l /var/lib/tor/state; do sleep 1; done
 
-    mkdir -p -m 0755 ${dataDir}
     cd ${dataDir}
 
     # Create directory for every user and set permissions
@@ -68,6 +67,10 @@ in {
   };
 
   config = mkIf cfg.enable {
+    systemd.tmpfiles.rules = [
+      "d '${dataDir}' 0755 root root - -"
+    ];
+
     systemd.services.onion-chef = {
       description = "Run onion-chef";
       wantedBy = [ "tor.service" ];

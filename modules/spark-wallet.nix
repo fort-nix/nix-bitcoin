@@ -5,7 +5,6 @@ with lib;
 let
   cfg = config.services.spark-wallet;
   inherit (config) nix-bitcoin-services;
-  dataDir = "/var/lib/spark-wallet/";
   onion-chef-service = (if cfg.onion-service then [ "onion-chef.service" ] else []);
   run-spark-wallet = pkgs.writeScript "run-spark-wallet" ''
     CMD="${pkgs.nix-bitcoin.spark-wallet}/bin/spark-wallet --ln-path ${cfg.ln-path} -Q -k -c ${config.nix-bitcoin.secretsDir}/spark-wallet-login"

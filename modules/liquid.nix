@@ -200,15 +200,17 @@ in {
       (hiPrio cfg.cli)
       (hiPrio cfg.swap-cli)
     ];
+
+    systemd.tmpfiles.rules = [
+      "d '${cfg.dataDir}' 0770 ${cfg.user} ${cfg.group} - -"
+    ];
+
     systemd.services.liquidd = {
       description = "Elements daemon providing access to the Liquid sidechain";
       requires = [ "bitcoind.service" ];
       after = [ "bitcoind.service" ];
       wantedBy = [ "multi-user.target" ];
       preStart = ''
-        if ! test -e ${cfg.dataDir}; then
-          mkdir -m 0770 -p '${cfg.dataDir}'
-        fi
         cp '${configFile}' '${cfg.dataDir}/elements.conf'
         chmod o-rw  '${cfg.dataDir}/elements.conf'
         chown -R '${cfg.user}:${cfg.group}' '${cfg.dataDir}'

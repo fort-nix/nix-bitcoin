@@ -63,14 +63,16 @@ in {
   config = mkIf cfg.enable (mkMerge [{
     environment.systemPackages = [ pkgs.nix-bitcoin.electrs ];
 
+    systemd.tmpfiles.rules = [
+      "d '${cfg.dataDir}' 0770 ${cfg.user} ${cfg.group} - -"
+    ];
+
     systemd.services.electrs = {
       description = "Electrs Electrum Server";
       wantedBy = [ "multi-user.target" ];
       requires = [ "bitcoind.service" ];
       after = [ "bitcoind.service" ];
       preStart = ''
-        mkdir -m 0770 -p ${cfg.dataDir}
-        chown -R '${cfg.user}:${cfg.group}' ${cfg.dataDir}
         echo "cookie = \"${config.services.bitcoind.rpcuser}:$(cat ${secretsDir}/bitcoin-rpcpassword)\"" \
           > electrs.toml
         '';
