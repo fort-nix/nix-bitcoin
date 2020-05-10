@@ -6,24 +6,12 @@ let
   inherit (config) nix-bitcoin-services;
   secretsDir = config.nix-bitcoin.secretsDir;
 in {
-  imports = [
-    (mkRenamedOptionModule [ "services" "electrs" "nginxport" ] [ "services" "electrs" "TLSProxy" "port" ])
-  ];
-
   options.services.electrs = {
     enable = mkEnableOption "electrs";
     dataDir = mkOption {
       type = types.path;
       default = "/var/lib/electrs";
       description = "The data directory for electrs.";
-    };
-    # Needed until electrs tls proxy is removed
-    host = mkOption {
-      type = types.str;
-      default = "localhost";
-      description = ''
-        The host on which incoming connections arrive.
-      '';
     };
     user = mkOption {
       type = types.str;
@@ -64,18 +52,10 @@ in {
       default = "";
       description = "Extra command line arguments passed to electrs.";
     };
-    TLSProxy = {
-      enable = mkEnableOption "Nginx TLS proxy";
-      port = mkOption {
-        type = types.port;
-        default = 50003;
-        description = "Port on which to listen for TLS client connections.";
-      };
-    };
     enforceTor = nix-bitcoin-services.enforceTor;
   };
 
-  config = mkIf cfg.enable (mkMerge [{
+  config = mkIf cfg.enable {
     assertions = [
       { assertion = config.services.bitcoind.prune == 0;
         message = "electrs does not support bitcoind pruning.";
@@ -132,53 +112,5 @@ in {
       extraGroups = [ "bitcoinrpc" ] ++ optionals cfg.high-memory [ "bitcoin" ];
     };
     users.groups.${cfg.group} = {};
-  }
-
-  (mkIf cfg.TLSProxy.enable {
-    services.nginx = {
-      enable = true;
-      appendConfig = let
-        address =
-          if cfg.address == "0.0.0.0" then
-            "127.0.0.1"
-          else if cfg.address == "::" then
-            "::1"
-          else
-            cfg.address;
-      in ''
-        stream {
-          upstream electrs {
-            server ${address}:${toString cfg.port};
-          }
-
-          server {
-            listen ${toString cfg.TLSProxy.port} ssl;
-            proxy_pass electrs;
-
-            ssl_certificate ${secretsDir}/nginx-cert;
-            ssl_certificate_key ${secretsDir}/nginx-key;
-            ssl_session_cache shared:SSL:1m;
-            ssl_session_timeout 4h;
-            ssl_protocols TLSv1.2 TLSv1.3;
-            ssl_prefer_server_ciphers on;
-          }
-        }
-      '';
-    };
-    systemd.services = {
-      electrs.wants = [ "nginx.service" ];
-      nginx = {
-        requires = [ "nix-bitcoin-secrets.target" ];
-        after = [ "nix-bitcoin-secrets.target" ];
-      };
-    };
-    nix-bitcoin.secrets = rec {
-      nginx-key = {
-        user = "nginx";
-        group = "root";
-      };
-      nginx-cert = nginx-key;
-    };
-  })
-  ]);
+  };
 }

@@ -29,11 +29,6 @@ in {
       default = 9735;
       description = "Port on which to listen for tor client connections.";
     };
-    services.electrs.onionport = mkOption {
-      type = types.port;
-      default = 50002;
-      description = "Port on which to listen for tor client connections.";
-    };
     nix-bitcoin.operatorName = mkOption {
       type = types.str;
       default = "operator";
@@ -113,14 +108,8 @@ in {
     services.electrs = {
       port = 50001;
       enforceTor = true;
-      TLSProxy.enable = true;
-      TLSProxy.port = 50003;
     };
-    services.tor.hiddenServices.electrs = mkIf cfg.electrs.enable (mkHiddenService {
-      port = cfg.electrs.onionport;
-      toPort = if cfg.electrs.TLSProxy.enable then cfg.electrs.TLSProxy.port else cfg.electrs.port;
-      toHost = cfg.electrs.host;
-    });
+    services.tor.hiddenServices.electrs = mkHiddenService { port = cfg.electrs.port; toHost = cfg.electrs.address; };
 
     services.spark-wallet = {
       onion-service = true;

@@ -40,8 +40,6 @@ extractPassword liquidrpcpassword liquid-rpcpassword
 extractPassword lightning-charge-api-token lightning-charge-token
 extractPassword spark-wallet-password
 
-rename nginx.key nginx-key
-rename nginx.cert nginx-cert
 rename lnd.key lnd-key
 rename lnd.cert lnd-cert
 
