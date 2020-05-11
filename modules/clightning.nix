@@ -89,10 +89,9 @@ in {
         mkdir -m 0770 -p ${cfg.dataDir}
         cp ${configFile} ${cfg.dataDir}/config
         chown -R 'clightning:clightning' '${cfg.dataDir}'
-        # give group read access to allow using lightning-cli
-        chmod u=rw,g=r,o= ${cfg.dataDir}/config
         # The RPC socket has to be removed otherwise we might have stale sockets
         rm -f ${cfg.dataDir}/bitcoin/lightning-rpc
+        chmod 600 ${cfg.dataDir}/config
         echo "bitcoin-rpcpassword=$(cat ${config.nix-bitcoin.secretsDir}/bitcoin-rpcpassword)" >> '${cfg.dataDir}/config'
         '';
       serviceConfig = {
