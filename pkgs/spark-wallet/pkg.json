@@ -1,3 +1,3 @@
 [
-  { "spark-wallet": "^0.2.13" }
+  { "spark-wallet": "file:./package" }
 ]
