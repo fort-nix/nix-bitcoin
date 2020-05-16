@@ -16,7 +16,7 @@ if [[ ! -v IN_NIX_SHELL ]]; then
     exec nix-shell --run "${BASH_SOURCE[0]}"
 fi
 
-tmpDir=/tmp/nix-bitcoin-qemu-vm
+export tmpDir=/tmp/nix-bitcoin-qemu-vm
 mkdir -p $tmpDir
 
 # Cleanup on exit
@@ -27,7 +27,7 @@ cleanup() {
 }
 trap "cleanup" EXIT
 
-identityFile=qemu-vm/id-vm
+export identityFile=qemu-vm/id-vm
 chmod 0600 $identityFile
 
 echo "Building VM"
@@ -49,7 +49,7 @@ EOF
 
 vmMemoryMiB=2048
 vmNumCPUs=4
-sshPort=60734
+export sshPort=60734
 
 export NIX_DISK_IMAGE=$tmpDir/img
 export QEMU_NET_OPTS=hostfwd=tcp::$sshPort-:22
