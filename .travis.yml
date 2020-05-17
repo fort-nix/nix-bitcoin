@@ -33,6 +33,8 @@ env:
   - PKG=electrs STABLE=0
   - PKG=liquid-swap STABLE=1
   - PKG=nixops19_09 STABLE=1
+  - PKG=btcpayserver STABLE=1
+  - PKG=nbxplorer STABLE=1
 script:
   - printf '%s (%s)\n' "$NIX_PATH" "$VER"
   - |
