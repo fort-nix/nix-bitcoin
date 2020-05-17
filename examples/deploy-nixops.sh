@@ -38,6 +38,7 @@ nixops deploy -d bitcoin-node
 # Connect to node
 nixops ssh bitcoin-node systemctl status bitcoind
 
+c() { nixops ssh bitcoin-node "$@"; }
 # Uncomment to start a shell session here
 # . start-bash-session.sh
 

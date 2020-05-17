@@ -62,7 +62,13 @@ in {
 }
 EOF
 # Run command in container
-c() { sudo extra-container run demo-node -- "$@" | cat; }
+c() {
+    if [[ $# > 0 ]]; then
+        sudo extra-container run demo-node -- "$@" | cat;
+    else
+        sudo nixos-container root-login demo-node
+    fi
+}
 
 echo
 echo "Bitcoind service:"
