@@ -81,6 +81,6 @@ echo "Bitcoind data dir:"
 sudo ls -al /var/lib/containers/demo-node/var/lib/bitcoind
 
 # Uncomment to start a shell session here
-# export -f c; bash -li
+# . start-bash-session.sh
 
 # Cleanup happens at exit (see above)
