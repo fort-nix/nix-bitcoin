@@ -1,5 +1,6 @@
 { pkgs ? import <nixpkgs> {} }:
 {
+  btcpayserver = pkgs.callPackage ./btcpayserver/btcpayserver.nix { };
   nodeinfo = pkgs.callPackage ./nodeinfo { };
   lightning-charge = pkgs.callPackage ./lightning-charge { };
   nanopos = pkgs.callPackage ./nanopos { };
