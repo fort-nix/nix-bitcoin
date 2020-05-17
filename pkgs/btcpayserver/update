@@ -1,0 +1,105 @@
+#!/usr/bin/env bash
+
+set -e
+
+success=0
+worktrees=()
+here="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
+cleanup() {
+  printf 'cleaning up...\n'
+  rm -rf "${worktrees[@]}"
+
+  if [ $success -eq 1 ]; then
+    printf "now type:\n\n    nix-build -E 'with import <nixpkgs> {}; callPackage ./btcpayserver.nix {}'\n\nor\n\n"
+    printf "    nix-build -E 'with import <nixpkgs> {}; callPackage ./nbxplorer.nix {}'\n\nto see if it worked\n"
+  fi
+}
+trap cleanup EXIT
+
+usage() {
+  printf 'usage: ./update <BTCPayServer version> <NBXplorer version>\n\n'
+  printf '  eg: ./update v1.0.4.4 v2.1.26\n'
+  exit 1
+}
+
+if [ -z "$1" ] || [ -z "$2" ]; then
+  usage
+fi
+
+printf 'getting utils...\n'
+dotnet2nixpath="$(nix-build --no-out-link 'https://github.com/jb55/dotnet2nix/archive/latest.tar.gz')/bin"
+dotnetpath=$(nix-build --no-out-link '<nixpkgs>' -A dotnet-sdk_3)/bin
+nix_prefetch_github=$(nix-build --no-out-link '<nixpkgs>' -A nix-prefetch-github)/bin
+export PATH=$nix_prefetch_github:$dotnetpath:$dotnet2nixpath:$PATH
+
+process_repo() {
+  local owner
+  local repo
+  local rev
+  local worktree
+  local checkout
+
+  owner=$1
+  repo=$2
+  rev=$3
+
+  shift
+  shift
+  shift
+
+  checkout=${CHECKOUT_DIR:-/tmp}/${repo}-update
+  worktree="$(mktemp -d)"
+  worktrees+=("$worktree")
+
+  if [ ! -d "$checkout" ]
+  then
+    printf "cloning %s/%s...\n" "$owner" "$repo"
+    git clone --bare "https://github.com/$owner/$repo" "$checkout"
+  else
+    printf "found existing %s bare checkout @ %s\n" "$repo" "$checkout"
+  fi
+
+  printf 'creating temporary worktree for %s at %s\n' "$rev" "$worktree"
+
+  cd "$checkout"
+  git fetch origin "$rev"
+  git worktree add "$worktree" FETCH_HEAD
+
+  cd "$worktree"
+
+  dotnet restore -r linux-x64
+  dotnet2nix "$@"
+
+  cp nuget-packages.json "$here"/"$repo"-packages.json
+
+  ver=$rev
+  if [ "${rev::1}" == "v" ]; then
+    ver=${rev:1}
+  fi
+
+  sha256=$(nix-prefetch-github "$owner" "$repo" --rev "$rev" | jq -r .sha256)
+
+  printf 'here %s\n' "$here"
+
+  #printf "not bumping package version to '%s' in %s, make sure to do that.\n" "$ver" "$repo".nix
+  printf 'setting %s version to %s (this shouldnt be a sha1 revision)\n' "$repo".nix "$ver"
+  sed -i -E "s,version = \"([^\"]*)\",version = \"$ver\"," "$here"/"$repo".nix
+
+  printf 'setting %s src.rev to %s\n' "$repo".nix "$rev"
+  sed -i -E "s,rev = \"([^\"]*)\",rev = \"$rev\"," "$here"/"$repo".nix
+
+  printf 'setting %s src.sha256 to %s\n' "$repo".nix "$sha256"
+  sed -i -E "s,sha256 = \"([^\"]*)\",sha256 = \"$sha256\"," "$here"/"$repo".nix
+}
+
+btcpay_ver=$1
+nbx_ver=$2
+
+shift
+shift
+
+process_repo "btcpayserver" "btcpayserver" "$btcpay_ver" "BTCPayServer" "$@"
+process_repo "dgarage" "nbxplorer" "$nbx_ver" "NBXplorer" "NBXplorer.Client" "$@"
+
+success=1
