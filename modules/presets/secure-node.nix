@@ -132,12 +132,7 @@ in {
     services.onion-chef.enable = true;
     services.onion-chef.access.operator = [ "bitcoind" "clightning" "nginx" "liquidd" "spark-wallet" "electrs" "sshd" ];
 
-    # Unfortunately c-lightning doesn't allow setting the permissions of the rpc socket
-    # https://github.com/ElementsProject/lightning/issues/1366
     security.sudo.configFile =
-     (optionalString cfg.clightning.enable ''
-       operator    ALL=(clightning) NOPASSWD: ALL
-     '') +
      (optionalString cfg.lnd.enable ''
        operator    ALL=(lnd) NOPASSWD: ALL
      '');
