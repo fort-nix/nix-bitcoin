@@ -38,7 +38,8 @@ nixops deploy -d bitcoin-node
 # Connect to node
 nixops ssh bitcoin-node systemctl status bitcoind
 
+c() { nixops ssh bitcoin-node "$@"; }
 # Uncomment to start a shell session here
-# bash -li
+# . start-bash-session.sh
 
 # Cleanup happens at exit (see above)
