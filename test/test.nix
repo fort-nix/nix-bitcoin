@@ -56,6 +56,15 @@ import ./make-test.nix rec {
     services.btcpayserver.lightningBackend = "lnd";
     # needed to test macaroon creation
     environment.systemPackages = with pkgs; [ openssl xxd ];
+    
+    services.joinmarket.enable = true;
+    services.joinmarket.yieldgenerator = {
+      enable = true;
+      customParameters = ''
+        txfee = 200
+        cjfee_a = 300
+      '';
+    };
 
     # to test that unused secrets are made inaccessible by 'setup-secrets'
     systemd.services.generate-secrets.postStart = ''
