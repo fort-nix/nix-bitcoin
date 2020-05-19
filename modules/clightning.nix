@@ -13,6 +13,7 @@ let
     always-use-proxy=${if cfg.always-use-proxy then "true" else "false"}
     ${optionalString (cfg.bind-addr != null) "bind-addr=${cfg.bind-addr}"}
     bitcoin-rpcuser=${cfg.bitcoin-rpcuser}
+    rpc-file-mode=0660
   '';
 in {
   options.services.clightning = {
@@ -61,10 +62,8 @@ in {
     cli = mkOption {
       readOnly = true;
       default = pkgs.writeScriptBin "lightning-cli"
-      # Switch user because c-lightning doesn't allow setting the permissions of the rpc socket
-      # https://github.com/ElementsProject/lightning/issues/1366
       ''
-        exec sudo -u clightning ${pkgs.nix-bitcoin.clightning}/bin/lightning-cli --lightning-dir='${cfg.dataDir}' "$@"
+        ${pkgs.nix-bitcoin.clightning}/bin/lightning-cli --lightning-dir='${cfg.dataDir}' "$@"
       '';
       description = "Binary to connect with the clightning instance.";
     };
@@ -76,7 +75,6 @@ in {
     users.users.clightning = {
         description = "clightning User";
         group = "clightning";
-        extraGroups = [ "bitcoinrpc" ];
     };
     users.groups.clightning = {};
 
@@ -90,10 +88,9 @@ in {
         mkdir -m 0770 -p ${cfg.dataDir}
         cp ${configFile} ${cfg.dataDir}/config
         chown -R 'clightning:clightning' '${cfg.dataDir}'
-        # give group read access to allow using lightning-cli
-        chmod u=rw,g=r,o= ${cfg.dataDir}/config
         # The RPC socket has to be removed otherwise we might have stale sockets
         rm -f ${cfg.dataDir}/bitcoin/lightning-rpc
+        chmod 600 ${cfg.dataDir}/config
         echo "bitcoin-rpcpassword=$(cat ${config.nix-bitcoin.secretsDir}/bitcoin-rpcpassword)" >> '${cfg.dataDir}/config'
         '';
       serviceConfig = {
@@ -112,6 +109,8 @@ in {
         while [[ ! -e ${cfg.dataDir}/bitcoin/lightning-rpc ]]; do
             sleep 0.1
         done
+        # Needed to enable lightning-cli for users with group 'clightning'
+        chmod g+x ${cfg.dataDir}/bitcoin
       '';
     };
   };

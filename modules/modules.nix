@@ -6,7 +6,6 @@
     ./clightning.nix
     ./lightning-charge.nix
     ./nanopos.nix
-    ./nix-bitcoin-webindex.nix
     ./liquid.nix
     ./spark-wallet.nix
     ./electrs.nix

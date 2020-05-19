@@ -106,7 +106,7 @@ in {
     users.users.${cfg.user} = {
       description = "electrs User";
       group = cfg.group;
-      extraGroups = [ "bitcoinrpc" "bitcoin"];
+      extraGroups = optionals cfg.high-memory [ "bitcoin" ];
     };
     users.groups.${cfg.group} = {};
   }
@@ -136,7 +136,7 @@ in {
             ssl_certificate_key ${secretsDir}/nginx-key;
             ssl_session_cache shared:SSL:1m;
             ssl_session_timeout 4h;
-            ssl_protocols TLSv1 TLSv1.1 TLSv1.2 TLSv1.3;
+            ssl_protocols TLSv1.2 TLSv1.3;
             ssl_prefer_server_ciphers on;
           }
         }

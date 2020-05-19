@@ -5,12 +5,18 @@ with lib;
 let
   cfg = config.services;
 
+  operatorName = config.nix-bitcoin.operatorName;
+
   mkHiddenService = map: {
     map = [ map ];
     version = 3;
   };
 in {
-  imports = [ ../modules.nix ];
+  imports = [
+    ../modules.nix
+    ../nodeinfo.nix
+    ../nix-bitcoin-webindex.nix
+  ];
 
   options = {
     services.clightning.onionport = mkOption {
@@ -18,11 +24,15 @@ in {
       default = 9735;
       description = "Port on which to listen for tor client connections.";
     };
-
     services.electrs.onionport = mkOption {
       type = types.ints.u16;
       default = 50002;
       description = "Port on which to listen for tor client connections.";
+    };
+    nix-bitcoin.operatorName = mkOption {
+      type = types.str;
+      default = "operator";
+      description = "Less-privileged user's name.";
     };
   };
 
@@ -99,7 +109,7 @@ in {
     };
     services.tor.hiddenServices.electrs = mkHiddenService {
       port = cfg.electrs.onionport;
-      toPort = cfg.electrs.TLSProxy.port;
+      toPort = if cfg.electrs.TLSProxy.enable then cfg.electrs.TLSProxy.port else cfg.electrs.port;
     };
 
     services.spark-wallet.onion-service = true;
@@ -111,11 +121,10 @@ in {
       tor
       jq
       qrencode
-      nix-bitcoin.nodeinfo
     ];
 
-    # Create user 'operator' which can access the node's services
-    users.users.operator = {
+    # Create operator user which can access the node's services
+    users.users.${operatorName} = {
       isNormalUser = true;
       extraGroups = [
           "systemd-journal"
@@ -130,23 +139,18 @@ in {
     };
     # Give operator access to onion hostnames
     services.onion-chef.enable = true;
-    services.onion-chef.access.operator = [ "bitcoind" "clightning" "nginx" "liquidd" "spark-wallet" "electrs" "sshd" ];
+    services.onion-chef.access.${operatorName} = [ "bitcoind" "clightning" "nginx" "liquidd" "spark-wallet" "electrs" "sshd" ];
 
-    # Unfortunately c-lightning doesn't allow setting the permissions of the rpc socket
-    # https://github.com/ElementsProject/lightning/issues/1366
     security.sudo.configFile =
-     (optionalString cfg.clightning.enable ''
-       operator    ALL=(clightning) NOPASSWD: ALL
-     '') +
      (optionalString cfg.lnd.enable ''
-       operator    ALL=(lnd) NOPASSWD: ALL
+       ${operatorName}    ALL=(lnd) NOPASSWD: ALL
      '');
 
     # Enable nixops ssh for operator (`nixops ssh operator@mynode`) on nixops-vbox deployments
     systemd.services.get-vbox-nixops-client-key =
       mkIf (builtins.elem ".vbox-nixops-client-key" config.services.openssh.authorizedKeysFiles) {
         postStart = ''
-          cp "${config.users.users.root.home}/.vbox-nixops-client-key" "${config.users.users.operator.home}"
+          cp "${config.users.users.root.home}/.vbox-nixops-client-key" "${config.users.users.${operatorName}.home}"
         '';
       };
   };

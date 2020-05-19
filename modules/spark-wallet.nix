@@ -12,7 +12,7 @@ let
     ${optionalString cfg.onion-service
       ''
       echo Getting onion hostname
-      CMD="$CMD --public-url http://$(cat /var/lib/onion-chef/clightning/spark-wallet)"
+      CMD="$CMD --public-url http://$(cat /var/lib/onion-chef/spark-wallet/spark-wallet)"
       ''
     }
     # Use rate provide wasabi because default (bitstamp) doesn't accept
@@ -48,6 +48,13 @@ in {
 
   config = mkIf cfg.enable {
     environment.systemPackages = [ pkgs.nix-bitcoin.spark-wallet ];
+    users.users.spark-wallet = {
+      description = "spark-wallet User";
+      group = "spark-wallet";
+      extraGroups = [ "clightning" ];
+    };
+    users.groups.spark-wallet = {};
+
     services.tor.enable = cfg.onion-service;
     # requires client functionality for Bitcoin rate lookup
     services.tor.client.enable = true;
@@ -58,7 +65,7 @@ in {
       version = 3;
     };
     services.onion-chef.enable = cfg.onion-service;
-    services.onion-chef.access.clightning = if cfg.onion-service then [ "spark-wallet" ] else [];
+    services.onion-chef.access.spark-wallet = if cfg.onion-service then [ "spark-wallet" ] else [];
     systemd.services.spark-wallet = {
       description = "Run spark-wallet";
       wantedBy = [ "multi-user.target" ];
@@ -67,13 +74,13 @@ in {
       serviceConfig = {
         PermissionsStartOnly = "true";
         ExecStart = "${pkgs.bash}/bin/bash ${run-spark-wallet}";
-        User = "clightning";
+        User = "spark-wallet";
         Restart = "on-failure";
         RestartSec = "10s";
       } // nix-bitcoin-services.defaultHardening
         // nix-bitcoin-services.nodejs
         // nix-bitcoin-services.allowTor;
     };
-    nix-bitcoin.secrets.spark-wallet-login.user = "clightning";
+    nix-bitcoin.secrets.spark-wallet-login.user = "spark-wallet";
   };
 }

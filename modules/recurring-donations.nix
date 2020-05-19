@@ -78,6 +78,13 @@ in {
   };
 
   config = mkIf cfg.enable {
+    users.users.recurring-donations = {
+        description = "recurring-donations User";
+        group = "recurring-donations";
+        extraGroups = [ "clightning" ];
+    };
+    users.groups.recurring-donations = {};
+
     systemd.services.recurring-donations = {
       description = "Run recurring-donations";
       requires = [ "clightning.service" ];
@@ -85,9 +92,7 @@ in {
       path = with pkgs; [ nix-bitcoin.clightning curl torsocks sudo jq ];
       serviceConfig = {
         ExecStart = "${pkgs.bash}/bin/bash ${recurring-donations-script}";
-        # TODO: would be better if this was operator, but I don't get sudo
-        # working inside the shell script
-        User = "clightning";
+        User = "recurring-donations";
         Type = "oneshot";
       } // nix-bitcoin-services.defaultHardening
         // nix-bitcoin-services.allowTor;
