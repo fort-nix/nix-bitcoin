@@ -59,6 +59,16 @@ in {
       default = "/var/lib/clightning";
       description = "The data directory for clightning.";
     };
+    user = mkOption {
+      type = types.str;
+      default = "clightning";
+      description = "The user as which to run clightning.";
+    };
+    group = mkOption {
+      type = types.str;
+      default = cfg.user;
+      description = "The group as which to run clightning.";
+    };
     cli = mkOption {
       readOnly = true;
       default = pkgs.writeScriptBin "lightning-cli"
@@ -72,15 +82,15 @@ in {
 
   config = mkIf cfg.enable {
     environment.systemPackages = [ pkgs.nix-bitcoin.clightning (hiPrio cfg.cli) ];
-    users.users.clightning = {
+    users.users.${cfg.user} = {
         description = "clightning User";
-        group = "clightning";
+        group = cfg.group;
         extraGroups = [ "bitcoinrpc" ];
     };
-    users.groups.clightning = {};
+    users.groups.${cfg.group} = {};
 
     systemd.tmpfiles.rules = [
-      "d '${cfg.dataDir}' 0770 ${config.users.users.clightning.name} ${config.users.users.clightning.group} - -"
+      "d '${cfg.dataDir}' 0770 ${cfg.user} ${cfg.group} - -"
     ];
 
     systemd.services.clightning = {
@@ -91,7 +101,7 @@ in {
       after = [ "bitcoind.service" ];
       preStart = ''
         cp ${configFile} ${cfg.dataDir}/config
-        chown -R 'clightning:clightning' '${cfg.dataDir}'
+        chown -R '${cfg.user}:${cfg.group}' '${cfg.dataDir}'
         # The RPC socket has to be removed otherwise we might have stale sockets
         rm -f ${cfg.dataDir}/bitcoin/lightning-rpc
         chmod 600 ${cfg.dataDir}/config
@@ -99,7 +109,7 @@ in {
         '';
       serviceConfig = nix-bitcoin-services.defaultHardening // {
         ExecStart = "${pkgs.nix-bitcoin.clightning}/bin/lightningd --lightning-dir=${cfg.dataDir}";
-        User = "clightning";
+        User = "${cfg.user}";
         Restart = "on-failure";
         RestartSec = "10s";
         ReadWritePaths = "${cfg.dataDir}";
