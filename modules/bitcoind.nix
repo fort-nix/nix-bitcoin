@@ -286,9 +286,6 @@ in {
         ExecStart = "${cfg.package}/bin/bitcoind -datadir='${cfg.dataDir}'";
         Restart = "on-failure";
         UMask = mkIf cfg.dataDirReadableByGroup "0027";
-
-        # Permission for preStart
-        PermissionsStartOnly = "true";
       } // (if cfg.enforceTor
             then nix-bitcoin-services.allowTor
             else nix-bitcoin-services.allowAnyIP)
@@ -328,9 +325,11 @@ in {
       description = "Bitcoin daemon user";
     };
     users.groups.${cfg.group} = {};
+    users.groups.bitcoinrpc = {};
 
     nix-bitcoin.secrets.bitcoin-rpcpassword = {
       user = "bitcoin";
+      group = "bitcoinrpc";
     };
   };
 }

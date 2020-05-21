@@ -51,6 +51,7 @@ in {
         fi
         '';
       serviceConfig = nix-bitcoin-services.defaultHardening // {
+          # Needed to access clightning.dataDir in preStart
           PermissionsStartOnly = "true";
           EnvironmentFile = "${config.nix-bitcoin.secretsDir}/lightning-charge-env";
           ExecStart = "${pkgs.nix-bitcoin.lightning-charge}/bin/charged -l ${config.services.clightning.dataDir}/bitcoin -d ${cfg.dataDir}/lightning-charge.db";

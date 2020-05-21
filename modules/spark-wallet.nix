@@ -71,7 +71,6 @@ in {
       requires = [ "clightning.service" ] ++ onion-chef-service;
       after = [ "clightning.service" ]  ++ onion-chef-service;
       serviceConfig = nix-bitcoin-services.defaultHardening // {
-        PermissionsStartOnly = "true";
         ExecStart = "${pkgs.bash}/bin/bash ${run-spark-wallet}";
         User = "spark-wallet";
         Restart = "on-failure";

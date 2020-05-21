@@ -75,6 +75,7 @@ in {
     users.users.clightning = {
         description = "clightning User";
         group = "clightning";
+        extraGroups = [ "bitcoinrpc" ];
     };
     users.groups.clightning = {};
 
@@ -97,7 +98,6 @@ in {
         echo "bitcoin-rpcpassword=$(cat ${config.nix-bitcoin.secretsDir}/bitcoin-rpcpassword)" >> '${cfg.dataDir}/config'
         '';
       serviceConfig = nix-bitcoin-services.defaultHardening // {
-        PermissionsStartOnly = "true";
         ExecStart = "${pkgs.nix-bitcoin.clightning}/bin/lightningd --lightning-dir=${cfg.dataDir}";
         User = "clightning";
         Restart = "on-failure";

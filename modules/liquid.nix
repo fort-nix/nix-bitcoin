@@ -212,7 +212,7 @@ in {
       wantedBy = [ "multi-user.target" ];
       preStart = ''
         cp '${configFile}' '${cfg.dataDir}/elements.conf'
-        chmod o-rw  '${cfg.dataDir}/elements.conf'
+        chmod 640  '${cfg.dataDir}/elements.conf'
         chown -R '${cfg.user}:${cfg.group}' '${cfg.dataDir}'
         echo "rpcpassword=$(cat ${secretsDir}/liquid-rpcpassword)" >> '${cfg.dataDir}/elements.conf'
         echo "mainchainrpcpassword=$(cat ${secretsDir}/bitcoin-rpcpassword)" >> '${cfg.dataDir}/elements.conf'
@@ -222,12 +222,8 @@ in {
         User = "${cfg.user}";
         Group = "${cfg.group}";
         ExecStart = "${pkgs.nix-bitcoin.elementsd}/bin/elementsd ${cmdlineOptions}";
-        StateDirectory = "liquidd";
         PIDFile = "${pidFile}";
         Restart = "on-failure";
-
-        # Permission for preStart
-        PermissionsStartOnly = "true";
       } // (if cfg.enforceTor
           then nix-bitcoin-services.allowTor
           else nix-bitcoin-services.allowAnyIP
@@ -235,6 +231,7 @@ in {
     };
     users.users.${cfg.user} = {
       group = cfg.group;
+      extraGroups = [ "bitcoinrpc" ];
       description = "Liquid sidechain user";
     };
     users.groups.${cfg.group} = {};

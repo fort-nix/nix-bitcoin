@@ -80,7 +80,6 @@ in {
         RuntimeDirectory = "electrs";
         RuntimeDirectoryMode = "700";
         WorkingDirectory = "/run/electrs";
-        PermissionsStartOnly = "true";
         ExecStart = ''
           ${pkgs.nix-bitcoin.electrs}/bin/electrs -vvv \
           ${if cfg.high-memory then
@@ -107,7 +106,7 @@ in {
     users.users.${cfg.user} = {
       description = "electrs User";
       group = cfg.group;
-      extraGroups = optionals cfg.high-memory [ "bitcoin" ];
+      extraGroups = [ "bitcoinrpc" ] ++ optionals cfg.high-memory [ "bitcoin" ];
     };
     users.groups.${cfg.group} = {};
   }
