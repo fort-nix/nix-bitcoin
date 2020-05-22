@@ -1,7 +1,7 @@
 # See `man systemd.exec` and `man systemd.resource-control` for an explanation
 # of the various systemd options available through this module.
 
-lib:
+lib: pkgs:
 
 with lib;
 {
@@ -42,4 +42,9 @@ with lib;
       to 127.0.0.1;";
     '';
   };
+
+  script = src: pkgs.writers.writeBash "script" ''
+    set -eo pipefail
+    ${src}
+  '';
 }
