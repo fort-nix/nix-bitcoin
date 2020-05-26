@@ -15,7 +15,6 @@ let
     # wait until tor is up
     until ls -l /var/lib/tor/state; do sleep 1; done
 
-    mkdir -p -m 0755 ${dataDir}
     cd ${dataDir}
 
     # Create directory for every user and set permissions
@@ -68,16 +67,24 @@ in {
   };
 
   config = mkIf cfg.enable {
+    systemd.tmpfiles.rules = [
+      "d '${dataDir}' 0755 root root - -"
+    ];
+
     systemd.services.onion-chef = {
       description = "Run onion-chef";
       wantedBy = [ "tor.service" ];
       bindsTo = [ "tor.service" ];
       after = [ "tor.service" ];
-      serviceConfig = {
+      serviceConfig = nix-bitcoin-services.defaultHardening // {
         ExecStart = "${pkgs.bash}/bin/bash ${onion-chef-script}";
         Type = "oneshot";
         RemainAfterExit = true;
-      } // nix-bitcoin-services.defaultHardening;
+        PrivateNetwork = "true"; # This service needs no network access
+        PrivateUsers = "false";
+        ReadWritePaths = "${dataDir}";
+        CapabilityBoundingSet = "CAP_CHOWN CAP_FSETID CAP_SETFCAP CAP_DAC_OVERRIDE CAP_DAC_READ_SEARCH CAP_FOWNER CAP_IPC_OWNER";
+      };
     };
   };
 }

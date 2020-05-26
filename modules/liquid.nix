@@ -200,40 +200,39 @@ in {
       (hiPrio cfg.cli)
       (hiPrio cfg.swap-cli)
     ];
+
+    systemd.tmpfiles.rules = [
+      "d '${cfg.dataDir}' 0770 ${cfg.user} ${cfg.group} - -"
+    ];
+
     systemd.services.liquidd = {
       description = "Elements daemon providing access to the Liquid sidechain";
       requires = [ "bitcoind.service" ];
       after = [ "bitcoind.service" ];
       wantedBy = [ "multi-user.target" ];
       preStart = ''
-        if ! test -e ${cfg.dataDir}; then
-          mkdir -m 0770 -p '${cfg.dataDir}'
-        fi
         cp '${configFile}' '${cfg.dataDir}/elements.conf'
-        chmod o-rw  '${cfg.dataDir}/elements.conf'
+        chmod 640  '${cfg.dataDir}/elements.conf'
         chown -R '${cfg.user}:${cfg.group}' '${cfg.dataDir}'
         echo "rpcpassword=$(cat ${secretsDir}/liquid-rpcpassword)" >> '${cfg.dataDir}/elements.conf'
         echo "mainchainrpcpassword=$(cat ${secretsDir}/bitcoin-rpcpassword)" >> '${cfg.dataDir}/elements.conf'
       '';
-      serviceConfig = {
+      serviceConfig = nix-bitcoin-services.defaultHardening // {
         Type = "simple";
         User = "${cfg.user}";
         Group = "${cfg.group}";
         ExecStart = "${pkgs.nix-bitcoin.elementsd}/bin/elementsd ${cmdlineOptions}";
-        StateDirectory = "liquidd";
         PIDFile = "${pidFile}";
         Restart = "on-failure";
-
-        # Permission for preStart
-        PermissionsStartOnly = "true";
-      } // nix-bitcoin-services.defaultHardening
-        // (if cfg.enforceTor
+        ReadWritePaths = "${cfg.dataDir}";
+      } // (if cfg.enforceTor
           then nix-bitcoin-services.allowTor
           else nix-bitcoin-services.allowAnyIP
         );
     };
     users.users.${cfg.user} = {
       group = cfg.group;
+      extraGroups = [ "bitcoinrpc" ];
       description = "Liquid sidechain user";
     };
     users.groups.${cfg.group} = {};

@@ -63,22 +63,23 @@ in {
   config = mkIf cfg.enable (mkMerge [{
     environment.systemPackages = [ pkgs.nix-bitcoin.electrs ];
 
+    systemd.tmpfiles.rules = [
+      "d '${cfg.dataDir}' 0770 ${cfg.user} ${cfg.group} - -"
+    ];
+
     systemd.services.electrs = {
       description = "Electrs Electrum Server";
       wantedBy = [ "multi-user.target" ];
       requires = [ "bitcoind.service" ];
       after = [ "bitcoind.service" ];
       preStart = ''
-        mkdir -m 0770 -p ${cfg.dataDir}
-        chown -R '${cfg.user}:${cfg.group}' ${cfg.dataDir}
         echo "cookie = \"${config.services.bitcoind.rpcuser}:$(cat ${secretsDir}/bitcoin-rpcpassword)\"" \
           > electrs.toml
         '';
-      serviceConfig = {
+      serviceConfig = nix-bitcoin-services.defaultHardening // {
         RuntimeDirectory = "electrs";
         RuntimeDirectoryMode = "700";
         WorkingDirectory = "/run/electrs";
-        PermissionsStartOnly = "true";
         ExecStart = ''
           ${pkgs.nix-bitcoin.electrs}/bin/electrs -vvv \
           ${if cfg.high-memory then
@@ -96,8 +97,8 @@ in {
         Group = cfg.group;
         Restart = "on-failure";
         RestartSec = "10s";
-      } // nix-bitcoin-services.defaultHardening
-        // (if cfg.enforceTor
+        ReadWritePaths = "${cfg.dataDir} ${if cfg.high-memory then "${config.services.bitcoind.dataDir}" else ""}";
+      } // (if cfg.enforceTor
           then nix-bitcoin-services.allowTor
           else nix-bitcoin-services.allowAnyIP
         );
@@ -106,7 +107,7 @@ in {
     users.users.${cfg.user} = {
       description = "electrs User";
       group = cfg.group;
-      extraGroups = optionals cfg.high-memory [ "bitcoin" ];
+      extraGroups = [ "bitcoinrpc" ] ++ optionals cfg.high-memory [ "bitcoin" ];
     };
     users.groups.${cfg.group} = {};
   }

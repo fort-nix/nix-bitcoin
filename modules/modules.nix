@@ -21,7 +21,7 @@
   options = {
     nix-bitcoin-services = lib.mkOption {
       readOnly = true;
-      default = import ./nix-bitcoin-services.nix lib;
+      default = import ./nix-bitcoin-services.nix lib pkgs;
     };
   };
 

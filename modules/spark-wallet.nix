@@ -5,7 +5,6 @@ with lib;
 let
   cfg = config.services.spark-wallet;
   inherit (config) nix-bitcoin-services;
-  dataDir = "/var/lib/spark-wallet/";
   onion-chef-service = (if cfg.onion-service then [ "onion-chef.service" ] else []);
   run-spark-wallet = pkgs.writeScript "run-spark-wallet" ''
     CMD="${pkgs.nix-bitcoin.spark-wallet}/bin/spark-wallet --ln-path ${cfg.ln-path} -Q -k -c ${config.nix-bitcoin.secretsDir}/spark-wallet-login"
@@ -71,14 +70,13 @@ in {
       wantedBy = [ "multi-user.target" ];
       requires = [ "clightning.service" ] ++ onion-chef-service;
       after = [ "clightning.service" ]  ++ onion-chef-service;
-      serviceConfig = {
-        PermissionsStartOnly = "true";
+      serviceConfig = nix-bitcoin-services.defaultHardening // {
         ExecStart = "${pkgs.bash}/bin/bash ${run-spark-wallet}";
         User = "spark-wallet";
         Restart = "on-failure";
         RestartSec = "10s";
-      } // nix-bitcoin-services.defaultHardening
-        // nix-bitcoin-services.nodejs
+        ReadWritePaths = "/var/lib/onion-chef";
+      } // nix-bitcoin-services.nodejs
         // nix-bitcoin-services.allowTor;
     };
     nix-bitcoin.secrets.spark-wallet-login.user = "spark-wallet";

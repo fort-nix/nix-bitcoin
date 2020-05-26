@@ -50,15 +50,16 @@ in {
           chmod 600 ${cfg.dataDir}/lightning-charge.db
         fi
         '';
-      serviceConfig = {
+      serviceConfig = nix-bitcoin-services.defaultHardening // {
+          # Needed to access clightning.dataDir in preStart
           PermissionsStartOnly = "true";
           EnvironmentFile = "${config.nix-bitcoin.secretsDir}/lightning-charge-env";
           ExecStart = "${pkgs.nix-bitcoin.lightning-charge}/bin/charged -l ${config.services.clightning.dataDir}/bitcoin -d ${cfg.dataDir}/lightning-charge.db";
           User = user;
           Restart = "on-failure";
           RestartSec = "10s";
-      } // nix-bitcoin-services.defaultHardening
-        // nix-bitcoin-services.nodejs
+          ReadWritePaths = "${cfg.dataDir}";
+      } // nix-bitcoin-services.nodejs
         // nix-bitcoin-services.allowTor;
     };
     nix-bitcoin.secrets.lightning-charge-env.user = user;

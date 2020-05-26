@@ -90,12 +90,11 @@ in {
       requires = [ "clightning.service" ];
       after = [ "clightning.service" ];
       path = with pkgs; [ nix-bitcoin.clightning curl torsocks sudo jq ];
-      serviceConfig = {
+      serviceConfig = nix-bitcoin-services.defaultHardening // {
         ExecStart = "${pkgs.bash}/bin/bash ${recurring-donations-script}";
         User = "recurring-donations";
         Type = "oneshot";
-      } // nix-bitcoin-services.defaultHardening
-        // nix-bitcoin-services.allowTor;
+      } // nix-bitcoin-services.allowTor;
     };
     systemd.timers.recurring-donations = {
       requires = [ "clightning.service" ];

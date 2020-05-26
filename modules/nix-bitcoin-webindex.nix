@@ -28,9 +28,8 @@ let
   '';
   createWebIndex = pkgs.writeText "make-index.sh" ''
     set -e
-    mkdir -p /var/www/
     cp ${indexFile} /var/www/index.html
-    chown -R nginx /var/www/
+    chown -R nginx:nginx /var/www/
     nodeinfo
     . <(nodeinfo)
     sed -i "s/CLIGHTNING_ID/$CLIGHTNING_ID/g" /var/www/index.html
@@ -48,6 +47,10 @@ in {
   };
 
   config = mkIf cfg.enable {
+    systemd.tmpfiles.rules = [
+      "d /var/www 0755 nginx nginx - -"
+    ];
+
     services.nginx = {
       enable = true;
       virtualHosts."_" = {
@@ -81,15 +84,18 @@ in {
         jq
         sudo
       ];
-      serviceConfig = {
+      serviceConfig = nix-bitcoin-services.defaultHardening // {
         ExecStart="${pkgs.bash}/bin/bash ${createWebIndex}";
         User = "root";
         Type = "simple";
         RemainAfterExit="yes";
         Restart = "on-failure";
         RestartSec = "10s";
-      } // nix-bitcoin-services.defaultHardening
-        // (if cfg.enforceTor
+        PrivateNetwork = "true"; # This service needs no network access
+        PrivateUsers = "false";
+        ReadWritePaths = "/var/www";
+        CapabilityBoundingSet = "CAP_SETUID CAP_SETGID CAP_SETPCAP CAP_SYS_ADMIN CAP_CHOWN CAP_FSETID CAP_SETFCAP CAP_DAC_OVERRIDE CAP_DAC_READ_SEARCH CAP_FOWNER CAP_IPC_OWNER";
+      } // (if cfg.enforceTor
           then nix-bitcoin-services.allowTor
           else nix-bitcoin-services.allowAnyIP
         );

@@ -255,19 +255,17 @@ in {
       sysperms = true;
     };
 
+    systemd.tmpfiles.rules = [
+      "d '${cfg.dataDir}' 0770 ${cfg.user} ${cfg.group} - -"
+      "d '${cfg.dataDir}/blocks' 0770 ${cfg.user} ${cfg.group} - -"
+    ];
+
     systemd.services.bitcoind = {
       description = "Bitcoin daemon";
       requires = [ "nix-bitcoin-secrets.target" ];
       after = [ "network.target" "nix-bitcoin-secrets.target" ];
       wantedBy = [ "multi-user.target" ];
       preStart = ''
-        if [[ ! -e ${cfg.dataDir} ]]; then
-          mkdir -m 0770 -p '${cfg.dataDir}'
-        fi
-        if [[ ! -e ${cfg.dataDir}/blocks ]]; then
-          mkdir -m 0770 -p '${cfg.dataDir}/blocks'
-        fi
-        chown -R '${cfg.user}:${cfg.group}' '${cfg.dataDir}'
         ${optionalString cfg.dataDirReadableByGroup  "chmod -R g+rX '${cfg.dataDir}/blocks'"}
 
         cfg=$(cat ${configFile}; printf "rpcpassword="; cat "${config.nix-bitcoin.secretsDir}/bitcoin-rpcpassword")
@@ -282,17 +280,14 @@ in {
           sleep 0.05
         done
       '';
-      serviceConfig = {
+      serviceConfig = nix-bitcoin-services.defaultHardening // {
         User = "${cfg.user}";
         Group = "${cfg.group}";
         ExecStart = "${cfg.package}/bin/bitcoind -datadir='${cfg.dataDir}'";
         Restart = "on-failure";
         UMask = mkIf cfg.dataDirReadableByGroup "0027";
-
-        # Permission for preStart
-        PermissionsStartOnly = "true";
-      } // nix-bitcoin-services.defaultHardening
-        // (if cfg.enforceTor
+        ReadWritePaths = "${cfg.dataDir}";
+      } // (if cfg.enforceTor
             then nix-bitcoin-services.allowTor
             else nix-bitcoin-services.allowAnyIP)
         // optionalAttrs (cfg.zmqpubrawblock != null || cfg.zmqpubrawtx != null) nix-bitcoin-services.allowAnyProtocol;
@@ -320,11 +315,11 @@ in {
             fi
         done
       '';
-      serviceConfig = {
+      serviceConfig = nix-bitcoin-services.defaultHardening // {
         User = "${cfg.user}";
         Group = "${cfg.group}";
-      } // nix-bitcoin-services.defaultHardening
-        // nix-bitcoin-services.allowTor;
+        ReadWritePaths = "${cfg.dataDir}";
+      } // nix-bitcoin-services.allowTor;
     };
 
     users.users.${cfg.user} = {
@@ -332,9 +327,11 @@ in {
       description = "Bitcoin daemon user";
     };
     users.groups.${cfg.group} = {};
+    users.groups.bitcoinrpc = {};
 
     nix-bitcoin.secrets.bitcoin-rpcpassword = {
       user = "bitcoin";
+      group = "bitcoinrpc";
     };
   };
 }
