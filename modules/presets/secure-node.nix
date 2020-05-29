@@ -52,6 +52,11 @@ in {
       hiddenServices.sshd = mkHiddenService { port = 22; };
     };
 
+    # netns-isolation
+    nix-bitcoin.netns-isolation = {
+      addressblock = 1;
+    };
+
     # bitcoind
     services.bitcoind = {
       enable = true;
