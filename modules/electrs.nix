@@ -40,7 +40,7 @@ in {
       description = "RPC listening address.";
     };
     port = mkOption {
-      type = types.ints.u16;
+      type = types.port;
       default = 50001;
       description = "RPC port.";
     };
@@ -52,7 +52,7 @@ in {
     TLSProxy = {
       enable = mkEnableOption "Nginx TLS proxy";
       port = mkOption {
-        type = types.ints.u16;
+        type = types.port;
         default = 50003;
         description = "Port on which to listen for TLS client connections.";
       };
