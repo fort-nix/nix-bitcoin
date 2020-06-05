@@ -80,7 +80,7 @@ in {
       };
       rpc = {
         port = mkOption {
-          type = types.ints.u16;
+          type = types.port;
           default = 8332;
           description = "Port on which to listen for JSON-RPC connections.";
         };
@@ -133,7 +133,7 @@ in {
         description = "Whether to use the test chain.";
       };
       port = mkOption {
-        type = types.nullOr types.ints.u16;
+        type = types.nullOr types.port;
         default = null;
         description = "Override the default port on which to listen for connections.";
       };

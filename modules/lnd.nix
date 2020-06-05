@@ -45,7 +45,7 @@ in {
       description = "The data directory for LND.";
     };
     rpcPort = mkOption {
-      type = types.ints.u16;
+      type = types.port;
       default = 10009;
       description = "Port on which to listen for gRPC connections.";
     };

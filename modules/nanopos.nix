@@ -36,7 +36,7 @@ in {
       '';
     };
     port = mkOption {
-      type = types.ints.u16;
+      type = types.port;
       default = 9116;
       description = ''
         "The port on which to listen for connections.";

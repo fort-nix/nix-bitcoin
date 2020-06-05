@@ -20,12 +20,12 @@ in {
 
   options = {
     services.clightning.onionport = mkOption {
-      type = types.ints.u16;
+      type = types.port;
       default = 9735;
       description = "Port on which to listen for tor client connections.";
     };
     services.electrs.onionport = mkOption {
-      type = types.ints.u16;
+      type = types.port;
       default = 50002;
       description = "Port on which to listen for tor client connections.";
     };
