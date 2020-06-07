@@ -58,7 +58,7 @@
   ### SPARK WALLET
   # Enable this module to use spark-wallet, a minimalistic wallet GUI for
   # c-lightning, accessible over the web or through mobile and desktop apps.
-  # Only enable this if clightning is enabled.
+  # Only available if clightning is enabled.
   # services.spark-wallet.enable = true;
 
   ### ELECTRS
@@ -78,25 +78,25 @@
 
   ### LIGHTNING CHARGE
   # Enable this module to use lightning-charge, a simple drop-in solution for
-  # accepting lightning payments. Only enable this if clightning is enabled.
+  # accepting lightning payments. Only available if clightning is enabled.
   # services.lightning-charge.enable = true;
 
   ### NANOPOS
   # Enable this module to use nanopos, a simple Lightning point-of-sale
-  # system, powered by Lightning Charge. Only enable this if clightning and
+  # system, powered by Lightning Charge. Only available if clightning and
   # lightning-charge are enabled.
   # services.nanopos.enable = true;
 
   ### WEBINDEX
   # Enable this module to use the nix-bitcoin-webindex, a simple website
-  # displaying your node information and link to nanopos store. Only enable
-  # this if clightning, lightning-charge, and nanopos are enabled.
+  # displaying your node information and link to nanopos store. Only available
+  # if clightning, lightning-charge, and nanopos are enabled.
   # services.nix-bitcoin-webindex.enable = true;
 
   ### RECURRING-DONATIONS
   # Enable this module to send recurring donations. This is EXPERIMENTAL; it's
   # not guaranteed that payments are succeeding or that you will notice payment
-  # failure. Only enable this if clightning is enabled.
+  # failure. Only available if clightning is enabled.
   # services.recurring-donations.enable = true;
   # Specify the receivers of the donations. By default donations are every
   # Monday at a randomized time. Check `journalctl -eu recurring-donations` or
