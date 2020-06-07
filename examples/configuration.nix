@@ -27,8 +27,7 @@
   # clightning is compatible with pruning. See
   # https://github.com/ElementsProject/lightning/#pruning for more information.
   # LND and electrs are not compatible with pruning.
-  # Note: You can override default settings from secure-node.nix as follows
-  # services.bitcoind.prune = lib.mkForce 100000;
+  # services.bitcoind.prune = 100000;
   #
   # You can add options that are not defined in modules/bitcoind.nix as follows
   # services.bitcoind.extraConfig = ''

@@ -64,7 +64,6 @@ in {
       addnodes = [ "ecoc5q34tmbq54wl.onion" ];
       discover = false;
       addresstype = "bech32";
-      prune = 0;
       dbCache = 1000;
     };
     services.tor.hiddenServices.bitcoind = mkHiddenService { port = cfg.bitcoind.port; };
