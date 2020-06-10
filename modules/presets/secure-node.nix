@@ -127,6 +127,8 @@ in {
       enforceTor = true;
     };
 
+    services.lightning-charge.enforceTor = true;
+
     services.nix-bitcoin-webindex.enforceTor = true;
 
 
