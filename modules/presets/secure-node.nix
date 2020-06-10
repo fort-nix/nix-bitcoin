@@ -122,7 +122,10 @@ in {
       toHost = cfg.electrs.host;
     };
 
-    services.spark-wallet.onion-service = true;
+    services.spark-wallet = {
+      onion-service = true;
+      enforceTor = true;
+    };
 
     services.nix-bitcoin-webindex.enforceTor = true;
 
