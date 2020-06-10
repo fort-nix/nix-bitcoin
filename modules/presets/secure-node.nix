@@ -71,7 +71,7 @@ in {
       addresstype = "bech32";
       dbCache = 1000;
     };
-    services.tor.hiddenServices.bitcoind = mkHiddenService { port = cfg.bitcoind.port; };
+    services.tor.hiddenServices.bitcoind = mkHiddenService { port = cfg.bitcoind.port; toHost = cfg.bitcoind.bind; };
 
     # clightning
     services.clightning = {
