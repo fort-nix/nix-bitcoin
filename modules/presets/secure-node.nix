@@ -129,6 +129,8 @@ in {
 
     services.lightning-charge.enforceTor = true;
 
+    services.nanopos.enforceTor = true;
+
     services.nix-bitcoin-webindex.enforceTor = true;
 
 
