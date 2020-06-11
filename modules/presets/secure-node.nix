@@ -210,6 +210,11 @@ in {
 
     services.nix-bitcoin-webindex.enforceTor = true;
 
+    # Backups
+    services.backups = {
+      program = "duplicity";
+      frequency = "daily";
+    };
 
     environment.systemPackages = with pkgs; [
       tor

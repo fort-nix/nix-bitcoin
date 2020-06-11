@@ -12,12 +12,14 @@ makePasswordSecret lnd-wallet-password
 makePasswordSecret liquid-rpcpassword
 makePasswordSecret lightning-charge-token
 makePasswordSecret spark-wallet-password
+makePasswordSecret backup-encryption-password
 
 [[ -e bitcoin-HMAC-privileged ]] || rpcauth privileged $(cat bitcoin-rpcpassword-privileged) | grep rpcauth | cut -d ':' -f 2 > bitcoin-HMAC-privileged
 [[ -e bitcoin-HMAC-public ]] || rpcauth public $(cat bitcoin-rpcpassword-public) | grep rpcauth | cut -d ':' -f 2 > bitcoin-HMAC-public
 [[ -e lightning-charge-env ]] || echo "API_TOKEN=$(cat lightning-charge-token)" > lightning-charge-env
 [[ -e nanopos-env          ]] || echo "CHARGE_TOKEN=$(cat lightning-charge-token)" > nanopos-env
 [[ -e spark-wallet-login   ]] || echo "login=spark-wallet:$(cat spark-wallet-password)" > spark-wallet-login
+[[ -e backup-encryption-env ]] || echo "PASSPHRASE=$(cat backup-encryption-password)" > backup-encryption-env
 
 if [[ ! -e lnd-key || ! -e lnd-cert ]]; then
     openssl ecparam -genkey -name prime256v1 -out lnd-key
