@@ -24,6 +24,12 @@ in {
   };
 
   config = mkIf cfg.enable {
+    assertions = [
+      { assertion = config.services.clightning.enable;
+        message = "lightning-charge requires clightning.";
+      }
+    ];
+
     users.users.lightning-charge = {
       description = "lightning-charge User";
       group = "lightning-charge";

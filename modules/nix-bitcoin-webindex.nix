@@ -47,6 +47,12 @@ in {
   };
 
   config = mkIf cfg.enable {
+    assertions = [
+      { assertion = config.services.nanopos.enable;
+        message = "nix-bitcoin-webindex requires nanopos.";
+      }
+    ];
+
     systemd.tmpfiles.rules = [
       "d /var/www 0755 nginx nginx - -"
     ];

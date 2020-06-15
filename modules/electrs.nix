@@ -61,6 +61,12 @@ in {
   };
 
   config = mkIf cfg.enable (mkMerge [{
+    assertions = [
+      { assertion = config.services.bitcoind.prune == 0;
+        message = "electrs does not support bitcoind pruning.";
+      }
+    ];
+
     environment.systemPackages = [ pkgs.nix-bitcoin.electrs ];
 
     systemd.tmpfiles.rules = [

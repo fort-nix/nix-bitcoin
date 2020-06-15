@@ -52,6 +52,12 @@ in {
   };
 
   config = mkIf cfg.enable {
+    assertions = [
+      { assertion = config.services.lightning-charge.enable;
+        message = "nanopos requires lightning-charge.";
+      }
+    ];
+
     environment.systemPackages = [ pkgs.nix-bitcoin.nanopos ];
     systemd.services.nanopos = {
       description = "Run nanopos";
