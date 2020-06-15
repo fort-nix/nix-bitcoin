@@ -45,7 +45,7 @@
   ### LND
   # Disable clightning and uncomment the following line in order to enable lnd,
   # a lightning implementation written in Go.
-  # services.lnd.enable = assert (!config.services.clightning.enable); true;
+  # services.lnd.enable = true;
   ## WARNING
   # If you use lnd, you should manually backup your wallet mnemonic
   # seed. This will allow you to recover on-chain funds. You can run the

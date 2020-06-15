@@ -26,6 +26,15 @@
   };
 
   config = {
+    assertions = [
+      # lnd.wantedBy == [] needed for `test/tests.nix` in which both clightning and lnd are enabled
+      { assertion = config.services.lnd.enable -> (!config.services.clightning.enable || config.systemd.services.lnd.wantedBy == []);
+        message = ''
+          LND and clightning can't be run in parallel because they both bind to lightning port 9735.
+        '';
+      }
+    ];
+
     nixpkgs.overlays = [ (self: super: {
       nix-bitcoin = let
         pkgs = import ../pkgs { pkgs = super; };
