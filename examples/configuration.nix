@@ -23,8 +23,11 @@
   ### BITCOIND
   # Bitcoind is enabled by default if nix-bitcoin is enabled
   #
-  # You can override default settings from secure-node.nix as follows
-  # services.bitcoind.prune = lib.mkForce 100000;
+  # Enable this option to set pruning to a specified MiB value.
+  # clightning is compatible with pruning. See
+  # https://github.com/ElementsProject/lightning/#pruning for more information.
+  # LND and electrs are not compatible with pruning.
+  # services.bitcoind.prune = 100000;
   #
   # You can add options that are not defined in modules/bitcoind.nix as follows
   # services.bitcoind.extraConfig = ''
@@ -42,7 +45,7 @@
   ### LND
   # Disable clightning and uncomment the following line in order to enable lnd,
   # a lightning implementation written in Go.
-  # services.lnd.enable = assert (!config.services.clightning.enable); true;
+  # services.lnd.enable = true;
   ## WARNING
   # If you use lnd, you should manually backup your wallet mnemonic
   # seed. This will allow you to recover on-chain funds. You can run the
@@ -55,16 +58,15 @@
   ### SPARK WALLET
   # Enable this module to use spark-wallet, a minimalistic wallet GUI for
   # c-lightning, accessible over the web or through mobile and desktop apps.
-  # Only enable this if clightning is enabled.
+  # Only available if clightning is enabled.
   # services.spark-wallet.enable = true;
 
   ### ELECTRS
   # Enable this module to use electrs, an efficient re-implementation of
-  # Electrum Server in Rust. Only enable this if hardware wallets are
-  # disabled.
+  # Electrum Server in Rust.
   # services.electrs.enable = true;
   # If you have more than 8GB memory, enable this option so electrs will
-  # sync faster.
+  # sync faster. Only available if hardware wallets are disabled.
   # services.electrs.high-memory = true;
 
   ### LIQUIDD
@@ -76,25 +78,25 @@
 
   ### LIGHTNING CHARGE
   # Enable this module to use lightning-charge, a simple drop-in solution for
-  # accepting lightning payments. Only enable this if clightning is enabled.
+  # accepting lightning payments. Only available if clightning is enabled.
   # services.lightning-charge.enable = true;
 
   ### NANOPOS
   # Enable this module to use nanopos, a simple Lightning point-of-sale
-  # system, powered by Lightning Charge. Only enable this if clightning and
+  # system, powered by Lightning Charge. Only available if clightning and
   # lightning-charge are enabled.
   # services.nanopos.enable = true;
 
   ### WEBINDEX
   # Enable this module to use the nix-bitcoin-webindex, a simple website
-  # displaying your node information and link to nanopos store. Only enable
-  # this if clightning, lightning-charge, and nanopos are enabled.
+  # displaying your node information and link to nanopos store. Only available
+  # if clightning, lightning-charge, and nanopos are enabled.
   # services.nix-bitcoin-webindex.enable = true;
 
   ### RECURRING-DONATIONS
   # Enable this module to send recurring donations. This is EXPERIMENTAL; it's
   # not guaranteed that payments are succeeding or that you will notice payment
-  # failure. Only enable this if clightning is enabled.
+  # failure. Only available if clightning is enabled.
   # services.recurring-donations.enable = true;
   # Specify the receivers of the donations. By default donations are every
   # Monday at a randomized time. Check `journalctl -eu recurring-donations` or
@@ -107,7 +109,7 @@
 
   ### Hardware wallets
   # Enable this module to allow using hardware wallets. See https://github.com/bitcoin-core/HWI
-  # for more information. Only enable this if electrs is disabled.
+  # for more information. Only available if electrs.high-memory is disabled.
   # Ledger must be initialized through the official ledger live app and the Bitcoin app must
   # be installed and running on the device.
   # services.hardware-wallets.ledger = true;

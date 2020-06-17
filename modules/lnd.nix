@@ -83,6 +83,12 @@ in {
   };
 
   config = mkIf cfg.enable {
+    assertions = [
+      { assertion = config.services.bitcoind.prune == 0;
+        message = "lnd does not support bitcoind pruning.";
+      }
+    ];
+
     environment.systemPackages = [ cfg.package (hiPrio cfg.cli) ];
 
     systemd.tmpfiles.rules = [

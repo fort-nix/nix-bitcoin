@@ -12,7 +12,7 @@ let
 
     ${optionalString cfg.testnet "testnet=1"}
     ${optionalString (cfg.dbCache != null) "dbcache=${toString cfg.dbCache}"}
-    ${optionalString (cfg.prune != null) "prune=${toString cfg.prune}"}
+    "prune=${toString cfg.prune}
     ${optionalString (cfg.sysperms != null) "sysperms=${if cfg.sysperms then "1" else "0"}"}
     ${optionalString (cfg.disablewallet != null) "disablewallet=${if cfg.disablewallet then "1" else "0"}"}
     ${optionalString (cfg.assumevalid != null) "assumevalid=${cfg.assumevalid}"}
@@ -179,12 +179,8 @@ in {
         description = "Override the default database cache size in megabytes.";
       };
       prune = mkOption {
-        type = types.nullOr (types.coercedTo
-          (types.enum [ "disable" "manual" ])
-          (x: if x == "disable" then 0 else 1)
-          types.ints.unsigned
-        );
-        default = null;
+        type = types.ints.unsigned;
+        default = 0;
         example = 10000;
         description = ''
           Reduce storage requirements by enabling pruning (deleting) of old
