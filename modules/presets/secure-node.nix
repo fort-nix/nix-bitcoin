@@ -82,6 +82,66 @@ in {
         name = "publicrpc";
         # Placeholder to be sed'd out by bitcoind preStart
         passwordHMAC = "bitcoin-HMAC-public";
+        rpcwhitelist = [
+          "echo"
+          "getinfo"
+          # Blockchain
+          "getbestblockhash"
+          "getblock"
+          "getblockchaininfo"
+          "getblockcount"
+          "getblockfilter"
+          "getblockhash"
+          "getblockheader"
+          "getblockstats"
+          "getchaintips"
+          "getchaintxstats"
+          "getdifficulty"
+          "getmempoolancestors"
+          "getmempooldescendants"
+          "getmempoolentry"
+          "getmempoolinfo"
+          "getrawmempool"
+          "gettxout"
+          "gettxoutproof"
+          "gettxoutsetinfo"
+          "scantxoutset"
+          "verifytxoutproof"
+          # Mining
+          "getblocktemplate"
+          "getmininginfo"
+          "getnetworkhashps"
+          # Network
+          "getnetworkinfo"
+          # Rawtransactions
+          "analyzepsbt"
+          "combinepsbt"
+          "combinerawtransaction"
+          "converttopsbt"
+          "createpsbt"
+          "createrawtransaction"
+          "decodepsbt"
+          "decoderawtransaction"
+          "decodescript"
+          "finalizepsbt"
+          "fundrawtransaction"
+          "getrawtransaction"
+          "joinpsbts"
+          "sendrawtransaction"
+          "signrawtransactionwithkey"
+          "testmempoolaccept"
+          "utxoupdatepsbt"
+          # Util
+          "createmultisig"
+          "deriveaddresses"
+          "estimatesmartfee"
+          "getdescriptorinfo"
+          "signmessagewithprivkey"
+          "validateaddress"
+          "verifymessage"
+          # Zmq
+          "getzmqnotifications"
+        ];
       };
     };
     services.tor.hiddenServices.bitcoind = mkHiddenService { port = cfg.bitcoind.port; toHost = cfg.bitcoind.bind; };
