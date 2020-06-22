@@ -73,6 +73,16 @@ in {
       discover = false;
       addresstype = "bech32";
       dbCache = 1000;
+      rpc.users.privileged = {
+        name = "bitcoinrpc";
+        # Placeholder to be sed'd out by bitcoind preStart
+        passwordHMAC = "bitcoin-HMAC-privileged";
+      };
+      rpc.users.public = {
+        name = "publicrpc";
+        # Placeholder to be sed'd out by bitcoind preStart
+        passwordHMAC = "bitcoin-HMAC-public";
+      };
     };
     services.tor.hiddenServices.bitcoind = mkHiddenService { port = cfg.bitcoind.port; toHost = cfg.bitcoind.bind; };
 
@@ -96,7 +106,7 @@ in {
       rpcuser = "liquidrpc";
       prune = 1000;
       extraConfig = ''
-        mainchainrpcuser=${cfg.bitcoind.rpcuser}
+        mainchainrpcuser=${config.services.bitcoind.rpc.users.public.name}
         mainchainrpcport=8332
       '';
       validatepegin = true;

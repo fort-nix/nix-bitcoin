@@ -5,6 +5,7 @@ with lib;
 let
   cfg = config.services.bitcoind;
   inherit (config) nix-bitcoin-services;
+  secretsDir = config.nix-bitcoin.secretsDir;
 
   configFile = pkgs.writeText "bitcoin.conf" ''
     # We're already logging via journald
@@ -33,8 +34,8 @@ let
     }
     ${lib.concatMapStrings (rpcbind: "rpcbind=${rpcbind}\n") cfg.rpcbind}
     ${lib.concatMapStrings (rpcallowip: "rpcallowip=${rpcallowip}\n") cfg.rpcallowip}
-    ${optionalString (cfg.rpcuser != null) "rpcuser=${cfg.rpcuser}"}
-    ${optionalString (cfg.rpcpassword != null) "rpcpassword=${cfg.rpcpassword}"}
+    # Credentials for bitcoin-cli
+    rpcuser=${cfg.rpc.users.privileged.name}
 
     # Wallet options
     ${optionalString (cfg.addresstype != null) "addresstype=${cfg.addresstype}"}
@@ -110,7 +111,7 @@ in {
                 '';
               };
               passwordHMAC = mkOption {
-                type = with types; uniq (strMatching "[0-9a-f]+\\$[0-9a-f]{64}");
+                type = types.str;
                 example = "f7efda5c189b999524f151318c0c86$d5b51b3beffbc02b724e5d095828e0bc8b2456e9ac8757ae3211a5d9b16a22ae";
                 description = ''
                   Password HMAC-SHA-256 for JSON-RPC connections. Must be a string of the
@@ -140,16 +141,6 @@ in {
         description = ''
           Allow JSON-RPC connections from specified source.
         '';
-      };
-      rpcuser = mkOption {
-          type = types.nullOr types.str;
-          default = "bitcoinrpc";
-          description = "Username for JSON-RPC connections";
-      };
-      rpcpassword = mkOption {
-          type = types.nullOr types.str;
-          default = null;
-          description = "Password for JSON-RPC connections";
       };
       testnet = mkOption {
         type = types.bool;
@@ -297,7 +288,10 @@ in {
       preStart = ''
         ${optionalString cfg.dataDirReadableByGroup  "chmod -R g+rX '${cfg.dataDir}/blocks'"}
 
-        cfg=$(cat ${configFile}; printf "rpcpassword="; cat "${config.nix-bitcoin.secretsDir}/bitcoin-rpcpassword")
+        cfgpre=$(cat ${configFile}; printf "rpcpassword="; cat "${secretsDir}/bitcoin-rpcpassword-privileged")
+        cfg=$(echo "$cfgpre" | \
+        sed "s/bitcoin-HMAC-privileged/$(cat ${secretsDir}/bitcoin-HMAC-privileged)/g" | \
+        sed "s/bitcoin-HMAC-public/$(cat ${secretsDir}/bitcoin-HMAC-public)/g")
         confFile='${cfg.dataDir}/bitcoin.conf'
         if [[ ! -e $confFile || $cfg != $(cat $confFile) ]]; then
           install -o '${cfg.user}' -g '${cfg.group}' -m 640  <(echo "$cfg") $confFile
@@ -355,9 +349,13 @@ in {
     users.groups.${cfg.group} = {};
     users.groups.bitcoinrpc = {};
 
-    nix-bitcoin.secrets.bitcoin-rpcpassword = {
+    nix-bitcoin.secrets.bitcoin-rpcpassword-privileged.user = "bitcoin";
+    nix-bitcoin.secrets.bitcoin-rpcpassword-public = {
       user = "bitcoin";
       group = "bitcoinrpc";
     };
+
+    nix-bitcoin.secrets.bitcoin-HMAC-privileged.user = "bitcoin";
+    nix-bitcoin.secrets.bitcoin-HMAC-public.user = "bitcoin";
   };
 }

@@ -74,7 +74,7 @@ in {
       requires = [ "bitcoind.service" ];
       after = [ "bitcoind.service" ];
       preStart = ''
-        echo "cookie = \"${config.services.bitcoind.rpcuser}:$(cat ${secretsDir}/bitcoin-rpcpassword)\"" \
+        echo "cookie = \"${config.services.bitcoind.rpc.users.public.name}:$(cat ${secretsDir}/bitcoin-rpcpassword-public)\"" \
           > electrs.toml
         '';
       serviceConfig = nix-bitcoin-services.defaultHardening // {
