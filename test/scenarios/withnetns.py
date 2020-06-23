@@ -47,7 +47,7 @@ def web_index():
     assert_matches("ip netns exec nb-nginx curl -L localhost/store", "tshirt")
 
 
-def final():
+def prestop():
     ping_bitcoind = "ip netns exec nb-bitcoind ping -c 1 -w 1"
     ping_nanopos = "ip netns exec nb-nanopos ping -c 1 -w 1"
 
@@ -98,7 +98,7 @@ extra_tests = {
     "lightning-charge": lightning_charge,
     "nanopos": nanopos,
     "web-index": web_index,
-    "final": final,
+    "prestop": prestop,
 }
 
 run_tests(extra_tests)

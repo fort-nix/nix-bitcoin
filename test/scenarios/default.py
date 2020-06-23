@@ -25,7 +25,7 @@ def web_index():
     assert_matches("curl -L localhost/store", "tshirt")
 
 
-def final():
+def prestop():
     pass
 
 
@@ -35,7 +35,7 @@ extra_tests = {
     "lightning-charge": lightning_charge,
     "nanopos": nanopos,
     "web-index": web_index,
-    "final": final,
+    "prestop": prestop,
 }
 
 run_tests(extra_tests)

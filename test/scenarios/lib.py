@@ -127,7 +127,31 @@ def run_tests(extra_tests):
     )
     assert_no_failure("bitcoind-import-banlist")
 
-    extra_tests.pop("final")()
+    extra_tests.pop("prestop")()
+
+    ### Test duplicity
+
+    succeed("systemctl stop bitcoind")
+    succeed("systemctl start duplicity")
+    machine.wait_until_succeeds(log_has_string("duplicity", "duplicity.service: Succeeded."))
+    # Make sure files in duplicity backup and /var/lib are identical
+    assert_matches(
+        "export $(cat /secrets/backup-encryption-env); duplicity verify '--archive-dir' '/var/lib/duplicity' 'file:///var/lib/localBackups' '/var/lib'",
+        "0 differences found",
+    )
+    # Make sure duplicity backup includes important files
+    assert_matches(
+        "export $(cat /secrets/backup-encryption-env); duplicity list-current-files 'file:///var/lib/localBackups'",
+        "var/lib/clightning/bitcoin/hsm_secret",
+    )
+    assert_matches(
+        "export $(cat /secrets/backup-encryption-env); duplicity list-current-files 'file:///var/lib/localBackups'",
+        "secrets/lnd-seed-mnemonic",
+    )
+    assert_matches(
+        "export $(cat /secrets/backup-encryption-env); duplicity list-current-files 'file:///var/lib/localBackups'",
+        "var/lib/bitcoind/wallet.dat",
+    )
 
     ### Check that all extra_tests have been run
     assert len(extra_tests) == 0
