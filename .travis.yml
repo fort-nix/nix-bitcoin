@@ -2,12 +2,7 @@ dist: bionic # needed for KVM
 language: shell
 
 install:
-    # Retry installing nix due to nondeterministic error
-    #   Fatal error: glibc detected an invalid stdio handle
-    # see:
-    #   https://github.com/nh2/static-haskell-nix/pull/27#issuecomment-502652181
-    #   https://github.com/nixos/nix/issues/2733
-  - (for i in {1..5}; do bash <(curl https://nixos.org/nix/install) && exit 0; done; exit 1)
+  - curl -L https://nixos.org/nix/install | sh
   - . /home/travis/.nix-profile/etc/profile.d/nix.sh
   - if [[ $STABLE == 1 ]]; then export NIX_PATH="nixpkgs=$(nix eval --raw -f pkgs/nixpkgs-pinned.nix nixpkgs)"; fi
   - if [[ $STABLE == 0 ]]; then export NIX_PATH="nixpkgs=$(nix eval --raw -f pkgs/nixpkgs-pinned.nix nixpkgs-unstable)"; fi
