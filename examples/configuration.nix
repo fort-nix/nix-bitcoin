@@ -129,6 +129,12 @@
   # a network-level as much as possible.
   # nix-bitcoin.netns-isolation.enable = true;
 
+  ### lightning-loop
+  # Enable this module to use lightninglab's non-custodial off/on chain bridge.
+  # loopd (lightning-loop daemon) will be started automatically. Users can
+  # interact with off/on chain bridge using `loop in` and `loop out`.
+  # services.lightning-loop.enable = true;
+
   # FIXME: Define your hostname.
   networking.hostName = "nix-bitcoin";
   time.timeZone = "UTC";

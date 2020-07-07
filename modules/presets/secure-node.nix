@@ -91,6 +91,12 @@ in {
     };
     services.tor.hiddenServices.lnd = mkIf cfg.lnd.enable (mkHiddenService { port = cfg.lnd.onionport; toHost = cfg.lnd.listen; });
 
+    # lightning-loop
+    services.lightning-loop = {
+      proxy = cfg.tor.client.socksListenAddress;
+      enforceTor = true;
+    };
+
     # liquidd
     services.liquidd = {
       rpcuser = "liquidrpc";
