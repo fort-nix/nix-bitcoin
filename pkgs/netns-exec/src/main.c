@@ -14,6 +14,7 @@
 
 static char *available_netns[] = {
     "nb-lnd",
+    "nb-lightning-loop",
     "nb-bitcoind",
     "nb-liquidd"
 };

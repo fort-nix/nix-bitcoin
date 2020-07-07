@@ -11,7 +11,9 @@ in
     bitcoind
     clightning
     lnd;
-  inherit (nixBitcoinPkgsUnstable) electrs;
+  inherit (nixBitcoinPkgsUnstable)
+    electrs
+    lightning-loop;
 
   stable = nixBitcoinPkgsStable;
   unstable = nixBitcoinPkgsUnstable;
