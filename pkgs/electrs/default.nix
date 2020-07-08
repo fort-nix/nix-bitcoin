@@ -1,12 +1,12 @@
 { lib, rustPlatform, llvmPackages, fetchurl, pkgs }:
 rustPlatform.buildRustPackage rec {
   pname = "electrs";
-  version = "0.8.3";
+  version = "0.8.5";
 
   src = fetchurl {
     url = "https://github.com/romanz/electrs/archive/v${version}.tar.gz";
     # Use ./get-sha256.sh to fetch latest (verified) sha256
-    sha256 = "6a00226907a0c36b10884e7dd9f87eb58123f089977a752b917d166af072ea3d";
+    sha256 = "651663f68ead632d806980c1915e4b963dcccfbb674c794a7c5d9b7cc4dfecbf";
   };
 
   # Needed for librocksdb-sys
@@ -15,10 +15,10 @@ rustPlatform.buildRustPackage rec {
 
   cargoSha256 = if builtins.pathExists "${pkgs.path}/pkgs/build-support/rust/fetchcargo.nix" then
     # nixpkgs ≤ 20.03
-    "19qs8if8fmygv6j74s6iwzm534fybwasjvmzdqcl996xhg75w6gi"
+    "0clxam7i5yxiqsqxwzdq6z7j7c82rj5zyk186vhvzwh6hzfrv7zm"
   else
     # for recent nixpkgs with cargo-native vendoring (introduced in nixpkgs PR #69274)
-    "1x88zj7p4i7pfb25ch1a54sawgimq16bfcsz1nmzycc8nbwbf493";
+    "0kpv2y22wi42ymcwbqr1cw6npb0ca11hi3dhhhdj1al8kzdgi70w";
 
   meta = with lib; {
     description = "An efficient Electrum Server in Rust";
