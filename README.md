@@ -30,7 +30,7 @@ The easiest way to try out nix-bitcoin is to use one of the provided examples.
 
 ```
 git clone https://github.com/fort-nix/nix-bitcoin
-cd examples/
+cd nix-bitcoin/examples/
 nix-shell
 ```
 
