@@ -1,4 +1,4 @@
-{ stdenv, fetchurl, fetchFromGitHub, python3 }:
+{ pkgs, stdenv, fetchurl, fetchFromGitHub, python3 }:
 
 with stdenv.lib;
 
@@ -9,18 +9,22 @@ let
       mnemonic = self.callPackage ./mnemonic {};
       # HWI requires ecdsa <0.14 but nixpkgs has a newer version
       ecdsa = self.callPackage ./ecdsa {};
+      # HWI requires hidapi 0.7.99 but nixpkgs has a newer version
+      hidapi = self.callPackage ./hidapi {
+        inherit (pkgs) udev libusb1;
+      };
     };
   };
 in
 python.pkgs.buildPythonPackage rec {
   pname = "hwi";
-  version = "1.0.3";
+  version = "1.1.2";
 
   src = fetchFromGitHub {
     owner = "bitcoin-core";
     repo = "HWI";
     rev = version;
-    sha256 = "1xb8w6w6j6vv2ik2bb25y2w6m0gikmh5446jar0frfp6r6das5nn";
+    sha256 = "01xjkv74ksj8m0l6frk03wq82ilzp5gkz4rf7lhi1h6qkb9kb1x0";
   };
 
   # TODO: enable tests
