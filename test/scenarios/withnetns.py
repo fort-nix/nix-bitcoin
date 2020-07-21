@@ -27,9 +27,6 @@ machine.wait_until_succeeds(
 # Check RPC connection to bitcoind
 machine.wait_until_succeeds(log_has_string("electrs", "NetworkInfo"))
 assert_running("nginx")
-# SSL stratum server via nginx. Only check for open port, no content is served here
-# as electrs isn't ready.
-machine.wait_until_succeeds("ip netns exec nb-nginx nc -z localhost 50003")
 # Stop electrs from spamming the test log with 'wait for bitcoind sync' messages
 succeed("systemctl stop electrs")
 

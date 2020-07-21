@@ -102,8 +102,7 @@ in {
         };
         electrs = {
           id = 16;
-          connections = [ "bitcoind" ]
-          ++ ( optionals config.services.electrs.TLSProxy.enable [ "nginx" ]);
+          connections = [ "bitcoind" ];
         };
         spark-wallet = {
           id = 17;
@@ -270,7 +269,6 @@ in {
 
       # electrs: Custom netns configs
       services.electrs = mkIf config.services.electrs.enable {
-        host =  if config.services.electrs.TLSProxy.enable then netns.nginx.address else netns.electrs.address;
         address = netns.electrs.address;
         daemonrpc = "${netns.bitcoind.address}:${toString config.services.bitcoind.rpc.port}";
       };

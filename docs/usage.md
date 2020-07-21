@@ -63,7 +63,7 @@ Connect to electrs
 ### Requirements Android
 * Android phone
 * [Orbot](https://guardianproject.info/apps/orbot/) installed from [F-Droid](https://guardianproject.info/fdroid) (recommended) or [Google Play](https://play.google.com/store/apps/details?id=org.torproject.android&hl=en)
-* [Electrum mobile app](https://electrum.org/#home) installed from [direct download](https://electrum.org/#download) or [Google Play](https://play.google.com/store/apps/details?id=org.electrum.electrum)
+* [Electrum mobile app](https://electrum.org/#home) 4.0.1 and newer installed from [direct download](https://electrum.org/#download) or [Google Play](https://play.google.com/store/apps/details?id=org.electrum.electrum)
 
 ### Requirements Desktop
 * [Tor](https://www.torproject.org/) installed from [source](https://www.torproject.org/docs/tor-doc-unix.html.en) or [repository](https://www.torproject.org/docs/debian.html.en)
@@ -94,22 +94,20 @@ Connect to electrs
 
 4. Connect to electrs
 
-    On electrum wallet laptop
+    Make sure Tor is running on Desktop or as Orbot on Android.
+
+    On Desktop
     ```
-    electrum --oneserver --server=<ELECTRS_ONION>:50002:s --proxy=socks5:localhost:9050
+    electrum --oneserver -1 -s "<ELECTRS_ONION>:50001:t" -p socks5:localhost:9050
     ```
 
-    On electrum android phone
+    On Android
     ```
     Three dots in the upper-right-hand corner
-    Network
-    Proxy mode: socks5, Host: 127.0.0.1, Port: 9050
-    Ok
-    Server
-    Host: <ELECTRS_ONION>, Port: 50002
-    Ok
-    Auto-connect: OFF
-    One-server mode: ON
+    Network > Proxy mode: socks5, Host: 127.0.0.1, Port: 9050
+    Network > Auto-connect: OFF
+    Network > One-server mode: ON
+    Network > Server: <ELECTRS_ONION>:50001:t
     ```
 
 Connect to nix-bitcoin node through ssh Tor Hidden Service
