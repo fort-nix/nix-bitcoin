@@ -5,14 +5,15 @@ with lib;
 let
   cfg = config.services.clightning;
   inherit (config) nix-bitcoin-services;
+  onion-chef-service = (if cfg.announce-tor then [ "onion-chef.service" ] else []);
   configFile = pkgs.writeText "config" ''
-    autolisten=${if cfg.autolisten then "true" else "false"}
     network=bitcoin
     bitcoin-datadir=${config.services.bitcoind.dataDir}
     ${optionalString (cfg.proxy != null) "proxy=${cfg.proxy}"}
     always-use-proxy=${if cfg.always-use-proxy then "true" else "false"}
     ${optionalString (cfg.bind-addr != null) "bind-addr=${cfg.bind-addr}"}
-    bitcoin-rpcuser=${cfg.bitcoin-rpcuser}
+    ${optionalString (cfg.bitcoin-rpcconnect != null) "bitcoin-rpcconnect=${cfg.bitcoin-rpcconnect}"}
+    bitcoin-rpcuser=${config.services.bitcoind.rpcuser}
     rpc-file-mode=0660
   '';
 in {
@@ -28,7 +29,8 @@ in {
       type = types.bool;
       default = false;
       description = ''
-        If enabled, the clightning service will listen.
+        Bind (and maybe announce) on IPv4 and IPv6 interfaces if no addr,
+        bind-addr or  announce-addr  options  are specified.
       '';
     };
     proxy = mkOption {
@@ -48,11 +50,15 @@ in {
       default = null;
       description = "Set an IP address or UNIX domain socket to listen to";
     };
-    bitcoin-rpcuser = mkOption {
-      type = types.str;
-      description = ''
-        Bitcoin RPC user
-      '';
+    announce-tor = mkOption {
+      type = types.bool;
+      default = false;
+      description = "Announce clightning Tor Hidden Service";
+    };
+    bitcoin-rpcconnect = mkOption {
+      type = types.nullOr types.str;
+      default = null;
+      description = "The bitcoind RPC host to connect to.";
     };
     dataDir = mkOption {
       type = types.path;
@@ -93,12 +99,13 @@ in {
       "d '${cfg.dataDir}' 0770 ${cfg.user} ${cfg.group} - -"
     ];
 
+    services.onion-chef.access.clightning = if cfg.announce-tor then [ "clightning" ] else [];
     systemd.services.clightning = {
       description = "Run clightningd";
       path  = [ pkgs.nix-bitcoin.bitcoind ];
       wantedBy = [ "multi-user.target" ];
-      requires = [ "bitcoind.service" ];
-      after = [ "bitcoind.service" ];
+      requires = [ "bitcoind.service" ] ++ onion-chef-service;
+      after = [ "bitcoind.service" ] ++ onion-chef-service;
       preStart = ''
         cp ${configFile} ${cfg.dataDir}/config
         chown -R '${cfg.user}:${cfg.group}' '${cfg.dataDir}'
@@ -106,6 +113,7 @@ in {
         rm -f ${cfg.dataDir}/bitcoin/lightning-rpc
         chmod 600 ${cfg.dataDir}/config
         echo "bitcoin-rpcpassword=$(cat ${config.nix-bitcoin.secretsDir}/bitcoin-rpcpassword)" >> '${cfg.dataDir}/config'
+        ${optionalString cfg.announce-tor "echo announce-addr=$(cat /var/lib/onion-chef/clightning/clightning) >> '${cfg.dataDir}/config'"}
         '';
       serviceConfig = nix-bitcoin-services.defaultHardening // {
         ExecStart = "${pkgs.nix-bitcoin.clightning}/bin/lightningd --lightning-dir=${cfg.dataDir}";

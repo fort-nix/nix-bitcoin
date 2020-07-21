@@ -24,6 +24,11 @@ in {
       default = 9735;
       description = "Port on which to listen for tor client connections.";
     };
+    services.lnd.onionport = mkOption {
+      type = types.ints.u16;
+      default = 9735;
+      description = "Port on which to listen for tor client connections.";
+    };
     services.electrs.onionport = mkOption {
       type = types.port;
       default = 50002;
@@ -52,6 +57,11 @@ in {
       hiddenServices.sshd = mkHiddenService { port = 22; };
     };
 
+    # netns-isolation
+    nix-bitcoin.netns-isolation = {
+      addressblock = 1;
+    };
+
     # bitcoind
     services.bitcoind = {
       enable = true;
@@ -66,20 +76,22 @@ in {
       addresstype = "bech32";
       dbCache = 1000;
     };
-    services.tor.hiddenServices.bitcoind = mkHiddenService { port = cfg.bitcoind.port; };
+    services.tor.hiddenServices.bitcoind = mkHiddenService { port = cfg.bitcoind.port; toHost = cfg.bitcoind.bind; };
 
     # clightning
     services.clightning = {
-      bitcoin-rpcuser = cfg.bitcoind.rpcuser;
       proxy = cfg.tor.client.socksListenAddress;
       enforceTor = true;
       always-use-proxy = true;
-      bind-addr = "127.0.0.1:${toString cfg.clightning.onionport}";
     };
-    services.tor.hiddenServices.clightning = mkHiddenService { port = cfg.clightning.onionport; };
+    services.tor.hiddenServices.clightning = mkIf cfg.clightning.enable (mkHiddenService { port = cfg.clightning.onionport; toHost = (builtins.head (builtins.split ":" cfg.clightning.bind-addr)); });
 
     # lnd
-    services.lnd.enforceTor = true;
+    services.lnd = {
+      tor-socks = cfg.tor.client.socksListenAddress;
+      enforceTor = true;
+    };
+    services.tor.hiddenServices.lnd = mkIf cfg.lnd.enable (mkHiddenService { port = cfg.lnd.onionport; toHost = cfg.lnd.listen; });
 
     # liquidd
     services.liquidd = {
@@ -95,7 +107,7 @@ in {
       enforceTor = true;
       port = 7042;
     };
-    services.tor.hiddenServices.liquidd = mkHiddenService { port = cfg.liquidd.port; };
+    services.tor.hiddenServices.liquidd = mkIf cfg.liquidd.enable (mkHiddenService { port = cfg.liquidd.port; toHost = cfg.liquidd.bind; });
 
     # electrs
     services.electrs = {
@@ -104,12 +116,22 @@ in {
       TLSProxy.enable = true;
       TLSProxy.port = 50003;
     };
-    services.tor.hiddenServices.electrs = mkHiddenService {
+    services.tor.hiddenServices.electrs = mkIf cfg.electrs.enable (mkHiddenService {
       port = cfg.electrs.onionport;
       toPort = if cfg.electrs.TLSProxy.enable then cfg.electrs.TLSProxy.port else cfg.electrs.port;
+      toHost = cfg.electrs.host;
+    });
+
+    services.spark-wallet = {
+      onion-service = true;
+      enforceTor = true;
     };
 
-    services.spark-wallet.onion-service = true;
+    services.lightning-charge.enforceTor = true;
+
+    services.nanopos.enforceTor = true;
+
+    services.recurring-donations.enforceTor = true;
 
     services.nix-bitcoin-webindex.enforceTor = true;
 

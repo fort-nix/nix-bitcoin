@@ -38,14 +38,19 @@
   # Enable this module to use clightning, a Lightning Network implementation
   # in C.
   services.clightning.enable = true;
-  # Enable this option to listen for incoming lightning connections. By
-  # default nix-bitcoin nodes offer outgoing connectivity.
-  # services.clightning.autolisten = true;
+  # Enable this option to announce our Tor Hidden Service. By default clightning
+  # offers outgoing functionality, but doesn't announce the Tor Hidden Service
+  # under which peers can reach us.
+  # services.clightning.announce-tor = true;
 
   ### LND
   # Disable clightning and uncomment the following line in order to enable lnd,
   # a lightning implementation written in Go.
   # services.lnd.enable = true;
+  # Enable this option to announce our Tor Hidden Service. By default lnd
+  # offers outgoing functionality, but doesn't announce the Tor Hidden Service
+  # under which peers can reach us.
+  # services.lnd.announce-tor = true;
   ## WARNING
   # If you use lnd, you should manually backup your wallet mnemonic
   # seed. This will allow you to recover on-chain funds. You can run the
@@ -116,6 +121,13 @@
   # Trezor can be initialized with the trezorctl command in nix-bitcoin. More information in
   # `docs/usage.md`.
   # services.hardware-wallets.trezor = true;
+
+  ### netns-isolation (EXPERIMENTAL)
+  # Enable this module to use Network Namespace Isolation. This feature places
+  # every service in its own network namespace and only allows truly necessary
+  # connections between network namespaces, making sure services are isolated on
+  # a network-level as much as possible.
+  # nix-bitcoin.netns-isolation.enable = true;
 
   # FIXME: Define your hostname.
   networking.hostName = "nix-bitcoin";

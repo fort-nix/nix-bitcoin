@@ -18,6 +18,7 @@ let
     ${optionalString (cfg.assumevalid != null) "assumevalid=${cfg.assumevalid}"}
 
     # Connection options
+    ${optionalString cfg.listen "bind=${cfg.bind}"}
     ${optionalString (cfg.port != null) "port=${toString cfg.port}"}
     ${optionalString (cfg.proxy != null) "proxy=${cfg.proxy}"}
     listen=${if cfg.listen then "1" else "0"}
@@ -30,6 +31,8 @@ let
       (rpcUser: "rpcauth=${rpcUser.name}:${rpcUser.passwordHMAC}")
       (attrValues cfg.rpc.users)
     }
+    ${lib.concatMapStrings (rpcbind: "rpcbind=${rpcbind}\n") cfg.rpcbind}
+    ${lib.concatMapStrings (rpcallowip: "rpcallowip=${rpcallowip}\n") cfg.rpcallowip}
     ${optionalString (cfg.rpcuser != null) "rpcuser=${cfg.rpcuser}"}
     ${optionalString (cfg.rpcpassword != null) "rpcpassword=${cfg.rpcpassword}"}
 
@@ -67,6 +70,13 @@ in {
         type = types.path;
         default = "/var/lib/bitcoind";
         description = "The data directory for bitcoind.";
+      };
+      bind = mkOption {
+        type = types.str;
+        default = "127.0.0.1";
+        description = ''
+          Bind to given address and always listen on it.
+        '';
       };
       user = mkOption {
         type = types.str;
@@ -116,6 +126,20 @@ in {
             RPC user information for JSON-RPC connnections.
           '';
         };
+      };
+      rpcbind = mkOption {
+        type = types.listOf types.str;
+        default = [ "127.0.0.1" ];
+        description = ''
+          Bind to given address to listen for JSON-RPC connections.
+        '';
+      };
+      rpcallowip = mkOption {
+        type = types.listOf types.str;
+        default = [ "127.0.0.1" ];
+        description = ''
+          Allow JSON-RPC connections from specified source.
+        '';
       };
       rpcuser = mkOption {
           type = types.nullOr types.str;
@@ -233,11 +257,20 @@ in {
       };
       cli = mkOption {
         type = types.package;
+        default = cfg.cli-nonetns-exec;
+        description = "Binary to connect with the bitcoind instance.";
+      };
+      # Needed because bitcoind-import-banlist already executes inside
+      # nb-bitcoind, hence it doesn't need netns-exec prefixed.
+      cli-nonetns-exec = mkOption {
         readOnly = true;
+        type = types.package;
         default = pkgs.writeScriptBin "bitcoin-cli" ''
           exec ${cfg.package}/bin/bitcoin-cli -datadir='${cfg.dataDir}' "$@"
         '';
-        description = "Binary to connect with the bitcoind instance.";
+        description = ''
+          Binary to connect with the bitcoind instance without netns-exec.
+        '';
       };
       enforceTor =  nix-bitcoin-services.enforceTor;
     };
@@ -297,7 +330,7 @@ in {
       bindsTo = [ "bitcoind.service" ];
       after = [ "bitcoind.service" ];
       script = ''
-        cd ${cfg.cli}/bin
+        cd ${cfg.cli-nonetns-exec}/bin
         # Poll until bitcoind accepts commands. This can take a long time.
         while ! ./bitcoin-cli getnetworkinfo &> /dev/null; do
           sleep 1

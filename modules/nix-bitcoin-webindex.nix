@@ -13,11 +13,7 @@ let
             nix-bitcoin
           </h1>
         </p>
-        <p>
-        <h2>
-          <a href="store/">store</a>
-        </h2>
-        </p>
+        ${optionalString config.services.nanopos.enable ''<p><h2><a href="store/">store</a></h2></p>''}
         <p>
         <h3>
           lightning node: CLIGHTNING_ID
@@ -43,6 +39,11 @@ in {
         If enabled, the webindex service will be installed.
       '';
     };
+    host = mkOption {
+      type = types.str;
+      default = "localhost";
+      description = "HTTP server listen address.";
+    };
     enforceTor =  nix-bitcoin-services.enforceTor;
   };
 
@@ -61,19 +62,13 @@ in {
       enable = true;
       virtualHosts."_" = {
         root = "/var/www";
-        extraConfig = ''
-          location /store/ {
-            proxy_pass http://127.0.0.1:${toString config.services.nanopos.port};
-            rewrite /store/(.*) /$1 break;
-          }
-        '';
       };
     };
     services.tor.hiddenServices.nginx = {
       map = [{
-        port = 80;
+        port = 80; toHost = cfg.host;
       } {
-        port = 443;
+        port = 443; toHost = cfg.host;
       }];
       version = 3;
     };
@@ -82,7 +77,6 @@ in {
     systemd.services.create-web-index = {
       description = "Get node info";
       wantedBy = [ "multi-user.target" ];
-      after = [ "nodeinfo.service" ];
       path  = with pkgs; [
         config.programs.nodeinfo
         config.services.clightning.cli
