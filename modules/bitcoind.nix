@@ -260,8 +260,8 @@ in {
         default = cfg.cli-nonetns-exec;
         description = "Binary to connect with the bitcoind instance.";
       };
-      # Needed because bitcoind-import-banlist already executes inside
-      # nb-bitcoind, hence it doesn't need netns-exec prefixed.
+      # Needed because bitcoin-cli commands executed through systemd already
+      # run inside nb-bitcoind, hence they don't need netns-exec prefixed.
       cli-nonetns-exec = mkOption {
         readOnly = true;
         type = types.package;
@@ -303,10 +303,11 @@ in {
           install -o '${cfg.user}' -g '${cfg.group}' -m 640  <(echo "$cfg") $confFile
         fi
       '';
-      # Wait until RPC port is open. This usually takes just a few ms.
       postStart = ''
-        while ! { exec 3>/dev/tcp/127.0.0.1/${toString cfg.rpc.port}; } &>/dev/null; do
-          sleep 0.05
+        cd ${cfg.cli-nonetns-exec}/bin
+        # Poll until bitcoind accepts commands. This can take a long time.
+        while ! ./bitcoin-cli getnetworkinfo &> /dev/null; do
+          sleep 1
         done
       '';
       serviceConfig = nix-bitcoin-services.defaultHardening // {
@@ -331,10 +332,6 @@ in {
       after = [ "bitcoind.service" ];
       script = ''
         cd ${cfg.cli-nonetns-exec}/bin
-        # Poll until bitcoind accepts commands. This can take a long time.
-        while ! ./bitcoin-cli getnetworkinfo &> /dev/null; do
-          sleep 1
-        done
         echo "Importing node banlist..."
         cat ${./banlist.cli.txt} | while read line; do
             if ! err=$(eval "$line" 2>&1) && [[ $err != *already\ banned* ]]; then
