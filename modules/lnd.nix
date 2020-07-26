@@ -159,7 +159,7 @@ in {
         in [
           # Run fully privileged for secrets dir write access
           "+${nix-bitcoin-services.script ''
-            attempts=50
+            attempts=250
             while ! { exec 3>/dev/tcp/127.0.0.1/${restPort} && exec 3>&-; } &>/dev/null; do
                   ((attempts-- == 0)) && { echo "lnd REST service unreachable"; exit 1; }
                   sleep 0.1
