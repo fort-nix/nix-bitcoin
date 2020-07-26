@@ -8,7 +8,7 @@ set -euo pipefail
 # Feel free to modify or to run nix-shell and execute individual statements of this
 # script in the interactive shell.
 
-if [[ ! -v IN_NIX_SHELL ]]; then
+if [[ ! -vIN_NIX_SHELL ]]; then
     echo "Running script in nix shell env..."
     exec nix-shell --run "${BASH_SOURCE[0]}"
 fi
