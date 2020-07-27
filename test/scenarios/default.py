@@ -51,6 +51,13 @@ assert_matches("curl -L localhost/store", "tshirt")
 machine.wait_until_succeeds(log_has_string("bitcoind-import-banlist", "Importing node banlist"))
 assert_no_failure("bitcoind-import-banlist")
 
+# test that `systemctl status` can't leak credentials
+assert_matches(
+    "sudo -u electrs systemctl status clightning 2>&1 >/dev/null",
+    "Failed to dump process list for 'clightning.service', ignoring: Access denied",
+)
+machine.succeed("grep -Fq hidepid=2 /proc/mounts")
+
 ### Additional tests
 
 # Current time in µs
