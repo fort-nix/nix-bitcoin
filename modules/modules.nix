@@ -15,6 +15,7 @@
     ./lnd.nix
     ./secrets/secrets.nix
     ./netns-isolation.nix
+    ./dbus.nix
   ];
 
   disabledModules = [ "services/networking/bitcoind.nix" ];
