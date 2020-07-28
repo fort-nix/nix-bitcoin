@@ -113,6 +113,13 @@ assert_matches_exactly(
 # test that netns-exec can not be executed by users that are not operator
 machine.fail("sudo -u clightning netns-exec nb-bitcoind ip a")
 
+# test that `systemctl status` can't leak credentials
+assert_matches(
+    "sudo -u electrs systemctl status clightning 2>&1 >/dev/null",
+    "Failed to dump process list for 'clightning.service', ignoring: Access denied",
+)
+machine.succeed("grep -Fq hidepid=2 /proc/mounts")
+
 ### Additional tests
 
 # Current time in µs

@@ -42,6 +42,9 @@ in {
 
     networking.firewall.enable = true;
 
+    # hideProcessInformation even if hardened kernel profile is disabled
+    security.hideProcessInformation = true;
+
     # Tor
     services.tor = {
       enable = true;
