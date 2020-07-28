@@ -13,7 +13,7 @@ let
 
     ${optionalString cfg.testnet "testnet=1"}
     ${optionalString (cfg.dbCache != null) "dbcache=${toString cfg.dbCache}"}
-    "prune=${toString cfg.prune}
+    prune=${toString cfg.prune}
     ${optionalString (cfg.sysperms != null) "sysperms=${if cfg.sysperms then "1" else "0"}"}
     ${optionalString (cfg.disablewallet != null) "disablewallet=${if cfg.disablewallet then "1" else "0"}"}
     ${optionalString (cfg.assumevalid != null) "assumevalid=${cfg.assumevalid}"}
