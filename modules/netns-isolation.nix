@@ -127,6 +127,10 @@ in {
           id = 21;
           connections = [];
         };
+        lightning-loop = {
+          id = 22;
+          connections = [ "lnd" ];
+        };
       };
 
       systemd.services = {
@@ -291,6 +295,14 @@ in {
       # nginx: Custom netns configs
       services.nix-bitcoin-webindex.host = mkIf config.services.nix-bitcoin-webindex.enable netns.nginx.address;
 
+      # loop: Custom netns configs
+      services.lightning-loop = mkIf config.services.lightning-loop.enable {
+        cli = pkgs.writeScriptBin "loop"
+        # Switch user because lnd makes datadir contents readable by user only
+        ''
+          netns-exec nb-lightning-loop sudo -u lnd ${config.services.lightning-loop.package}/bin/loop "$@"
+        '';
+      };
     })
     # Custom netns config option values if netns-isolation not enabled
     (mkIf (!cfg.enable) {

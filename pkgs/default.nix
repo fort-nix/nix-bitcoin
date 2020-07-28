@@ -11,6 +11,7 @@
   generate-secrets = pkgs.callPackage ./generate-secrets { };
   nixops19_09 = pkgs.callPackage ./nixops { };
   netns-exec = pkgs.callPackage ./netns-exec { };
+  lightning-loop = pkgs.callPackage ./lightning-loop { };
 
   pinned = import ./pinned.nix;
 }

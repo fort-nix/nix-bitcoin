@@ -13,6 +13,7 @@
     ./recurring-donations.nix
     ./hardware-wallets.nix
     ./lnd.nix
+    ./lightning-loop.nix
     ./secrets/secrets.nix
     ./netns-isolation.nix
     ./dbus.nix

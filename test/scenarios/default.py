@@ -88,3 +88,13 @@ succeed("systemctl stop nanopos lightning-charge spark-wallet clightning")
 succeed("systemctl start lnd")
 assert_matches("su operator -c 'lncli getinfo' | jq", '"version"')
 assert_no_failure("lnd")
+
+### Test loopd
+
+succeed("systemctl start lightning-loop")
+assert_matches("su operator -c 'loop --version'", "version")
+# Check that lightning-loop fails with the right error, making sure
+# lightning-loop can connect to lnd
+machine.wait_until_succeeds(
+    log_has_string("lightning-loop", "chain notifier RPC isstill in the process of starting")
+)
