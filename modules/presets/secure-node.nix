@@ -73,6 +73,76 @@ in {
       discover = false;
       addresstype = "bech32";
       dbCache = 1000;
+      rpc.users.privileged = {
+        name = "bitcoinrpc";
+        # Placeholder to be sed'd out by bitcoind preStart
+        passwordHMAC = "bitcoin-HMAC-privileged";
+      };
+      rpc.users.public = {
+        name = "publicrpc";
+        # Placeholder to be sed'd out by bitcoind preStart
+        passwordHMAC = "bitcoin-HMAC-public";
+        rpcwhitelist = [
+          "echo"
+          "getinfo"
+          # Blockchain
+          "getbestblockhash"
+          "getblock"
+          "getblockchaininfo"
+          "getblockcount"
+          "getblockfilter"
+          "getblockhash"
+          "getblockheader"
+          "getblockstats"
+          "getchaintips"
+          "getchaintxstats"
+          "getdifficulty"
+          "getmempoolancestors"
+          "getmempooldescendants"
+          "getmempoolentry"
+          "getmempoolinfo"
+          "getrawmempool"
+          "gettxout"
+          "gettxoutproof"
+          "gettxoutsetinfo"
+          "scantxoutset"
+          "verifytxoutproof"
+          # Mining
+          "getblocktemplate"
+          "getmininginfo"
+          "getnetworkhashps"
+          # Network
+          "getnetworkinfo"
+          # Rawtransactions
+          "analyzepsbt"
+          "combinepsbt"
+          "combinerawtransaction"
+          "converttopsbt"
+          "createpsbt"
+          "createrawtransaction"
+          "decodepsbt"
+          "decoderawtransaction"
+          "decodescript"
+          "finalizepsbt"
+          "fundrawtransaction"
+          "getrawtransaction"
+          "joinpsbts"
+          "sendrawtransaction"
+          "signrawtransactionwithkey"
+          "testmempoolaccept"
+          "utxoupdatepsbt"
+          # Util
+          "createmultisig"
+          "deriveaddresses"
+          "estimatesmartfee"
+          "getdescriptorinfo"
+          "signmessagewithprivkey"
+          "validateaddress"
+          "verifymessage"
+          # Zmq
+          "getzmqnotifications"
+        ];
+      };
     };
     services.tor.hiddenServices.bitcoind = mkHiddenService { port = cfg.bitcoind.port; toHost = cfg.bitcoind.bind; };
 
@@ -96,7 +166,7 @@ in {
       rpcuser = "liquidrpc";
       prune = 1000;
       extraConfig = ''
-        mainchainrpcuser=${cfg.bitcoind.rpcuser}
+        mainchainrpcuser=${config.services.bitcoind.rpc.users.public.name}
         mainchainrpcport=8332
       '';
       validatepegin = true;

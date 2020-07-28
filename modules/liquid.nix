@@ -246,7 +246,7 @@ in {
         chmod 640  '${cfg.dataDir}/elements.conf'
         chown -R '${cfg.user}:${cfg.group}' '${cfg.dataDir}'
         echo "rpcpassword=$(cat ${secretsDir}/liquid-rpcpassword)" >> '${cfg.dataDir}/elements.conf'
-        echo "mainchainrpcpassword=$(cat ${secretsDir}/bitcoin-rpcpassword)" >> '${cfg.dataDir}/elements.conf'
+        echo "mainchainrpcpassword=$(cat ${secretsDir}/bitcoin-rpcpassword-public)" >> '${cfg.dataDir}/elements.conf'
       '';
       serviceConfig = nix-bitcoin-services.defaultHardening // {
         Type = "simple";

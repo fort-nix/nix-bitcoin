@@ -13,7 +13,7 @@ let
     always-use-proxy=${if cfg.always-use-proxy then "true" else "false"}
     ${optionalString (cfg.bind-addr != null) "bind-addr=${cfg.bind-addr}"}
     ${optionalString (cfg.bitcoin-rpcconnect != null) "bitcoin-rpcconnect=${cfg.bitcoin-rpcconnect}"}
-    bitcoin-rpcuser=${config.services.bitcoind.rpcuser}
+    bitcoin-rpcuser=${config.services.bitcoind.rpc.users.public.name}
     rpc-file-mode=0660
   '';
 in {
@@ -112,7 +112,7 @@ in {
         # The RPC socket has to be removed otherwise we might have stale sockets
         rm -f ${cfg.dataDir}/bitcoin/lightning-rpc
         chmod 600 ${cfg.dataDir}/config
-        echo "bitcoin-rpcpassword=$(cat ${config.nix-bitcoin.secretsDir}/bitcoin-rpcpassword)" >> '${cfg.dataDir}/config'
+        echo "bitcoin-rpcpassword=$(cat ${config.nix-bitcoin.secretsDir}/bitcoin-rpcpassword-public)" >> '${cfg.dataDir}/config'
         ${optionalString cfg.announce-tor "echo announce-addr=$(cat /var/lib/onion-chef/clightning/clightning) >> '${cfg.dataDir}/config'"}
         '';
       serviceConfig = nix-bitcoin-services.defaultHardening // {
