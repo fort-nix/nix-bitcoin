@@ -25,12 +25,17 @@ def web_index():
     assert_matches("curl -L localhost/store", "tshirt")
 
 
+def post_clightning():
+    pass
+
+
 extra_tests = {
     "electrs": electrs,
     "spark-wallet": spark_wallet,
     "lightning-charge": lightning_charge,
     "nanopos": nanopos,
     "web-index": web_index,
+    "post-clightning": post_clightning,
 }
 
 run_tests(extra_tests)

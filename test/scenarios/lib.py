@@ -113,6 +113,8 @@ def run_tests(extra_tests):
     )
     assert_no_failure("bitcoind-import-banlist")
 
+    extra_tests.pop("post-clightning")()
+
     ### Test lnd
 
     stopped_services = "nanopos lightning-charge spark-wallet clightning"
@@ -130,10 +132,6 @@ def run_tests(extra_tests):
     machine.wait_until_succeeds(
         log_has_string("lightning-loop", "chain notifier RPC isstill in the process of starting")
     )
-
-    ### Stop lnd and restart clightning
-    succeed("systemctl stop lnd")
-    succeed("systemctl start " + stopped_services)
 
     ### Check that all extra_tests have been run
     assert len(extra_tests) == 0
