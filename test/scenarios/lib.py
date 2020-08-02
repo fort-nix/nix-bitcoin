@@ -35,8 +35,9 @@ if "is_interactive" in vars():
 
 ### Tests
 
-
-def run_tests():
+# The argument extra_tests is a dictionary from strings to functions. The string
+# determines at which point of run_tests the corresponding function is executed.
+def run_tests(extra_tests):
     assert_running("setup-secrets")
     # Unused secrets should be inaccessible
     succeed('[[ $(stat -c "%U:%G %a" /secrets/dummy) = "root:root 440" ]]')
@@ -55,6 +56,7 @@ def run_tests():
     )
 
     assert_running("electrs")
+    extra_tests.pop("electrs")()
     # Check RPC connection to bitcoind
     machine.wait_until_succeeds(log_has_string("electrs", "NetworkInfo"))
     assert_running("nginx")
@@ -70,10 +72,13 @@ def run_tests():
     assert_matches("su operator -c 'lightning-cli getinfo' | jq", '"id"')
 
     assert_running("spark-wallet")
+    extra_tests.pop("spark-wallet")()
 
     assert_running("lightning-charge")
+    extra_tests.pop("lightning-charge")()
 
     assert_running("nanopos")
+    extra_tests.pop("nanopos")()
 
     assert_running("onion-chef")
 
@@ -81,6 +86,7 @@ def run_tests():
     # to incomplete unit dependencies.
     # 'create-web-index' implicitly tests 'nodeinfo'.
     machine.wait_for_unit("create-web-index")
+    extra_tests.pop("web-index")()
 
     machine.wait_until_succeeds(log_has_string("bitcoind-import-banlist", "Importing node banlist"))
     assert_no_failure("bitcoind-import-banlist")
@@ -128,3 +134,6 @@ def run_tests():
     ### Stop lnd and restart clightning
     succeed("systemctl stop lnd")
     succeed("systemctl start " + stopped_services)
+
+    ### Check that all extra_tests have been run
+    assert len(extra_tests) == 0
