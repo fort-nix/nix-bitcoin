@@ -50,6 +50,11 @@ in {
       default = null;
       description = "Set an IP address or UNIX domain socket to listen to";
     };
+    bindport = mkOption {
+      type = types.port;
+      default = 9735;
+      description = "Set a Port to listen to locally";
+    };
     announce-tor = mkOption {
       type = types.bool;
       default = false;
