@@ -30,10 +30,11 @@
 
   config = {
     assertions = [
-      # lnd.wantedBy == [] needed for `test/tests.nix` in which both clightning and lnd are enabled
-      { assertion = config.services.lnd.enable -> (!config.services.clightning.enable || config.systemd.services.lnd.wantedBy == []);
+      { assertion = (config.services.lnd.enable -> ( !config.services.clightning.enable || config.services.clightning.bindport != config.services.lnd.listenPort));
         message = ''
-          LND and clightning can't be run in parallel because they both bind to lightning port 9735.
+          LND and clightning can't both bind to lightning port 9735. Either
+          disable LND/clightning or change services.clightning.bindPort or
+          services.lnd.listenPort to a port other than 9735.
         '';
       }
     ];
