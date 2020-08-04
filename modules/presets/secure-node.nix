@@ -73,6 +73,9 @@ in {
       discover = false;
       addresstype = "bech32";
       dbCache = 1000;
+      # higher rpcthread count due to reports that lightning implementations fail
+      # under high bitcoind rpc load
+      rpcthreads = 16;
       rpc.users.privileged = {
         name = "bitcoinrpc";
         # Placeholder to be sed'd out by bitcoind preStart

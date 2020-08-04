@@ -27,6 +27,7 @@ let
     ${lib.concatMapStrings (node: "addnode=${node}\n") cfg.addnodes}
 
     # RPC server options
+    ${optionalString (cfg.rpcthreads != null) "rpcthreads=${toString cfg.rpcthreads}"}
     rpcport=${toString cfg.rpc.port}
     rpcwhitelistdefault=0
     ${concatMapStringsSep  "\n"
@@ -66,7 +67,6 @@ in {
         default = "";
         example = ''
           par=16
-          rpcthreads=16
           logips=1
         '';
         description = "Additional configurations to be appended to <filename>bitcoin.conf</filename>.";
@@ -139,6 +139,11 @@ in {
             RPC user information for JSON-RPC connnections.
           '';
         };
+      };
+      rpcthreads = mkOption {
+        type = types.nullOr types.ints.u16;
+        default = null;
+        description = "Set the number of threads to service RPC calls";
       };
       rpcbind = mkOption {
         type = types.listOf types.str;
