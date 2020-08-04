@@ -48,7 +48,7 @@ Connect to spark-wallet
     ```
     journalctl -eu spark-wallet
     ```
-    Note: The qr code might have issues scanning if you have a light terminal theme. Try setting it to dark or highlightning the entire output to invert the colors.
+    Note: The qr code might have issues scanning if you have a light terminal theme. Try setting it to dark or highlighting the entire output to invert the colors.
 
 5. Connect to spark-wallet android app
 

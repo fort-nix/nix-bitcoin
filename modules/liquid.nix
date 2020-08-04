@@ -117,7 +117,7 @@ in {
           };
           type = with types; loaOf (submodule rpcUserOpts);
           description = ''
-            RPC user information for JSON-RPC connnections.
+            RPC user information for JSON-RPC connections.
           '';
         };
       };
