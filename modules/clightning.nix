@@ -11,7 +11,7 @@ let
     bitcoin-datadir=${config.services.bitcoind.dataDir}
     ${optionalString (cfg.proxy != null) "proxy=${cfg.proxy}"}
     always-use-proxy=${if cfg.always-use-proxy then "true" else "false"}
-    ${optionalString (cfg.bind-addr != null) "bind-addr=${cfg.bind-addr}"}
+    ${optionalString (cfg.bind-addr != null) "bind-addr=${cfg.bind-addr}:${toString cfg.bindport}"}
     ${optionalString (cfg.bitcoin-rpcconnect != null) "bitcoin-rpcconnect=${cfg.bitcoin-rpcconnect}"}
     bitcoin-rpcuser=${config.services.bitcoind.rpc.users.public.name}
     rpc-file-mode=0660
@@ -46,8 +46,8 @@ in {
       '';
     };
     bind-addr = mkOption {
-      type = types.nullOr types.str;
-      default = null;
+      type = types.addCheck types.str (s: builtins.length (builtins.split ":" s) == 1);
+      default = "127.0.0.1";
       description = "Set an IP address or UNIX domain socket to listen to";
     };
     bindport = mkOption {

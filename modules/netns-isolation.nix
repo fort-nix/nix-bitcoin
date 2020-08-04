@@ -70,244 +70,237 @@ in {
     };
   };
 
-  config = mkMerge [
-    (mkIf cfg.enable {
-      # Prerequisites
-      networking.dhcpcd.denyInterfaces = [ "br0" "br-nb*" "nb-veth*" ];
-      services.tor.client.socksListenAddress = "${bridgeIp}:9050";
-      networking.firewall.interfaces.br0.allowedTCPPorts = [ 9050 ];
-      boot.kernel.sysctl."net.ipv4.ip_forward" = true;
-      security.wrappers.netns-exec = {
-        source  = "${pkgs.nix-bitcoin.netns-exec}/netns-exec";
-        capabilities = "cap_sys_admin=ep";
-        owner = "${config.nix-bitcoin.operatorName}";
-        permissions = "u+rx,g+rx,o-rwx";
+  config = mkIf cfg.enable {
+    # Prerequisites
+    networking.dhcpcd.denyInterfaces = [ "br0" "br-nb*" "nb-veth*" ];
+    services.tor.client.socksListenAddress = "${bridgeIp}:9050";
+    networking.firewall.interfaces.br0.allowedTCPPorts = [ 9050 ];
+    boot.kernel.sysctl."net.ipv4.ip_forward" = true;
+    security.wrappers.netns-exec = {
+      source  = "${pkgs.nix-bitcoin.netns-exec}/netns-exec";
+      capabilities = "cap_sys_admin=ep";
+      owner = "${config.nix-bitcoin.operatorName}";
+      permissions = "u+rx,g+rx,o-rwx";
+    };
+
+    nix-bitcoin.netns-isolation.services = {
+      bitcoind = {
+        id = 12;
+      };
+      clightning = {
+        id = 13;
+        connections = [ "bitcoind" ];
+      };
+      lnd = {
+        id = 14;
+        connections = [ "bitcoind" ];
+      };
+      liquidd = {
+        id = 15;
+        connections = [ "bitcoind" ];
+      };
+      electrs = {
+        id = 16;
+        connections = [ "bitcoind" ];
+      };
+      spark-wallet = {
+        id = 17;
+        # communicates with clightning over lightning-rpc socket
+        connections = [];
+      };
+      lightning-charge = {
+        id = 18;
+        # communicates with clightning over lightning-rpc socket
+        connections = [];
+      };
+      nanopos = {
+        id = 19;
+        connections = [ "nginx" "lightning-charge" ];
+      };
+      recurring-donations = {
+        id = 20;
+        # communicates with clightning over lightning-rpc socket
+        connections = [];
+      };
+      nginx = {
+        id = 21;
+        connections = [];
+      };
+      lightning-loop = {
+        id = 22;
+        connections = [ "lnd" ];
+      };
+    };
+
+    systemd.services = {
+      netns-bridge = {
+        description = "Create bridge";
+        requiredBy = [ "tor.service" ];
+        before = [ "tor.service" ];
+        script = ''
+          ${ip} link add name br0 type bridge
+          ${ip} link set br0 up
+          ${ip} addr add ${bridgeIp}/24 brd + dev br0
+          ${iptables} -w -t nat -A POSTROUTING -s 169.254.${toString cfg.addressblock}.0/24 -j MASQUERADE
+        '';
+        preStop = ''
+          ${iptables} -w -t nat -D POSTROUTING -s 169.254.${toString cfg.addressblock}.0/24 -j MASQUERADE
+          ${ip} link del br0
+        '';
+        serviceConfig = {
+          Type = "oneshot";
+          RemainAfterExit = "yes";
+        };
       };
 
-      nix-bitcoin.netns-isolation.services = {
-        bitcoind = {
-          id = 12;
-        };
-        clightning = {
-          id = 13;
-          connections = [ "bitcoind" ];
-        };
-        lnd = {
-          id = 14;
-          connections = [ "bitcoind" ];
-        };
-        liquidd = {
-          id = 15;
-          connections = [ "bitcoind" ];
-        };
-        electrs = {
-          id = 16;
-          connections = [ "bitcoind" ];
-        };
-        spark-wallet = {
-          id = 17;
-          # communicates with clightning over lightning-rpc socket
-          connections = [];
-        };
-        lightning-charge = {
-          id = 18;
-          # communicates with clightning over lightning-rpc socket
-          connections = [];
-        };
-        nanopos = {
-          id = 19;
-          connections = [ "nginx" "lightning-charge" ];
-        };
-        recurring-donations = {
-          id = 20;
-          # communicates with clightning over lightning-rpc socket
-          connections = [];
-        };
-        nginx = {
-          id = 21;
-          connections = [];
-        };
-        lightning-loop = {
-          id = 22;
-          connections = [ "lnd" ];
-        };
-      };
+      bitcoind-import-banlist.serviceConfig.NetworkNamespacePath = "/var/run/netns/nb-bitcoind";
+    } //
+    (let
+      makeNetnsServices = n: v: let
+        vethName = "nb-veth-${toString v.id}";
+        netnsName = "nb-${n}";
+        ipNetns = "${ip} -n ${netnsName}";
+        netnsIptables = "${ip} netns exec ${netnsName} ${config.networking.firewall.package}/bin/iptables";
+      in {
+        "${n}".serviceConfig.NetworkNamespacePath = "/var/run/netns/${netnsName}";
 
-      systemd.services = {
-        netns-bridge = {
-          description = "Create bridge";
-          requiredBy = [ "tor.service" ];
-          before = [ "tor.service" ];
+        "netns-${n}" = rec {
+          requires = [ "netns-bridge.service" ];
+          after = [ "netns-bridge.service" ];
+          bindsTo = [ "${n}.service" ];
+          requiredBy = bindsTo;
+          before = bindsTo;
           script = ''
-            ${ip} link add name br0 type bridge
-            ${ip} link set br0 up
-            ${ip} addr add ${bridgeIp}/24 brd + dev br0
-            ${iptables} -w -t nat -A POSTROUTING -s 169.254.${toString cfg.addressblock}.0/24 -j MASQUERADE
-          '';
+            ${ip} netns add ${netnsName}
+            ${ipNetns} link set lo up
+            ${ip} link add ${vethName} type veth peer name br-${vethName}
+            ${ip} link set ${vethName} netns ${netnsName}
+            ${ipNetns} addr add ${v.address}/24 dev ${vethName}
+            ${ip} link set br-${vethName} up
+            ${ipNetns} link set ${vethName} up
+            ${ip} link set br-${vethName} master br0
+            ${ipNetns} route add default via ${bridgeIp}
+            ${netnsIptables} -w -P INPUT DROP
+            ${netnsIptables} -w -A INPUT -s 127.0.0.1,${bridgeIp},${v.address} -j ACCEPT
+          '' + (optionalString (config.services.${n}.enforceTor or false)) ''
+            ${netnsIptables} -w -P OUTPUT DROP
+            ${netnsIptables} -w -A OUTPUT -d 127.0.0.1,${bridgeIp},${v.address} -j ACCEPT
+          '' + concatMapStrings (otherNetns: let
+            other = netns.${otherNetns};
+          in ''
+            ${netnsIptables} -w -A INPUT -s ${other.address} -j ACCEPT
+            ${netnsIptables} -w -A OUTPUT -d ${other.address} -j ACCEPT
+          '') v.availableNetns;
           preStop = ''
-            ${iptables} -w -t nat -D POSTROUTING -s 169.254.${toString cfg.addressblock}.0/24 -j MASQUERADE
-            ${ip} link del br0
+            ${ip} netns delete ${netnsName}
+            ${ip} link del br-${vethName}
           '';
           serviceConfig = {
             Type = "oneshot";
             RemainAfterExit = "yes";
+            ExecStartPre = "-${ip} netns delete ${netnsName}";
           };
         };
-
-        bitcoind-import-banlist.serviceConfig.NetworkNamespacePath = "/var/run/netns/nb-bitcoind";
-      } //
-      (let
-        makeNetnsServices = n: v: let
-          vethName = "nb-veth-${toString v.id}";
-          netnsName = "nb-${n}";
-          ipNetns = "${ip} -n ${netnsName}";
-          netnsIptables = "${ip} netns exec ${netnsName} ${config.networking.firewall.package}/bin/iptables";
-        in {
-          "${n}".serviceConfig.NetworkNamespacePath = "/var/run/netns/${netnsName}";
-
-          "netns-${n}" = rec {
-            requires = [ "netns-bridge.service" ];
-            after = [ "netns-bridge.service" ];
-            bindsTo = [ "${n}.service" ];
-            requiredBy = bindsTo;
-            before = bindsTo;
-            script = ''
-              ${ip} netns add ${netnsName}
-              ${ipNetns} link set lo up
-              ${ip} link add ${vethName} type veth peer name br-${vethName}
-              ${ip} link set ${vethName} netns ${netnsName}
-              ${ipNetns} addr add ${v.address}/24 dev ${vethName}
-              ${ip} link set br-${vethName} up
-              ${ipNetns} link set ${vethName} up
-              ${ip} link set br-${vethName} master br0
-              ${ipNetns} route add default via ${bridgeIp}
-              ${netnsIptables} -w -P INPUT DROP
-              ${netnsIptables} -w -A INPUT -s 127.0.0.1,${bridgeIp},${v.address} -j ACCEPT
-            '' + (optionalString (config.services.${n}.enforceTor or false)) ''
-              ${netnsIptables} -w -P OUTPUT DROP
-              ${netnsIptables} -w -A OUTPUT -d 127.0.0.1,${bridgeIp},${v.address} -j ACCEPT
-            '' + concatMapStrings (otherNetns: let
-              other = netns.${otherNetns};
-            in ''
-              ${netnsIptables} -w -A INPUT -s ${other.address} -j ACCEPT
-              ${netnsIptables} -w -A OUTPUT -d ${other.address} -j ACCEPT
-            '') v.availableNetns;
-            preStop = ''
-              ${ip} netns delete ${netnsName}
-              ${ip} link del br-${vethName}
-            '';
-            serviceConfig = {
-              Type = "oneshot";
-              RemainAfterExit = "yes";
-              ExecStartPre = "-${ip} netns delete ${netnsName}";
-            };
-          };
-        };
-      in foldl (services: n:
-        services // (makeNetnsServices n netns.${n})
-      ) {} (builtins.attrNames netns));
-
-      # bitcoin: Custom netns configs
-      services.bitcoind = {
-        bind = netns.bitcoind.address;
-        rpcbind = [
-          "${netns.bitcoind.address}"
-          "127.0.0.1"
-        ];
-        rpcallowip = [
-          "127.0.0.1"
-        ] ++ lib.lists.concatMap (s: [
-          "${netns.${s}.address}"
-        ]) netns.bitcoind.availableNetns;
-        cli = pkgs.writeScriptBin "bitcoin-cli" ''
-          netns-exec nb-bitcoind ${config.services.bitcoind.package}/bin/bitcoin-cli -datadir='${config.services.bitcoind.dataDir}' "$@"
-        '';
       };
+    in foldl (services: n:
+      services // (makeNetnsServices n netns.${n})
+    ) {} (builtins.attrNames netns));
 
-      # clightning: Custom netns configs
-      services.clightning = mkIf config.services.clightning.enable {
-        bitcoin-rpcconnect = netns.bitcoind.address;
-        bind-addr = "${netns.clightning.address}:${toString config.services.clightning.bindport}";
-      };
+    # bitcoin: Custom netns configs
+    services.bitcoind = {
+      bind = netns.bitcoind.address;
+      rpcbind = [
+        "${netns.bitcoind.address}"
+        "127.0.0.1"
+      ];
+      rpcallowip = [
+        "127.0.0.1"
+      ] ++ lib.lists.concatMap (s: [
+        "${netns.${s}.address}"
+      ]) netns.bitcoind.availableNetns;
+      cli = pkgs.writeScriptBin "bitcoin-cli" ''
+        netns-exec nb-bitcoind ${config.services.bitcoind.package}/bin/bitcoin-cli -datadir='${config.services.bitcoind.dataDir}' "$@"
+      '';
+    };
 
-      # lnd: Custom netns configs
-      services.lnd = mkIf config.services.lnd.enable {
-        listen = netns.lnd.address;
-        rpclisten = [
-          "${netns.lnd.address}"
-          "127.0.0.1"
-        ];
-        restlisten = [
-          "${netns.lnd.address}"
-          "127.0.0.1"
-        ];
-        bitcoind-host = netns.bitcoind.address;
-        cli = pkgs.writeScriptBin "lncli"
-        # Switch user because lnd makes datadir contents readable by user only
-        ''
-          netns-exec nb-lnd sudo -u lnd ${config.services.lnd.package}/bin/lncli --tlscertpath ${config.nix-bitcoin.secretsDir}/lnd-cert \
-            --macaroonpath '${config.services.lnd.dataDir}/chain/bitcoin/mainnet/admin.macaroon' "$@"
-        '';
-      };
+    # clightning: Custom netns configs
+    services.clightning = mkIf config.services.clightning.enable {
+      bitcoin-rpcconnect = netns.bitcoind.address;
+      bind-addr = netns.clightning.address;
+    };
 
-      # liquidd: Custom netns configs
-      services.liquidd = mkIf config.services.liquidd.enable {
-        bind = netns.liquidd.address;
-        rpcbind = [
-          "${netns.liquidd.address}"
-          "127.0.0.1"
-        ];
-        rpcallowip = [
-          "127.0.0.1"
-        ] ++ lib.lists.concatMap (s: [
-          "${netns.${s}.address}"
-        ]) netns.liquidd.availableNetns;
-        mainchainrpchost = netns.bitcoind.address;
-        cli = pkgs.writeScriptBin "elements-cli" ''
-          netns-exec nb-liquidd ${pkgs.nix-bitcoin.elementsd}/bin/elements-cli -datadir='${config.services.liquidd.dataDir}' "$@"
-        '';
-        swap-cli = pkgs.writeScriptBin "liquidswap-cli" ''
-          netns-exec nb-liquidd ${pkgs.nix-bitcoin.liquid-swap}/bin/liquidswap-cli -c '${config.services.liquidd.dataDir}/elements.conf' "$@"
-        '';
-      };
+    # lnd: Custom netns configs
+    services.lnd = mkIf config.services.lnd.enable {
+      listen = netns.lnd.address;
+      rpclisten = [
+        "${netns.lnd.address}"
+        "127.0.0.1"
+      ];
+      restlisten = [
+        "${netns.lnd.address}"
+        "127.0.0.1"
+      ];
+      bitcoind-host = netns.bitcoind.address;
+      cli = pkgs.writeScriptBin "lncli"
+      # Switch user because lnd makes datadir contents readable by user only
+      ''
+        netns-exec nb-lnd sudo -u lnd ${config.services.lnd.package}/bin/lncli --tlscertpath ${config.nix-bitcoin.secretsDir}/lnd-cert \
+          --macaroonpath '${config.services.lnd.dataDir}/chain/bitcoin/mainnet/admin.macaroon' "$@"
+      '';
+    };
 
-      # electrs: Custom netns configs
-      services.electrs = mkIf config.services.electrs.enable {
-        address = netns.electrs.address;
-        daemonrpc = "${netns.bitcoind.address}:${toString config.services.bitcoind.rpc.port}";
-      };
+    # liquidd: Custom netns configs
+    services.liquidd = mkIf config.services.liquidd.enable {
+      bind = netns.liquidd.address;
+      rpcbind = [
+        "${netns.liquidd.address}"
+        "127.0.0.1"
+      ];
+      rpcallowip = [
+        "127.0.0.1"
+      ] ++ lib.lists.concatMap (s: [
+        "${netns.${s}.address}"
+      ]) netns.liquidd.availableNetns;
+      mainchainrpchost = netns.bitcoind.address;
+      cli = pkgs.writeScriptBin "elements-cli" ''
+        netns-exec nb-liquidd ${pkgs.nix-bitcoin.elementsd}/bin/elements-cli -datadir='${config.services.liquidd.dataDir}' "$@"
+      '';
+      swap-cli = pkgs.writeScriptBin "liquidswap-cli" ''
+        netns-exec nb-liquidd ${pkgs.nix-bitcoin.liquid-swap}/bin/liquidswap-cli -c '${config.services.liquidd.dataDir}/elements.conf' "$@"
+      '';
+    };
 
-      # spark-wallet: Custom netns configs
-      services.spark-wallet = mkIf config.services.spark-wallet.enable {
-        host = netns.spark-wallet.address;
-        extraArgs = "--no-tls";
-      };
+    # electrs: Custom netns configs
+    services.electrs = mkIf config.services.electrs.enable {
+      address = netns.electrs.address;
+      daemonrpc = "${netns.bitcoind.address}:${toString config.services.bitcoind.rpc.port}";
+    };
 
-      # lightning-charge: Custom netns configs
-      services.lightning-charge.host = mkIf config.services.lightning-charge.enable netns.lightning-charge.address;
+    # spark-wallet: Custom netns configs
+    services.spark-wallet = mkIf config.services.spark-wallet.enable {
+      host = netns.spark-wallet.address;
+      extraArgs = "--no-tls";
+    };
 
-      # nanopos: Custom netns configs
-      services.nanopos = mkIf config.services.nanopos.enable {
-        charged-url = "http://${netns.lightning-charge.address}:9112";
-        host = netns.nanopos.address;
-      };
+    # lightning-charge: Custom netns configs
+    services.lightning-charge.host = mkIf config.services.lightning-charge.enable netns.lightning-charge.address;
 
-      # nginx: Custom netns configs
-      services.nix-bitcoin-webindex.host = mkIf config.services.nix-bitcoin-webindex.enable netns.nginx.address;
+    # nanopos: Custom netns configs
+    services.nanopos = mkIf config.services.nanopos.enable {
+      charged-url = "http://${netns.lightning-charge.address}:9112";
+      host = netns.nanopos.address;
+    };
 
-      # loop: Custom netns configs
-      services.lightning-loop = mkIf config.services.lightning-loop.enable {
-        cli = pkgs.writeScriptBin "loop"
-        # Switch user because lnd makes datadir contents readable by user only
-        ''
-          netns-exec nb-lightning-loop sudo -u lnd ${config.services.lightning-loop.package}/bin/loop "$@"
-        '';
-      };
-    })
-    # Custom netns config option values if netns-isolation not enabled
-    (mkIf (!cfg.enable) {
-      # clightning
-      services.clightning.bind-addr = "127.0.0.1:${toString config.services.clightning.bindport}";
-    })
-  ];
+    # nginx: Custom netns configs
+    services.nix-bitcoin-webindex.host = mkIf config.services.nix-bitcoin-webindex.enable netns.nginx.address;
+
+    # loop: Custom netns configs
+    services.lightning-loop = mkIf config.services.lightning-loop.enable {
+      cli = pkgs.writeScriptBin "loop"
+      # Switch user because lnd makes datadir contents readable by user only
+      ''
+        netns-exec nb-lightning-loop sudo -u lnd ${config.services.lightning-loop.package}/bin/loop "$@"
+      '';
+    };
+  };
 }

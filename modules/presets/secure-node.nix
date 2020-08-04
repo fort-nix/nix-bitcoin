@@ -152,7 +152,11 @@ in {
       enforceTor = true;
       always-use-proxy = true;
     };
-    services.tor.hiddenServices.clightning = mkIf cfg.clightning.enable (mkHiddenService { port = cfg.clightning.onionport; toHost = (builtins.head (builtins.split ":" cfg.clightning.bind-addr)); toPort = cfg.clightning.bindport; });
+    services.tor.hiddenServices.clightning = mkIf cfg.clightning.enable (mkHiddenService {
+      port = cfg.clightning.onionport;
+      toHost = cfg.clightning.bind-addr;
+      toPort = cfg.clightning.bindport;
+    });
 
     # lnd
     services.lnd = {
