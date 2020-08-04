@@ -163,7 +163,7 @@ in {
       tor-socks = cfg.tor.client.socksListenAddress;
       enforceTor = true;
     };
-    services.tor.hiddenServices.lnd = mkIf cfg.lnd.enable (mkHiddenService { port = cfg.lnd.onionport; toHost = cfg.lnd.listen; });
+    services.tor.hiddenServices.lnd = mkIf cfg.lnd.enable (mkHiddenService { port = cfg.lnd.onionport; toHost = cfg.lnd.listen; toPort = cfg.lnd.listenPort; });
 
     # lightning-loop
     services.lightning-loop = {

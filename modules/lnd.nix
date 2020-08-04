@@ -14,7 +14,7 @@ let
     tlscertpath=${secretsDir}/lnd-cert
     tlskeypath=${secretsDir}/lnd-key
 
-    listen=${toString cfg.listen}
+    listen=${toString cfg.listen}:${toString cfg.listenPort}
     ${lib.concatMapStrings (rpclisten: "rpclisten=${rpclisten}:${toString cfg.rpcPort}\n") cfg.rpclisten}
     ${lib.concatMapStrings (restlisten: "restlisten=${restlisten}:${toString cfg.restPort}\n") cfg.restlisten}
 
@@ -50,6 +50,11 @@ in {
       type = types.str;
       default = "localhost";
       description = "Bind to given address to listen to peer connections";
+    };
+    listenPort = mkOption {
+      type = types.port;
+      default = 9735;
+      description = "Bind to given port to listen to peer connections";
     };
     rpclisten = mkOption {
       type = types.listOf types.str;
