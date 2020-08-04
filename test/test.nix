@@ -12,7 +12,7 @@ import ./make-test.nix rec {
 
   hardened = {
     imports = [ <nixpkgs/nixos/modules/profiles/hardened.nix> ];
-    security.allowUserNamespaces = true; # reenable disabled option
+    security.allowUserNamespaces = true; # re-enable disabled option
   };
 
   machine = { pkgs, lib, ... }: with lib; {
