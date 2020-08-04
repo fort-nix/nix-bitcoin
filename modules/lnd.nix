@@ -47,7 +47,7 @@ in {
       description = "The data directory for LND.";
     };
     listen = mkOption {
-      type = types.str;
+      type = types.addCheck types.str (s: builtins.length (builtins.split ":" s) == 1);
       default = "localhost";
       description = "Bind to given address to listen to peer connections";
     };
