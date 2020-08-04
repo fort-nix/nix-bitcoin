@@ -46,7 +46,7 @@ in {
       '';
     };
     bind-addr = mkOption {
-      type = types.addCheck types.str (s: builtins.length (builtins.split ":" s) == 1);
+      type = pkgs.nix-bitcoin.lib.ipv4Address;
       default = "127.0.0.1";
       description = "Set an IP address or UNIX domain socket to listen to";
     };
