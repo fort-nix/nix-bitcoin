@@ -44,8 +44,10 @@
   # services.clightning.announce-tor = true;
 
   ### LND
-  # Disable clightning and uncomment the following line in order to enable lnd,
-  # a lightning implementation written in Go.
+  # Uncomment the following line in order to enable lnd, a lightning
+  # implementation written in Go. In order to avoid collisions with clightning
+  # you must disable clightning or change the services.clightning.bindport or
+  # services.lnd.listenPort to a port other than 9735.
   # services.lnd.enable = true;
   # Enable this option to announce our Tor Hidden Service. By default lnd
   # offers outgoing functionality, but doesn't announce the Tor Hidden Service

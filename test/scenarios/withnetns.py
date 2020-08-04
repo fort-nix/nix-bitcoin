@@ -9,6 +9,7 @@ lightningcharge_ip = "169.254.1.18"
 nanopos_ip = "169.254.1.19"
 recurringdonations_ip = "169.254.1.20"
 nginx_ip = "169.254.1.21"
+lightningloop_ip = "169.254.1.22"
 
 
 def electrs():
@@ -46,7 +47,7 @@ def web_index():
     assert_matches("ip netns exec nb-nginx curl -L localhost/store", "tshirt")
 
 
-def post_clightning():
+def final():
     ping_bitcoind = "ip netns exec nb-bitcoind ping -c 1 -w 1"
     ping_nanopos = "ip netns exec nb-nanopos ping -c 1 -w 1"
 
@@ -54,6 +55,7 @@ def post_clightning():
     machine.succeed(
         "%s %s &&" % (ping_bitcoind, bitcoind_ip)
         + "%s %s &&" % (ping_bitcoind, clightning_ip)
+        + "%s %s &&" % (ping_bitcoind, lnd_ip)
         + "%s %s &&" % (ping_bitcoind, liquidd_ip)
         + "%s %s &&" % (ping_nanopos, lightningcharge_ip)
         + "%s %s &&" % (ping_nanopos, nanopos_ip)
@@ -63,6 +65,7 @@ def post_clightning():
     # Negative ping tests (non-exhaustive)
     machine.fail(
         "%s %s ||" % (ping_bitcoind, sparkwallet_ip)
+        + "%s %s ||" % (ping_bitcoind, lightningloop_ip)
         + "%s %s ||" % (ping_bitcoind, lightningcharge_ip)
         + "%s %s ||" % (ping_bitcoind, nanopos_ip)
         + "%s %s ||" % (ping_bitcoind, recurringdonations_ip)
@@ -70,6 +73,7 @@ def post_clightning():
         + "%s %s ||" % (ping_nanopos, bitcoind_ip)
         + "%s %s ||" % (ping_nanopos, clightning_ip)
         + "%s %s ||" % (ping_nanopos, lnd_ip)
+        + "%s %s ||" % (ping_nanopos, lightningloop_ip)
         + "%s %s ||" % (ping_nanopos, liquidd_ip)
         + "%s %s ||" % (ping_nanopos, electrs_ip)
         + "%s %s ||" % (ping_nanopos, sparkwallet_ip)
@@ -94,7 +98,7 @@ extra_tests = {
     "lightning-charge": lightning_charge,
     "nanopos": nanopos,
     "web-index": web_index,
-    "post-clightning": post_clightning,
+    "final": final,
 }
 
 run_tests(extra_tests)

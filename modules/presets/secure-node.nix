@@ -73,6 +73,9 @@ in {
       discover = false;
       addresstype = "bech32";
       dbCache = 1000;
+      # higher rpcthread count due to reports that lightning implementations fail
+      # under high bitcoind rpc load
+      rpcthreads = 16;
       rpc.users.privileged = {
         name = "bitcoinrpc";
         # Placeholder to be sed'd out by bitcoind preStart
@@ -152,14 +155,18 @@ in {
       enforceTor = true;
       always-use-proxy = true;
     };
-    services.tor.hiddenServices.clightning = mkIf cfg.clightning.enable (mkHiddenService { port = cfg.clightning.onionport; toHost = (builtins.head (builtins.split ":" cfg.clightning.bind-addr)); });
+    services.tor.hiddenServices.clightning = mkIf cfg.clightning.enable (mkHiddenService {
+      port = cfg.clightning.onionport;
+      toHost = cfg.clightning.bind-addr;
+      toPort = cfg.clightning.bindport;
+    });
 
     # lnd
     services.lnd = {
       tor-socks = cfg.tor.client.socksListenAddress;
       enforceTor = true;
     };
-    services.tor.hiddenServices.lnd = mkIf cfg.lnd.enable (mkHiddenService { port = cfg.lnd.onionport; toHost = cfg.lnd.listen; });
+    services.tor.hiddenServices.lnd = mkIf cfg.lnd.enable (mkHiddenService { port = cfg.lnd.onionport; toHost = cfg.lnd.listen; toPort = cfg.lnd.listenPort; });
 
     # lightning-loop
     services.lightning-loop = {
