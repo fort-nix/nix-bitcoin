@@ -59,7 +59,6 @@ def run_tests(extra_tests):
     extra_tests.pop("electrs")()
     # Check RPC connection to bitcoind
     machine.wait_until_succeeds(log_has_string("electrs", "NetworkInfo"))
-    assert_running("nginx")
     # Stop electrs from spamming the test log with 'wait for bitcoind sync' messages
     succeed("systemctl stop electrs")
 
@@ -86,6 +85,7 @@ def run_tests(extra_tests):
     # to incomplete unit dependencies.
     # 'create-web-index' implicitly tests 'nodeinfo'.
     machine.wait_for_unit("create-web-index")
+    assert_running("nginx")
     extra_tests.pop("web-index")()
 
     machine.wait_until_succeeds(log_has_string("bitcoind-import-banlist", "Importing node banlist"))
