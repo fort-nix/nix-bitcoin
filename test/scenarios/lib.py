@@ -70,6 +70,18 @@ def run_tests(extra_tests):
     assert_running("clightning")
     assert_matches("su operator -c 'lightning-cli getinfo' | jq", '"id"')
 
+    assert_running("lnd")
+    assert_matches("su operator -c 'lncli getinfo' | jq", '"version"')
+    assert_no_failure("lnd")
+
+    succeed("systemctl start lightning-loop")
+    assert_matches("su operator -c 'loop --version'", "version")
+    # Check that lightning-loop fails with the right error, making sure
+    # lightning-loop can connect to lnd
+    machine.wait_until_succeeds(
+        log_has_string("lightning-loop", "chain notifier RPC isstill in the process of starting")
+    )
+
     assert_running("spark-wallet")
     extra_tests.pop("spark-wallet")()
 
@@ -104,7 +116,9 @@ def run_tests(extra_tests):
     pre_restart = succeed("date +%s.%6N").rstrip()
 
     # Sanity-check system by restarting all services
-    succeed("systemctl restart bitcoind clightning spark-wallet lightning-charge nanopos liquidd")
+    succeed(
+        "systemctl restart bitcoind clightning lnd lightning-loop spark-wallet lightning-charge nanopos liquidd"
+    )
 
     # Now that the bitcoind restart triggered a banlist import restart, check that
     # re-importing already banned addresses works
@@ -113,25 +127,7 @@ def run_tests(extra_tests):
     )
     assert_no_failure("bitcoind-import-banlist")
 
-    extra_tests.pop("post-clightning")()
-
-    ### Test lnd
-
-    stopped_services = "nanopos lightning-charge spark-wallet clightning"
-    succeed("systemctl stop " + stopped_services)
-    succeed("systemctl start lnd")
-    assert_matches("su operator -c 'lncli getinfo' | jq", '"version"')
-    assert_no_failure("lnd")
-
-    ### Test loopd
-
-    succeed("systemctl start lightning-loop")
-    assert_matches("su operator -c 'loop --version'", "version")
-    # Check that lightning-loop fails with the right error, making sure
-    # lightning-loop can connect to lnd
-    machine.wait_until_succeeds(
-        log_has_string("lightning-loop", "chain notifier RPC isstill in the process of starting")
-    )
+    extra_tests.pop("final")()
 
     ### Check that all extra_tests have been run
     assert len(extra_tests) == 0

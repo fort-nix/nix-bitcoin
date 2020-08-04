@@ -33,8 +33,10 @@ import ./make-test.nix rec {
     services.nanopos.enable = true;
 
     services.lnd.enable = true;
-    systemd.services.lnd.wantedBy = mkForce [];
+    services.lnd.listenPort = 9736;
     services.lightning-loop.enable = true;
+    # needed because we must control when lightning-loop starts so it doesn't
+    # fail before we run commands in the nb-lightning-loop netns
     systemd.services.lightning-loop.wantedBy = mkForce [];
 
     services.electrs.enable = true;

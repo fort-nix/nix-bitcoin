@@ -25,7 +25,7 @@ def web_index():
     assert_matches("curl -L localhost/store", "tshirt")
 
 
-def post_clightning():
+def final():
     pass
 
 
@@ -35,7 +35,7 @@ extra_tests = {
     "lightning-charge": lightning_charge,
     "nanopos": nanopos,
     "web-index": web_index,
-    "post-clightning": post_clightning,
+    "final": final,
 }
 
 run_tests(extra_tests)
