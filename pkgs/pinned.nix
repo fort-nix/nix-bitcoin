@@ -17,4 +17,5 @@ in
 
   stable = nixBitcoinPkgsStable;
   unstable = nixBitcoinPkgsUnstable;
+  inherit nixpkgsUnstable;
 }
