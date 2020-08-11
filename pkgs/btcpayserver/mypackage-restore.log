@@ -1,0 +1,1711 @@
+Build started 8/11/2020 1:13:43 AM.
+     1>Project "/home/calvin/nixpkgs/pkgs/applications/blockchains/btcpayserver/btcpayserver/btcpayserver.sln" on node 1 (Restore target(s)).
+     1>ValidateSolutionConfiguration:
+         Building solution configuration "Debug|Any CPU".
+       Restore:
+         Restoring packages for /home/calvin/nixpkgs/pkgs/applications/blockchains/btcpayserver/btcpayserver/BTCPayServer.Common/BTCPayServer.Common.csproj...
+         Restoring packages for /home/calvin/nixpkgs/pkgs/applications/blockchains/btcpayserver/btcpayserver/BTCPayServer.Rating/BTCPayServer.Rating.csproj...
+         Restoring packages for /home/calvin/nixpkgs/pkgs/applications/blockchains/btcpayserver/btcpayserver/BTCPayServer.Data/BTCPayServer.Data.csproj...
+         Restoring packages for /home/calvin/nixpkgs/pkgs/applications/blockchains/btcpayserver/btcpayserver/BTCPayServer.Client/BTCPayServer.Client.csproj...
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.entityframeworkcore.sqlite/index.json
+           GET https://api.nuget.org/v3-flatcontainer/nbxplorer.client/index.json
+           GET https://api.nuget.org/v3-flatcontainer/digitalruby.exchangesharp/index.json
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.codeanalysis.csharp/index.json
+           GET https://api.nuget.org/v3-flatcontainer/nbitcoin/index.json
+           GET https://api.nuget.org/v3-flatcontainer/npgsql.entityframeworkcore.postgresql/index.json
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.aspnet.webapi.client/index.json
+           GET https://api.nuget.org/v3-flatcontainer/btcpayserver.lightning.common/index.json
+           GET https://api.nuget.org/v3-flatcontainer/newtonsoft.json/index.json
+           GET https://api.nuget.org/v3-flatcontainer/pomelo.entityframeworkcore.mysql/index.json
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.entityframeworkcore.design/index.json
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.aspnetcore.identity.entityframeworkcore/index.json
+           OK https://api.nuget.org/v3-flatcontainer/digitalruby.exchangesharp/index.json 645ms
+           GET https://api.nuget.org/v3-flatcontainer/digitalruby.exchangesharp/0.6.3/digitalruby.exchangesharp.0.6.3.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.entityframeworkcore.sqlite/index.json 713ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.entityframeworkcore.sqlite/3.1.4/microsoft.entityframeworkcore.sqlite.3.1.4.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/nbxplorer.client/index.json 715ms
+           GET https://api.nuget.org/v3-flatcontainer/nbxplorer.client/3.0.16/nbxplorer.client.3.0.16.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.codeanalysis.csharp/index.json 720ms
+           OK https://api.nuget.org/v3-flatcontainer/npgsql.entityframeworkcore.postgresql/index.json 718ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.codeanalysis.csharp/3.6.0/microsoft.codeanalysis.csharp.3.6.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/npgsql.entityframeworkcore.postgresql/3.1.4/npgsql.entityframeworkcore.postgresql.3.1.4.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/newtonsoft.json/index.json 714ms
+           OK https://api.nuget.org/v3-flatcontainer/nbitcoin/index.json 725ms
+           GET https://api.nuget.org/v3-flatcontainer/newtonsoft.json/12.0.3/newtonsoft.json.12.0.3.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.aspnet.webapi.client/index.json 723ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.aspnet.webapi.client/5.2.7/microsoft.aspnet.webapi.client.5.2.7.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/nbitcoin/5.0.43/nbitcoin.5.0.43.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/pomelo.entityframeworkcore.mysql/index.json 727ms
+           GET https://api.nuget.org/v3-flatcontainer/pomelo.entityframeworkcore.mysql/3.1.1/pomelo.entityframeworkcore.mysql.3.1.1.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.aspnetcore.identity.entityframeworkcore/index.json 709ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.aspnetcore.identity.entityframeworkcore/3.1.4/microsoft.aspnetcore.identity.entityframeworkcore.3.1.4.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/btcpayserver.lightning.common/index.json 744ms
+           GET https://api.nuget.org/v3-flatcontainer/btcpayserver.lightning.common/1.2.0/btcpayserver.lightning.common.1.2.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.entityframeworkcore.design/index.json 727ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.entityframeworkcore.design/3.1.4/microsoft.entityframeworkcore.design.3.1.4.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/newtonsoft.json/12.0.3/newtonsoft.json.12.0.3.nupkg 35ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.aspnet.webapi.client/5.2.7/microsoft.aspnet.webapi.client.5.2.7.nupkg 41ms
+           GET https://api.nuget.org/v3-flatcontainer/newtonsoft.json.bson/index.json
+           OK https://api.nuget.org/v3-flatcontainer/digitalruby.exchangesharp/0.6.3/digitalruby.exchangesharp.0.6.3.nupkg 613ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.entityframeworkcore.sqlite/3.1.4/microsoft.entityframeworkcore.sqlite.3.1.4.nupkg 605ms
+           OK https://api.nuget.org/v3-flatcontainer/nbxplorer.client/3.0.16/nbxplorer.client.3.0.16.nupkg 605ms
+           OK https://api.nuget.org/v3-flatcontainer/npgsql.entityframeworkcore.postgresql/3.1.4/npgsql.entityframeworkcore.postgresql.3.1.4.nupkg 604ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.entityframeworkcore.sqlite.core/index.json
+           GET https://api.nuget.org/v3-flatcontainer/sqlitepclraw.bundle_e_sqlite3/index.json
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.codeanalysis.csharp/3.6.0/microsoft.codeanalysis.csharp.3.6.0.nupkg 608ms
+           OK https://api.nuget.org/v3-flatcontainer/nbitcoin/5.0.43/nbitcoin.5.0.43.nupkg 604ms
+           OK https://api.nuget.org/v3-flatcontainer/pomelo.entityframeworkcore.mysql/3.1.1/pomelo.entityframeworkcore.mysql.3.1.1.nupkg 612ms
+           GET https://api.nuget.org/v3-flatcontainer/nbitcoin/5.0.40/nbitcoin.5.0.40.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/nbitcoin.altcoins/index.json
+           GET https://api.nuget.org/v3-flatcontainer/nicolasdorier.standardconfiguration/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.net.websockets.client/index.json
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.aspnetcore.identity.entityframeworkcore/3.1.4/microsoft.aspnetcore.identity.entityframeworkcore.3.1.4.nupkg 624ms
+           OK https://api.nuget.org/v3-flatcontainer/btcpayserver.lightning.common/1.2.0/btcpayserver.lightning.common.1.2.0.nupkg 625ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.entityframeworkcore.design/3.1.4/microsoft.entityframeworkcore.design.3.1.4.nupkg 623ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.entityframeworkcore/index.json
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.entityframeworkcore.abstractions/index.json
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.entityframeworkcore.relational/index.json
+           GET https://api.nuget.org/v3-flatcontainer/npgsql/index.json
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.csharp/index.json
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.identity.stores/index.json
+           OK https://api.nuget.org/v3-flatcontainer/newtonsoft.json.bson/index.json 618ms
+           GET https://api.nuget.org/v3-flatcontainer/newtonsoft.json.bson/1.0.1/newtonsoft.json.bson.1.0.1.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.aspnet.signalr.client/index.json
+           GET https://api.nuget.org/v3-flatcontainer/nlog/index.json
+           GET https://api.nuget.org/v3-flatcontainer/mysqlconnector/index.json
+           GET https://api.nuget.org/v3-flatcontainer/pomelo.jsonobject/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.configuration.configurationmanager/index.json
+           OK https://api.nuget.org/v3-flatcontainer/newtonsoft.json.bson/1.0.1/newtonsoft.json.bson.1.0.1.nupkg 39ms
+           GET https://api.nuget.org/v3-flatcontainer/netstandard.library/index.json
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.entityframeworkcore.sqlite.core/index.json 609ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.entityframeworkcore.sqlite.core/3.1.4/microsoft.entityframeworkcore.sqlite.core.3.1.4.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/nbitcoin/5.0.40/nbitcoin.5.0.40.nupkg 606ms
+           OK https://api.nuget.org/v3-flatcontainer/sqlitepclraw.bundle_e_sqlite3/index.json 672ms
+           GET https://api.nuget.org/v3-flatcontainer/sqlitepclraw.bundle_e_sqlite3/2.0.2/sqlitepclraw.bundle_e_sqlite3.2.0.2.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.entityframeworkcore/index.json 608ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.entityframeworkcore/3.1.4/microsoft.entityframeworkcore.3.1.4.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/sqlitepclraw.bundle_e_sqlite3/2.0.2/sqlitepclraw.bundle_e_sqlite3.2.0.2.nupkg 48ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.entityframeworkcore.abstractions/index.json 626ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.entityframeworkcore.abstractions/3.1.4/microsoft.entityframeworkcore.abstractions.3.1.4.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/sqlitepclraw.core/index.json
+           GET https://api.nuget.org/v3-flatcontainer/sqlitepclraw.provider.dynamic_cdecl/index.json
+           GET https://api.nuget.org/v3-flatcontainer/sqlitepclraw.lib.e_sqlite3/index.json
+           OK https://api.nuget.org/v3-flatcontainer/nicolasdorier.standardconfiguration/index.json 792ms
+           GET https://api.nuget.org/v3-flatcontainer/nicolasdorier.standardconfiguration/1.0.0.18/nicolasdorier.standardconfiguration.1.0.0.18.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/nbitcoin.altcoins/index.json 795ms
+           OK https://api.nuget.org/v3-flatcontainer/system.net.websockets.client/index.json 794ms
+           GET https://api.nuget.org/v3-flatcontainer/system.net.websockets.client/4.3.2/system.net.websockets.client.4.3.2.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.identity.stores/index.json 638ms
+           GET https://api.nuget.org/v3-flatcontainer/nbitcoin.altcoins/2.0.13/nbitcoin.altcoins.2.0.13.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.identity.stores/3.1.4/microsoft.extensions.identity.stores.3.1.4.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/nlog/index.json 623ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.entityframeworkcore.relational/index.json 776ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.aspnet.signalr.client/index.json 633ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.aspnet.signalr.client/2.3.0/microsoft.aspnet.signalr.client.2.3.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.entityframeworkcore.relational/3.1.4/microsoft.entityframeworkcore.relational.3.1.4.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.entityframeworkcore.relational/3.1.0/microsoft.entityframeworkcore.relational.3.1.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/npgsql/index.json 795ms
+           GET https://api.nuget.org/v3-flatcontainer/npgsql/4.1.3.1/npgsql.4.1.3.1.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/netstandard.library/index.json 618ms
+           GET https://api.nuget.org/v3-flatcontainer/netstandard.library/1.6.1/netstandard.library.1.6.1.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/npgsql/4.1.3.1/npgsql.4.1.3.1.nupkg 49ms
+           OK https://api.nuget.org/v3-flatcontainer/netstandard.library/1.6.1/netstandard.library.1.6.1.nupkg 51ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.netcore.platforms/index.json
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.win32.primitives/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.appcontext/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.collections/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.collections.concurrent/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.console/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.diagnostics.debug/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.diagnostics.tools/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.diagnostics.tracing/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.globalization/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.globalization.calendars/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.io/index.json
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.csharp/index.json 791ms
+           GET https://api.nuget.org/v3-flatcontainer/system.io.compression/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.io.compression.zipfile/index.json
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.csharp/4.7.0/microsoft.csharp.4.7.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.io.filesystem/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.io.filesystem.primitives/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.linq/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.linq.expressions/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.net.http/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.net.primitives/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.net.sockets/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.objectmodel/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.reflection/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.reflection.extensions/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.reflection.primitives/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.resources.resourcemanager/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.runtime/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.runtime.extensions/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.runtime.handles/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.runtime.interopservices/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.runtime.interopservices.runtimeinformation/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.runtime.numerics/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.security.cryptography.algorithms/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.security.cryptography.encoding/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.security.cryptography.primitives/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.security.cryptography.x509certificates/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.text.encoding/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.text.encoding.extensions/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.text.regularexpressions/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.threading/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.threading.tasks/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.threading.timer/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.xml.readerwriter/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.xml.xdocument/index.json
+           OK https://api.nuget.org/v3-flatcontainer/mysqlconnector/index.json 747ms
+           GET https://api.nuget.org/v3-flatcontainer/mysqlconnector/0.61.0/mysqlconnector.0.61.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/pomelo.jsonobject/index.json 751ms
+           GET https://api.nuget.org/v3-flatcontainer/pomelo.jsonobject/2.2.1/pomelo.jsonobject.2.2.1.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.configuration.configurationmanager/index.json 776ms
+           GET https://api.nuget.org/v3-flatcontainer/system.configuration.configurationmanager/4.5.0/system.configuration.configurationmanager.4.5.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.configuration.configurationmanager/4.5.0/system.configuration.configurationmanager.4.5.0.nupkg 59ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.entityframeworkcore.relational/3.1.0/microsoft.entityframeworkcore.relational.3.1.0.nupkg 212ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.csharp/4.7.0/microsoft.csharp.4.7.0.nupkg 224ms
+           GET https://api.nuget.org/v3-flatcontainer/nlog/4.5.10/nlog.4.5.10.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.entityframeworkcore.sqlite.core/3.1.4/microsoft.entityframeworkcore.sqlite.core.3.1.4.nupkg 621ms
+           OK https://api.nuget.org/v3-flatcontainer/nlog/4.5.10/nlog.4.5.10.nupkg 60ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.entityframeworkcore/3.1.4/microsoft.entityframeworkcore.3.1.4.nupkg 616ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.data.sqlite.core/index.json
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.dotnet.platformabstractions/index.json
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.dependencymodel/index.json
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.entityframeworkcore.abstractions/3.1.4/microsoft.entityframeworkcore.abstractions.3.1.4.nupkg 620ms
+           OK https://api.nuget.org/v3-flatcontainer/sqlitepclraw.core/index.json 621ms
+           GET https://api.nuget.org/v3-flatcontainer/sqlitepclraw.core/2.0.2/sqlitepclraw.core.2.0.2.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/sqlitepclraw.core/2.0.2/sqlitepclraw.core.2.0.2.nupkg 53ms
+           GET https://api.nuget.org/v3-flatcontainer/system.memory/index.json
+           OK https://api.nuget.org/v3-flatcontainer/nicolasdorier.standardconfiguration/1.0.0.18/nicolasdorier.standardconfiguration.1.0.0.18.nupkg 617ms
+           GET https://api.nuget.org/v3-flatcontainer/nicolasdorier.commandline.configuration/index.json
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration.environmentvariables/index.json
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration.ini/index.json
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.logging.abstractions/index.json
+           OK https://api.nuget.org/v3-flatcontainer/system.net.websockets.client/4.3.2/system.net.websockets.client.4.3.2.nupkg 612ms
+           OK https://api.nuget.org/v3-flatcontainer/system.runtime.extensions/index.json 502ms
+           GET https://api.nuget.org/v3-flatcontainer/system.runtime.extensions/4.3.0/system.runtime.extensions.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/nbitcoin.altcoins/2.0.13/nbitcoin.altcoins.2.0.13.nupkg 622ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.identity.stores/3.1.4/microsoft.extensions.identity.stores.3.1.4.nupkg 630ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.aspnet.signalr.client/2.3.0/microsoft.aspnet.signalr.client.2.3.0.nupkg 628ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.entityframeworkcore.relational/3.1.4/microsoft.entityframeworkcore.relational.3.1.4.nupkg 629ms
+           OK https://api.nuget.org/v3-flatcontainer/system.runtime.extensions/4.3.0/system.runtime.extensions.4.3.0.nupkg 56ms
+           OK https://api.nuget.org/v3-flatcontainer/sqlitepclraw.provider.dynamic_cdecl/index.json 826ms
+           GET https://api.nuget.org/v3-flatcontainer/sqlitepclraw.provider.dynamic_cdecl/2.0.2/sqlitepclraw.provider.dynamic_cdecl.2.0.2.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.netcore.platforms/index.json 635ms
+           OK https://api.nuget.org/v3-flatcontainer/system.io.compression/index.json 631ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.netcore.platforms/1.1.0/microsoft.netcore.platforms.1.1.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.io.compression/4.3.0/system.io.compression.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/sqlitepclraw.provider.dynamic_cdecl/2.0.2/sqlitepclraw.provider.dynamic_cdecl.2.0.2.nupkg 60ms
+           OK https://api.nuget.org/v3-flatcontainer/mysqlconnector/0.61.0/mysqlconnector.0.61.0.nupkg 629ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.netcore.platforms/1.1.0/microsoft.netcore.platforms.1.1.0.nupkg 56ms
+           OK https://api.nuget.org/v3-flatcontainer/system.io.compression/4.3.0/system.io.compression.4.3.0.nupkg 56ms
+           OK https://api.nuget.org/v3-flatcontainer/pomelo.jsonobject/2.2.1/pomelo.jsonobject.2.2.1.nupkg 702ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.identity.core/index.json
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.caching.abstractions/index.json
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.logging/index.json
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.entityframeworkcore.analyzers/index.json
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.bcl.asyncinterfaces/index.json
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.bcl.hashcode/index.json
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.caching.memory/index.json
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.dependencyinjection/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.collections.immutable/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.componentmodel.annotations/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.diagnostics.diagnosticsource/index.json
+           OK https://api.nuget.org/v3-flatcontainer/system.collections/index.json 785ms
+           GET https://api.nuget.org/v3-flatcontainer/system.collections/4.3.0/system.collections.4.3.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.net.nameresolution/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.net.security/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.net.webheadercollection/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.net.websockets/index.json
+           OK https://api.nuget.org/v3-flatcontainer/system.console/index.json 793ms
+           OK https://api.nuget.org/v3-flatcontainer/system.linq.expressions/index.json 786ms
+           GET https://api.nuget.org/v3-flatcontainer/system.console/4.3.0/system.console.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.runtime/index.json 782ms
+           GET https://api.nuget.org/v3-flatcontainer/system.linq.expressions/4.3.0/system.linq.expressions.4.3.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.runtime/4.3.0/system.runtime.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.io/index.json 793ms
+           OK https://api.nuget.org/v3-flatcontainer/system.resources.resourcemanager/index.json 785ms
+           GET https://api.nuget.org/v3-flatcontainer/system.io/4.3.0/system.io.4.3.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.resources.resourcemanager/4.3.0/system.resources.resourcemanager.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.linq/index.json 794ms
+           OK https://api.nuget.org/v3-flatcontainer/system.net.http/index.json 793ms
+           GET https://api.nuget.org/v3-flatcontainer/system.linq/4.3.0/system.linq.4.3.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.net.http/4.3.0/system.net.http.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.reflection.extensions/index.json 793ms
+           GET https://api.nuget.org/v3-flatcontainer/system.reflection.extensions/4.3.0/system.reflection.extensions.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.runtime.interopservices/index.json 790ms
+           OK https://api.nuget.org/v3-flatcontainer/system.runtime.interopservices.runtimeinformation/index.json 791ms
+           OK https://api.nuget.org/v3-flatcontainer/system.reflection/index.json 798ms
+           GET https://api.nuget.org/v3-flatcontainer/system.runtime.interopservices/4.3.0/system.runtime.interopservices.4.3.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.runtime.interopservices.runtimeinformation/4.3.0/system.runtime.interopservices.runtimeinformation.4.3.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.reflection/4.3.0/system.reflection.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.security.cryptography.x509certificates/index.json 789ms
+           GET https://api.nuget.org/v3-flatcontainer/system.security.cryptography.x509certificates/4.3.0/system.security.cryptography.x509certificates.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.threading.tasks/index.json 791ms
+           GET https://api.nuget.org/v3-flatcontainer/system.threading.tasks/4.3.0/system.threading.tasks.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.runtime.handles/index.json 806ms
+           GET https://api.nuget.org/v3-flatcontainer/system.runtime.handles/4.3.0/system.runtime.handles.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.collections/4.3.0/system.collections.4.3.0.nupkg 50ms
+           OK https://api.nuget.org/v3-flatcontainer/system.console/4.3.0/system.console.4.3.0.nupkg 53ms
+           OK https://api.nuget.org/v3-flatcontainer/system.runtime/4.3.0/system.runtime.4.3.0.nupkg 56ms
+           OK https://api.nuget.org/v3-flatcontainer/system.linq.expressions/4.3.0/system.linq.expressions.4.3.0.nupkg 60ms
+           GET https://api.nuget.org/v3-flatcontainer/runtime.native.system/index.json
+           GET https://api.nuget.org/v3-flatcontainer/runtime.native.system.io.compression/index.json
+           OK https://api.nuget.org/v3-flatcontainer/system.io/4.3.0/system.io.4.3.0.nupkg 59ms
+           GET https://api.nuget.org/v3-flatcontainer/system.buffers/index.json
+           OK https://api.nuget.org/v3-flatcontainer/system.resources.resourcemanager/4.3.0/system.resources.resourcemanager.4.3.0.nupkg 60ms
+           OK https://api.nuget.org/v3-flatcontainer/system.net.http/4.3.0/system.net.http.4.3.0.nupkg 58ms
+           OK https://api.nuget.org/v3-flatcontainer/system.reflection.extensions/4.3.0/system.reflection.extensions.4.3.0.nupkg 58ms
+           OK https://api.nuget.org/v3-flatcontainer/system.runtime.interopservices/4.3.0/system.runtime.interopservices.4.3.0.nupkg 56ms
+           OK https://api.nuget.org/v3-flatcontainer/system.runtime.interopservices.runtimeinformation/4.3.0/system.runtime.interopservices.runtimeinformation.4.3.0.nupkg 57ms
+           OK https://api.nuget.org/v3-flatcontainer/system.reflection/4.3.0/system.reflection.4.3.0.nupkg 58ms
+           OK https://api.nuget.org/v3-flatcontainer/system.security.cryptography.x509certificates/4.3.0/system.security.cryptography.x509certificates.4.3.0.nupkg 57ms
+           OK https://api.nuget.org/v3-flatcontainer/system.threading.tasks/4.3.0/system.threading.tasks.4.3.0.nupkg 60ms
+           OK https://api.nuget.org/v3-flatcontainer/system.runtime.handles/4.3.0/system.runtime.handles.4.3.0.nupkg 60ms
+           OK https://api.nuget.org/v3-flatcontainer/system.io.compression.zipfile/index.json 877ms
+           GET https://api.nuget.org/v3-flatcontainer/system.io.compression.zipfile/4.3.0/system.io.compression.zipfile.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.io.compression.zipfile/4.3.0/system.io.compression.zipfile.4.3.0.nupkg 59ms
+           OK https://api.nuget.org/v3-flatcontainer/system.linq/4.3.0/system.linq.4.3.0.nupkg 143ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.csharp/4.5.0/microsoft.csharp.4.5.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/newtonsoft.json/11.0.2/newtonsoft.json.11.0.2.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.data.sqlite.core/index.json 616ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.data.sqlite.core/3.1.4/microsoft.data.sqlite.core.3.1.4.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.diagnostics.debug/index.json 1015ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.netcore.targets/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.diagnostics.debug/4.3.0/system.diagnostics.debug.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.collections.concurrent/index.json 1026ms
+           GET https://api.nuget.org/v3-flatcontainer/system.collections.concurrent/4.3.0/system.collections.concurrent.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.csharp/4.5.0/microsoft.csharp.4.5.0.nupkg 58ms
+           OK https://api.nuget.org/v3-flatcontainer/newtonsoft.json/11.0.2/newtonsoft.json.11.0.2.nupkg 62ms
+           OK https://api.nuget.org/v3-flatcontainer/system.xml.xdocument/index.json 1040ms
+           GET https://api.nuget.org/v3-flatcontainer/system.xml.xdocument/4.3.0/system.xml.xdocument.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.diagnostics.debug/4.3.0/system.diagnostics.debug.4.3.0.nupkg 59ms
+           OK https://api.nuget.org/v3-flatcontainer/system.memory/index.json 634ms
+           GET https://api.nuget.org/v3-flatcontainer/system.memory/4.5.3/system.memory.4.5.3.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.collections.concurrent/4.3.0/system.collections.concurrent.4.3.0.nupkg 60ms
+           OK https://api.nuget.org/v3-flatcontainer/system.diagnostics.tracing/index.json 1116ms
+           GET https://api.nuget.org/v3-flatcontainer/system.diagnostics.tracing/4.3.0/system.diagnostics.tracing.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.globalization.calendars/index.json 1117ms
+           GET https://api.nuget.org/v3-flatcontainer/system.globalization.calendars/4.3.0/system.globalization.calendars.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration.environmentvariables/index.json 630ms
+           OK https://api.nuget.org/v3-flatcontainer/nicolasdorier.commandline.configuration/index.json 633ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration.environmentvariables/2.1.0/microsoft.extensions.configuration.environmentvariables.2.1.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/nicolasdorier.commandline.configuration/1.0.0.3/nicolasdorier.commandline.configuration.1.0.0.3.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.diagnostics.tools/index.json 1132ms
+           OK https://api.nuget.org/v3-flatcontainer/system.xml.xdocument/4.3.0/system.xml.xdocument.4.3.0.nupkg 61ms
+           GET https://api.nuget.org/v3-flatcontainer/system.diagnostics.tools/4.3.0/system.diagnostics.tools.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.globalization/index.json 1133ms
+           GET https://api.nuget.org/v3-flatcontainer/system.globalization/4.3.0/system.globalization.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.memory/4.5.3/system.memory.4.5.3.nupkg 57ms
+           OK https://api.nuget.org/v3-flatcontainer/system.threading.timer/index.json 1145ms
+           GET https://api.nuget.org/v3-flatcontainer/system.threading.timer/4.3.0/system.threading.timer.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.text.encoding.extensions/index.json 1153ms
+           GET https://api.nuget.org/v3-flatcontainer/system.text.encoding.extensions/4.3.0/system.text.encoding.extensions.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.diagnostics.tracing/4.3.0/system.diagnostics.tracing.4.3.0.nupkg 56ms
+           OK https://api.nuget.org/v3-flatcontainer/system.globalization.calendars/4.3.0/system.globalization.calendars.4.3.0.nupkg 58ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.dependencymodel/index.json 797ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.dependencymodel/3.1.4/microsoft.extensions.dependencymodel.3.1.4.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.dotnet.platformabstractions/index.json 807ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.dotnet.platformabstractions/3.1.4/microsoft.dotnet.platformabstractions.3.1.4.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.globalization/4.3.0/system.globalization.4.3.0.nupkg 57ms
+           OK https://api.nuget.org/v3-flatcontainer/system.diagnostics.tools/4.3.0/system.diagnostics.tools.4.3.0.nupkg 63ms
+           OK https://api.nuget.org/v3-flatcontainer/system.threading.timer/4.3.0/system.threading.timer.4.3.0.nupkg 58ms
+           OK https://api.nuget.org/v3-flatcontainer/system.text.encoding.extensions/4.3.0/system.text.encoding.extensions.4.3.0.nupkg 59ms
+           OK https://api.nuget.org/v3-flatcontainer/system.appcontext/index.json 1250ms
+           GET https://api.nuget.org/v3-flatcontainer/system.appcontext/4.3.0/system.appcontext.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.io.filesystem/index.json 1256ms
+           GET https://api.nuget.org/v3-flatcontainer/system.io.filesystem/4.3.0/system.io.filesystem.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.win32.primitives/index.json 1269ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.win32.primitives/4.3.0/microsoft.win32.primitives.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.reflection.primitives/index.json 1256ms
+           GET https://api.nuget.org/v3-flatcontainer/system.reflection.primitives/4.3.0/system.reflection.primitives.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.runtime.numerics/index.json 1253ms
+           GET https://api.nuget.org/v3-flatcontainer/system.runtime.numerics/4.3.0/system.runtime.numerics.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.xml.readerwriter/index.json 1252ms
+           OK https://api.nuget.org/v3-flatcontainer/system.threading/index.json 1253ms
+           GET https://api.nuget.org/v3-flatcontainer/system.xml.readerwriter/4.3.0/system.xml.readerwriter.4.3.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.threading/4.3.0/system.threading.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.io.filesystem.primitives/index.json 1272ms
+           OK https://api.nuget.org/v3-flatcontainer/system.security.cryptography.algorithms/index.json 1260ms
+           GET https://api.nuget.org/v3-flatcontainer/system.io.filesystem.primitives/4.3.0/system.io.filesystem.primitives.4.3.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.security.cryptography.algorithms/4.3.0/system.security.cryptography.algorithms.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.text.encoding/index.json 1272ms
+           GET https://api.nuget.org/v3-flatcontainer/system.text.encoding/4.3.0/system.text.encoding.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.logging.abstractions/index.json 802ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.logging.abstractions/2.1.0/microsoft.extensions.logging.abstractions.2.1.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration.ini/index.json 808ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration.ini/2.1.0/microsoft.extensions.configuration.ini.2.1.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.appcontext/4.3.0/system.appcontext.4.3.0.nupkg 57ms
+           OK https://api.nuget.org/v3-flatcontainer/system.security.cryptography.encoding/index.json 1297ms
+           GET https://api.nuget.org/v3-flatcontainer/system.security.cryptography.encoding/4.3.0/system.security.cryptography.encoding.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.io.filesystem/4.3.0/system.io.filesystem.4.3.0.nupkg 57ms
+           OK https://api.nuget.org/v3-flatcontainer/system.reflection.primitives/4.3.0/system.reflection.primitives.4.3.0.nupkg 55ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.win32.primitives/4.3.0/microsoft.win32.primitives.4.3.0.nupkg 59ms
+           OK https://api.nuget.org/v3-flatcontainer/system.threading/4.3.0/system.threading.4.3.0.nupkg 57ms
+           OK https://api.nuget.org/v3-flatcontainer/system.xml.readerwriter/4.3.0/system.xml.readerwriter.4.3.0.nupkg 58ms
+           OK https://api.nuget.org/v3-flatcontainer/system.runtime.numerics/4.3.0/system.runtime.numerics.4.3.0.nupkg 65ms
+           OK https://api.nuget.org/v3-flatcontainer/system.io.filesystem.primitives/4.3.0/system.io.filesystem.primitives.4.3.0.nupkg 59ms
+           OK https://api.nuget.org/v3-flatcontainer/system.componentmodel.annotations/index.json 588ms
+           OK https://api.nuget.org/v3-flatcontainer/system.security.cryptography.algorithms/4.3.0/system.security.cryptography.algorithms.4.3.0.nupkg 59ms
+           GET https://api.nuget.org/v3-flatcontainer/system.componentmodel.annotations/4.7.0/system.componentmodel.annotations.4.7.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.text.encoding/4.3.0/system.text.encoding.4.3.0.nupkg 59ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.logging.abstractions/2.1.0/microsoft.extensions.logging.abstractions.2.1.0.nupkg 59ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.logging/index.json 626ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.identity.core/index.json 636ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.caching.abstractions/index.json 635ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.logging/3.1.4/microsoft.extensions.logging.3.1.4.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.security.cryptography.encoding/4.3.0/system.security.cryptography.encoding.4.3.0.nupkg 67ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.identity.core/3.1.4/microsoft.extensions.identity.core.3.1.4.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.componentmodel.annotations/4.7.0/system.componentmodel.annotations.4.7.0.nupkg 59ms
+           OK https://api.nuget.org/v3-flatcontainer/system.net.security/index.json 621ms
+           GET https://api.nuget.org/v3-flatcontainer/system.net.security/4.3.0/system.net.security.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.net.nameresolution/index.json 627ms
+           GET https://api.nuget.org/v3-flatcontainer/system.net.nameresolution/4.3.0/system.net.nameresolution.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.net.nameresolution/4.3.0/system.net.nameresolution.4.3.0.nupkg 59ms
+           OK https://api.nuget.org/v3-flatcontainer/runtime.native.system/index.json 632ms
+           GET https://api.nuget.org/v3-flatcontainer/runtime.native.system/4.3.0/runtime.native.system.4.3.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.entityframeworkcore/3.1.0/microsoft.entityframeworkcore.3.1.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.collections.immutable/index.json 796ms
+           OK https://api.nuget.org/v3-flatcontainer/runtime.native.system/4.3.0/runtime.native.system.4.3.0.nupkg 57ms
+           GET https://api.nuget.org/v3-flatcontainer/system.collections.immutable/1.7.1/system.collections.immutable.1.7.1.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.bcl.hashcode/index.json 804ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.bcl.hashcode/1.1.0/microsoft.bcl.hashcode.1.1.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.diagnostics.diagnosticsource/index.json 803ms
+           GET https://api.nuget.org/v3-flatcontainer/system.diagnostics.diagnosticsource/4.7.1/system.diagnostics.diagnosticsource.4.7.1.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.entityframeworkcore/3.1.0/microsoft.entityframeworkcore.3.1.0.nupkg 60ms
+           OK https://api.nuget.org/v3-flatcontainer/system.net.webheadercollection/index.json 792ms
+           GET https://api.nuget.org/v3-flatcontainer/system.net.webheadercollection/4.3.0/system.net.webheadercollection.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.collections.immutable/1.7.1/system.collections.immutable.1.7.1.nupkg 57ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.bcl.hashcode/1.1.0/microsoft.bcl.hashcode.1.1.0.nupkg 61ms
+           OK https://api.nuget.org/v3-flatcontainer/system.diagnostics.diagnosticsource/4.7.1/system.diagnostics.diagnosticsource.4.7.1.nupkg 61ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.data.sqlite.core/3.1.4/microsoft.data.sqlite.core.3.1.4.nupkg 625ms
+           OK https://api.nuget.org/v3-flatcontainer/sqlitepclraw.lib.e_sqlite3/index.json 1870ms
+           OK https://api.nuget.org/v3-flatcontainer/system.net.webheadercollection/4.3.0/system.net.webheadercollection.4.3.0.nupkg 60ms
+           GET https://api.nuget.org/v3-flatcontainer/sqlitepclraw.lib.e_sqlite3/2.0.2/sqlitepclraw.lib.e_sqlite3.2.0.2.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.netcore.targets/index.json 628ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.netcore.targets/1.1.0/microsoft.netcore.targets.1.1.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/runtime.native.system.io.compression/index.json 806ms
+           GET https://api.nuget.org/v3-flatcontainer/runtime.native.system.io.compression/4.3.0/runtime.native.system.io.compression.4.3.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/runtime.native.system.security.cryptography.openssl/index.json
+           OK https://api.nuget.org/v3-flatcontainer/sqlitepclraw.lib.e_sqlite3/2.0.2/sqlitepclraw.lib.e_sqlite3.2.0.2.nupkg 63ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.netcore.targets/1.1.0/microsoft.netcore.targets.1.1.0.nupkg 59ms
+           OK https://api.nuget.org/v3-flatcontainer/runtime.native.system.io.compression/4.3.0/runtime.native.system.io.compression.4.3.0.nupkg 61ms
+           OK https://api.nuget.org/v3-flatcontainer/nicolasdorier.commandline.configuration/1.0.0.3/nicolasdorier.commandline.configuration.1.0.0.3.nupkg 625ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration.environmentvariables/2.1.0/microsoft.extensions.configuration.environmentvariables.2.1.0.nupkg 628ms
+           GET https://api.nuget.org/v3-flatcontainer/nicolasdorier.commandline/index.json
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration/index.json
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.caching.abstractions/3.1.4/microsoft.extensions.caching.abstractions.3.1.4.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.entityframeworkcore.analyzers/index.json 1039ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.entityframeworkcore.analyzers/3.1.4/microsoft.entityframeworkcore.analyzers.3.1.4.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.dependencyinjection/index.json 1062ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.dependencymodel/3.1.4/microsoft.extensions.dependencymodel.3.1.4.nupkg 628ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.dependencyinjection/3.1.4/microsoft.extensions.dependencyinjection.3.1.4.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.objectmodel/index.json 1809ms
+           GET https://api.nuget.org/v3-flatcontainer/system.objectmodel/4.3.0/system.objectmodel.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.dotnet.platformabstractions/3.1.4/microsoft.dotnet.platformabstractions.3.1.4.nupkg 631ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.bcl.asyncinterfaces/index.json 1084ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.bcl.asyncinterfaces/1.1.1/microsoft.bcl.asyncinterfaces.1.1.1.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.dependencyinjection/3.1.4/microsoft.extensions.dependencyinjection.3.1.4.nupkg 61ms
+           OK https://api.nuget.org/v3-flatcontainer/system.objectmodel/4.3.0/system.objectmodel.4.3.0.nupkg 62ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.bcl.asyncinterfaces/1.1.1/microsoft.bcl.asyncinterfaces.1.1.1.nupkg 63ms
+           OK https://api.nuget.org/v3-flatcontainer/system.text.regularexpressions/index.json 1892ms
+           GET https://api.nuget.org/v3-flatcontainer/system.text.regularexpressions/4.3.0/system.text.regularexpressions.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.net.websockets/index.json 1134ms
+           GET https://api.nuget.org/v3-flatcontainer/system.net.websockets/4.3.0/system.net.websockets.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.buffers/index.json 1069ms
+           GET https://api.nuget.org/v3-flatcontainer/system.buffers/4.3.0/system.buffers.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration.ini/2.1.0/microsoft.extensions.configuration.ini.2.1.0.nupkg 622ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration.fileextensions/index.json
+           OK https://api.nuget.org/v3-flatcontainer/system.text.regularexpressions/4.3.0/system.text.regularexpressions.4.3.0.nupkg 54ms
+           OK https://api.nuget.org/v3-flatcontainer/system.buffers/4.3.0/system.buffers.4.3.0.nupkg 55ms
+           OK https://api.nuget.org/v3-flatcontainer/system.net.websockets/4.3.0/system.net.websockets.4.3.0.nupkg 60ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.logging/3.1.4/microsoft.extensions.logging.3.1.4.nupkg 626ms
+           OK https://api.nuget.org/v3-flatcontainer/system.net.security/4.3.0/system.net.security.4.3.0.nupkg 629ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.identity.core/3.1.4/microsoft.extensions.identity.core.3.1.4.nupkg 687ms
+           OK https://api.nuget.org/v3-flatcontainer/system.net.sockets/index.json 2072ms
+           GET https://api.nuget.org/v3-flatcontainer/system.net.sockets/4.3.0/system.net.sockets.4.3.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.text.json/index.json
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.caching.memory/index.json 1348ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.caching.memory/3.1.4/microsoft.extensions.caching.memory.3.1.4.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.net.sockets/4.3.0/system.net.sockets.4.3.0.nupkg 57ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration.binder/index.json
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.logging.abstractions/3.1.4/microsoft.extensions.logging.abstractions.3.1.4.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.options/index.json
+           OK https://api.nuget.org/v3-flatcontainer/system.net.primitives/index.json 2150ms
+           GET https://api.nuget.org/v3-flatcontainer/system.net.primitives/4.3.0/system.net.primitives.4.3.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.security.principal.windows/index.json
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.logging.abstractions/3.1.4/microsoft.extensions.logging.abstractions.3.1.4.nupkg 63ms
+           OK https://api.nuget.org/v3-flatcontainer/system.net.primitives/4.3.0/system.net.primitives.4.3.0.nupkg 59ms
+           GET https://api.nuget.org/v3-flatcontainer/system.security.cryptography.protecteddata/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.security.permissions/index.json
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.aspnetcore.cryptography.keyderivation/index.json
+           OK https://api.nuget.org/v3-flatcontainer/runtime.native.system.security.cryptography.openssl/index.json 628ms
+           GET https://api.nuget.org/v3-flatcontainer/runtime.native.system.security.cryptography.openssl/4.3.0/runtime.native.system.security.cryptography.openssl.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration.binder/index.json 203ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration.binder/3.1.4/microsoft.extensions.configuration.binder.3.1.4.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/runtime.native.system.security.cryptography.openssl/4.3.0/runtime.native.system.security.cryptography.openssl.4.3.0.nupkg 61ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.caching.abstractions/3.1.4/microsoft.extensions.caching.abstractions.3.1.4.nupkg 621ms
+           OK https://api.nuget.org/v3-flatcontainer/nicolasdorier.commandline/index.json 631ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration/index.json 630ms
+           GET https://api.nuget.org/v3-flatcontainer/nicolasdorier.commandline/1.0.0.2/nicolasdorier.commandline.1.0.0.2.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration/2.1.0/microsoft.extensions.configuration.2.1.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.entityframeworkcore.analyzers/3.1.4/microsoft.entityframeworkcore.analyzers.3.1.4.nupkg 626ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration/2.1.0/microsoft.extensions.configuration.2.1.0.nupkg 56ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.dependencyinjection.abstractions/index.json
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration.fileextensions/index.json 628ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration.fileextensions/2.1.0/microsoft.extensions.configuration.fileextensions.2.1.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.primitives/index.json
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration.fileextensions/2.1.0/microsoft.extensions.configuration.fileextensions.2.1.0.nupkg 41ms
+           GET https://api.nuget.org/v3-flatcontainer/runtime.debian.8-x64.runtime.native.system.security.cryptography.openssl/index.json
+           GET https://api.nuget.org/v3-flatcontainer/runtime.fedora.23-x64.runtime.native.system.security.cryptography.openssl/index.json
+           GET https://api.nuget.org/v3-flatcontainer/runtime.fedora.24-x64.runtime.native.system.security.cryptography.openssl/index.json
+           GET https://api.nuget.org/v3-flatcontainer/runtime.opensuse.13.2-x64.runtime.native.system.security.cryptography.openssl/index.json
+           GET https://api.nuget.org/v3-flatcontainer/runtime.opensuse.42.1-x64.runtime.native.system.security.cryptography.openssl/index.json
+           GET https://api.nuget.org/v3-flatcontainer/runtime.osx.10.10-x64.runtime.native.system.security.cryptography.openssl/index.json
+           GET https://api.nuget.org/v3-flatcontainer/runtime.rhel.7-x64.runtime.native.system.security.cryptography.openssl/index.json
+           GET https://api.nuget.org/v3-flatcontainer/runtime.ubuntu.14.04-x64.runtime.native.system.security.cryptography.openssl/index.json
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.fileproviders.physical/index.json
+           GET https://api.nuget.org/v3-flatcontainer/runtime.ubuntu.16.04-x64.runtime.native.system.security.cryptography.openssl/index.json
+           GET https://api.nuget.org/v3-flatcontainer/runtime.ubuntu.16.10-x64.runtime.native.system.security.cryptography.openssl/index.json
+           OK https://api.nuget.org/v3-flatcontainer/system.text.json/index.json 599ms
+           GET https://api.nuget.org/v3-flatcontainer/system.text.json/4.7.2/system.text.json.4.7.2.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.caching.memory/3.1.4/microsoft.extensions.caching.memory.3.1.4.nupkg 618ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration.abstractions/index.json
+           OK https://api.nuget.org/v3-flatcontainer/system.text.json/4.7.2/system.text.json.4.7.2.nupkg 38ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.options/index.json 606ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.options/3.1.4/microsoft.extensions.options.3.1.4.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.security.principal.windows/index.json 611ms
+           GET https://api.nuget.org/v3-flatcontainer/system.security.principal.windows/4.3.0/system.security.principal.windows.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.options/3.1.4/microsoft.extensions.options.3.1.4.nupkg 38ms
+           GET https://api.nuget.org/v3-flatcontainer/runtime.native.system.net.security/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.globalization.extensions/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.security.claims/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.security.cryptography.openssl/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.security.principal/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.threading.threadpool/index.json
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.fileproviders.physical/index.json 185ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.fileproviders.physical/2.1.0/microsoft.extensions.fileproviders.physical.2.1.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.security.principal.windows/4.3.0/system.security.principal.windows.4.3.0.nupkg 41ms
+           OK https://api.nuget.org/v3-flatcontainer/system.security.cryptography.protecteddata/index.json 613ms
+           GET https://api.nuget.org/v3-flatcontainer/system.security.cryptography.protecteddata/4.5.0/system.security.cryptography.protecteddata.4.5.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.security.permissions/index.json 619ms
+           GET https://api.nuget.org/v3-flatcontainer/system.security.permissions/4.5.0/system.security.permissions.4.5.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.fileproviders.physical/2.1.0/microsoft.extensions.fileproviders.physical.2.1.0.nupkg 42ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.aspnetcore.cryptography.keyderivation/index.json 610ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.aspnetcore.cryptography.keyderivation/3.1.4/microsoft.aspnetcore.cryptography.keyderivation.3.1.4.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.security.cryptography.protecteddata/4.5.0/system.security.cryptography.protecteddata.4.5.0.nupkg 45ms
+           OK https://api.nuget.org/v3-flatcontainer/system.security.permissions/4.5.0/system.security.permissions.4.5.0.nupkg 45ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.fileproviders.abstractions/index.json
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.filesystemglobbing/index.json
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration.binder/3.1.4/microsoft.extensions.configuration.binder.3.1.4.nupkg 608ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration/3.1.4/microsoft.extensions.configuration.3.1.4.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.security.cryptography.primitives/index.json 2983ms
+           GET https://api.nuget.org/v3-flatcontainer/system.security.cryptography.primitives/4.3.0/system.security.cryptography.primitives.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/nicolasdorier.commandline/1.0.0.2/nicolasdorier.commandline.1.0.0.2.nupkg 616ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration/3.1.4/microsoft.extensions.configuration.3.1.4.nupkg 48ms
+           OK https://api.nuget.org/v3-flatcontainer/system.security.cryptography.primitives/4.3.0/system.security.cryptography.primitives.4.3.0.nupkg 54ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.dependencyinjection.abstractions/index.json 610ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.dependencyinjection.abstractions/3.1.4/microsoft.extensions.dependencyinjection.abstractions.3.1.4.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.dependencyinjection.abstractions/3.1.4/microsoft.extensions.dependencyinjection.abstractions.3.1.4.nupkg 50ms
+           GET https://api.nuget.org/v3-flatcontainer/runtime.native.system.security.cryptography.apple/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.security.accesscontrol/index.json
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.primitives/index.json 623ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.primitives/3.1.4/microsoft.extensions.primitives.3.1.4.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/runtime.osx.10.10-x64.runtime.native.system.security.cryptography.openssl/index.json 610ms
+           OK https://api.nuget.org/v3-flatcontainer/runtime.debian.8-x64.runtime.native.system.security.cryptography.openssl/index.json 613ms
+           GET https://api.nuget.org/v3-flatcontainer/runtime.osx.10.10-x64.runtime.native.system.security.cryptography.openssl/4.3.0/runtime.osx.10.10-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/runtime.debian.8-x64.runtime.native.system.security.cryptography.openssl/4.3.0/runtime.debian.8-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/runtime.fedora.23-x64.runtime.native.system.security.cryptography.openssl/index.json 614ms
+           OK https://api.nuget.org/v3-flatcontainer/runtime.ubuntu.16.04-x64.runtime.native.system.security.cryptography.openssl/index.json 610ms
+           GET https://api.nuget.org/v3-flatcontainer/runtime.fedora.23-x64.runtime.native.system.security.cryptography.openssl/4.3.0/runtime.fedora.23-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/runtime.ubuntu.16.04-x64.runtime.native.system.security.cryptography.openssl/4.3.0/runtime.ubuntu.16.04-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/runtime.opensuse.42.1-x64.runtime.native.system.security.cryptography.openssl/index.json 614ms
+           GET https://api.nuget.org/v3-flatcontainer/runtime.opensuse.42.1-x64.runtime.native.system.security.cryptography.openssl/4.3.0/runtime.opensuse.42.1-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/runtime.fedora.24-x64.runtime.native.system.security.cryptography.openssl/index.json 618ms
+           OK https://api.nuget.org/v3-flatcontainer/runtime.rhel.7-x64.runtime.native.system.security.cryptography.openssl/index.json 616ms
+           GET https://api.nuget.org/v3-flatcontainer/runtime.fedora.24-x64.runtime.native.system.security.cryptography.openssl/4.3.0/runtime.fedora.24-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/runtime.rhel.7-x64.runtime.native.system.security.cryptography.openssl/4.3.0/runtime.rhel.7-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/runtime.opensuse.13.2-x64.runtime.native.system.security.cryptography.openssl/index.json 623ms
+           OK https://api.nuget.org/v3-flatcontainer/runtime.ubuntu.16.10-x64.runtime.native.system.security.cryptography.openssl/index.json 619ms
+           GET https://api.nuget.org/v3-flatcontainer/runtime.ubuntu.16.10-x64.runtime.native.system.security.cryptography.openssl/4.3.0/runtime.ubuntu.16.10-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/runtime.opensuse.13.2-x64.runtime.native.system.security.cryptography.openssl/4.3.0/runtime.opensuse.13.2-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/runtime.ubuntu.14.04-x64.runtime.native.system.security.cryptography.openssl/index.json 626ms
+           GET https://api.nuget.org/v3-flatcontainer/runtime.ubuntu.14.04-x64.runtime.native.system.security.cryptography.openssl/4.3.0/runtime.ubuntu.14.04-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/runtime.ubuntu.16.04-x64.runtime.native.system.security.cryptography.openssl/4.3.0/runtime.ubuntu.16.04-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg 47ms
+           OK https://api.nuget.org/v3-flatcontainer/runtime.osx.10.10-x64.runtime.native.system.security.cryptography.openssl/4.3.0/runtime.osx.10.10-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg 50ms
+           OK https://api.nuget.org/v3-flatcontainer/runtime.debian.8-x64.runtime.native.system.security.cryptography.openssl/4.3.0/runtime.debian.8-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg 52ms
+           OK https://api.nuget.org/v3-flatcontainer/runtime.opensuse.42.1-x64.runtime.native.system.security.cryptography.openssl/4.3.0/runtime.opensuse.42.1-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg 51ms
+           OK https://api.nuget.org/v3-flatcontainer/runtime.fedora.23-x64.runtime.native.system.security.cryptography.openssl/4.3.0/runtime.fedora.23-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg 56ms
+           OK https://api.nuget.org/v3-flatcontainer/runtime.fedora.24-x64.runtime.native.system.security.cryptography.openssl/4.3.0/runtime.fedora.24-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg 57ms
+           OK https://api.nuget.org/v3-flatcontainer/runtime.rhel.7-x64.runtime.native.system.security.cryptography.openssl/4.3.0/runtime.rhel.7-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg 59ms
+           OK https://api.nuget.org/v3-flatcontainer/runtime.ubuntu.16.10-x64.runtime.native.system.security.cryptography.openssl/4.3.0/runtime.ubuntu.16.10-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg 58ms
+           OK https://api.nuget.org/v3-flatcontainer/runtime.opensuse.13.2-x64.runtime.native.system.security.cryptography.openssl/4.3.0/runtime.opensuse.13.2-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg 58ms
+           OK https://api.nuget.org/v3-flatcontainer/runtime.ubuntu.14.04-x64.runtime.native.system.security.cryptography.openssl/4.3.0/runtime.ubuntu.14.04-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg 60ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration.abstractions/index.json 621ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration.abstractions/2.1.0/microsoft.extensions.configuration.abstractions.2.1.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration.abstractions/3.1.4/microsoft.extensions.configuration.abstractions.3.1.4.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration.abstractions/2.1.0/microsoft.extensions.configuration.abstractions.2.1.0.nupkg 54ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration.abstractions/3.1.4/microsoft.extensions.configuration.abstractions.3.1.4.nupkg 58ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.primitives/2.1.0/microsoft.extensions.primitives.2.1.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.security.cryptography.openssl/index.json 624ms
+           OK https://api.nuget.org/v3-flatcontainer/system.security.principal/index.json 624ms
+           GET https://api.nuget.org/v3-flatcontainer/system.security.principal/4.3.0/system.security.principal.4.3.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.security.cryptography.openssl/4.3.0/system.security.cryptography.openssl.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.threading.threadpool/index.json 625ms
+           OK https://api.nuget.org/v3-flatcontainer/system.globalization.extensions/index.json 627ms
+           OK https://api.nuget.org/v3-flatcontainer/system.security.claims/index.json 627ms
+           GET https://api.nuget.org/v3-flatcontainer/system.threading.threadpool/4.3.0/system.threading.threadpool.4.3.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.globalization.extensions/4.3.0/system.globalization.extensions.4.3.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.security.claims/4.3.0/system.security.claims.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/runtime.native.system.net.security/index.json 631ms
+           GET https://api.nuget.org/v3-flatcontainer/runtime.native.system.net.security/4.3.0/runtime.native.system.net.security.4.3.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/runtime.native.system.net.http/index.json
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.primitives/2.1.0/microsoft.extensions.primitives.2.1.0.nupkg 48ms
+           GET https://api.nuget.org/v3-flatcontainer/system.security.cryptography.cng/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.security.cryptography.csp/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.memory/4.5.0/system.memory.4.5.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.runtime.compilerservices.unsafe/index.json
+           OK https://api.nuget.org/v3-flatcontainer/system.security.cryptography.openssl/4.3.0/system.security.cryptography.openssl.4.3.0.nupkg 49ms
+           OK https://api.nuget.org/v3-flatcontainer/system.globalization.extensions/4.3.0/system.globalization.extensions.4.3.0.nupkg 51ms
+           OK https://api.nuget.org/v3-flatcontainer/system.security.principal/4.3.0/system.security.principal.4.3.0.nupkg 55ms
+           OK https://api.nuget.org/v3-flatcontainer/system.threading.threadpool/4.3.0/system.threading.threadpool.4.3.0.nupkg 59ms
+           OK https://api.nuget.org/v3-flatcontainer/system.security.claims/4.3.0/system.security.claims.4.3.0.nupkg 59ms
+           OK https://api.nuget.org/v3-flatcontainer/runtime.native.system.net.security/4.3.0/runtime.native.system.net.security.4.3.0.nupkg 62ms
+           OK https://api.nuget.org/v3-flatcontainer/system.memory/4.5.0/system.memory.4.5.0.nupkg 55ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.aspnetcore.cryptography.keyderivation/3.1.4/microsoft.aspnetcore.cryptography.keyderivation.3.1.4.nupkg 642ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.filesystemglobbing/index.json 621ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.filesystemglobbing/2.1.0/microsoft.extensions.filesystemglobbing.2.1.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.fileproviders.abstractions/index.json 634ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.fileproviders.abstractions/2.1.0/microsoft.extensions.fileproviders.abstractions.2.1.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.filesystemglobbing/2.1.0/microsoft.extensions.filesystemglobbing.2.1.0.nupkg 52ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.fileproviders.abstractions/2.1.0/microsoft.extensions.fileproviders.abstractions.2.1.0.nupkg 55ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.aspnetcore.cryptography.internal/index.json
+           OK https://api.nuget.org/v3-flatcontainer/runtime.native.system.security.cryptography.apple/index.json 607ms
+           GET https://api.nuget.org/v3-flatcontainer/runtime.native.system.security.cryptography.apple/4.3.0/runtime.native.system.security.cryptography.apple.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.security.accesscontrol/index.json 607ms
+           GET https://api.nuget.org/v3-flatcontainer/system.security.accesscontrol/4.5.0/system.security.accesscontrol.4.5.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.primitives/3.1.4/microsoft.extensions.primitives.3.1.4.nupkg 600ms
+           OK https://api.nuget.org/v3-flatcontainer/runtime.native.system.security.cryptography.apple/4.3.0/runtime.native.system.security.cryptography.apple.4.3.0.nupkg 39ms
+           GET https://api.nuget.org/v3-flatcontainer/runtime.osx.10.10-x64.runtime.native.system.security.cryptography.apple/index.json
+           OK https://api.nuget.org/v3-flatcontainer/system.security.accesscontrol/4.5.0/system.security.accesscontrol.4.5.0.nupkg 36ms
+           OK https://api.nuget.org/v3-flatcontainer/runtime.native.system.net.http/index.json 601ms
+           GET https://api.nuget.org/v3-flatcontainer/runtime.native.system.net.http/4.3.0/runtime.native.system.net.http.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.security.cryptography.csp/index.json 609ms
+           OK https://api.nuget.org/v3-flatcontainer/system.security.cryptography.cng/index.json 610ms
+           GET https://api.nuget.org/v3-flatcontainer/system.security.cryptography.csp/4.3.0/system.security.cryptography.csp.4.3.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.security.cryptography.cng/4.3.0/system.security.cryptography.cng.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.runtime.compilerservices.unsafe/index.json 609ms
+           GET https://api.nuget.org/v3-flatcontainer/system.runtime.compilerservices.unsafe/4.6.0/system.runtime.compilerservices.unsafe.4.6.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.runtime.compilerservices.unsafe/4.5.0/system.runtime.compilerservices.unsafe.4.5.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/runtime.native.system.net.http/4.3.0/runtime.native.system.net.http.4.3.0.nupkg 39ms
+           OK https://api.nuget.org/v3-flatcontainer/system.security.cryptography.csp/4.3.0/system.security.cryptography.csp.4.3.0.nupkg 41ms
+           OK https://api.nuget.org/v3-flatcontainer/system.security.cryptography.cng/4.3.0/system.security.cryptography.cng.4.3.0.nupkg 42ms
+           OK https://api.nuget.org/v3-flatcontainer/system.runtime.compilerservices.unsafe/4.5.0/system.runtime.compilerservices.unsafe.4.5.0.nupkg 43ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.entityframeworkcore.abstractions/3.1.0/microsoft.entityframeworkcore.abstractions.3.1.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.entityframeworkcore.analyzers/3.1.0/microsoft.entityframeworkcore.analyzers.3.1.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.bcl.asyncinterfaces/1.1.0/microsoft.bcl.asyncinterfaces.1.1.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.caching.memory/3.1.0/microsoft.extensions.caching.memory.3.1.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.dependencyinjection/3.1.0/microsoft.extensions.dependencyinjection.3.1.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.logging/3.1.0/microsoft.extensions.logging.3.1.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.collections.immutable/1.7.0/system.collections.immutable.1.7.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.diagnostics.diagnosticsource/4.7.0/system.diagnostics.diagnosticsource.4.7.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.bcl.asyncinterfaces/1.1.0/microsoft.bcl.asyncinterfaces.1.1.0.nupkg 37ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.caching.memory/3.1.0/microsoft.extensions.caching.memory.3.1.0.nupkg 39ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.entityframeworkcore.analyzers/3.1.0/microsoft.entityframeworkcore.analyzers.3.1.0.nupkg 43ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.logging/3.1.0/microsoft.extensions.logging.3.1.0.nupkg 43ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.entityframeworkcore.abstractions/3.1.0/microsoft.entityframeworkcore.abstractions.3.1.0.nupkg 48ms
+           OK https://api.nuget.org/v3-flatcontainer/system.collections.immutable/1.7.0/system.collections.immutable.1.7.0.nupkg 50ms
+           OK https://api.nuget.org/v3-flatcontainer/system.diagnostics.diagnosticsource/4.7.0/system.diagnostics.diagnosticsource.4.7.0.nupkg 53ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.dependencyinjection/3.1.0/microsoft.extensions.dependencyinjection.3.1.0.nupkg 56ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.aspnetcore.cryptography.internal/index.json 624ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.aspnetcore.cryptography.internal/3.1.4/microsoft.aspnetcore.cryptography.internal.3.1.4.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.threading.tasks.extensions/index.json
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.caching.abstractions/3.1.0/microsoft.extensions.caching.abstractions.3.1.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.dependencyinjection.abstractions/3.1.0/microsoft.extensions.dependencyinjection.abstractions.3.1.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.logging.abstractions/3.1.0/microsoft.extensions.logging.abstractions.3.1.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.options/3.1.0/microsoft.extensions.options.3.1.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.caching.abstractions/3.1.0/microsoft.extensions.caching.abstractions.3.1.0.nupkg 42ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration.binder/3.1.0/microsoft.extensions.configuration.binder.3.1.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.logging.abstractions/3.1.0/microsoft.extensions.logging.abstractions.3.1.0.nupkg 42ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.options/3.1.0/microsoft.extensions.options.3.1.0.nupkg 44ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.dependencyinjection.abstractions/3.1.0/microsoft.extensions.dependencyinjection.abstractions.3.1.0.nupkg 49ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.logging.abstractions/1.0.0/microsoft.extensions.logging.abstractions.1.0.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration.binder/3.1.0/microsoft.extensions.configuration.binder.3.1.0.nupkg 47ms
+           OK https://api.nuget.org/v3-flatcontainer/runtime.osx.10.10-x64.runtime.native.system.security.cryptography.apple/index.json 620ms
+           GET https://api.nuget.org/v3-flatcontainer/runtime.osx.10.10-x64.runtime.native.system.security.cryptography.apple/4.3.0/runtime.osx.10.10-x64.runtime.native.system.security.cryptography.apple.4.3.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.primitives/3.1.0/microsoft.extensions.primitives.3.1.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/runtime.osx.10.10-x64.runtime.native.system.security.cryptography.apple/4.3.0/runtime.osx.10.10-x64.runtime.native.system.security.cryptography.apple.4.3.0.nupkg 47ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.netcore.platforms/2.0.0/microsoft.netcore.platforms.2.0.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.security.principal.windows/4.5.0/system.security.principal.windows.4.5.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.diagnostics.diagnosticsource/4.3.0/system.diagnostics.diagnosticsource.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.primitives/3.1.0/microsoft.extensions.primitives.3.1.0.nupkg 42ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.netcore.platforms/2.0.0/microsoft.netcore.platforms.2.0.0.nupkg 38ms
+           OK https://api.nuget.org/v3-flatcontainer/system.security.principal.windows/4.5.0/system.security.principal.windows.4.5.0.nupkg 43ms
+           OK https://api.nuget.org/v3-flatcontainer/system.diagnostics.diagnosticsource/4.3.0/system.diagnostics.diagnosticsource.4.3.0.nupkg 39ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration/3.1.0/microsoft.extensions.configuration.3.1.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration/3.1.0/microsoft.extensions.configuration.3.1.0.nupkg 37ms
+           OK https://api.nuget.org/v3-flatcontainer/system.runtime.compilerservices.unsafe/4.6.0/system.runtime.compilerservices.unsafe.4.6.0.nupkg 612ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration.abstractions/3.1.0/microsoft.extensions.configuration.abstractions.3.1.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.reflection.emit/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.reflection.emit.ilgeneration/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.reflection.emit.lightweight/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.reflection.typeextensions/index.json
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration.abstractions/3.1.0/microsoft.extensions.configuration.abstractions.3.1.0.nupkg 37ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.aspnetcore.cryptography.internal/3.1.4/microsoft.aspnetcore.cryptography.internal.3.1.4.nupkg 606ms
+           OK https://api.nuget.org/v3-flatcontainer/system.threading.tasks.extensions/index.json 603ms
+           GET https://api.nuget.org/v3-flatcontainer/system.threading.tasks.extensions/4.3.0/system.threading.tasks.extensions.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.reflection.typeextensions/index.json 180ms
+           GET https://api.nuget.org/v3-flatcontainer/system.reflection.typeextensions/4.3.0/system.reflection.typeextensions.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.threading.tasks.extensions/4.3.0/system.threading.tasks.extensions.4.3.0.nupkg 34ms
+           OK https://api.nuget.org/v3-flatcontainer/system.reflection.typeextensions/4.3.0/system.reflection.typeextensions.4.3.0.nupkg 40ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.logging.abstractions/1.0.0/microsoft.extensions.logging.abstractions.1.0.0.nupkg 606ms
+           GET https://api.nuget.org/v3-flatcontainer/system.collections/4.0.11/system.collections.4.0.11.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.collections.concurrent/4.0.12/system.collections.concurrent.4.0.12.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.diagnostics.debug/4.0.11/system.diagnostics.debug.4.0.11.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.globalization/4.0.11/system.globalization.4.0.11.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.linq/4.1.0/system.linq.4.1.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.reflection/4.1.0/system.reflection.4.1.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.resources.resourcemanager/4.0.1/system.resources.resourcemanager.4.0.1.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.runtime.extensions/4.1.0/system.runtime.extensions.4.1.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.runtime.interopservices/4.1.0/system.runtime.interopservices.4.1.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/newtonsoft.json/11.0.1/newtonsoft.json.11.0.1.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.diagnostics.debug/4.0.11/system.diagnostics.debug.4.0.11.nupkg 36ms
+           OK https://api.nuget.org/v3-flatcontainer/system.collections.concurrent/4.0.12/system.collections.concurrent.4.0.12.nupkg 41ms
+           OK https://api.nuget.org/v3-flatcontainer/system.reflection/4.1.0/system.reflection.4.1.0.nupkg 42ms
+           OK https://api.nuget.org/v3-flatcontainer/system.collections/4.0.11/system.collections.4.0.11.nupkg 47ms
+           OK https://api.nuget.org/v3-flatcontainer/system.globalization/4.0.11/system.globalization.4.0.11.nupkg 50ms
+           OK https://api.nuget.org/v3-flatcontainer/system.linq/4.1.0/system.linq.4.1.0.nupkg 51ms
+           OK https://api.nuget.org/v3-flatcontainer/system.resources.resourcemanager/4.0.1/system.resources.resourcemanager.4.0.1.nupkg 54ms
+           OK https://api.nuget.org/v3-flatcontainer/system.runtime.interopservices/4.1.0/system.runtime.interopservices.4.1.0.nupkg 56ms
+           OK https://api.nuget.org/v3-flatcontainer/system.runtime.extensions/4.1.0/system.runtime.extensions.4.1.0.nupkg 61ms
+           OK https://api.nuget.org/v3-flatcontainer/newtonsoft.json/11.0.1/newtonsoft.json.11.0.1.nupkg 57ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.netcore.platforms/1.0.1/microsoft.netcore.platforms.1.0.1.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.netcore.targets/1.0.1/microsoft.netcore.targets.1.0.1.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.runtime/4.1.0/system.runtime.4.1.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.netcore.platforms/1.0.1/microsoft.netcore.platforms.1.0.1.nupkg 43ms
+           OK https://api.nuget.org/v3-flatcontainer/system.runtime/4.1.0/system.runtime.4.1.0.nupkg 44ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.netcore.targets/1.0.1/microsoft.netcore.targets.1.0.1.nupkg 50ms
+           OK https://api.nuget.org/v3-flatcontainer/system.reflection.emit.lightweight/index.json 613ms
+           GET https://api.nuget.org/v3-flatcontainer/system.reflection.emit.lightweight/4.3.0/system.reflection.emit.lightweight.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.reflection.emit.ilgeneration/index.json 618ms
+           GET https://api.nuget.org/v3-flatcontainer/system.reflection.emit.ilgeneration/4.3.0/system.reflection.emit.ilgeneration.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.reflection.emit/index.json 620ms
+           GET https://api.nuget.org/v3-flatcontainer/system.reflection.emit/4.3.0/system.reflection.emit.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.reflection.emit.lightweight/4.3.0/system.reflection.emit.lightweight.4.3.0.nupkg 49ms
+           OK https://api.nuget.org/v3-flatcontainer/system.reflection.emit.ilgeneration/4.3.0/system.reflection.emit.ilgeneration.4.3.0.nupkg 51ms
+           OK https://api.nuget.org/v3-flatcontainer/system.reflection.emit/4.3.0/system.reflection.emit.4.3.0.nupkg 56ms
+           GET https://api.nuget.org/v3-flatcontainer/system.diagnostics.tracing/4.1.0/system.diagnostics.tracing.4.1.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.threading/4.0.11/system.threading.4.0.11.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.threading.tasks/4.0.11/system.threading.tasks.4.0.11.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.diagnostics.tracing/4.1.0/system.diagnostics.tracing.4.1.0.nupkg 45ms
+           OK https://api.nuget.org/v3-flatcontainer/system.threading/4.0.11/system.threading.4.0.11.nupkg 48ms
+           OK https://api.nuget.org/v3-flatcontainer/system.threading.tasks/4.0.11/system.threading.tasks.4.0.11.nupkg 55ms
+           GET https://api.nuget.org/v3-flatcontainer/system.io/4.1.0/system.io.4.1.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.reflection.primitives/4.0.1/system.reflection.primitives.4.0.1.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.reflection.primitives/4.0.1/system.reflection.primitives.4.0.1.nupkg 43ms
+           OK https://api.nuget.org/v3-flatcontainer/system.io/4.1.0/system.io.4.1.0.nupkg 66ms
+           GET https://api.nuget.org/v3-flatcontainer/system.text.encoding/4.0.11/system.text.encoding.4.0.11.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.text.encoding/4.0.11/system.text.encoding.4.0.11.nupkg 35ms
+           GET https://api.nuget.org/v3-flatcontainer/system.runtime.handles/4.0.1/system.runtime.handles.4.0.1.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.runtime.handles/4.0.1/system.runtime.handles.4.0.1.nupkg 35ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.codeanalysis.common/index.json
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.codeanalysis.common/index.json 180ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.codeanalysis.common/3.6.0/microsoft.codeanalysis.common.3.6.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.codeanalysis.common/3.6.0/microsoft.codeanalysis.common.3.6.0.nupkg 601ms
+         Installing System.Text.Encoding 4.0.11.
+         Installing System.Reflection.Emit 4.3.0.
+         Installing System.Threading.Tasks 4.0.11.
+         Installing System.Reflection.Emit.ILGeneration 4.3.0.
+         Installing System.Reflection.Emit.Lightweight 4.3.0.
+         Installing System.Diagnostics.Tracing 4.1.0.
+         Installing System.Reflection.TypeExtensions 4.3.0.
+         Installing System.Threading 4.0.11.
+         Installing System.Threading.Tasks.Extensions 4.3.0.
+         Installing System.IO 4.1.0.
+         Installing System.Diagnostics.DiagnosticSource 4.3.0.
+         Installing System.Runtime.Handles 4.0.1.
+         Installing System.Reflection.Primitives 4.0.1.
+         Installing System.Buffers 4.3.0.
+         Installing System.Runtime 4.1.0.
+         Installing runtime.native.System.IO.Compression 4.3.0.
+         Installing Microsoft.NETCore.Targets 1.0.1.
+         Installing System.Runtime.CompilerServices.Unsafe 4.5.0.
+         Installing Microsoft.NETCore.Platforms 1.0.1.
+         Installing System.Memory 4.5.0.
+         Installing System.Resources.ResourceManager 4.0.1.
+         Installing System.Collections.Concurrent 4.0.12.
+         Installing System.Linq 4.1.0.
+         Installing System.Linq.Expressions 4.3.0.
+         Installing System.Globalization 4.0.11.
+         Installing System.Xml.ReaderWriter 4.3.0.
+         Installing System.Collections 4.0.11.
+         Installing System.Net.Http 4.3.0.
+         Installing System.Reflection 4.1.0.
+         Installing System.Xml.XDocument 4.3.0.
+         Installing System.Text.RegularExpressions 4.3.0.
+         Installing System.Runtime.InteropServices.RuntimeInformation 4.3.0.
+         Installing Newtonsoft.Json 12.0.3.
+         Installing NBXplorer.Client 3.0.16.
+         Installing System.Runtime.Extensions 4.1.0.
+         Installing System.Reflection.Extensions 4.3.0.
+         Installing NBitcoin.Altcoins 2.0.13.
+         Installing System.Net.WebSockets.Client 4.3.2.
+         Installing NicolasDorier.StandardConfiguration 1.0.0.18.
+         Installing NBitcoin 5.0.40.
+         Installing Microsoft.NETCore.Platforms 1.1.0.
+         Installing System.Runtime.Handles 4.3.0.
+         Installing System.Diagnostics.Debug 4.3.0.
+         Installing System.Threading.Timer 4.3.0.
+         Installing System.Net.WebHeaderCollection 4.3.0.
+         Installing System.ObjectModel 4.3.0.
+         Installing Microsoft.Win32.Primitives 4.3.0.
+         Installing System.Net.Sockets 4.3.0.
+         Installing System.Net.WebSockets 4.3.0.
+         Installing System.Text.Encoding 4.3.0.
+         Installing System.Text.Encoding.Extensions 4.3.0.
+         Installing System.Collections 4.3.0.
+         Installing System.IO 4.3.0.
+         Installing System.IO.Compression.ZipFile 4.3.0.
+         Installing System.IO.Compression 4.3.0.
+         Installing System.Runtime.InteropServices 4.1.0.
+         Installing System.Threading 4.3.0.
+         Installing System.Threading.Tasks 4.3.0.
+         Installing System.Diagnostics.Tools 4.3.0.
+         Installing System.Resources.ResourceManager 4.3.0.
+         Installing System.Net.Primitives 4.3.0.
+         Installing System.Security.Cryptography.Primitives 4.3.0.
+         Installing System.Net.NameResolution 4.3.0.
+         Installing BTCPayServer.Lightning.Common 1.2.0.
+         Installing System.Diagnostics.Tracing 4.3.0.
+         Installing NBitcoin 5.0.43.
+         Installing System.Net.Security 4.3.0.
+         Installing System.Console 4.3.0.
+         Installing System.AppContext 4.3.0.
+         Installing System.Globalization 4.3.0.
+         Installing System.Runtime.Extensions 4.3.0.
+         Installing Microsoft.Extensions.FileProviders.Abstractions 2.1.0.
+         Installing Microsoft.Extensions.FileSystemGlobbing 2.1.0.
+         Installing System.Security.Cryptography.Algorithms 4.3.0.
+         Installing Microsoft.Extensions.Primitives 2.1.0.
+         Installing System.Security.Cryptography.X509Certificates 4.3.0.
+         Installing System.Runtime.InteropServices 4.3.0.
+         Installing System.Runtime 4.3.0.
+         Installing Microsoft.Extensions.Logging.Abstractions 2.1.0.
+         Installing Microsoft.Extensions.Configuration.EnvironmentVariables 2.1.0.
+         Installing Microsoft.Extensions.Configuration.Ini 2.1.0.
+         Installing NicolasDorier.CommandLine.Configuration 1.0.0.3.
+         Installing Newtonsoft.Json 11.0.1.
+         Installing Microsoft.Extensions.Logging.Abstractions 1.0.0.
+         Installing Microsoft.NETCore.Targets 1.1.0.
+         Installing System.Reflection 4.3.0.
+         Installing System.Diagnostics.Debug 4.0.11.
+         Installing runtime.native.System 4.3.0.
+         Installing System.Security.Principal.Windows 4.3.0.
+         Installing System.Security.Cryptography.Encoding 4.3.0.
+         Installing System.Security.Principal 4.3.0.
+         Installing System.Security.Cryptography.OpenSsl 4.3.0.
+         Installing runtime.native.System.Security.Cryptography.OpenSsl 4.3.0.
+         Installing System.Threading.ThreadPool 4.3.0.
+         Installing System.Collections.Concurrent 4.3.0.
+         Installing runtime.native.System.Net.Security 4.3.0.
+         Installing System.Security.Claims 4.3.0.
+         Installing System.Globalization.Extensions 4.3.0.
+         Installing System.Runtime.Numerics 4.3.0.
+         Installing runtime.native.System.Security.Cryptography.Apple 4.3.0.
+         Installing System.Globalization.Calendars 4.3.0.
+         Installing System.IO.FileSystem 4.3.0.
+         Installing System.IO.FileSystem.Primitives 4.3.0.
+         Installing runtime.native.System.Net.Http 4.3.0.
+         Installing System.Security.Cryptography.Csp 4.3.0.
+         Installing System.Security.Cryptography.Cng 4.3.0.
+         Installing System.Reflection.Primitives 4.3.0.
+         Installing Microsoft.Extensions.Configuration 2.1.0.
+         Installing Microsoft.Extensions.Configuration.FileExtensions 2.1.0.
+         Installing NicolasDorier.CommandLine 1.0.0.2.
+         Installing System.Linq 4.3.0.
+         Installing runtime.osx.10.10-x64.runtime.native.System.Security.Cryptography.OpenSsl 4.3.0.
+         Installing runtime.opensuse.42.1-x64.runtime.native.System.Security.Cryptography.OpenSsl 4.3.0.
+         Installing runtime.fedora.23-x64.runtime.native.System.Security.Cryptography.OpenSsl 4.3.0.
+         Installing runtime.fedora.24-x64.runtime.native.System.Security.Cryptography.OpenSsl 4.3.0.
+         Installing runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl 4.3.0.
+         Installing runtime.ubuntu.16.10-x64.runtime.native.System.Security.Cryptography.OpenSsl 4.3.0.
+         Installing runtime.rhel.7-x64.runtime.native.System.Security.Cryptography.OpenSsl 4.3.0.
+         Installing runtime.ubuntu.14.04-x64.runtime.native.System.Security.Cryptography.OpenSsl 4.3.0.
+         Installing runtime.ubuntu.16.04-x64.runtime.native.System.Security.Cryptography.OpenSsl 4.3.0.
+         Installing runtime.opensuse.13.2-x64.runtime.native.System.Security.Cryptography.OpenSsl 4.3.0.
+         Installing runtime.osx.10.10-x64.runtime.native.System.Security.Cryptography.Apple 4.3.0.
+         Installing Microsoft.Extensions.Configuration.Abstractions 2.1.0.
+         Installing Microsoft.Extensions.FileProviders.Physical 2.1.0.
+         Installing NETStandard.Library 1.6.1.
+         Installing Microsoft.Extensions.Configuration.Abstractions 3.1.0.
+         Installing Microsoft.Extensions.Configuration 3.1.0.
+         Installing Microsoft.Extensions.Primitives 3.1.0.
+         Installing Microsoft.Extensions.Configuration.Abstractions 3.1.4.
+         Installing Microsoft.Extensions.Configuration.Binder 3.1.0.
+         Installing Microsoft.Extensions.Options 3.1.0.
+         Installing Microsoft.Extensions.Caching.Abstractions 3.1.0.
+         Installing Microsoft.Extensions.Logging.Abstractions 3.1.0.
+         Installing Microsoft.Extensions.DependencyInjection.Abstractions 3.1.0.
+         Installing Microsoft.AspNetCore.Cryptography.Internal 3.1.4.
+         Installing Microsoft.Extensions.Configuration 3.1.4.
+         Installing System.Memory 4.5.3.
+         Installing System.Text.Json 4.7.2.
+         Installing Microsoft.EntityFrameworkCore.Design 3.1.4.
+         Installing Npgsql.EntityFrameworkCore.PostgreSQL 3.1.4.
+         Installing Microsoft.AspNetCore.Identity.EntityFrameworkCore 3.1.4.
+         Installing Pomelo.EntityFrameworkCore.MySql 3.1.1.
+         Installing Microsoft.EntityFrameworkCore.Sqlite 3.1.4.
+         Installing Microsoft.CSharp 4.7.0.
+         Installing Microsoft.EntityFrameworkCore.Relational 3.1.4.
+         Installing Microsoft.EntityFrameworkCore.Abstractions 3.1.4.
+         Installing Microsoft.EntityFrameworkCore 3.1.4.
+         Installing Npgsql 4.1.3.1.
+         Installing Microsoft.Extensions.Identity.Stores 3.1.4.
+         Installing Microsoft.EntityFrameworkCore.Relational 3.1.0.
+         Installing MySqlConnector 0.61.0.
+         Installing Pomelo.JsonObject 2.2.1.
+         Installing Microsoft.EntityFrameworkCore.Sqlite.Core 3.1.4.
+         Installing SQLitePCLRaw.bundle_e_sqlite3 2.0.2.
+         Installing Microsoft.Bcl.HashCode 1.1.0.
+         Installing System.Diagnostics.DiagnosticSource 4.7.1.
+         Installing System.Collections.Immutable 1.7.1.
+         Installing Microsoft.Bcl.AsyncInterfaces 1.1.1.
+         Installing Microsoft.EntityFrameworkCore.Analyzers 3.1.4.
+         Installing Microsoft.Extensions.DependencyInjection 3.1.4.
+         Installing Microsoft.Extensions.Logging 3.1.4.
+         Installing Microsoft.Extensions.Caching.Memory 3.1.4.
+         Installing System.ComponentModel.Annotations 4.7.0.
+         Installing System.Runtime.CompilerServices.Unsafe 4.6.0.
+         Installing Microsoft.Extensions.Caching.Abstractions 3.1.4.
+         Installing Microsoft.Extensions.Identity.Core 3.1.4.
+         Installing Microsoft.EntityFrameworkCore 3.1.0.
+         Installing Microsoft.CSharp 4.5.0.
+         Installing Newtonsoft.Json 11.0.2.
+         Installing Microsoft.Data.Sqlite.Core 3.1.4.
+         Installing Microsoft.DotNet.PlatformAbstractions 3.1.4.
+         Installing System.Collections.Immutable 1.7.0.
+         Installing Microsoft.Extensions.DependencyModel 3.1.4.
+         Installing SQLitePCLRaw.provider.dynamic_cdecl 2.0.2.
+         Installing SQLitePCLRaw.core 2.0.2.
+         Installing SQLitePCLRaw.lib.e_sqlite3 2.0.2.
+         Installing Microsoft.Extensions.DependencyInjection.Abstractions 3.1.4.
+         Installing Microsoft.Extensions.Logging.Abstractions 3.1.4.
+         Installing Microsoft.Extensions.Logging 3.1.0.
+         Installing Microsoft.Extensions.Configuration.Binder 3.1.4.
+         Installing Microsoft.Extensions.Options 3.1.4.
+         Installing System.Diagnostics.DiagnosticSource 4.7.0.
+         Installing Microsoft.Extensions.Primitives 3.1.4.
+         Installing Microsoft.AspNetCore.Cryptography.KeyDerivation 3.1.4.
+         Installing Microsoft.EntityFrameworkCore.Abstractions 3.1.0.
+         Installing Microsoft.EntityFrameworkCore.Analyzers 3.1.0.
+         Installing Microsoft.Bcl.AsyncInterfaces 1.1.0.
+         Installing Microsoft.Extensions.Caching.Memory 3.1.0.
+         Installing Microsoft.Extensions.DependencyInjection 3.1.0.
+         Committing restore...
+         Committing restore...
+         Assets file has not changed. Skipping assets file writing. Path: /home/calvin/nixpkgs/pkgs/applications/blockchains/btcpayserver/btcpayserver/BTCPayServer.Client/obj/project.assets.json
+         Assets file has not changed. Skipping assets file writing. Path: /home/calvin/nixpkgs/pkgs/applications/blockchains/btcpayserver/btcpayserver/BTCPayServer.Common/obj/project.assets.json
+         Restore completed in 13.22 sec for /home/calvin/nixpkgs/pkgs/applications/blockchains/btcpayserver/btcpayserver/BTCPayServer.Common/BTCPayServer.Common.csproj.
+         Restore completed in 13.21 sec for /home/calvin/nixpkgs/pkgs/applications/blockchains/btcpayserver/btcpayserver/BTCPayServer.Client/BTCPayServer.Client.csproj.
+         Restoring packages for /home/calvin/nixpkgs/pkgs/applications/blockchains/btcpayserver/btcpayserver/BTCPayServer.Tests/BTCPayServer.Tests.csproj...
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.net.test.sdk/index.json
+           GET https://api.nuget.org/v3-flatcontainer/newtonsoft.json.schema/index.json
+           GET https://api.nuget.org/v3-flatcontainer/selenium.webdriver/index.json
+           GET https://api.nuget.org/v3-flatcontainer/selenium.webdriver.chromedriver/index.json
+           GET https://api.nuget.org/v3-flatcontainer/xunit/index.json
+         Restoring packages for /home/calvin/nixpkgs/pkgs/applications/blockchains/btcpayserver/btcpayserver/BTCPayServer/BTCPayServer.csproj...
+           GET https://api.nuget.org/v3-flatcontainer/btcpayserver.hwi/index.json
+           GET https://api.nuget.org/v3-flatcontainer/btcpayserver.lightning.all/index.json
+           GET https://api.nuget.org/v3-flatcontainer/buildbundlerminifier/index.json
+           GET https://api.nuget.org/v3-flatcontainer/bundlerminifier.core/index.json
+           GET https://api.nuget.org/v3-flatcontainer/bundlerminifier.taghelpers/index.json
+           GET https://api.nuget.org/v3-flatcontainer/csvhelper/index.json
+           GET https://api.nuget.org/v3-flatcontainer/htmlsanitizer/index.json
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.logging.filter/index.json
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.netcore.analyzers/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.io.pipelines/index.json
+           GET https://api.nuget.org/v3-flatcontainer/nbitpayclient/index.json
+           GET https://api.nuget.org/v3-flatcontainer/dbriize/index.json
+           GET https://api.nuget.org/v3-flatcontainer/xunit.runner.visualstudio/index.json
+           GET https://api.nuget.org/v3-flatcontainer/nicolasdorier.ratelimits/index.json
+           GET https://api.nuget.org/v3-flatcontainer/serilog/index.json
+           GET https://api.nuget.org/v3-flatcontainer/serilog.aspnetcore/index.json
+           GET https://api.nuget.org/v3-flatcontainer/serilog.sinks.file/index.json
+           GET https://api.nuget.org/v3-flatcontainer/ssh.net/index.json
+           GET https://api.nuget.org/v3-flatcontainer/twentytwenty.storage/index.json
+           GET https://api.nuget.org/v3-flatcontainer/text.analyzers/index.json
+           GET https://api.nuget.org/v3-flatcontainer/twentytwenty.storage.amazon/index.json
+           GET https://api.nuget.org/v3-flatcontainer/twentytwenty.storage.azure/index.json
+           GET https://api.nuget.org/v3-flatcontainer/twentytwenty.storage.google/index.json
+           GET https://api.nuget.org/v3-flatcontainer/twentytwenty.storage.local/index.json
+           GET https://api.nuget.org/v3-flatcontainer/u2f.core/index.json
+           GET https://api.nuget.org/v3-flatcontainer/yamldotnet/index.json
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.aspnetcore.mvc.razor.runtimecompilation/index.json
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.aspnetcore.mvc.newtonsoftjson/index.json
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.codeanalysis.analyzers/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.collections.immutable/1.5.0/system.collections.immutable.1.5.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.reflection.metadata/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.runtime.compilerservices.unsafe/4.7.0/system.runtime.compilerservices.unsafe.4.7.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.text.encoding.codepages/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.threading.tasks.extensions/4.5.3/system.threading.tasks.extensions.4.5.3.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.runtime.compilerservices.unsafe/4.7.0/system.runtime.compilerservices.unsafe.4.7.0.nupkg 37ms
+           OK https://api.nuget.org/v3-flatcontainer/system.threading.tasks.extensions/4.5.3/system.threading.tasks.extensions.4.5.3.nupkg 37ms
+         Committing restore...
+           OK https://api.nuget.org/v3-flatcontainer/system.collections.immutable/1.5.0/system.collections.immutable.1.5.0.nupkg 42ms
+         Assets file has not changed. Skipping assets file writing. Path: /home/calvin/nixpkgs/pkgs/applications/blockchains/btcpayserver/btcpayserver/BTCPayServer.Data/obj/project.assets.json
+         Restore completed in 13.41 sec for /home/calvin/nixpkgs/pkgs/applications/blockchains/btcpayserver/btcpayserver/BTCPayServer.Data/BTCPayServer.Data.csproj.
+           OK https://api.nuget.org/v3-flatcontainer/selenium.webdriver/index.json 602ms
+           OK https://api.nuget.org/v3-flatcontainer/selenium.webdriver.chromedriver/index.json 603ms
+           OK https://api.nuget.org/v3-flatcontainer/system.io.pipelines/index.json 600ms
+           OK https://api.nuget.org/v3-flatcontainer/buildbundlerminifier/index.json 605ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.logging.filter/index.json 603ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.netcore.analyzers/index.json 603ms
+           GET https://api.nuget.org/v3-flatcontainer/selenium.webdriver/3.141.0/selenium.webdriver.3.141.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.net.test.sdk/index.json 612ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.netcore.analyzers/2.9.8/microsoft.netcore.analyzers.2.9.8.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/bundlerminifier.core/index.json 610ms
+           OK https://api.nuget.org/v3-flatcontainer/xunit/index.json 613ms
+           GET https://api.nuget.org/v3-flatcontainer/bundlerminifier.core/3.2.435/bundlerminifier.core.3.2.435.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/bundlerminifier.taghelpers/index.json 611ms
+           GET https://api.nuget.org/v3-flatcontainer/system.io.pipelines/4.7.2/system.io.pipelines.4.7.2.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/buildbundlerminifier/3.2.435/buildbundlerminifier.3.2.435.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/btcpayserver.lightning.all/index.json 615ms
+           OK https://api.nuget.org/v3-flatcontainer/btcpayserver.hwi/index.json 616ms
+           GET https://api.nuget.org/v3-flatcontainer/selenium.webdriver.chromedriver/83.0.4103.3900/selenium.webdriver.chromedriver.83.0.4103.3900.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/htmlsanitizer/index.json 614ms
+           GET https://api.nuget.org/v3-flatcontainer/bundlerminifier.taghelpers/3.2.435/bundlerminifier.taghelpers.3.2.435.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/newtonsoft.json.schema/index.json 620ms
+           GET https://api.nuget.org/v3-flatcontainer/xunit/2.4.1/xunit.2.4.1.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.logging.filter/1.1.2/microsoft.extensions.logging.filter.1.1.2.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/xunit.runner.visualstudio/index.json 613ms
+           OK https://api.nuget.org/v3-flatcontainer/csvhelper/index.json 617ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.net.test.sdk/16.6.1/microsoft.net.test.sdk.16.6.1.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/btcpayserver.hwi/1.1.3/btcpayserver.hwi.1.1.3.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/serilog.aspnetcore/index.json 601ms
+           GET https://api.nuget.org/v3-flatcontainer/xunit.runner.visualstudio/2.4.2/xunit.runner.visualstudio.2.4.2.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/nbitpayclient/index.json 616ms
+           GET https://api.nuget.org/v3-flatcontainer/csvhelper/15.0.5/csvhelper.15.0.5.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/nbitpayclient/1.0.0.39/nbitpayclient.1.0.0.39.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/htmlsanitizer/4.0.217/htmlsanitizer.4.0.217.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.aspnetcore.mvc.razor.runtimecompilation/index.json 598ms
+           GET https://api.nuget.org/v3-flatcontainer/newtonsoft.json.schema/3.0.13/newtonsoft.json.schema.3.0.13.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/btcpayserver.lightning.all/1.2.0/btcpayserver.lightning.all.1.2.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/yamldotnet/index.json 599ms
+           GET https://api.nuget.org/v3-flatcontainer/serilog.aspnetcore/3.2.0/serilog.aspnetcore.3.2.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.aspnetcore.mvc.newtonsoftjson/index.json 599ms
+           OK https://api.nuget.org/v3-flatcontainer/serilog/index.json 613ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.aspnetcore.mvc.razor.runtimecompilation/3.1.1/microsoft.aspnetcore.mvc.razor.runtimecompilation.3.1.1.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/dbriize/index.json 626ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.aspnetcore.mvc.newtonsoftjson/3.1.1/microsoft.aspnetcore.mvc.newtonsoftjson.3.1.1.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/u2f.core/index.json 609ms
+           GET https://api.nuget.org/v3-flatcontainer/dbriize/1.0.1.3/dbriize.1.0.1.3.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/serilog.sinks.file/index.json 613ms
+           GET https://api.nuget.org/v3-flatcontainer/yamldotnet/8.0.0/yamldotnet.8.0.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/serilog.sinks.file/4.1.0/serilog.sinks.file.4.1.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/u2f.core/1.0.4/u2f.core.1.0.4.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/serilog/2.9.0/serilog.2.9.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/text.analyzers/index.json 616ms
+           GET https://api.nuget.org/v3-flatcontainer/text.analyzers/2.6.4/text.analyzers.2.6.4.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/twentytwenty.storage.amazon/index.json 620ms
+           OK https://api.nuget.org/v3-flatcontainer/twentytwenty.storage/index.json 620ms
+           OK https://api.nuget.org/v3-flatcontainer/ssh.net/index.json 621ms
+           OK https://api.nuget.org/v3-flatcontainer/twentytwenty.storage.azure/index.json 620ms
+           GET https://api.nuget.org/v3-flatcontainer/twentytwenty.storage.amazon/2.12.1/twentytwenty.storage.amazon.2.12.1.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/twentytwenty.storage.google/index.json 620ms
+           GET https://api.nuget.org/v3-flatcontainer/twentytwenty.storage/2.12.1/twentytwenty.storage.2.12.1.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/twentytwenty.storage.local/index.json 620ms
+           GET https://api.nuget.org/v3-flatcontainer/twentytwenty.storage.google/2.12.1/twentytwenty.storage.google.2.12.1.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/ssh.net/2016.1.0/ssh.net.2016.1.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/twentytwenty.storage.azure/2.12.1/twentytwenty.storage.azure.2.12.1.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/twentytwenty.storage.local/2.12.1/twentytwenty.storage.local.2.12.1.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/nicolasdorier.ratelimits/index.json 635ms
+           GET https://api.nuget.org/v3-flatcontainer/nicolasdorier.ratelimits/1.1.0/nicolasdorier.ratelimits.1.1.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/buildbundlerminifier/3.2.435/buildbundlerminifier.3.2.435.nupkg 36ms
+           OK https://api.nuget.org/v3-flatcontainer/xunit/2.4.1/xunit.2.4.1.nupkg 38ms
+           OK https://api.nuget.org/v3-flatcontainer/system.io.pipelines/4.7.2/system.io.pipelines.4.7.2.nupkg 43ms
+           GET https://api.nuget.org/v3-flatcontainer/xunit.core/index.json
+           GET https://api.nuget.org/v3-flatcontainer/xunit.assert/index.json
+           GET https://api.nuget.org/v3-flatcontainer/xunit.analyzers/index.json
+           OK https://api.nuget.org/v3-flatcontainer/serilog.aspnetcore/3.2.0/serilog.aspnetcore.3.2.0.nupkg 40ms
+           OK https://api.nuget.org/v3-flatcontainer/serilog/2.9.0/serilog.2.9.0.nupkg 35ms
+           OK https://api.nuget.org/v3-flatcontainer/ssh.net/2016.1.0/ssh.net.2016.1.0.nupkg 36ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.codeanalysis.analyzers/index.json 606ms
+           OK https://api.nuget.org/v3-flatcontainer/system.reflection.metadata/index.json 604ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.codeanalysis.analyzers/3.0.0/microsoft.codeanalysis.analyzers.3.0.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.reflection.metadata/1.6.0/system.reflection.metadata.1.6.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.text.encoding.codepages/index.json 608ms
+           GET https://api.nuget.org/v3-flatcontainer/system.text.encoding.codepages/4.5.1/system.text.encoding.codepages.4.5.1.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.aspnetcore.hosting.abstractions/index.json
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.dependencyinjection/2.0.0/microsoft.extensions.dependencyinjection.2.0.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.logging/2.0.0/microsoft.extensions.logging.2.0.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/serilog.extensions.hosting/index.json
+           GET https://api.nuget.org/v3-flatcontainer/serilog.formatting.compact/index.json
+           GET https://api.nuget.org/v3-flatcontainer/serilog.settings.configuration/index.json
+           GET https://api.nuget.org/v3-flatcontainer/serilog.sinks.console/index.json
+           GET https://api.nuget.org/v3-flatcontainer/serilog.sinks.debug/index.json
+           OK https://api.nuget.org/v3-flatcontainer/system.reflection.metadata/1.6.0/system.reflection.metadata.1.6.0.nupkg 36ms
+           OK https://api.nuget.org/v3-flatcontainer/system.text.encoding.codepages/4.5.1/system.text.encoding.codepages.4.5.1.nupkg 41ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.dependencyinjection/2.0.0/microsoft.extensions.dependencyinjection.2.0.0.nupkg 42ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.logging/2.0.0/microsoft.extensions.logging.2.0.0.nupkg 45ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.dependencyinjection.abstractions/2.0.0/microsoft.extensions.dependencyinjection.abstractions.2.0.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.dependencyinjection.abstractions/2.0.0/microsoft.extensions.dependencyinjection.abstractions.2.0.0.nupkg 49ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.logging.abstractions/2.0.0/microsoft.extensions.logging.abstractions.2.0.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.options/2.0.0/microsoft.extensions.options.2.0.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.logging.abstractions/2.0.0/microsoft.extensions.logging.abstractions.2.0.0.nupkg 50ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.options/2.0.0/microsoft.extensions.options.2.0.0.nupkg 53ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.primitives/2.0.0/microsoft.extensions.primitives.2.0.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.primitives/2.0.0/microsoft.extensions.primitives.2.0.0.nupkg 43ms
+           GET https://api.nuget.org/v3-flatcontainer/system.runtime.compilerservices.unsafe/4.4.0/system.runtime.compilerservices.unsafe.4.4.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.runtime.compilerservices.unsafe/4.4.0/system.runtime.compilerservices.unsafe.4.4.0.nupkg 44ms
+           OK https://api.nuget.org/v3-flatcontainer/selenium.webdriver/3.141.0/selenium.webdriver.3.141.0.nupkg 610ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.netcore.analyzers/2.9.8/microsoft.netcore.analyzers.2.9.8.nupkg 610ms
+           OK https://api.nuget.org/v3-flatcontainer/bundlerminifier.taghelpers/3.2.435/bundlerminifier.taghelpers.3.2.435.nupkg 613ms
+           OK https://api.nuget.org/v3-flatcontainer/selenium.webdriver.chromedriver/83.0.4103.3900/selenium.webdriver.chromedriver.83.0.4103.3900.nupkg 618ms
+           OK https://api.nuget.org/v3-flatcontainer/bundlerminifier.core/3.2.435/bundlerminifier.core.3.2.435.nupkg 628ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.logging.filter/1.1.2/microsoft.extensions.logging.filter.1.1.2.nupkg 625ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.net.test.sdk/16.6.1/microsoft.net.test.sdk.16.6.1.nupkg 627ms
+           OK https://api.nuget.org/v3-flatcontainer/csvhelper/15.0.5/csvhelper.15.0.5.nupkg 627ms
+           OK https://api.nuget.org/v3-flatcontainer/newtonsoft.json.schema/3.0.13/newtonsoft.json.schema.3.0.13.nupkg 626ms
+           OK https://api.nuget.org/v3-flatcontainer/xunit.runner.visualstudio/2.4.2/xunit.runner.visualstudio.2.4.2.nupkg 629ms
+           OK https://api.nuget.org/v3-flatcontainer/nbitpayclient/1.0.0.39/nbitpayclient.1.0.0.39.nupkg 631ms
+           OK https://api.nuget.org/v3-flatcontainer/btcpayserver.lightning.all/1.2.0/btcpayserver.lightning.all.1.2.0.nupkg 630ms
+           OK https://api.nuget.org/v3-flatcontainer/htmlsanitizer/4.0.217/htmlsanitizer.4.0.217.nupkg 633ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.aspnetcore.mvc.razor.runtimecompilation/3.1.1/microsoft.aspnetcore.mvc.razor.runtimecompilation.3.1.1.nupkg 626ms
+           OK https://api.nuget.org/v3-flatcontainer/yamldotnet/8.0.0/yamldotnet.8.0.0.nupkg 625ms
+           OK https://api.nuget.org/v3-flatcontainer/u2f.core/1.0.4/u2f.core.1.0.4.nupkg 626ms
+           OK https://api.nuget.org/v3-flatcontainer/serilog.sinks.file/4.1.0/serilog.sinks.file.4.1.0.nupkg 629ms
+           OK https://api.nuget.org/v3-flatcontainer/text.analyzers/2.6.4/text.analyzers.2.6.4.nupkg 627ms
+           OK https://api.nuget.org/v3-flatcontainer/btcpayserver.hwi/1.1.3/btcpayserver.hwi.1.1.3.nupkg 646ms
+           OK https://api.nuget.org/v3-flatcontainer/dbriize/1.0.1.3/dbriize.1.0.1.3.nupkg 634ms
+           OK https://api.nuget.org/v3-flatcontainer/twentytwenty.storage/2.12.1/twentytwenty.storage.2.12.1.nupkg 627ms
+           OK https://api.nuget.org/v3-flatcontainer/twentytwenty.storage.azure/2.12.1/twentytwenty.storage.azure.2.12.1.nupkg 630ms
+           OK https://api.nuget.org/v3-flatcontainer/twentytwenty.storage.google/2.12.1/twentytwenty.storage.google.2.12.1.nupkg 634ms
+           OK https://api.nuget.org/v3-flatcontainer/xunit.assert/index.json 623ms
+           OK https://api.nuget.org/v3-flatcontainer/nicolasdorier.ratelimits/1.1.0/nicolasdorier.ratelimits.1.1.0.nupkg 637ms
+           OK https://api.nuget.org/v3-flatcontainer/xunit.core/index.json 631ms
+           GET https://api.nuget.org/v3-flatcontainer/xunit.core/2.4.1/xunit.core.2.4.1.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/xunit.analyzers/index.json 635ms
+           GET https://api.nuget.org/v3-flatcontainer/xunit.analyzers/0.10.0/xunit.analyzers.0.10.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.codeanalysis.analyzers/3.0.0/microsoft.codeanalysis.analyzers.3.0.0.nupkg 621ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.aspnetcore.mvc.newtonsoftjson/3.1.1/microsoft.aspnetcore.mvc.newtonsoftjson.3.1.1.nupkg 683ms
+           OK https://api.nuget.org/v3-flatcontainer/serilog.formatting.compact/index.json 617ms
+           GET https://api.nuget.org/v3-flatcontainer/serilog.formatting.compact/1.0.0/serilog.formatting.compact.1.0.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.aspnetcore.hosting.abstractions/index.json 623ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.aspnetcore.hosting.abstractions/2.0.0/microsoft.aspnetcore.hosting.abstractions.2.0.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/serilog.extensions.hosting/index.json 624ms
+           OK https://api.nuget.org/v3-flatcontainer/serilog.sinks.debug/index.json 622ms
+           GET https://api.nuget.org/v3-flatcontainer/serilog.extensions.hosting/3.0.0/serilog.extensions.hosting.3.0.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/serilog.sinks.debug/1.0.1/serilog.sinks.debug.1.0.1.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/serilog.settings.configuration/index.json 627ms
+           GET https://api.nuget.org/v3-flatcontainer/serilog.settings.configuration/3.1.0/serilog.settings.configuration.3.1.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/serilog.sinks.console/index.json 629ms
+           GET https://api.nuget.org/v3-flatcontainer/serilog.sinks.console/3.1.1/serilog.sinks.console.3.1.1.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/twentytwenty.storage.amazon/2.12.1/twentytwenty.storage.amazon.2.12.1.nupkg 710ms
+           OK https://api.nuget.org/v3-flatcontainer/xunit.core/2.4.1/xunit.core.2.4.1.nupkg 60ms
+           OK https://api.nuget.org/v3-flatcontainer/twentytwenty.storage.local/2.12.1/twentytwenty.storage.local.2.12.1.nupkg 710ms
+           OK https://api.nuget.org/v3-flatcontainer/xunit.analyzers/0.10.0/xunit.analyzers.0.10.0.nupkg 61ms
+           OK https://api.nuget.org/v3-flatcontainer/serilog.formatting.compact/1.0.0/serilog.formatting.compact.1.0.0.nupkg 61ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.aspnetcore.hosting.abstractions/2.0.0/microsoft.aspnetcore.hosting.abstractions.2.0.0.nupkg 59ms
+           OK https://api.nuget.org/v3-flatcontainer/serilog.sinks.debug/1.0.1/serilog.sinks.debug.1.0.1.nupkg 57ms
+           OK https://api.nuget.org/v3-flatcontainer/serilog.extensions.hosting/3.0.0/serilog.extensions.hosting.3.0.0.nupkg 61ms
+           OK https://api.nuget.org/v3-flatcontainer/serilog.settings.configuration/3.1.0/serilog.settings.configuration.3.1.0.nupkg 59ms
+           GET https://api.nuget.org/v3-flatcontainer/windowsazure.storage/index.json
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.aspnetcore.jsonpatch/index.json
+           GET https://api.nuget.org/v3-flatcontainer/newtonsoft.json.bson/1.0.2/newtonsoft.json.bson.1.0.2.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.threading.channels/index.json
+           GET https://api.nuget.org/v3-flatcontainer/nbitcoin/5.0.4/nbitcoin.5.0.4.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/newtonsoft.json.bson/1.0.2/newtonsoft.json.bson.1.0.2.nupkg 52ms
+           GET https://api.nuget.org/v3-flatcontainer/google.cloud.storage.v1/index.json
+           GET https://api.nuget.org/v3-flatcontainer/nuglify/index.json
+           GET https://api.nuget.org/v3-flatcontainer/portable.bouncycastle/index.json
+           GET https://api.nuget.org/v3-flatcontainer/btcpayserver.lightning.charge/index.json
+           GET https://api.nuget.org/v3-flatcontainer/btcpayserver.lightning.clightning/index.json
+           GET https://api.nuget.org/v3-flatcontainer/btcpayserver.lightning.eclair/index.json
+           GET https://api.nuget.org/v3-flatcontainer/btcpayserver.lightning.lnd/index.json
+           GET https://api.nuget.org/v3-flatcontainer/btcpayserver.lightning.ptarmigan/index.json
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.aspnetcore.mvc.razor.extensions/index.json
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.codeanalysis.razor/index.json
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.dependencymodel/3.1.1/microsoft.extensions.dependencymodel.3.1.1.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/serilog.sinks.console/3.1.1/serilog.sinks.console.3.1.1.nupkg 202ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.aspnetcore.hosting.server.abstractions/index.json
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.hosting.abstractions/index.json
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.aspnetcore.http.abstractions/index.json
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration.abstractions/2.0.0/microsoft.extensions.configuration.abstractions.2.0.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.fileproviders.abstractions/2.0.0/microsoft.extensions.fileproviders.abstractions.2.0.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.testplatform.testhost/index.json
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.codecoverage/index.json
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration.abstractions/1.1.2/microsoft.extensions.configuration.abstractions.1.1.2.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.logging.abstractions/1.1.2/microsoft.extensions.logging.abstractions.1.1.2.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/awssdk.s3/index.json
+           GET https://api.nuget.org/v3-flatcontainer/xunit.assert/2.4.1/xunit.assert.2.4.1.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/xunit.extensibility.core/index.json
+           GET https://api.nuget.org/v3-flatcontainer/xunit.extensibility.execution/index.json
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.netcore.platforms/2.1.2/microsoft.netcore.platforms.2.1.2.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration.abstractions/2.0.0/microsoft.extensions.configuration.abstractions.2.0.0.nupkg 53ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.fileproviders.abstractions/2.0.0/microsoft.extensions.fileproviders.abstractions.2.0.0.nupkg 58ms
+           GET https://api.nuget.org/v3-flatcontainer/anglesharp/index.json
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration.abstractions/1.1.2/microsoft.extensions.configuration.abstractions.1.1.2.nupkg 50ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.logging.abstractions/1.1.2/microsoft.extensions.logging.abstractions.1.1.2.nupkg 50ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.primitives/1.1.1/microsoft.extensions.primitives.1.1.1.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/nbitcoin/5.0.4/nbitcoin.5.0.4.nupkg 197ms
+           OK https://api.nuget.org/v3-flatcontainer/xunit.assert/2.4.1/xunit.assert.2.4.1.nupkg 54ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.netcore.platforms/2.1.2/microsoft.netcore.platforms.2.1.2.nupkg 46ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.primitives/1.1.1/microsoft.extensions.primitives.1.1.1.nupkg 38ms
+           GET https://api.nuget.org/v3-flatcontainer/system.runtime.compilerservices.unsafe/4.3.0/system.runtime.compilerservices.unsafe.4.3.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.io.filesystem/4.0.1/system.io.filesystem.4.0.1.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.text.encoding.extensions/4.0.11/system.text.encoding.extensions.4.0.11.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.threading.timer/4.0.1/system.threading.timer.4.0.1.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.dependencymodel/2.0.4/microsoft.extensions.dependencymodel.2.0.4.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.options.configurationextensions/index.json
+           OK https://api.nuget.org/v3-flatcontainer/system.runtime.compilerservices.unsafe/4.3.0/system.runtime.compilerservices.unsafe.4.3.0.nupkg 36ms
+           OK https://api.nuget.org/v3-flatcontainer/system.io.filesystem/4.0.1/system.io.filesystem.4.0.1.nupkg 36ms
+           OK https://api.nuget.org/v3-flatcontainer/system.text.encoding.extensions/4.0.11/system.text.encoding.extensions.4.0.11.nupkg 38ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.dependencymodel/2.0.4/microsoft.extensions.dependencymodel.2.0.4.nupkg 42ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.dependencyinjection.abstractions/2.1.0/microsoft.extensions.dependencyinjection.abstractions.2.1.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/serilog.extensions.logging/index.json
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.dependencyinjection.abstractions/2.1.0/microsoft.extensions.dependencyinjection.abstractions.2.1.0.nupkg 43ms
+           GET https://api.nuget.org/v3-flatcontainer/newtonsoft.json/12.0.2/newtonsoft.json.12.0.2.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.aspnetcore.jsonpatch/index.json 615ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.dotnet.platformabstractions/2.0.4/microsoft.dotnet.platformabstractions.2.0.4.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/windowsazure.storage/index.json 623ms
+           GET https://api.nuget.org/v3-flatcontainer/system.dynamic.runtime/index.json
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.aspnetcore.jsonpatch/3.1.1/microsoft.aspnetcore.jsonpatch.3.1.1.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/newtonsoft.json/12.0.2/newtonsoft.json.12.0.2.nupkg 52ms
+           GET https://api.nuget.org/v3-flatcontainer/windowsazure.storage/9.3.3/windowsazure.storage.9.3.3.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.threading.channels/index.json 626ms
+           GET https://api.nuget.org/v3-flatcontainer/system.threading.channels/4.5.0/system.threading.channels.4.5.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.dotnet.platformabstractions/2.0.4/microsoft.dotnet.platformabstractions.2.0.4.nupkg 51ms
+           OK https://api.nuget.org/v3-flatcontainer/windowsazure.storage/9.3.3/windowsazure.storage.9.3.3.nupkg 57ms
+           OK https://api.nuget.org/v3-flatcontainer/google.cloud.storage.v1/index.json 627ms
+           GET https://api.nuget.org/v3-flatcontainer/google.cloud.storage.v1/2.3.0/google.cloud.storage.v1.2.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/nuglify/index.json 615ms
+           GET https://api.nuget.org/v3-flatcontainer/nuglify/1.5.12/nuglify.1.5.12.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/btcpayserver.lightning.charge/index.json 611ms
+           GET https://api.nuget.org/v3-flatcontainer/btcpayserver.lightning.charge/1.2.0/btcpayserver.lightning.charge.1.2.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/portable.bouncycastle/index.json 619ms
+           GET https://api.nuget.org/v3-flatcontainer/portable.bouncycastle/1.8.1.3/portable.bouncycastle.1.8.1.3.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.dependencymodel/3.1.1/microsoft.extensions.dependencymodel.3.1.1.nupkg 611ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.aspnetcore.mvc.razor.extensions/index.json 613ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.aspnetcore.mvc.razor.extensions/3.1.1/microsoft.aspnetcore.mvc.razor.extensions.3.1.1.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.codeanalysis.razor/index.json 623ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.codeanalysis.razor/3.1.1/microsoft.codeanalysis.razor.3.1.1.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/btcpayserver.lightning.eclair/index.json 646ms
+           OK https://api.nuget.org/v3-flatcontainer/btcpayserver.lightning.clightning/index.json 646ms
+           OK https://api.nuget.org/v3-flatcontainer/btcpayserver.lightning.lnd/index.json 645ms
+           GET https://api.nuget.org/v3-flatcontainer/btcpayserver.lightning.eclair/1.2.0/btcpayserver.lightning.eclair.1.2.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/btcpayserver.lightning.clightning/1.2.0/btcpayserver.lightning.clightning.1.2.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/btcpayserver.lightning.lnd/1.2.0/btcpayserver.lightning.lnd.1.2.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/btcpayserver.lightning.ptarmigan/index.json 647ms
+           GET https://api.nuget.org/v3-flatcontainer/btcpayserver.lightning.ptarmigan/1.2.0/btcpayserver.lightning.ptarmigan.1.2.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.appcontext/4.1.0/system.appcontext.4.1.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.aspnetcore.hosting.server.abstractions/index.json 623ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.testplatform.testhost/index.json 618ms
+           GET https://api.nuget.org/v3-flatcontainer/system.reflection.typeextensions/4.1.0/system.reflection.typeextensions.4.1.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.aspnetcore.hosting.server.abstractions/2.0.0/microsoft.aspnetcore.hosting.server.abstractions.2.0.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.runtime.interopservices.runtimeinformation/4.0.0/system.runtime.interopservices.runtimeinformation.4.0.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.codecoverage/index.json 620ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.codecoverage/16.6.1/microsoft.codecoverage.16.6.1.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.aspnetcore.http.abstractions/index.json 626ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.testplatform.testhost/16.6.1/microsoft.testplatform.testhost.16.6.1.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.aspnetcore.http.abstractions/2.0.0/microsoft.aspnetcore.http.abstractions.2.0.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.hosting.abstractions/index.json 630ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.hosting.abstractions/2.0.0/microsoft.extensions.hosting.abstractions.2.0.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.hosting.abstractions/2.1.0/microsoft.extensions.hosting.abstractions.2.1.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/xunit.extensibility.core/index.json 614ms
+           OK https://api.nuget.org/v3-flatcontainer/xunit.extensibility.execution/index.json 614ms
+           GET https://api.nuget.org/v3-flatcontainer/xunit.extensibility.core/2.4.1/xunit.extensibility.core.2.4.1.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/awssdk.s3/index.json 640ms
+           GET https://api.nuget.org/v3-flatcontainer/xunit.extensibility.execution/2.4.1/xunit.extensibility.execution.2.4.1.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.appcontext/4.1.0/system.appcontext.4.1.0.nupkg 45ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.aspnetcore.hosting.server.abstractions/2.0.0/microsoft.aspnetcore.hosting.server.abstractions.2.0.0.nupkg 51ms
+           OK https://api.nuget.org/v3-flatcontainer/system.reflection.typeextensions/4.1.0/system.reflection.typeextensions.4.1.0.nupkg 51ms
+           OK https://api.nuget.org/v3-flatcontainer/system.runtime.interopservices.runtimeinformation/4.0.0/system.runtime.interopservices.runtimeinformation.4.0.0.nupkg 50ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.aspnetcore.http.abstractions/2.0.0/microsoft.aspnetcore.http.abstractions.2.0.0.nupkg 48ms
+           GET https://api.nuget.org/v3-flatcontainer/system.text.json/4.7.0/system.text.json.4.7.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/awssdk.s3/3.3.110.10/awssdk.s3.3.3.110.10.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.hosting.abstractions/2.0.0/microsoft.extensions.hosting.abstractions.2.0.0.nupkg 45ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.hosting.abstractions/2.1.0/microsoft.extensions.hosting.abstractions.2.1.0.nupkg 47ms
+           OK https://api.nuget.org/v3-flatcontainer/anglesharp/index.json 618ms
+           GET https://api.nuget.org/v3-flatcontainer/anglesharp/0.9.11/anglesharp.0.9.11.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/xunit.extensibility.core/2.4.1/xunit.extensibility.core.2.4.1.nupkg 39ms
+           OK https://api.nuget.org/v3-flatcontainer/xunit.extensibility.execution/2.4.1/xunit.extensibility.execution.2.4.1.nupkg 48ms
+           OK https://api.nuget.org/v3-flatcontainer/system.text.json/4.7.0/system.text.json.4.7.0.nupkg 47ms
+           OK https://api.nuget.org/v3-flatcontainer/system.threading.timer/4.0.1/system.threading.timer.4.0.1.nupkg 621ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.aspnetcore.http.features/index.json
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.options.configurationextensions/index.json 624ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.options.configurationextensions/2.0.0/microsoft.extensions.options.configurationextensions.2.0.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/btcpayserver.lightning.ptarmigan/1.2.0/btcpayserver.lightning.ptarmigan.1.2.0.nupkg 200ms
+           GET https://api.nuget.org/v3-flatcontainer/nbitcoin/5.0.33/nbitcoin.5.0.33.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/xunit.abstractions/index.json
+           OK https://api.nuget.org/v3-flatcontainer/serilog.extensions.logging/index.json 623ms
+           GET https://api.nuget.org/v3-flatcontainer/serilog.extensions.logging/3.0.1/serilog.extensions.logging.3.0.1.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.options.configurationextensions/2.0.0/microsoft.extensions.options.configurationextensions.2.0.0.nupkg 58ms
+           OK https://api.nuget.org/v3-flatcontainer/serilog.extensions.logging/3.0.1/serilog.extensions.logging.3.0.1.nupkg 51ms
+           GET https://api.nuget.org/v3-flatcontainer/system.text.encodings.web/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.io.filesystem.primitives/4.0.1/system.io.filesystem.primitives.4.0.1.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.io.filesystem.primitives/4.0.1/system.io.filesystem.primitives.4.0.1.nupkg 44ms
+           GET https://api.nuget.org/v3-flatcontainer/runtime.native.system/4.0.0/runtime.native.system.4.0.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration.binder/2.0.0/microsoft.extensions.configuration.binder.2.0.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/runtime.native.system/4.0.0/runtime.native.system.4.0.0.nupkg 39ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration.binder/2.0.0/microsoft.extensions.configuration.binder.2.0.0.nupkg 36ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration/2.0.0/microsoft.extensions.configuration.2.0.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.aspnetcore.jsonpatch/3.1.1/microsoft.aspnetcore.jsonpatch.3.1.1.nupkg 607ms
+           OK https://api.nuget.org/v3-flatcontainer/system.dynamic.runtime/index.json 610ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration/2.0.0/microsoft.extensions.configuration.2.0.0.nupkg 37ms
+           GET https://api.nuget.org/v3-flatcontainer/system.dynamic.runtime/4.0.11/system.dynamic.runtime.4.0.11.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.dynamic.runtime/4.0.11/system.dynamic.runtime.4.0.11.nupkg 38ms
+           OK https://api.nuget.org/v3-flatcontainer/system.threading.channels/4.5.0/system.threading.channels.4.5.0.nupkg 606ms
+           OK https://api.nuget.org/v3-flatcontainer/google.cloud.storage.v1/2.3.0/google.cloud.storage.v1.2.3.0.nupkg 618ms
+           OK https://api.nuget.org/v3-flatcontainer/nuglify/1.5.12/nuglify.1.5.12.nupkg 615ms
+           OK https://api.nuget.org/v3-flatcontainer/btcpayserver.lightning.charge/1.2.0/btcpayserver.lightning.charge.1.2.0.nupkg 615ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.aspnetcore.mvc.razor.extensions/3.1.1/microsoft.aspnetcore.mvc.razor.extensions.3.1.1.nupkg 611ms
+           OK https://api.nuget.org/v3-flatcontainer/portable.bouncycastle/1.8.1.3/portable.bouncycastle.1.8.1.3.nupkg 636ms
+           OK https://api.nuget.org/v3-flatcontainer/btcpayserver.lightning.lnd/1.2.0/btcpayserver.lightning.lnd.1.2.0.nupkg 610ms
+           OK https://api.nuget.org/v3-flatcontainer/btcpayserver.lightning.clightning/1.2.0/btcpayserver.lightning.clightning.1.2.0.nupkg 618ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.codeanalysis.razor/3.1.1/microsoft.codeanalysis.razor.3.1.1.nupkg 627ms
+           OK https://api.nuget.org/v3-flatcontainer/btcpayserver.lightning.eclair/1.2.0/btcpayserver.lightning.eclair.1.2.0.nupkg 631ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.testplatform.testhost/16.6.1/microsoft.testplatform.testhost.16.6.1.nupkg 618ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.codecoverage/16.6.1/microsoft.codecoverage.16.6.1.nupkg 635ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.aspnetcore.razor.language/index.json
+           OK https://api.nuget.org/v3-flatcontainer/awssdk.s3/3.3.110.10/awssdk.s3.3.3.110.10.nupkg 622ms
+           OK https://api.nuget.org/v3-flatcontainer/anglesharp/0.9.11/anglesharp.0.9.11.nupkg 624ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.codeanalysis.csharp/3.3.0/microsoft.codeanalysis.csharp.3.3.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.codeanalysis.common/3.3.0/microsoft.codeanalysis.common.3.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.codeanalysis.common/3.3.0/microsoft.codeanalysis.common.3.3.0.nupkg 44ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.aspnetcore.http.features/index.json 614ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.aspnetcore.http.features/2.0.0/microsoft.aspnetcore.http.features.2.0.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/nbitcoin/5.0.33/nbitcoin.5.0.33.nupkg 625ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.aspnetcore.http.features/2.0.0/microsoft.aspnetcore.http.features.2.0.0.nupkg 50ms
+           OK https://api.nuget.org/v3-flatcontainer/xunit.abstractions/index.json 622ms
+           GET https://api.nuget.org/v3-flatcontainer/xunit.abstractions/2.0.3/xunit.abstractions.2.0.3.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/xunit.abstractions/2.0.3/xunit.abstractions.2.0.3.nupkg 53ms
+           GET https://api.nuget.org/v3-flatcontainer/google.api.gax.rest/index.json
+           GET https://api.nuget.org/v3-flatcontainer/google.apis.storage.v1/index.json
+           OK https://api.nuget.org/v3-flatcontainer/system.text.encodings.web/index.json 791ms
+           GET https://api.nuget.org/v3-flatcontainer/system.text.encodings.web/4.4.0/system.text.encodings.web.4.4.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.text.encodings.web/4.4.0/system.text.encodings.web.4.4.0.nupkg 50ms
+         Installing System.Security.Principal.Windows 4.5.0.
+         Installing Microsoft.NETCore.Platforms 2.0.0.
+         Installing Microsoft.NETCore.Platforms 2.1.2.
+         Installing System.Security.AccessControl 4.5.0.
+         Installing DigitalRuby.ExchangeSharp 0.6.3.
+         Installing Microsoft.AspNet.WebApi.Client 5.2.7.
+         Installing Microsoft.CodeAnalysis.Analyzers 3.0.0.
+         Installing System.Text.Encoding.CodePages 4.5.1.
+         Installing System.Collections.Immutable 1.5.0.
+         Installing System.Reflection.Metadata 1.6.0.
+         Installing System.Runtime.CompilerServices.Unsafe 4.7.0.
+         Installing System.Threading.Tasks.Extensions 4.5.3.
+         Installing System.Security.Permissions 4.5.0.
+         Installing System.Security.Cryptography.ProtectedData 4.5.0.
+         Installing Microsoft.CodeAnalysis.Common 3.6.0.
+         Installing Newtonsoft.Json.Bson 1.0.1.
+         Installing NLog 4.5.10.
+         Installing System.Configuration.ConfigurationManager 4.5.0.
+         Installing Microsoft.CodeAnalysis.CSharp 3.6.0.
+         Installing Microsoft.AspNet.SignalR.Client 2.3.0.
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.aspnetcore.razor.language/index.json 620ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.aspnetcore.razor.language/3.1.1/microsoft.aspnetcore.razor.language.3.1.1.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.codeanalysis.csharp/3.3.0/microsoft.codeanalysis.csharp.3.3.0.nupkg 620ms
+         Committing restore...
+         Assets file has not changed. Skipping assets file writing. Path: /home/calvin/nixpkgs/pkgs/applications/blockchains/btcpayserver/btcpayserver/BTCPayServer.Rating/obj/project.assets.json
+         Restore completed in 17.1 sec for /home/calvin/nixpkgs/pkgs/applications/blockchains/btcpayserver/btcpayserver/BTCPayServer.Rating/BTCPayServer.Rating.csproj.
+           OK https://api.nuget.org/v3-flatcontainer/google.apis.storage.v1/index.json 627ms
+           GET https://api.nuget.org/v3-flatcontainer/google.apis.storage.v1/1.38.0.1470/google.apis.storage.v1.1.38.0.1470.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/google.api.gax.rest/index.json 661ms
+           GET https://api.nuget.org/v3-flatcontainer/google.api.gax.rest/2.5.0/google.api.gax.rest.2.5.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.aspnetcore.razor.language/3.1.1/microsoft.aspnetcore.razor.language.3.1.1.nupkg 642ms
+           GET https://api.nuget.org/v3-flatcontainer/system.linq.expressions/4.1.0/system.linq.expressions.4.1.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.objectmodel/4.0.12/system.objectmodel.4.0.12.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.reflection.emit/4.0.1/system.reflection.emit.4.0.1.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.reflection.emit.ilgeneration/4.0.1/system.reflection.emit.ilgeneration.4.0.1.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.objectmodel/4.0.12/system.objectmodel.4.0.12.nupkg 54ms
+           OK https://api.nuget.org/v3-flatcontainer/system.linq.expressions/4.1.0/system.linq.expressions.4.1.0.nupkg 60ms
+           OK https://api.nuget.org/v3-flatcontainer/system.reflection.emit.ilgeneration/4.0.1/system.reflection.emit.ilgeneration.4.0.1.nupkg 59ms
+           OK https://api.nuget.org/v3-flatcontainer/system.reflection.emit/4.0.1/system.reflection.emit.4.0.1.nupkg 62ms
+           OK https://api.nuget.org/v3-flatcontainer/google.apis.storage.v1/1.38.0.1470/google.apis.storage.v1.1.38.0.1470.nupkg 631ms
+           OK https://api.nuget.org/v3-flatcontainer/google.api.gax.rest/2.5.0/google.api.gax.rest.2.5.0.nupkg 628ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.csharp/4.0.1/microsoft.csharp.4.0.1.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/sshnet.security.cryptography/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.diagnostics.tools/4.0.1/system.diagnostics.tools.4.0.1.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.diagnostics.tracesource/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.net.nameresolution/4.0.0/system.net.nameresolution.4.0.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.net.sockets/4.1.0/system.net.sockets.4.1.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.reflection.extensions/4.0.1/system.reflection.extensions.4.0.1.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.security.cryptography.algorithms/4.2.0/system.security.cryptography.algorithms.4.2.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.text.regularexpressions/4.1.0/system.text.regularexpressions.4.1.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.threading.thread/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.threading.threadpool/4.0.10/system.threading.threadpool.4.0.10.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.xml.xmldocument/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.xml.xpath.xmldocument/index.json
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.csharp/4.0.1/microsoft.csharp.4.0.1.nupkg 56ms
+           OK https://api.nuget.org/v3-flatcontainer/system.diagnostics.tools/4.0.1/system.diagnostics.tools.4.0.1.nupkg 58ms
+           OK https://api.nuget.org/v3-flatcontainer/system.security.cryptography.algorithms/4.2.0/system.security.cryptography.algorithms.4.2.0.nupkg 59ms
+           OK https://api.nuget.org/v3-flatcontainer/system.reflection.extensions/4.0.1/system.reflection.extensions.4.0.1.nupkg 62ms
+           OK https://api.nuget.org/v3-flatcontainer/system.threading.threadpool/4.0.10/system.threading.threadpool.4.0.10.nupkg 63ms
+           GET https://api.nuget.org/v3-flatcontainer/google.api.gax/index.json
+           GET https://api.nuget.org/v3-flatcontainer/google.apis.auth/index.json
+           OK https://api.nuget.org/v3-flatcontainer/system.net.nameresolution/4.0.0/system.net.nameresolution.4.0.0.nupkg 143ms
+           OK https://api.nuget.org/v3-flatcontainer/system.text.regularexpressions/4.1.0/system.text.regularexpressions.4.1.0.nupkg 221ms
+           GET https://api.nuget.org/v3-flatcontainer/runtime.native.system.security.cryptography/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.runtime.numerics/4.0.1/system.runtime.numerics.4.0.1.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.security.cryptography.encoding/4.0.0/system.security.cryptography.encoding.4.0.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.security.cryptography.primitives/4.0.0/system.security.cryptography.primitives.4.0.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.security.cryptography.primitives/4.0.0/system.security.cryptography.primitives.4.0.0.nupkg 50ms
+           OK https://api.nuget.org/v3-flatcontainer/system.runtime.numerics/4.0.1/system.runtime.numerics.4.0.1.nupkg 54ms
+           OK https://api.nuget.org/v3-flatcontainer/system.security.cryptography.encoding/4.0.0/system.security.cryptography.encoding.4.0.0.nupkg 57ms
+           OK https://api.nuget.org/v3-flatcontainer/sshnet.security.cryptography/index.json 625ms
+           GET https://api.nuget.org/v3-flatcontainer/system.net.primitives/4.0.11/system.net.primitives.4.0.11.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/sshnet.security.cryptography/1.2.0/sshnet.security.cryptography.1.2.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.security.principal.windows/4.0.0/system.security.principal.windows.4.0.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.threading.thread/index.json 623ms
+           GET https://api.nuget.org/v3-flatcontainer/system.threading.thread/4.0.0/system.threading.thread.4.0.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.diagnostics.tracesource/index.json 630ms
+           OK https://api.nuget.org/v3-flatcontainer/system.net.sockets/4.1.0/system.net.sockets.4.1.0.nupkg 629ms
+           GET https://api.nuget.org/v3-flatcontainer/system.diagnostics.tracesource/4.0.0/system.diagnostics.tracesource.4.0.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.xml.xmldocument/index.json 629ms
+           GET https://api.nuget.org/v3-flatcontainer/system.xml.xmldocument/4.0.1/system.xml.xmldocument.4.0.1.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.xml.xpath.xmldocument/index.json 630ms
+           GET https://api.nuget.org/v3-flatcontainer/system.xml.xpath.xmldocument/4.0.1/system.xml.xpath.xmldocument.4.0.1.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.net.primitives/4.0.11/system.net.primitives.4.0.11.nupkg 53ms
+           OK https://api.nuget.org/v3-flatcontainer/system.security.principal.windows/4.0.0/system.security.principal.windows.4.0.0.nupkg 52ms
+           OK https://api.nuget.org/v3-flatcontainer/sshnet.security.cryptography/1.2.0/sshnet.security.cryptography.1.2.0.nupkg 58ms
+           OK https://api.nuget.org/v3-flatcontainer/system.threading.thread/4.0.0/system.threading.thread.4.0.0.nupkg 59ms
+           OK https://api.nuget.org/v3-flatcontainer/system.diagnostics.tracesource/4.0.0/system.diagnostics.tracesource.4.0.0.nupkg 60ms
+           OK https://api.nuget.org/v3-flatcontainer/system.xml.xpath.xmldocument/4.0.1/system.xml.xpath.xmldocument.4.0.1.nupkg 58ms
+           OK https://api.nuget.org/v3-flatcontainer/system.xml.xmldocument/4.0.1/system.xml.xmldocument.4.0.1.nupkg 61ms
+           OK https://api.nuget.org/v3-flatcontainer/google.apis.auth/index.json 624ms
+           GET https://api.nuget.org/v3-flatcontainer/google.apis.auth/1.35.1/google.apis.auth.1.35.1.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/google.api.gax/index.json 634ms
+           GET https://api.nuget.org/v3-flatcontainer/google.api.gax/2.5.0/google.api.gax.2.5.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/google.apis/index.json
+           GET https://api.nuget.org/v3-flatcontainer/google.apis.auth/1.38.0/google.apis.auth.1.38.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.xml.readerwriter/4.0.11/system.xml.readerwriter.4.0.11.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.xml.xpath/index.json
+           OK https://api.nuget.org/v3-flatcontainer/system.xml.readerwriter/4.0.11/system.xml.readerwriter.4.0.11.nupkg 56ms
+           OK https://api.nuget.org/v3-flatcontainer/runtime.native.system.security.cryptography/index.json 620ms
+           GET https://api.nuget.org/v3-flatcontainer/runtime.native.system.security.cryptography/4.0.0/runtime.native.system.security.cryptography.4.0.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.win32.primitives/4.0.1/microsoft.win32.primitives.4.0.1.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.security.claims/4.0.1/system.security.claims.4.0.1.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.security.principal/4.0.1/system.security.principal.4.0.1.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/runtime.native.system.security.cryptography/4.0.0/runtime.native.system.security.cryptography.4.0.0.nupkg 44ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.win32.primitives/4.0.1/microsoft.win32.primitives.4.0.1.nupkg 49ms
+           OK https://api.nuget.org/v3-flatcontainer/system.security.claims/4.0.1/system.security.claims.4.0.1.nupkg 49ms
+           OK https://api.nuget.org/v3-flatcontainer/system.security.principal/4.0.1/system.security.principal.4.0.1.nupkg 57ms
+           OK https://api.nuget.org/v3-flatcontainer/google.apis.auth/1.35.1/google.apis.auth.1.35.1.nupkg 619ms
+           OK https://api.nuget.org/v3-flatcontainer/google.api.gax/2.5.0/google.api.gax.2.5.0.nupkg 619ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.codeanalysis.analyzers/2.9.3/microsoft.codeanalysis.analyzers.2.9.3.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.runtime.compilerservices.unsafe/4.5.2/system.runtime.compilerservices.unsafe.4.5.2.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.codeanalysis.analyzers/2.9.3/microsoft.codeanalysis.analyzers.2.9.3.nupkg 49ms
+           OK https://api.nuget.org/v3-flatcontainer/system.runtime.compilerservices.unsafe/4.5.2/system.runtime.compilerservices.unsafe.4.5.2.nupkg 53ms
+           OK https://api.nuget.org/v3-flatcontainer/google.apis.auth/1.38.0/google.apis.auth.1.38.0.nupkg 626ms
+           OK https://api.nuget.org/v3-flatcontainer/google.apis/index.json 631ms
+           GET https://api.nuget.org/v3-flatcontainer/google.apis/1.38.0/google.apis.1.38.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.xml.xpath/index.json 631ms
+           GET https://api.nuget.org/v3-flatcontainer/system.xml.xpath/4.0.1/system.xml.xpath.4.0.1.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.xml.xpath/4.0.1/system.xml.xpath.4.0.1.nupkg 56ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.platformabstractions/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.interactive.async/index.json
+           GET https://api.nuget.org/v3-flatcontainer/google.apis.core/index.json
+           GET https://api.nuget.org/v3-flatcontainer/google.apis/1.35.1/google.apis.1.35.1.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/google.apis/1.38.0/google.apis.1.38.0.nupkg 622ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.platformabstractions/index.json 616ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.extensions.platformabstractions/1.1.0/microsoft.extensions.platformabstractions.1.1.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.interactive.async/index.json 637ms
+           GET https://api.nuget.org/v3-flatcontainer/system.interactive.async/3.1.1/system.interactive.async.3.1.1.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/google.apis.core/index.json 612ms
+           GET https://api.nuget.org/v3-flatcontainer/google.apis.core/1.35.1/google.apis.core.1.35.1.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/google.apis.core/1.38.0/google.apis.core.1.38.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.extensions.platformabstractions/1.1.0/microsoft.extensions.platformabstractions.1.1.0.nupkg 50ms
+           OK https://api.nuget.org/v3-flatcontainer/google.apis/1.35.1/google.apis.1.35.1.nupkg 624ms
+           OK https://api.nuget.org/v3-flatcontainer/system.interactive.async/3.1.1/system.interactive.async.3.1.1.nupkg 61ms
+           GET https://api.nuget.org/v3-flatcontainer/newtonsoft.json/10.0.3/newtonsoft.json.10.0.3.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/newtonsoft.json/10.0.3/newtonsoft.json.10.0.3.nupkg 55ms
+           GET https://api.nuget.org/v3-flatcontainer/system.reflection.emit.lightweight/4.0.1/system.reflection.emit.lightweight.4.0.1.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.reflection.emit.lightweight/4.0.1/system.reflection.emit.lightweight.4.0.1.nupkg 38ms
+           OK https://api.nuget.org/v3-flatcontainer/google.apis.core/1.35.1/google.apis.core.1.35.1.nupkg 605ms
+           OK https://api.nuget.org/v3-flatcontainer/google.apis.core/1.38.0/google.apis.core.1.38.0.nupkg 608ms
+           GET https://api.nuget.org/v3-flatcontainer/system.threading.tasks.extensions/4.0.0/system.threading.tasks.extensions.4.0.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.threading.tasks.extensions/4.0.0/system.threading.tasks.extensions.4.0.0.nupkg 35ms
+           GET https://api.nuget.org/v3-flatcontainer/awssdk.core/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.net.requests/index.json
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.testplatform.objectmodel/index.json
+           GET https://api.nuget.org/v3-flatcontainer/newtonsoft.json/9.0.1/newtonsoft.json.9.0.1.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/newtonsoft.json/9.0.1/newtonsoft.json.9.0.1.nupkg 37ms
+           OK https://api.nuget.org/v3-flatcontainer/awssdk.core/index.json 599ms
+           GET https://api.nuget.org/v3-flatcontainer/awssdk.core/3.3.104.14/awssdk.core.3.3.104.14.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.net.requests/index.json 601ms
+           GET https://api.nuget.org/v3-flatcontainer/system.net.requests/4.0.11/system.net.requests.4.0.11.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.net.requests/4.0.11/system.net.requests.4.0.11.nupkg 37ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.csharp/4.3.0/microsoft.csharp.4.3.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.componentmodel.typeconverter/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.runtime.serialization.primitives/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.runtime.serialization.formatters/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.xml.xmldocument/4.3.0/system.xml.xmldocument.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.csharp/4.3.0/microsoft.csharp.4.3.0.nupkg 36ms
+           OK https://api.nuget.org/v3-flatcontainer/system.xml.xmldocument/4.3.0/system.xml.xmldocument.4.3.0.nupkg 41ms
+           GET https://api.nuget.org/v3-flatcontainer/system.net.http/4.1.0/system.net.http.4.1.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.net.webheadercollection/4.0.1/system.net.webheadercollection.4.0.1.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.testplatform.objectmodel/index.json 610ms
+           GET https://api.nuget.org/v3-flatcontainer/microsoft.testplatform.objectmodel/16.6.1/microsoft.testplatform.objectmodel.16.6.1.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.net.http/4.1.0/system.net.http.4.1.0.nupkg 34ms
+           OK https://api.nuget.org/v3-flatcontainer/system.net.webheadercollection/4.0.1/system.net.webheadercollection.4.0.1.nupkg 38ms
+           OK https://api.nuget.org/v3-flatcontainer/awssdk.core/3.3.104.14/awssdk.core.3.3.104.14.nupkg 606ms
+           GET https://api.nuget.org/v3-flatcontainer/system.dynamic.runtime/4.3.0/system.dynamic.runtime.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.dynamic.runtime/4.3.0/system.dynamic.runtime.4.3.0.nupkg 37ms
+           GET https://api.nuget.org/v3-flatcontainer/system.xml.xdocument/4.0.11/system.xml.xdocument.4.0.11.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.xml.xdocument/4.0.11/system.xml.xdocument.4.0.11.nupkg 37ms
+           OK https://api.nuget.org/v3-flatcontainer/system.runtime.serialization.formatters/index.json 601ms
+           OK https://api.nuget.org/v3-flatcontainer/system.componentmodel.typeconverter/index.json 607ms
+           OK https://api.nuget.org/v3-flatcontainer/system.runtime.serialization.primitives/index.json 608ms
+           GET https://api.nuget.org/v3-flatcontainer/system.runtime.serialization.formatters/4.3.0/system.runtime.serialization.formatters.4.3.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.runtime.serialization.primitives/4.3.0/system.runtime.serialization.primitives.4.3.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.runtime.serialization.primitives/4.1.1/system.runtime.serialization.primitives.4.1.1.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.componentmodel.typeconverter/4.3.0/system.componentmodel.typeconverter.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.runtime.serialization.formatters/4.3.0/system.runtime.serialization.formatters.4.3.0.nupkg 35ms
+           OK https://api.nuget.org/v3-flatcontainer/system.runtime.serialization.primitives/4.3.0/system.runtime.serialization.primitives.4.3.0.nupkg 43ms
+           OK https://api.nuget.org/v3-flatcontainer/system.runtime.serialization.primitives/4.1.1/system.runtime.serialization.primitives.4.1.1.nupkg 55ms
+           OK https://api.nuget.org/v3-flatcontainer/system.componentmodel.typeconverter/4.3.0/system.componentmodel.typeconverter.4.3.0.nupkg 57ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.testplatform.objectmodel/16.6.1/microsoft.testplatform.objectmodel.16.6.1.nupkg 627ms
+           GET https://api.nuget.org/v3-flatcontainer/system.collections.nongeneric/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.collections.specialized/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.componentmodel/index.json
+           GET https://api.nuget.org/v3-flatcontainer/system.componentmodel.primitives/index.json
+           GET https://api.nuget.org/v3-flatcontainer/runtime.native.system.net.http/4.0.1/runtime.native.system.net.http.4.0.1.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.diagnostics.diagnosticsource/4.0.0/system.diagnostics.diagnosticsource.4.0.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.globalization.extensions/4.0.1/system.globalization.extensions.4.0.1.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.security.cryptography.openssl/4.0.0/system.security.cryptography.openssl.4.0.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.security.cryptography.x509certificates/4.1.0/system.security.cryptography.x509certificates.4.1.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/runtime.native.system.net.http/4.0.1/runtime.native.system.net.http.4.0.1.nupkg 35ms
+           OK https://api.nuget.org/v3-flatcontainer/system.globalization.extensions/4.0.1/system.globalization.extensions.4.0.1.nupkg 35ms
+           OK https://api.nuget.org/v3-flatcontainer/system.security.cryptography.openssl/4.0.0/system.security.cryptography.openssl.4.0.0.nupkg 40ms
+           OK https://api.nuget.org/v3-flatcontainer/system.diagnostics.diagnosticsource/4.0.0/system.diagnostics.diagnosticsource.4.0.0.nupkg 45ms
+           OK https://api.nuget.org/v3-flatcontainer/system.security.cryptography.x509certificates/4.1.0/system.security.cryptography.x509certificates.4.1.0.nupkg 49ms
+           GET https://api.nuget.org/v3-flatcontainer/nuget.frameworks/index.json
+           OK https://api.nuget.org/v3-flatcontainer/system.collections.specialized/index.json 596ms
+           GET https://api.nuget.org/v3-flatcontainer/system.collections.specialized/4.3.0/system.collections.specialized.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.componentmodel/index.json 598ms
+           GET https://api.nuget.org/v3-flatcontainer/system.componentmodel/4.3.0/system.componentmodel.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.collections.nongeneric/index.json 610ms
+           GET https://api.nuget.org/v3-flatcontainer/system.collections.nongeneric/4.3.0/system.collections.nongeneric.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.componentmodel.primitives/index.json 611ms
+           GET https://api.nuget.org/v3-flatcontainer/system.componentmodel.primitives/4.3.0/system.componentmodel.primitives.4.3.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.collections.specialized/4.3.0/system.collections.specialized.4.3.0.nupkg 36ms
+           OK https://api.nuget.org/v3-flatcontainer/system.componentmodel/4.3.0/system.componentmodel.4.3.0.nupkg 41ms
+           OK https://api.nuget.org/v3-flatcontainer/system.collections.nongeneric/4.3.0/system.collections.nongeneric.4.3.0.nupkg 40ms
+           OK https://api.nuget.org/v3-flatcontainer/system.componentmodel.primitives/4.3.0/system.componentmodel.primitives.4.3.0.nupkg 41ms
+           GET https://api.nuget.org/v3-flatcontainer/system.globalization.calendars/4.0.1/system.globalization.calendars.4.0.1.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.security.cryptography.cng/4.2.0/system.security.cryptography.cng.4.2.0.nupkg
+           GET https://api.nuget.org/v3-flatcontainer/system.security.cryptography.csp/4.0.0/system.security.cryptography.csp.4.0.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/system.security.cryptography.csp/4.0.0/system.security.cryptography.csp.4.0.0.nupkg 35ms
+           OK https://api.nuget.org/v3-flatcontainer/system.globalization.calendars/4.0.1/system.globalization.calendars.4.0.1.nupkg 38ms
+           OK https://api.nuget.org/v3-flatcontainer/system.security.cryptography.cng/4.2.0/system.security.cryptography.cng.4.2.0.nupkg 45ms
+           OK https://api.nuget.org/v3-flatcontainer/nuget.frameworks/index.json 673ms
+           GET https://api.nuget.org/v3-flatcontainer/nuget.frameworks/5.0.0/nuget.frameworks.5.0.0.nupkg
+           OK https://api.nuget.org/v3-flatcontainer/nuget.frameworks/5.0.0/nuget.frameworks.5.0.0.nupkg 38ms
+         Installing System.Security.Cryptography.Cng 4.2.0.
+         Installing System.Globalization.Calendars 4.0.1.
+         Installing System.Security.Cryptography.Csp 4.0.0.
+         Installing System.Security.Cryptography.X509Certificates 4.1.0.
+         Installing System.Diagnostics.DiagnosticSource 4.0.0.
+         Installing System.Globalization.Extensions 4.0.1.
+         Installing System.Security.Cryptography.OpenSsl 4.0.0.
+         Installing runtime.native.System.Net.Http 4.0.1.
+         Installing Google.Apis.Core 1.35.1.
+         Installing Google.Apis 1.35.1.
+         Installing System.Interactive.Async 3.1.1.
+         Installing Microsoft.Extensions.PlatformAbstractions 1.1.0.
+         Installing Google.Apis.Core 1.38.0.
+         Installing System.Runtime.InteropServices.RuntimeInformation 4.0.0.
+         Installing System.AppContext 4.1.0.
+         Installing Microsoft.Extensions.Configuration 2.0.0.
+         Installing System.Runtime.CompilerServices.Unsafe 4.4.0.
+         Installing System.IO.Pipelines 4.7.2.
+         Installing System.Net.Http 4.1.0.
+         Installing Serilog 2.9.0.
+         Installing BundlerMinifier.TagHelpers 3.2.435.
+         Installing NBitpayClient 1.0.0.39.
+         Installing TwentyTwenty.Storage.Local 2.12.1.
+         Installing TwentyTwenty.Storage 2.12.1.
+         Installing Microsoft.Extensions.Logging.Filter 1.1.2.
+         Installing Text.Analyzers 2.6.4.
+         Installing DBriize 1.0.1.3.
+         Installing CsvHelper 15.0.5.
+         Installing Serilog.Sinks.File 4.1.0.
+         Installing Microsoft.AspNetCore.Mvc.NewtonsoftJson 3.1.1.
+         Installing Microsoft.NetCore.Analyzers 2.9.8.
+         Installing NicolasDorier.RateLimits 1.1.0.
+         Installing BuildBundlerMinifier 3.2.435.
+         Installing BundlerMinifier.Core 3.2.435.
+         Installing BTCPayServer.Lightning.All 1.2.0.
+         Installing YamlDotNet 8.0.0.
+         Installing Serilog.AspNetCore 3.2.0.
+         Installing TwentyTwenty.Storage.Google 2.12.1.
+         Installing SSH.NET 2016.1.0.
+         Installing TwentyTwenty.Storage.Azure 2.12.1.
+         Installing Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation 3.1.1.
+         Installing BTCPayServer.Hwi 1.1.3.
+         Installing U2F.Core 1.0.4.
+         Installing HtmlSanitizer 4.0.217.
+         Installing TwentyTwenty.Storage.Amazon 2.12.1.
+         Installing Microsoft.Extensions.Logging.Abstractions 1.1.2.
+         Installing System.Net.WebHeaderCollection 4.0.1.
+         Installing Microsoft.Extensions.Configuration.Abstractions 1.1.2.
+         Installing System.Text.Encoding.Extensions 4.0.11.
+         Installing Microsoft.CodeAnalysis.Analyzers 2.9.3.
+         Installing System.Runtime.CompilerServices.Unsafe 4.5.2.
+         Installing System.Threading.Timer 4.0.1.
+         Installing System.IO.FileSystem 4.0.1.
+         Installing System.Threading.Tasks.Extensions 4.0.0.
+         Installing System.Reflection.Emit.Lightweight 4.0.1.
+         Installing Newtonsoft.Json.Bson 1.0.2.
+         Installing Microsoft.AspNetCore.JsonPatch 3.1.1.
+         Installing System.Reflection.Emit 4.0.1.
+         Installing System.Threading.Channels 4.5.0.
+         Installing NUglify 1.5.12.
+         Installing BTCPayServer.Lightning.Charge 1.2.0.
+         Installing BTCPayServer.Lightning.Ptarmigan 1.2.0.
+         Installing BTCPayServer.Lightning.CLightning 1.2.0.
+         Installing BTCPayServer.Lightning.Eclair 1.2.0.
+         Installing BTCPayServer.Lightning.LND 1.2.0.
+         Installing Microsoft.Extensions.DependencyInjection 2.0.0.
+         Installing System.Reflection.Emit.ILGeneration 4.0.1.
+         Installing Microsoft.Extensions.Logging 2.0.0.
+         Installing Serilog.Formatting.Compact 1.0.0.
+         Installing Serilog.Sinks.Debug 1.0.1.
+         Installing Serilog.Sinks.Console 3.1.1.
+         Installing Serilog.Extensions.Hosting 3.0.0.
+         Installing Microsoft.AspNetCore.Hosting.Abstractions 2.0.0.
+         Installing Serilog.Settings.Configuration 3.1.0.
+         Installing Google.Cloud.Storage.V1 2.3.0.
+         Installing NBitcoin 5.0.4.
+         Installing System.IO.FileSystem.Primitives 4.0.1.
+         Installing System.Diagnostics.Tools 4.0.1.
+         Installing System.Security.Claims 4.0.1.
+         Installing System.Threading.ThreadPool 4.0.10.
+         Installing System.Reflection.Extensions 4.0.1.
+         Installing SshNet.Security.Cryptography 1.2.0.
+         Installing System.Threading.Thread 4.0.0.
+         Installing System.Security.Cryptography.Algorithms 4.2.0.
+         Installing System.Text.RegularExpressions 4.1.0.
+         Installing System.Security.Principal 4.0.1.
+         Installing System.Diagnostics.TraceSource 4.0.0.
+         Installing System.Net.NameResolution 4.0.0.
+         Installing Microsoft.Win32.Primitives 4.0.1.
+         Installing System.Net.Sockets 4.1.0.
+         Installing Microsoft.CSharp 4.0.1.
+         Installing System.Xml.XmlDocument 4.0.1.
+         Installing Google.Apis.Auth 1.35.1.
+         Installing System.Xml.XPath.XmlDocument 4.0.1.
+         Installing WindowsAzure.Storage 9.3.3.
+         Installing Microsoft.Extensions.DependencyModel 3.1.1.
+         Installing Microsoft.AspNetCore.Mvc.Razor.Extensions 3.1.1.
+         Installing Microsoft.CodeAnalysis.Razor 3.1.1.
+         Installing Google.Api.Gax 2.5.0.
+         Installing Portable.BouncyCastle 1.8.1.3.
+         Installing AngleSharp 0.9.11.
+         Installing AWSSDK.S3 3.3.110.10.
+         Installing Microsoft.Extensions.Primitives 1.1.1.
+         Installing Microsoft.Extensions.DependencyInjection.Abstractions 2.0.0.
+         Installing Google.Apis 1.38.0.
+         Installing Microsoft.Extensions.Logging.Abstractions 2.0.0.
+         Installing Google.Apis.Auth 1.38.0.
+         Installing Microsoft.Extensions.Options 2.0.0.
+         Installing Microsoft.Extensions.DependencyInjection.Abstractions 2.1.0.
+         Installing Microsoft.DotNet.PlatformAbstractions 2.0.4.
+         Installing Microsoft.Extensions.Hosting.Abstractions 2.1.0.
+         Installing Serilog.Extensions.Logging 3.0.1.
+         Installing Microsoft.Extensions.Configuration.Abstractions 2.0.0.
+         Installing Microsoft.Extensions.FileProviders.Abstractions 2.0.0.
+         Installing Microsoft.Extensions.Hosting.Abstractions 2.0.0.
+         Installing Microsoft.AspNetCore.Hosting.Server.Abstractions 2.0.0.
+         Installing Microsoft.AspNetCore.Http.Abstractions 2.0.0.
+         Installing Microsoft.Extensions.Options.ConfigurationExtensions 2.0.0.
+         Installing Microsoft.Extensions.DependencyModel 2.0.4.
+         Installing Google.Apis.Storage.v1 1.38.0.1470.
+         Installing Google.Api.Gax.Rest 2.5.0.
+         Installing System.Security.Cryptography.Primitives 4.0.0.
+         Installing System.Security.Cryptography.Encoding 4.0.0.
+         Installing System.Runtime.Numerics 4.0.1.
+         Installing runtime.native.System 4.0.0.
+         Installing System.Security.Principal.Windows 4.0.0.
+         Installing runtime.native.System.Security.Cryptography 4.0.0.
+         Installing System.Net.Primitives 4.0.11.
+         Installing System.ObjectModel 4.0.12.
+         Installing System.Reflection.TypeExtensions 4.1.0.
+         Installing System.Dynamic.Runtime 4.0.11.
+         Installing System.Linq.Expressions 4.1.0.
+         Installing System.Xml.ReaderWriter 4.0.11.
+         Installing System.Xml.XPath 4.0.1.
+         Installing System.Text.Json 4.7.0.
+         Installing Microsoft.AspNetCore.Razor.Language 3.1.1.
+         Installing Microsoft.CodeAnalysis.Common 3.3.0.
+         Installing Microsoft.CodeAnalysis.CSharp 3.3.0.
+         Installing System.Net.Requests 4.0.11.
+         Installing AWSSDK.Core 3.3.104.14.
+         Installing System.Runtime.CompilerServices.Unsafe 4.3.0.
+         Installing NBitcoin 5.0.33.
+         Installing Microsoft.Extensions.Primitives 2.0.0.
+         Installing Microsoft.AspNetCore.Http.Features 2.0.0.
+         Installing System.Text.Encodings.Web 4.4.0.
+         Installing Microsoft.Extensions.Configuration.Binder 2.0.0.
+         Installing NuGet.Frameworks 5.0.0.
+         Installing System.Runtime.Serialization.Primitives 4.1.1.
+         Installing System.Xml.XDocument 4.0.11.
+         Installing System.Collections.NonGeneric 4.3.0.
+         Installing System.ComponentModel 4.3.0.
+         Installing System.Collections.Specialized 4.3.0.
+         Installing System.ComponentModel.Primitives 4.3.0.
+         Installing System.Dynamic.Runtime 4.3.0.
+         Installing xunit.abstractions 2.0.3.
+         Installing Microsoft.TestPlatform.ObjectModel 16.6.1.
+         Installing Newtonsoft.Json 9.0.1.
+         Installing System.ComponentModel.TypeConverter 4.3.0.
+         Installing System.Runtime.Serialization.Primitives 4.3.0.
+         Installing System.Runtime.Serialization.Formatters 4.3.0.
+         Installing Microsoft.CSharp 4.3.0.
+         Installing xunit.runner.visualstudio 2.4.2.
+         Installing xunit 2.4.1.
+         Installing Newtonsoft.Json.Schema 3.0.13.
+         Installing Selenium.WebDriver 3.141.0.
+         Installing Microsoft.NET.Test.Sdk 16.6.1.
+         Installing Selenium.WebDriver.ChromeDriver 83.0.4103.3900.
+         Installing xunit.analyzers 0.10.0.
+         Installing xunit.assert 2.4.1.
+         Installing xunit.core 2.4.1.
+         Installing Newtonsoft.Json 12.0.2.
+         Installing System.Xml.XmlDocument 4.3.0.
+         Installing Newtonsoft.Json 10.0.3.
+         Installing Microsoft.CodeCoverage 16.6.1.
+         Installing Microsoft.TestPlatform.TestHost 16.6.1.
+         Installing xunit.extensibility.core 2.4.1.
+         Installing xunit.extensibility.execution 2.4.1.
+         Committing restore...
+         Assets file has not changed. Skipping assets file writing. Path: /home/calvin/nixpkgs/pkgs/applications/blockchains/btcpayserver/btcpayserver/BTCPayServer/obj/project.assets.json
+         Restore completed in 13.18 sec for /home/calvin/nixpkgs/pkgs/applications/blockchains/btcpayserver/btcpayserver/BTCPayServer/BTCPayServer.csproj.
+         Committing restore...
+         Assets file has not changed. Skipping assets file writing. Path: /home/calvin/nixpkgs/pkgs/applications/blockchains/btcpayserver/btcpayserver/BTCPayServer.Tests/obj/project.assets.json
+         Restore completed in 13.53 sec for /home/calvin/nixpkgs/pkgs/applications/blockchains/btcpayserver/btcpayserver/BTCPayServer.Tests/BTCPayServer.Tests.csproj.
+         
+         NuGet Config files used:
+             /home/calvin/nixpkgs/pkgs/applications/blockchains/btcpayserver/btcpayserver/nuget.config
+             /home/calvin/.nuget/NuGet/NuGet.Config
+         
+         Feeds used:
+             https://api.nuget.org/v3/index.json
+         
+         Installed:
+             23 package(s) to /home/calvin/nixpkgs/pkgs/applications/blockchains/btcpayserver/btcpayserver/BTCPayServer.Client/BTCPayServer.Client.csproj
+             122 package(s) to /home/calvin/nixpkgs/pkgs/applications/blockchains/btcpayserver/btcpayserver/BTCPayServer.Common/BTCPayServer.Common.csproj
+             87 package(s) to /home/calvin/nixpkgs/pkgs/applications/blockchains/btcpayserver/btcpayserver/BTCPayServer.Data/BTCPayServer.Data.csproj
+             116 package(s) to /home/calvin/nixpkgs/pkgs/applications/blockchains/btcpayserver/btcpayserver/BTCPayServer.Rating/BTCPayServer.Rating.csproj
+             349 package(s) to /home/calvin/nixpkgs/pkgs/applications/blockchains/btcpayserver/btcpayserver/BTCPayServer/BTCPayServer.csproj
+             378 package(s) to /home/calvin/nixpkgs/pkgs/applications/blockchains/btcpayserver/btcpayserver/BTCPayServer.Tests/BTCPayServer.Tests.csproj
+     1>Done Building Project "/home/calvin/nixpkgs/pkgs/applications/blockchains/btcpayserver/btcpayserver/btcpayserver.sln" (Restore target(s)).
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:28.71
