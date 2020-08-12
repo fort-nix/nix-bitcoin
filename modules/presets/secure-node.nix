@@ -128,6 +128,12 @@ in {
       port = cfg.electrs.port; toHost = cfg.electrs.address;
     });
 
+    # btcpayserver
+    # disable tor enforcement until btcpayserver can fetch rates over Tor
+    services.btcpayserver.enforceTor = false;
+    services.nbxplorer.enforceTor = true;
+    services.tor.hiddenServices.btcpayserver = mkIf cfg.btcpayserver.enable (mkHiddenService { port = 80; toPort = 23000; toHost = cfg.btcpayserver.bind; });
+
     services.spark-wallet = {
       onion-service = true;
       enforceTor = true;
