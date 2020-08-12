@@ -160,6 +160,8 @@ in {
             ${ipNetns} route add default via ${bridgeIp}
             ${netnsIptables} -w -P INPUT DROP
             ${netnsIptables} -w -A INPUT -s 127.0.0.1,${bridgeIp},${v.address} -j ACCEPT
+            # allow return traffic to outgoing connections initiated by the service itself
+            ${netnsIptables} -w -A INPUT -m conntrack --ctstate ESTABLISHED -j ACCEPT
           '' + (optionalString (config.services.${n}.enforceTor or false)) ''
             ${netnsIptables} -w -P OUTPUT DROP
             ${netnsIptables} -w -A OUTPUT -d 127.0.0.1,${bridgeIp},${v.address} -j ACCEPT
