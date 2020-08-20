@@ -227,6 +227,7 @@ in {
       isNormalUser = true;
       extraGroups = [
           "systemd-journal"
+          "proc" # Enable full /proc access and systemd-status
           cfg.bitcoind.group
         ]
         ++ (optionals cfg.clightning.enable [ "clightning" ])

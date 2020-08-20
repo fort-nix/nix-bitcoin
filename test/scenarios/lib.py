@@ -103,11 +103,13 @@ def run_tests(extra_tests):
     machine.wait_until_succeeds(log_has_string("bitcoind-import-banlist", "Importing node banlist"))
     assert_no_failure("bitcoind-import-banlist")
 
-    # test that `systemctl status` can't leak credentials
+    # `systemctl status` run by unprivileged users shouldn't leak cgroup info
     assert_matches(
         "sudo -u electrs systemctl status clightning 2>&1 >/dev/null",
         "Failed to dump process list for 'clightning.service', ignoring: Access denied",
     )
+    # The 'operator' with group 'proc' has full access
+    assert_full_match("sudo -u operator systemctl status clightning 2>&1 >/dev/null", "")
     machine.succeed("grep -Fq hidepid=2 /proc/mounts")
 
     ### Additional tests
