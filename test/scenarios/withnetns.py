@@ -84,7 +84,7 @@ def prestop():
     machine.fail("netns-exec nb-electrs ip a")
 
     # test that netns-exec drops capabilities
-    assert_matches_exactly(
+    assert_full_match(
         "su operator -c 'netns-exec nb-bitcoind capsh --print | grep Current '", "Current: =\n"
     )
 

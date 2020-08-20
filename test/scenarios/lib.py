@@ -9,7 +9,7 @@ def assert_matches(cmd, regexp):
         raise Exception(f"Pattern '{regexp}' not found in '{out}'")
 
 
-def assert_matches_exactly(cmd, regexp):
+def assert_full_match(cmd, regexp):
     out = succeed(cmd)
     if not re.fullmatch(regexp, out):
         raise Exception(f"Pattern '{regexp}' doesn't match '{out}'")
