@@ -57,6 +57,5 @@ import ./make-test.nix rec {
     '';
   };
   testScript =
-    builtins.readFile ./scenarios/lib.py + "\n\n" +
-    builtins.readFile "${./.}/scenarios/${scenario}.py";
+    builtins.readFile ./base.py + "\n\n" + builtins.readFile "${./.}/scenarios/${scenario}.py";
 }
