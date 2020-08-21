@@ -95,9 +95,9 @@ in {
 
   # Base infrastructure
   {
-    networking.dhcpcd.denyInterfaces = [ "br0" "br-nb*" "nb-veth*" ];
+    networking.dhcpcd.denyInterfaces = [ "nb-br" "br-nb*" "nb-veth*" ];
     services.tor.client.socksListenAddress = "${bridgeIp}:9050";
-    networking.firewall.interfaces.br0.allowedTCPPorts = [ 9050 ];
+    networking.firewall.interfaces.nb-br.allowedTCPPorts = [ 9050 ];
     boot.kernel.sysctl."net.ipv4.ip_forward" = true;
     security.wrappers.netns-exec = {
       source  = "${pkgs.nix-bitcoin.netns-exec}/netns-exec";
@@ -112,14 +112,14 @@ in {
         requiredBy = [ "tor.service" ];
         before = [ "tor.service" ];
         script = ''
-          ${ip} link add name br0 type bridge
-          ${ip} link set br0 up
-          ${ip} addr add ${bridgeIp}/24 brd + dev br0
+          ${ip} link add name nb-br type bridge
+          ${ip} link set nb-br up
+          ${ip} addr add ${bridgeIp}/24 brd + dev nb-br
           ${iptables} -w -t nat -A POSTROUTING -s 169.254.${toString cfg.addressblock}.0/24 -j MASQUERADE
         '';
         preStop = ''
           ${iptables} -w -t nat -D POSTROUTING -s 169.254.${toString cfg.addressblock}.0/24 -j MASQUERADE
-          ${ip} link del br0
+          ${ip} link del nb-br
         '';
         serviceConfig = {
           Type = "oneshot";
@@ -150,7 +150,7 @@ in {
             ${ipNetns} addr add ${v.address}/24 dev ${vethName}
             ${ip} link set br-${vethName} up
             ${ipNetns} link set ${vethName} up
-            ${ip} link set br-${vethName} master br0
+            ${ip} link set br-${vethName} master nb-br
             ${ipNetns} route add default via ${bridgeIp}
             ${netnsIptables} -w -P INPUT DROP
             ${netnsIptables} -w -A INPUT -s 127.0.0.1,${bridgeIp},${v.address} -j ACCEPT
