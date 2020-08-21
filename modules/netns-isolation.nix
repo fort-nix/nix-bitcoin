@@ -44,7 +44,7 @@ in {
       type = types.ints.u8;
       default = "1";
       description = ''
-        Specify the N address block in 169.254.N.0/24.
+        The address block N in 169.254.N.0/24, used as the prefix for netns addresses.
       '';
     };
 
