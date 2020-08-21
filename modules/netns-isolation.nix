@@ -106,12 +106,10 @@ in {
       spark-wallet = {
         id = 17;
         # communicates with clightning over lightning-rpc socket
-        connections = [];
       };
       lightning-charge = {
         id = 18;
         # communicates with clightning over lightning-rpc socket
-        connections = [];
       };
       nanopos = {
         id = 19;
@@ -120,11 +118,9 @@ in {
       recurring-donations = {
         id = 20;
         # communicates with clightning over lightning-rpc socket
-        connections = [];
       };
       nginx = {
         id = 21;
-        connections = [];
       };
       lightning-loop = {
         id = 22;
