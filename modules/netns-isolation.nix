@@ -95,7 +95,7 @@ in {
 
   # Base infrastructure
   {
-    networking.dhcpcd.denyInterfaces = [ "nb-br" "br-nb*" "nb-veth*" ];
+    networking.dhcpcd.denyInterfaces = [ "nb-br" "nb-veth*" ];
     services.tor.client.socksListenAddress = "${bridgeIp}:9050";
     networking.firewall.interfaces.nb-br.allowedTCPPorts = [ 9050 ];
     boot.kernel.sysctl."net.ipv4.ip_forward" = true;
@@ -129,7 +129,8 @@ in {
     } //
     (let
       makeNetnsServices = n: v: let
-        vethName = "nb-veth-${toString v.id}";
+        veth = "nb-veth-${toString v.id}";
+        peer = "nb-veth-br-${toString v.id}";
         inherit (v) netnsName;
         ipNetns = "${ip} -n ${netnsName}";
         netnsIptables = "${ip} netns exec ${netnsName} ${config.networking.firewall.package}/bin/iptables";
@@ -145,12 +146,12 @@ in {
           script = ''
             ${ip} netns add ${netnsName}
             ${ipNetns} link set lo up
-            ${ip} link add ${vethName} type veth peer name br-${vethName}
-            ${ip} link set ${vethName} netns ${netnsName}
-            ${ipNetns} addr add ${v.address}/24 dev ${vethName}
-            ${ip} link set br-${vethName} up
-            ${ipNetns} link set ${vethName} up
-            ${ip} link set br-${vethName} master nb-br
+            ${ip} link add ${veth} type veth peer name ${peer}
+            ${ip} link set ${veth} netns ${netnsName}
+            ${ipNetns} addr add ${v.address}/24 dev ${veth}
+            ${ip} link set ${peer} up
+            ${ipNetns} link set ${veth} up
+            ${ip} link set ${peer} master nb-br
             ${ipNetns} route add default via ${bridgeIp}
             ${netnsIptables} -w -P INPUT DROP
             ${netnsIptables} -w -A INPUT -s 127.0.0.1,${bridgeIp},${v.address} -j ACCEPT
@@ -165,7 +166,7 @@ in {
           '') v.availableNetns;
           preStop = ''
             ${ip} netns delete ${netnsName}
-            ${ip} link del br-${vethName}
+            ${ip} link del ${peer}
           '';
           serviceConfig = {
             Type = "oneshot";
