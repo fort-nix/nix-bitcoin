@@ -210,9 +210,7 @@ in {
       ];
       rpcallowip = [
         "127.0.0.1"
-      ] ++ lib.lists.concatMap (n: [
-        "${netns.${n}.address}"
-      ]) netns.bitcoind.availableNetns;
+      ] ++ map (n: "${netns.${n}.address}") netns.bitcoind.availableNetns;
       cli = pkgs.writeScriptBin "bitcoin-cli" ''
         netns-exec nb-bitcoind ${config.services.bitcoind.package}/bin/bitcoin-cli -datadir='${config.services.bitcoind.dataDir}' "$@"
       '';
@@ -253,9 +251,7 @@ in {
       ];
       rpcallowip = [
         "127.0.0.1"
-      ] ++ lib.lists.concatMap (n: [
-        "${netns.${n}.address}"
-      ]) netns.liquidd.availableNetns;
+      ] ++ map (n: "${netns.${n}.address}") netns.liquidd.availableNetns;
       mainchainrpchost = netns.bitcoind.address;
       cli = pkgs.writeScriptBin "elements-cli" ''
         netns-exec nb-liquidd ${pkgs.nix-bitcoin.elementsd}/bin/elements-cli -datadir='${config.services.liquidd.dataDir}' "$@"
