@@ -75,6 +75,14 @@ in {
         };
       });
     };
+
+    allowedUser = mkOption {
+      type = types.str;
+      description = ''
+        User that is allowed to execute commands in the service network namespaces.
+        The user's group is also authorized.
+      '';
+    };
   };
 
   config = mkIf cfg.enable (mkMerge [
@@ -88,7 +96,7 @@ in {
     security.wrappers.netns-exec = {
       source  = "${pkgs.nix-bitcoin.netns-exec}/netns-exec";
       capabilities = "cap_sys_admin=ep";
-      owner = "${config.nix-bitcoin.operatorName}";
+      owner = cfg.allowedUser;
       permissions = "u+rx,g+rx,o-rwx";
     };
 

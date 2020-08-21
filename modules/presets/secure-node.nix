@@ -238,6 +238,7 @@ in {
             [ cfg.hardware-wallets.group ]);
       openssh.authorizedKeys.keys = config.users.users.root.openssh.authorizedKeys.keys;
     };
+    nix-bitcoin.netns-isolation.allowedUser = operatorName;
     # Give operator access to onion hostnames
     services.onion-chef.enable = true;
     services.onion-chef.access.${operatorName} = [ "bitcoind" "clightning" "nginx" "liquidd" "spark-wallet" "electrs" "sshd" ];
