@@ -10,8 +10,8 @@
 #   Test specific scenario
 #   ./run-tests.sh --scenario <scenario>
 #
-#   Run test and save result to avoid garbage collection
-#   ./run-tests.sh [--scenario <scenario>] build --out-link /tmp/nix-bitcoin-test
+#   Run test and link results to avoid garbage collection
+#   ./run-tests.sh [--scenario <scenario>] --out-link-prefix /tmp/nix-bitcoin-test build
 #
 #   Run interactive test debugging
 #   ./run-tests.sh [--scenario <scenario>] debug
@@ -22,17 +22,33 @@
 set -eo pipefail
 
 scenario=
-
-if [[ $1 == --scenario ]]; then
-    if [[ $2 ]]; then
-        scenario=$2
-		shift
-        shift
-    else
-        >&2 echo 'Error: "--scenario" requires an argument.'
-        exit 1
-    fi
-fi
+outLinkPrefix=
+while :; do
+    case $1 in
+        --scenario|-s)
+            if [[ $2 ]]; then
+                scenario=$2
+                shift
+                shift
+            else
+                >&2 echo 'Error: "$1" requires an argument.'
+                exit 1
+            fi
+            ;;
+        --out-link-prefix|-o)
+            if [[ $2 ]]; then
+                outLinkPrefix=$2
+                shift
+                shift
+            else
+                >&2 echo 'Error: "$1" requires an argument.'
+                exit 1
+            fi
+            ;;
+        *)
+            break
+    esac
+done
 
 numCPUs=${numCPUs:-$(nproc)}
 # Min. 800 MiB needed to avoid 'out of memory' errors
@@ -92,7 +108,12 @@ debug() {
 
 # Run the test by building the test derivation
 buildTest() {
-    vmTestNixExpr | nix-build --no-out-link "$@" -
+    if [[ $outLinkPrefix ]]; then
+        buildArgs="--out-link $outLinkPrefix-$scenario"
+    else
+        buildArgs=--no-out-link
+    fi
+    vmTestNixExpr | nix-build $buildArgs "$@" -
 }
 
 # On continuous integration nodes there are few other processes running alongside the
