@@ -75,8 +75,10 @@ in {
     };
   };
 
-  config = mkIf cfg.enable {
-    # Prerequisites
+  config = mkIf cfg.enable (mkMerge [
+
+  # Base infrastructure
+  {
     networking.dhcpcd.denyInterfaces = [ "br0" "br-nb*" "nb-veth*" ];
     services.tor.client.socksListenAddress = "${bridgeIp}:9050";
     networking.firewall.interfaces.br0.allowedTCPPorts = [ 9050 ];
@@ -86,51 +88,6 @@ in {
       capabilities = "cap_sys_admin=ep";
       owner = "${config.nix-bitcoin.operatorName}";
       permissions = "u+rx,g+rx,o-rwx";
-    };
-
-    nix-bitcoin.netns-isolation.services = {
-      bitcoind = {
-        id = 12;
-      };
-      clightning = {
-        id = 13;
-        connections = [ "bitcoind" ];
-      };
-      lnd = {
-        id = 14;
-        connections = [ "bitcoind" ];
-      };
-      liquidd = {
-        id = 15;
-        connections = [ "bitcoind" ];
-      };
-      electrs = {
-        id = 16;
-        connections = [ "bitcoind" ];
-      };
-      spark-wallet = {
-        id = 17;
-        # communicates with clightning over lightning-rpc socket
-      };
-      lightning-charge = {
-        id = 18;
-        # communicates with clightning over lightning-rpc socket
-      };
-      nanopos = {
-        id = 19;
-        connections = [ "nginx" "lightning-charge" ];
-      };
-      recurring-donations = {
-        id = 20;
-        # communicates with clightning over lightning-rpc socket
-      };
-      nginx = {
-        id = 21;
-      };
-      lightning-loop = {
-        id = 22;
-        connections = [ "lnd" ];
-      };
     };
 
     systemd.services = {
@@ -153,8 +110,6 @@ in {
           RemainAfterExit = "yes";
         };
       };
-
-      bitcoind-import-banlist.serviceConfig.NetworkNamespacePath = "/var/run/netns/nb-bitcoind";
     } //
     (let
       makeNetnsServices = n: v: let
@@ -206,8 +161,55 @@ in {
     in foldl (services: n:
       services // (makeNetnsServices n netns.${n})
     ) {} (builtins.attrNames netns));
+  }
 
-    # bitcoin: Custom netns configs
+  # Service-specific config
+  {
+    nix-bitcoin.netns-isolation.services = {
+      bitcoind = {
+        id = 12;
+      };
+      clightning = {
+        id = 13;
+        connections = [ "bitcoind" ];
+      };
+      lnd = {
+        id = 14;
+        connections = [ "bitcoind" ];
+      };
+      liquidd = {
+        id = 15;
+        connections = [ "bitcoind" ];
+      };
+      electrs = {
+        id = 16;
+        connections = [ "bitcoind" ];
+      };
+      spark-wallet = {
+        id = 17;
+        # communicates with clightning over lightning-rpc socket
+      };
+      lightning-charge = {
+        id = 18;
+        # communicates with clightning over lightning-rpc socket
+      };
+      nanopos = {
+        id = 19;
+        connections = [ "nginx" "lightning-charge" ];
+      };
+      recurring-donations = {
+        id = 20;
+        # communicates with clightning over lightning-rpc socket
+      };
+      nginx = {
+        id = 21;
+      };
+      lightning-loop = {
+        id = 22;
+        connections = [ "lnd" ];
+      };
+    };
+
     services.bitcoind = {
       bind = netns.bitcoind.address;
       rpcbind = [
@@ -221,14 +223,13 @@ in {
         netns-exec nb-bitcoind ${config.services.bitcoind.package}/bin/bitcoin-cli -datadir='${config.services.bitcoind.dataDir}' "$@"
       '';
     };
+    systemd.services.bitcoind-import-banlist.serviceConfig.NetworkNamespacePath = "/var/run/netns/nb-bitcoind";
 
-    # clightning: Custom netns configs
     services.clightning = {
       bitcoin-rpcconnect = netns.bitcoind.address;
       bind-addr = netns.clightning.address;
     };
 
-    # lnd: Custom netns configs
     services.lnd = {
       listen = netns.lnd.address;
       rpclisten = [
@@ -248,7 +249,6 @@ in {
       '';
     };
 
-    # liquidd: Custom netns configs
     services.liquidd = {
       bind = netns.liquidd.address;
       rpcbind = [
@@ -267,31 +267,25 @@ in {
       '';
     };
 
-    # electrs: Custom netns configs
     services.electrs = {
       address = netns.electrs.address;
       daemonrpc = "${netns.bitcoind.address}:${toString config.services.bitcoind.rpc.port}";
     };
 
-    # spark-wallet: Custom netns configs
     services.spark-wallet = {
       host = netns.spark-wallet.address;
       extraArgs = "--no-tls";
     };
 
-    # lightning-charge: Custom netns configs
     services.lightning-charge.host = netns.lightning-charge.address;
 
-    # nanopos: Custom netns configs
     services.nanopos = {
       charged-url = "http://${netns.lightning-charge.address}:9112";
       host = netns.nanopos.address;
     };
 
-    # nginx: Custom netns configs
     services.nix-bitcoin-webindex.host = netns.nginx.address;
 
-    # loop: Custom netns configs
     services.lightning-loop = {
       cli = pkgs.writeScriptBin "loop"
       # Switch user because lnd makes datadir contents readable by user only
@@ -299,5 +293,6 @@ in {
         netns-exec nb-lightning-loop sudo -u lnd ${config.services.lightning-loop.package}/bin/loop "$@"
       '';
     };
-  };
+  }
+  ]);
 }
