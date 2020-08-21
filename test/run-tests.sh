@@ -4,51 +4,34 @@
 # The test (./test.nix) uses the NixOS testing framework and is executed in a VM.
 #
 # Usage:
-#   Run test
+#   Run all tests
+#   ./run-tests.sh
+#
+#   Test specific scenario
 #   ./run-tests.sh --scenario <scenario>
 #
 #   Run test and save result to avoid garbage collection
-#   ./run-tests.sh --scenario <scenario> build --out-link /tmp/nix-bitcoin-test
+#   ./run-tests.sh [--scenario <scenario>] build --out-link /tmp/nix-bitcoin-test
 #
 #   Run interactive test debugging
-#   ./run-tests.sh --scenario <scenario> debug
+#   ./run-tests.sh [--scenario <scenario>] debug
 #
 #   This starts the testing VM and drops you into a Python REPL where you can
 #   manually execute the tests from ./test-script.py
 
 set -eo pipefail
 
-die() {
-    printf '%s\n' "$1" >&2
-    exit 1
-}
-
-# Initialize all the option variables.
-# This ensures we are not contaminated by variables from the environment.
 scenario=
 
-while :; do
-    case $1 in
-	--scenario)
-	    if [ "$2" ]; then
-		scenario=$2
+if [[ $1 == --scenario ]]; then
+    if [[ $2 ]]; then
+        scenario=$2
 		shift
-	    else
-		die 'ERROR: "--scenario" requires a non-empty option argument.'
-	    fi
-	    ;;
-	-?*)
-	    printf 'WARN: Unknown option (ignored): %s\n' "$1" >&2
-	    ;;
-	*)
-	    break
-    esac
-
-    shift
-done
-
-if [[ -z $scenario ]]; then
-    die 'ERROR: "--scenario" is required'
+        shift
+    else
+        >&2 echo 'Error: "--scenario" requires an argument.'
+        exit 1
+    fi
 fi
 
 numCPUs=${numCPUs:-$(nproc)}
@@ -108,7 +91,7 @@ debug() {
 }
 
 # Run the test by building the test derivation
-build() {
+buildTest() {
     vmTestNixExpr | nix-build --no-out-link "$@" -
 }
 
@@ -136,5 +119,19 @@ vmTestNixExpr() {
     })
 EOF
 }
+
+build() {
+    if [[ $scenario ]]; then
+        buildTest "$@"
+    else
+        scenario=default buildTest "$@"
+        scenario=withnetns buildTest "$@"
+    fi
+}
+
+# Set default scenario for all actions other than 'build'
+if [[ $1 && $1 != build ]]; then
+    : ${scenario:=default}
+fi
 
 eval "${@:-build}"

@@ -1,5 +1,6 @@
 # Integration test, can be run without internet access.
 
+# Make sure to update build() in ./run-tests.sh when adding new scenarios
 { scenario ? "default" }:
 
 import ./make-test.nix rec {
