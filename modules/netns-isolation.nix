@@ -8,7 +8,7 @@ let
   netns = builtins.mapAttrs (n: v: {
     inherit (v) id;
     address = "169.254.${toString cfg.addressblock}.${toString v.id}";
-    availableNetns = builtins.filter isEnabled availableNetns.${n};
+    availableNetns = availableNetns.${n};
   }) enabledServices;
 
   # Symmetric netns connection matrix
