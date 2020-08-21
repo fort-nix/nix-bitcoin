@@ -53,12 +53,11 @@ in {
       type = types.attrsOf (types.submodule {
         options = {
           id = mkOption {
-            # TODO: Exclude 10
             # TODO: Assert uniqueness
-            type = types.int;
+            type = types.ints.between 11 255;
             description = ''
-              id for the netns, that is used for the IP address host part and
-              naming the interfaces. Must be unique. Must not be 10.
+              id for the netns, used for the IP address host part and
+              for naming the interfaces. Must be unique. Must be greater than 10.
             '';
           };
           connections = mkOption {
