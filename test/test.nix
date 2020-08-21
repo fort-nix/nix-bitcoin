@@ -8,7 +8,7 @@ let
 in
 
 import ./make-test.nix rec {
-  name = "nix-bitcoin";
+  name = "nix-bitcoin-${scenario}";
 
   hardened = {
     imports = [ <nixpkgs/nixos/modules/profiles/hardened.nix> ];
