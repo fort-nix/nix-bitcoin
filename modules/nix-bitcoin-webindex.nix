@@ -41,7 +41,10 @@ in {
     };
     host = mkOption {
       type = types.str;
-      default = "localhost";
+      default = if config.nix-bitcoin.netns-isolation.enable then
+        config.nix-bitcoin.netns-isolation.netns.nginx.address
+      else
+        "localhost";
       description = "HTTP server listen address.";
     };
     enforceTor =  nix-bitcoin-services.enforceTor;

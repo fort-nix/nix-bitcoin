@@ -83,6 +83,12 @@ in {
         The user's group is also authorized.
       '';
     };
+
+    netns = mkOption {
+      default = netns;
+      readOnly = true;
+      description = "Exposes netns parameters.";
+    };
   };
 
   config = mkIf cfg.enable (mkMerge [
@@ -285,8 +291,6 @@ in {
       charged-url = "http://${netns.lightning-charge.address}:9112";
       host = netns.nanopos.address;
     };
-
-    services.nix-bitcoin-webindex.host = netns.nginx.address;
 
     services.lightning-loop.cliExec = mkCliExec "lightning-loop";
   }
