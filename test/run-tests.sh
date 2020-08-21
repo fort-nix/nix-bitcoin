@@ -13,6 +13,9 @@
 #   Run test and link results to avoid garbage collection
 #   ./run-tests.sh [--scenario <scenario>] --out-link-prefix /tmp/nix-bitcoin-test build
 #
+#   Pass extra args to nix-build
+#   ./run-tests.sh build --builders 'ssh://mybuildhost - - 15'
+#
 #   Run interactive test debugging
 #   ./run-tests.sh [--scenario <scenario>] debug
 #
