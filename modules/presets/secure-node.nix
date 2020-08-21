@@ -194,7 +194,9 @@ in {
       port = 50001;
       enforceTor = true;
     };
-    services.tor.hiddenServices.electrs = mkHiddenService { port = cfg.electrs.port; toHost = cfg.electrs.address; };
+    services.tor.hiddenServices.electrs = mkIf cfg.electrs.enable (mkHiddenService {
+      port = cfg.electrs.port; toHost = cfg.electrs.address;
+    });
 
     services.spark-wallet = {
       onion-service = true;

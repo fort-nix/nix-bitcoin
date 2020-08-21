@@ -223,13 +223,13 @@ in {
     };
 
     # clightning: Custom netns configs
-    services.clightning = mkIf config.services.clightning.enable {
+    services.clightning = {
       bitcoin-rpcconnect = netns.bitcoind.address;
       bind-addr = netns.clightning.address;
     };
 
     # lnd: Custom netns configs
-    services.lnd = mkIf config.services.lnd.enable {
+    services.lnd = {
       listen = netns.lnd.address;
       rpclisten = [
         "${netns.lnd.address}"
@@ -249,7 +249,7 @@ in {
     };
 
     # liquidd: Custom netns configs
-    services.liquidd = mkIf config.services.liquidd.enable {
+    services.liquidd = {
       bind = netns.liquidd.address;
       rpcbind = [
         "${netns.liquidd.address}"
@@ -268,31 +268,31 @@ in {
     };
 
     # electrs: Custom netns configs
-    services.electrs = mkIf config.services.electrs.enable {
+    services.electrs = {
       address = netns.electrs.address;
       daemonrpc = "${netns.bitcoind.address}:${toString config.services.bitcoind.rpc.port}";
     };
 
     # spark-wallet: Custom netns configs
-    services.spark-wallet = mkIf config.services.spark-wallet.enable {
+    services.spark-wallet = {
       host = netns.spark-wallet.address;
       extraArgs = "--no-tls";
     };
 
     # lightning-charge: Custom netns configs
-    services.lightning-charge.host = mkIf config.services.lightning-charge.enable netns.lightning-charge.address;
+    services.lightning-charge.host = netns.lightning-charge.address;
 
     # nanopos: Custom netns configs
-    services.nanopos = mkIf config.services.nanopos.enable {
+    services.nanopos = {
       charged-url = "http://${netns.lightning-charge.address}:9112";
       host = netns.nanopos.address;
     };
 
     # nginx: Custom netns configs
-    services.nix-bitcoin-webindex.host = mkIf config.services.nix-bitcoin-webindex.enable netns.nginx.address;
+    services.nix-bitcoin-webindex.host = netns.nginx.address;
 
     # loop: Custom netns configs
-    services.lightning-loop = mkIf config.services.lightning-loop.enable {
+    services.lightning-loop = {
       cli = pkgs.writeScriptBin "loop"
       # Switch user because lnd makes datadir contents readable by user only
       ''

@@ -77,13 +77,12 @@ in {
     systemd.services.create-web-index = {
       description = "Get node info";
       wantedBy = [ "multi-user.target" ];
-      path  = with pkgs; [
+      path = with pkgs; [
         config.programs.nodeinfo
-        config.services.clightning.cli
-        config.services.lnd.cli
         jq
         sudo
-      ];
+      ] ++ optional config.services.lnd.enable config.services.lnd.cli
+        ++ optional config.services.clightning.enable config.services.clightning.cli;
       serviceConfig = nix-bitcoin-services.defaultHardening // {
         ExecStart="${pkgs.bash}/bin/bash ${createWebIndex}";
         User = "root";
