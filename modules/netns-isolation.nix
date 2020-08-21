@@ -99,6 +99,7 @@ in {
     services.tor.client.socksListenAddress = "${bridgeIp}:9050";
     networking.firewall.interfaces.nb-br.allowedTCPPorts = [ 9050 ];
     boot.kernel.sysctl."net.ipv4.ip_forward" = true;
+
     security.wrappers.netns-exec = {
       source  = "${pkgs.nix-bitcoin.netns-exec}/netns-exec";
       capabilities = "cap_sys_admin=ep";
@@ -107,10 +108,18 @@ in {
     };
 
     systemd.services = {
-      netns-bridge = {
-        description = "Create bridge";
-        requiredBy = [ "tor.service" ];
-        before = [ "tor.service" ];
+      # Due to a NixOS bug we can't currently use option `networking.bridges` to
+      # setup the bridge while `networking.useDHCP` is enabled.
+      nb-netns-bridge = {
+        description = "nix-bitcoin netns bridge";
+        wantedBy = [ "network-setup.service" ];
+        partOf = [ "network-setup.service" ];
+        before = [ "network-setup.service" ];
+        after = [ "network-pre.target" ];
+        serviceConfig = {
+          Type = "oneshot";
+          RemainAfterExit = "yes";
+        };
         script = ''
           ${ip} link add name nb-br type bridge
           ${ip} link set nb-br up
@@ -121,10 +130,6 @@ in {
           ${iptables} -w -t nat -D POSTROUTING -s 169.254.${toString cfg.addressblock}.0/24 -j MASQUERADE
           ${ip} link del nb-br
         '';
-        serviceConfig = {
-          Type = "oneshot";
-          RemainAfterExit = "yes";
-        };
       };
     } //
     (let
@@ -138,8 +143,8 @@ in {
         "${n}".serviceConfig.NetworkNamespacePath = "/var/run/netns/${netnsName}";
 
         "netns-${n}" = rec {
-          requires = [ "netns-bridge.service" ];
-          after = [ "netns-bridge.service" ];
+          requires = [ "nb-netns-bridge.service" ];
+          after = [ "nb-netns-bridge.service" ];
           bindsTo = [ "${n}.service" ];
           requiredBy = bindsTo;
           before = bindsTo;
