@@ -1,7 +1,4 @@
-/* This program must be run with CAP_SYS_ADMIN. This can be achieved for example
- * with
- *         # setcap CAP_SYS_ADMIN+ep ./main
- */
+/* This program requires CAP_SYS_ADMIN */
 
 #define _GNU_SOURCE
 #include <sched.h>
@@ -12,18 +9,17 @@
 #include <fcntl.h>
 #include <sys/capability.h>
 
-static char *available_netns[] = {
+static char *allowed_netns[] = {
     "nb-lnd",
     "nb-lightning-loop",
     "nb-bitcoind",
     "nb-liquidd"
 };
 
-int check_netns(char *netns) {
-    int i;
-    int n_available_netns = sizeof(available_netns) / sizeof(available_netns[0]);
-    for (i = 0; i < n_available_netns; i++) {
-        if (strcmp(available_netns[i], netns) == 0) {
+int is_netns_allowed(char *netns) {
+    int n_allowed_netns = sizeof(allowed_netns) / sizeof(allowed_netns[0]);
+    for (int i = 0; i < n_allowed_netns; i++) {
+        if (strcmp(allowed_netns[i], netns) == 0) {
             return 1;
         }
     }
@@ -35,6 +31,7 @@ void print_capabilities() {
     printf("Capabilities: %s\n", cap_to_text(caps, NULL));
     cap_free(caps);
 }
+
 void drop_capabilities() {
     cap_t caps = cap_get_proc();
     cap_clear(caps);
@@ -43,25 +40,24 @@ void drop_capabilities() {
 }
 
 int main(int argc, char **argv) {
-    int fd;
     char netns_path[256];
 
     if (argc < 3) {
-        printf("usage: %s <netns> <command to execute>\n", argv[0]);
+        printf("usage: %s <netns> <command>\n", argv[0]);
         return 1;
     }
 
-    if (!check_netns(argv[1])) {
-        printf("Failed checking %s against available netns.\n", argv[1]);
+    if (!is_netns_allowed(argv[1])) {
+        printf("%s is not an allowed netns.\n", argv[1]);
         return 1;
     }
 
     if(snprintf(netns_path, sizeof(netns_path), "/var/run/netns/%s", argv[1]) < 0) {
-        printf("Failed concatenating %s to the netns path.\n", argv[1]);
+        printf("Path length exceeded for netns %s.\n", argv[1]);
         return 1;
     }
 
-    fd = open(netns_path, O_RDONLY);
+    int fd = open(netns_path, O_RDONLY);
     if (fd < 0) {
         printf("Failed opening netns %s: %d, %s \n", netns_path, errno, strerror(errno));
         return 1;
@@ -84,4 +80,3 @@ int main(int argc, char **argv) {
     execvp(argv[2], &argv[2]);
     return 0;
 }
-
