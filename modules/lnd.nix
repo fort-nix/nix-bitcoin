@@ -115,11 +115,12 @@ in {
       default = pkgs.writeScriptBin "lncli"
       # Switch user because lnd makes datadir contents readable by user only
       ''
-        exec sudo -u lnd ${cfg.package}/bin/lncli --tlscertpath ${secretsDir}/lnd-cert \
+        ${cfg.cliExec} sudo -u lnd ${cfg.package}/bin/lncli --tlscertpath ${secretsDir}/lnd-cert \
           --macaroonpath '${cfg.dataDir}/chain/bitcoin/mainnet/admin.macaroon' "$@"
       '';
       description = "Binary to connect with the lnd instance.";
     };
+    inherit (nix-bitcoin-services) cliExec;
     enforceTor =  nix-bitcoin-services.enforceTor;
   };
 

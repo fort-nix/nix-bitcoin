@@ -55,4 +55,11 @@ with lib;
     set -eo pipefail
     ${src}
   '';
+
+  cliExec = mkOption {
+    # Used by netns-isolation to execute the cli in the service's private netns
+    internal = true;
+    type = types.str;
+    default = "exec";
+  };
 }

@@ -9,6 +9,7 @@ let
     inherit (v) id;
     address = "169.254.${toString cfg.addressblock}.${toString v.id}";
     availableNetns = availableNetns.${n};
+    netnsName = "nb-${n}";
   }) enabledServices;
 
   # Symmetric netns connection matrix
@@ -42,6 +43,7 @@ let
 
   bridgeIp = "169.254.${toString cfg.addressblock}.10";
 
+  mkCliExec = service: "exec netns-exec ${netns.${service}.netnsName}";
 in {
   options.nix-bitcoin.netns-isolation = {
     enable = mkEnableOption "netns isolation";
@@ -114,7 +116,7 @@ in {
     (let
       makeNetnsServices = n: v: let
         vethName = "nb-veth-${toString v.id}";
-        netnsName = "nb-${n}";
+        inherit (v) netnsName;
         ipNetns = "${ip} -n ${netnsName}";
         netnsIptables = "${ip} netns exec ${netnsName} ${config.networking.firewall.package}/bin/iptables";
       in {
@@ -219,8 +221,10 @@ in {
       rpcallowip = [
         "127.0.0.1"
       ] ++ map (n: "${netns.${n}.address}") netns.bitcoind.availableNetns;
-      cli = pkgs.writeScriptBin "bitcoin-cli" ''
-        netns-exec nb-bitcoind ${config.services.bitcoind.package}/bin/bitcoin-cli -datadir='${config.services.bitcoind.dataDir}' "$@"
+      cli = let
+        inherit (config.services.bitcoind) cliBase;
+      in pkgs.writeScriptBin cliBase.name ''
+        exec netns-exec ${netns.bitcoind.netnsName} ${cliBase}/bin/${cliBase.name} "$@"
       '';
     };
     systemd.services.bitcoind-import-banlist.serviceConfig.NetworkNamespacePath = "/var/run/netns/nb-bitcoind";
@@ -241,12 +245,7 @@ in {
         "127.0.0.1"
       ];
       bitcoind-host = netns.bitcoind.address;
-      cli = pkgs.writeScriptBin "lncli"
-      # Switch user because lnd makes datadir contents readable by user only
-      ''
-        netns-exec nb-lnd sudo -u lnd ${config.services.lnd.package}/bin/lncli --tlscertpath ${config.nix-bitcoin.secretsDir}/lnd-cert \
-          --macaroonpath '${config.services.lnd.dataDir}/chain/bitcoin/mainnet/admin.macaroon' "$@"
-      '';
+      cliExec = mkCliExec "lnd";
     };
 
     services.liquidd = {
@@ -259,12 +258,7 @@ in {
         "127.0.0.1"
       ] ++ map (n: "${netns.${n}.address}") netns.liquidd.availableNetns;
       mainchainrpchost = netns.bitcoind.address;
-      cli = pkgs.writeScriptBin "elements-cli" ''
-        netns-exec nb-liquidd ${pkgs.nix-bitcoin.elementsd}/bin/elements-cli -datadir='${config.services.liquidd.dataDir}' "$@"
-      '';
-      swap-cli = pkgs.writeScriptBin "liquidswap-cli" ''
-        netns-exec nb-liquidd ${pkgs.nix-bitcoin.liquid-swap}/bin/liquidswap-cli -c '${config.services.liquidd.dataDir}/elements.conf' "$@"
-      '';
+      cliExec = mkCliExec "liquidd";
     };
 
     services.electrs = {
@@ -286,13 +280,7 @@ in {
 
     services.nix-bitcoin-webindex.host = netns.nginx.address;
 
-    services.lightning-loop = {
-      cli = pkgs.writeScriptBin "loop"
-      # Switch user because lnd makes datadir contents readable by user only
-      ''
-        netns-exec nb-lightning-loop sudo -u lnd ${config.services.lightning-loop.package}/bin/loop "$@"
-      '';
-    };
+    services.lightning-loop.cliExec = mkCliExec "lightning-loop";
   }
   ]);
 }

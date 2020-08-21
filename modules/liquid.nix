@@ -210,17 +210,19 @@ in {
         '';
       };
       cli = mkOption {
+        readOnly = true;
         default = pkgs.writeScriptBin "elements-cli" ''
-          exec ${pkgs.nix-bitcoin.elementsd}/bin/elements-cli -datadir='${cfg.dataDir}' "$@"
+          ${cfg.cliExec} ${pkgs.nix-bitcoin.elementsd}/bin/elements-cli -datadir='${cfg.dataDir}' "$@"
         '';
         description = "Binary to connect with the liquidd instance.";
       };
-      swap-cli = mkOption {
+      swapCli = mkOption {
         default = pkgs.writeScriptBin "liquidswap-cli" ''
-          exec ${pkgs.nix-bitcoin.liquid-swap}/bin/liquidswap-cli -c '${cfg.dataDir}/elements.conf' "$@"
+          ${cfg.cliExec} ${pkgs.nix-bitcoin.liquid-swap}/bin/liquidswap-cli -c '${cfg.dataDir}/elements.conf' "$@"
         '';
         description = "Binary for managing liquid swaps.";
       };
+      inherit (nix-bitcoin-services) cliExec;
       enforceTor =  nix-bitcoin-services.enforceTor;
     };
   };
@@ -229,7 +231,7 @@ in {
     environment.systemPackages = [
       pkgs.nix-bitcoin.elementsd
       (hiPrio cfg.cli)
-      (hiPrio cfg.swap-cli)
+      (hiPrio cfg.swapCli)
     ];
 
     systemd.tmpfiles.rules = [
