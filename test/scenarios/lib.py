@@ -33,11 +33,12 @@ def assert_running(unit):
 if "is_interactive" in vars():
     raise Exception()
 
-### Tests
 
-# The argument extra_tests is a dictionary from strings to functions. The string
-# determines at which point of run_tests the corresponding function is executed.
 def run_tests(extra_tests):
+    """
+    :param extra_tests: Test functions that hook into the testing code below
+    :type extra_tests: Dict[str, Callable[]]
+    """
     test_security()
 
     assert_running("bitcoind")
