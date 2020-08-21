@@ -16,6 +16,12 @@ let
   #   availableNetns.bitcoind = [ "clighting" ];
   #   and
   #   availableNetns.clighting = [ "bitcoind" ];
+  #
+  # FIXME: Although negligible for our purposes, this calculation's runtime
+  # is in the order of (number of connections * number of services),
+  # because attrsets and lists are fully copied on each update with '//' or '++'.
+  # This can only be improved with an update in the nix language.
+  #
   availableNetns = let
     # base = { clightning = [ "bitcoind" ]; ... }
     base = builtins.mapAttrs (n: v:
