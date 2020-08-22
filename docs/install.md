@@ -14,7 +14,6 @@ Have a look at the options in the [NixOps manual](https://nixos.org/nixops/manua
 Tutorial: install and configure NixOS for nix-bitcoin on VirtualBox
 ---
 ## 1. VirtualBox installation
-The following steps are meant to be run on the machine you deploy from, not the machine you deploy to.
 
 1. Add virtualbox.list to /etc/apt/sources.list.d (Debian 9 stretch)
 
@@ -118,7 +117,7 @@ You can also build Nix from source by following the instructions at https://nixo
 
 ## 4. Deploy with NixOps
 
-1. Enter environment
+1. Enter `nix-shell`, which drops you into an environment with all the project dependencies loaded ([docs](https://nixos.wiki/wiki/Development_environment_with_nix-shell)). 
 
     ```
     nix-shell
@@ -126,15 +125,15 @@ You can also build Nix from source by following the instructions at https://nixo
 
     Note that a new directory `secrets/` appeared which contains the secrets for your node.
 
-2. Create nixops deployment in nix-shell.
+2. Create a [nixops deployment](https://nixos.org/nixops/manual/#sec-deploying-to-physical-nixos) in nix-shell. 
 
     ```
     nixops create nixops/node.nix nixops/node-vbox.nix -d bitcoin-node
     ```
 
-3. Adjust configuration by opening `configuration.nix` and removing FIXMEs. Enable/disable the modules you want in `configuration.nix`.
+3. Adjust your configuration by opening the `configuration.nix` file and enable/disable the modules you want by editing this file. Pay particular attention to lines that are preceded by `FIXME` comments.
 
-4. Deploy Nixops in nix-shell
+4. Deploy with nixops in nix-shell
 
     ```
     nixops deploy -d bitcoin-node
@@ -159,7 +158,6 @@ To resize the VM disk image, you can use this helper script from within nix-shel
 Tutorial: install and configure NixOS for nix-bitcoin on VirtualBox (macOS host)
 ---
 ## 1. VirtualBox installation (macOS)
-The following steps are meant to be run on the machine you deploy from, not the machine you deploy to.
 
 1. Download and install VirtualBox
     Use the official Downloads page: [https://www.virtualbox.org/wiki/Downloads](https://www.virtualbox.org/wiki/Downloads)
@@ -379,12 +377,13 @@ Follow the [Setup deployment directory](#3-setup-deployment-directory) instructi
 
     Uncomment `./hardware-configuration.nix` line by removing #.
 
-3. Create `hardware-configuration.nix`
+3. Create `hardware-configuration.nix`.
 
     ```
     nano hardware-configuration.nix
     ```
-    Copy contents of NixOS machine's `/etc/nixos/hardware-configuration.nix` to file.
+
+    Copy contents of your NixOS machine's `/etc/nixos/hardware-configuration.nix` to this file.
 
 4. Add boot option to `hardware-configuration.nix`
 
@@ -405,15 +404,15 @@ Follow the [Setup deployment directory](#3-setup-deployment-directory) instructi
 
     Note that a new directory `secrets/` appeared which contains the secrets for your node.
 
-6. Create nixops deployment in nix-shell.
+6. Create nixops [deployment](https://nixos.org/nixops/manual/#sec-deploying-to-physical-nixos) in nix-shell.
 
     ```
     nixops create nixops/node.nix nixops/node-nixos.nix -d bitcoin-node
     ```
 
-7. Adjust configuration by opening `configuration.nix` and removing FIXMEs. Enable/disable the modules you want in `configuration.nix`.
+7. Adjust configuration by opening the `configuration.nix` file and enable/disable the modules you want by editing this file. Pay particular attention to lines that are preceded by `FIXME` comments.
 
-8. Deploy Nixops in nix-shell
+8. Deploy with nixops in nix-shell
 
     ```
     nixops deploy -d bitcoin-node
