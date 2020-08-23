@@ -14,4 +14,6 @@
   lightning-loop = pkgs.callPackage ./lightning-loop { };
 
   pinned = import ./pinned.nix;
+
+  lib = import ./lib.nix { inherit (pkgs) lib; };
 }
