@@ -42,8 +42,7 @@ in {
 
     networking.firewall.enable = true;
 
-    # hideProcessInformation even if hardened kernel profile is disabled
-    security.hideProcessInformation = true;
+    nix-bitcoin.security.hideProcessInformation = true;
 
     # Tor
     services.tor = {
@@ -227,6 +226,7 @@ in {
       isNormalUser = true;
       extraGroups = [
           "systemd-journal"
+          "proc" # Enable full /proc access and systemd-status
           cfg.bitcoind.group
         ]
         ++ (optionals cfg.clightning.enable [ "clightning" ])

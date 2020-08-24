@@ -9,7 +9,7 @@ def assert_matches(cmd, regexp):
         raise Exception(f"Pattern '{regexp}' not found in '{out}'")
 
 
-def assert_matches_exactly(cmd, regexp):
+def assert_full_match(cmd, regexp):
     out = succeed(cmd)
     if not re.fullmatch(regexp, out):
         raise Exception(f"Pattern '{regexp}' doesn't match '{out}'")
@@ -38,9 +38,7 @@ if "is_interactive" in vars():
 # The argument extra_tests is a dictionary from strings to functions. The string
 # determines at which point of run_tests the corresponding function is executed.
 def run_tests(extra_tests):
-    assert_running("setup-secrets")
-    # Unused secrets should be inaccessible
-    succeed('[[ $(stat -c "%U:%G %a" /secrets/dummy) = "root:root 440" ]]')
+    test_security()
 
     assert_running("bitcoind")
     machine.wait_until_succeeds("bitcoin-cli getnetworkinfo")
@@ -103,13 +101,6 @@ def run_tests(extra_tests):
     machine.wait_until_succeeds(log_has_string("bitcoind-import-banlist", "Importing node banlist"))
     assert_no_failure("bitcoind-import-banlist")
 
-    # test that `systemctl status` can't leak credentials
-    assert_matches(
-        "sudo -u electrs systemctl status clightning 2>&1 >/dev/null",
-        "Failed to dump process list for 'clightning.service', ignoring: Access denied",
-    )
-    machine.succeed("grep -Fq hidepid=2 /proc/mounts")
-
     ### Additional tests
 
     # Current time in µs
@@ -155,3 +146,21 @@ def run_tests(extra_tests):
 
     ### Check that all extra_tests have been run
     assert len(extra_tests) == 0
+
+
+def test_security():
+    assert_running("setup-secrets")
+    # Unused secrets should be inaccessible
+    succeed('[[ $(stat -c "%U:%G %a" /secrets/dummy) = "root:root 440" ]]')
+
+    # Access to '/proc' should be restricted
+    machine.succeed("grep -Fq hidepid=2 /proc/mounts")
+
+    machine.wait_for_unit("bitcoind")
+    # `systemctl status` run by unprivileged users shouldn't leak cgroup info
+    assert_matches(
+        "sudo -u electrs systemctl status bitcoind 2>&1 >/dev/null",
+        "Failed to dump process list for 'bitcoind.service', ignoring: Access denied",
+    )
+    # The 'operator' with group 'proc' has full access
+    assert_full_match("sudo -u operator systemctl status bitcoind 2>&1 >/dev/null", "")
