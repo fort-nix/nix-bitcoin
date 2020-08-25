@@ -1,3 +1,6 @@
+is_interactive = "is_interactive" in vars()
+
+
 def succeed(*cmds):
     """Returns the concatenated output of all cmds"""
     return machine.succeed(*cmds)
@@ -29,15 +32,15 @@ def assert_running(unit):
     assert_no_failure(unit)
 
 
-# Don't execute the following test suite when this script is running in interactive mode
-if "is_interactive" in vars():
-    raise Exception()
-
-### Tests
-
-# The argument extra_tests is a dictionary from strings to functions. The string
-# determines at which point of run_tests the corresponding function is executed.
 def run_tests(extra_tests):
+    """
+    :param extra_tests: Test functions that hook into the testing code below
+    :type extra_tests: Dict[str, Callable[]]
+    """
+    # Don't execute the following test suite when this script is running in interactive mode
+    if is_interactive:
+        raise Exception()
+
     test_security()
 
     assert_running("bitcoind")

@@ -4,52 +4,54 @@
 # The test (./test.nix) uses the NixOS testing framework and is executed in a VM.
 #
 # Usage:
-#   Run test
+#   Run all tests
+#   ./run-tests.sh
+#
+#   Test specific scenario
 #   ./run-tests.sh --scenario <scenario>
 #
-#   Run test and save result to avoid garbage collection
-#   ./run-tests.sh --scenario <scenario> build --out-link /tmp/nix-bitcoin-test
+#   Run test and link results to avoid garbage collection
+#   ./run-tests.sh [--scenario <scenario>] --out-link-prefix /tmp/nix-bitcoin-test build
+#
+#   Pass extra args to nix-build
+#   ./run-tests.sh build --builders 'ssh://mybuildhost - - 15'
 #
 #   Run interactive test debugging
-#   ./run-tests.sh --scenario <scenario> debug
+#   ./run-tests.sh [--scenario <scenario>] debug
 #
 #   This starts the testing VM and drops you into a Python REPL where you can
 #   manually execute the tests from ./test-script.py
 
 set -eo pipefail
 
-die() {
-    printf '%s\n' "$1" >&2
-    exit 1
-}
-
-# Initialize all the option variables.
-# This ensures we are not contaminated by variables from the environment.
 scenario=
-
+outLinkPrefix=
 while :; do
     case $1 in
-	--scenario)
-	    if [ "$2" ]; then
-		scenario=$2
-		shift
-	    else
-		die 'ERROR: "--scenario" requires a non-empty option argument.'
-	    fi
-	    ;;
-	-?*)
-	    printf 'WARN: Unknown option (ignored): %s\n' "$1" >&2
-	    ;;
-	*)
-	    break
+        --scenario|-s)
+            if [[ $2 ]]; then
+                scenario=$2
+                shift
+                shift
+            else
+                >&2 echo 'Error: "$1" requires an argument.'
+                exit 1
+            fi
+            ;;
+        --out-link-prefix|-o)
+            if [[ $2 ]]; then
+                outLinkPrefix=$2
+                shift
+                shift
+            else
+                >&2 echo 'Error: "$1" requires an argument.'
+                exit 1
+            fi
+            ;;
+        *)
+            break
     esac
-
-    shift
 done
-
-if [[ -z $scenario ]]; then
-    die 'ERROR: "--scenario" is required'
-fi
 
 numCPUs=${numCPUs:-$(nproc)}
 # Min. 800 MiB needed to avoid 'out of memory' errors
@@ -108,8 +110,13 @@ debug() {
 }
 
 # Run the test by building the test derivation
-build() {
-    vmTestNixExpr | nix-build --no-out-link "$@" -
+buildTest() {
+    if [[ $outLinkPrefix ]]; then
+        buildArgs="--out-link $outLinkPrefix-$scenario"
+    else
+        buildArgs=--no-out-link
+    fi
+    vmTestNixExpr | nix-build $buildArgs "$@" -
 }
 
 # On continuous integration nodes there are few other processes running alongside the
@@ -136,5 +143,19 @@ vmTestNixExpr() {
     })
 EOF
 }
+
+build() {
+    if [[ $scenario ]]; then
+        buildTest "$@"
+    else
+        scenario=default buildTest "$@"
+        scenario=withnetns buildTest "$@"
+    fi
+}
+
+# Set default scenario for all actions other than 'build'
+if [[ $1 && $1 != build ]]; then
+    : ${scenario:=default}
+fi
 
 eval "${@:-build}"

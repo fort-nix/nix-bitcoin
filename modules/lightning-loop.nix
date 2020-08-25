@@ -30,10 +30,11 @@ in {
       default = pkgs.writeScriptBin "loop"
       # Switch user because lnd makes datadir contents readable by user only
       ''
-        exec sudo -u lnd ${cfg.package}/bin/loop "$@"
+        ${cfg.cliExec} sudo -u lnd ${cfg.package}/bin/loop "$@"
       '';
       description = "Binary to connect with the lnd instance.";
     };
+    inherit (nix-bitcoin-services) cliExec;
     enforceTor =  nix-bitcoin-services.enforceTor;
   };
 

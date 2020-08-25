@@ -5,7 +5,6 @@ stdenv.mkDerivation {
   buildInputs = [ pkgs.libcap ];
   src = ./src;
   installPhase = ''
-    mkdir -p $out
-    cp main $out/netns-exec
+    cp main $out
   '';
 }

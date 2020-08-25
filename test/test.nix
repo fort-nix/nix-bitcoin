@@ -1,14 +1,10 @@
 # Integration test, can be run without internet access.
 
+# Make sure to update build() in ./run-tests.sh when adding new scenarios
 { scenario ? "default" }:
 
-let
-  netns-isolation = builtins.getAttr scenario { default = false; withnetns = true; };
-  testScriptFilename = builtins.getAttr scenario { default = ./scenarios/default.py; withnetns = ./scenarios/withnetns.py; };
-in
-
 import ./make-test.nix rec {
-  name = "nix-bitcoin";
+  name = "nix-bitcoin-${scenario}";
 
   hardened = {
     imports = [ <nixpkgs/nixos/modules/profiles/hardened.nix> ];
@@ -23,7 +19,7 @@ import ./make-test.nix rec {
       # hardened
     ];
 
-    nix-bitcoin.netns-isolation.enable = mkForce netns-isolation;
+    nix-bitcoin.netns-isolation.enable = (scenario == "withnetns");
 
     services.bitcoind.extraConfig = mkForce "connect=0";
 
@@ -61,5 +57,6 @@ import ./make-test.nix rec {
       install -o nobody -g nogroup -m777 <(:) /secrets/dummy
     '';
   };
-  testScript = builtins.readFile ./scenarios/lib.py + "\n\n" + builtins.readFile testScriptFilename;
+  testScript =
+    builtins.readFile ./base.py + "\n\n" + builtins.readFile "${./.}/scenarios/${scenario}.py";
 }
