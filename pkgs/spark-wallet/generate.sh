@@ -8,7 +8,7 @@ trap "rm -rf $TMPDIR" EXIT
 # Get/verify spark-wallet-npm.tgz
 version="0.2.14"
 export GNUPGHOME=$TMPDIR
-gpg --keyserver hkps://hkps.pool.sks-keyservers.net --recv-key FCF19B67866562F08A43AAD681F6104CD0F150FC
+gpg --keyserver hkps://keyserver.ubuntu.com --recv-key FCF19B67866562F08A43AAD681F6104CD0F150FC
 wget -P $TMPDIR https://github.com/shesek/spark-wallet/releases/download/v${version}/SHA256SUMS.asc
 wget -P $TMPDIR https://github.com/shesek/spark-wallet/releases/download/v${version}/spark-wallet-${version}-npm.tgz
 (cd $TMPDIR; gpg --verify $TMPDIR/SHA256SUMS.asc; sha256sum -c --ignore-missing $TMPDIR/SHA256SUMS.asc)
