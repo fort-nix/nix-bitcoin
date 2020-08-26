@@ -299,7 +299,7 @@ in {
       after = [ "network.target" "nix-bitcoin-secrets.target" ];
       wantedBy = [ "multi-user.target" ];
       preStart = ''
-        ${optionalString cfg.dataDirReadableByGroup  "chmod -R g+rX '${cfg.dataDir}/blocks'"}
+        ${optionalString cfg.dataDirReadableByGroup "chmod -R g+rX '${cfg.dataDir}/blocks'"}
 
         cfgpre=$(cat ${configFile}; printf "rpcpassword="; cat "${secretsDir}/bitcoin-rpcpassword-privileged")
         cfg=$(echo "$cfgpre" | \
@@ -307,7 +307,7 @@ in {
         sed "s/bitcoin-HMAC-public/$(cat ${secretsDir}/bitcoin-HMAC-public)/g")
         confFile='${cfg.dataDir}/bitcoin.conf'
         if [[ ! -e $confFile || $cfg != $(cat $confFile) ]]; then
-          install -o '${cfg.user}' -g '${cfg.group}' -m 640  <(echo "$cfg") $confFile
+          install -o '${cfg.user}' -g '${cfg.group}' -m 640 <(echo "$cfg") $confFile
         fi
       '';
       postStart = ''
