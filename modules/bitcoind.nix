@@ -38,8 +38,6 @@ let
     }
     ${lib.concatMapStrings (rpcbind: "rpcbind=${rpcbind}\n") cfg.rpcbind}
     ${lib.concatMapStrings (rpcallowip: "rpcallowip=${rpcallowip}\n") cfg.rpcallowip}
-    # Credentials for bitcoin-cli
-    rpcuser=${cfg.rpc.users.privileged.name}
 
     # Wallet options
     ${optionalString (cfg.addresstype != null) "addresstype=${cfg.addresstype}"}
@@ -325,7 +323,8 @@ in {
         cfg=$(
           cat ${configFile};
           ${extraRpcauth}
-          printf "rpcpassword="; cat "${secretsDir}/bitcoin-rpcpassword-privileged";
+          ${/* Enable bitcoin-cli for group 'bitcoin' */ ""}
+          printf "rpcuser=${cfg.rpc.users.privileged.name}\nrpcpassword="; cat "${secretsDir}/bitcoin-rpcpassword-privileged";
         )
         confFile='${cfg.dataDir}/bitcoin.conf'
         if [[ ! -e $confFile || $cfg != $(cat $confFile) ]]; then
