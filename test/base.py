@@ -50,10 +50,10 @@ def run_tests(extra_tests):
     machine.wait_until_succeeds("su operator -c 'bitcoin-cli help'")
     # Restating rpcuser & rpcpassword overrides privileged credentials
     machine.fail(
-        "bitcoin-cli -rpcuser=publicrpc -rpcpassword=$(cat /secrets/bitcoin-rpcpassword-public) help"
+        "bitcoin-cli -rpcuser=public -rpcpassword=$(cat /secrets/bitcoin-rpcpassword-public) help"
     )
     machine.wait_until_succeeds(
-        log_has_string("bitcoind", "RPC User publicrpc not allowed to call method help")
+        log_has_string("bitcoind", "RPC User public not allowed to call method help")
     )
 
     assert_running("electrs")

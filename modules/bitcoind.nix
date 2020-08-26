@@ -290,11 +290,9 @@ in {
       })
       {
         rpc.users.privileged = {
-          name = "bitcoinrpc";
           passwordHMACFromFile = true;
         };
         rpc.users.public = {
-          name = "publicrpc";
           passwordHMACFromFile = true;
           rpcwhitelist = import ./bitcoind-rpc-public-whitelist.nix;
         };
