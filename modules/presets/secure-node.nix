@@ -77,13 +77,11 @@ in {
       rpcthreads = 16;
       rpc.users.privileged = {
         name = "bitcoinrpc";
-        # Placeholder to be sed'd out by bitcoind preStart
-        passwordHMAC = "bitcoin-HMAC-privileged";
+        passwordHMACFromFile = true;
       };
       rpc.users.public = {
         name = "publicrpc";
-        # Placeholder to be sed'd out by bitcoind preStart
-        passwordHMAC = "bitcoin-HMAC-public";
+        passwordHMACFromFile = true;
         rpcwhitelist = [
           "echo"
           "getinfo"
