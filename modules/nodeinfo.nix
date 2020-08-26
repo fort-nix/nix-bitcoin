@@ -48,6 +48,12 @@ let
       echo ELECTRS_ONION="$ELECTRS_ONION"
     fi
 
+    BTCPAYSERVER_ONION_FILE=/var/lib/onion-chef/${operatorName}/btcpayserver
+    if [ -e "$BTCPAYSERVER_ONION_FILE" ]; then
+      BTCPAYSERVER_ONION="$(cat $BTCPAYSERVER_ONION_FILE)"
+      echo BTCPAYSERVER_ONION="$BTCPAYSERVER_ONION"
+    fi
+
     SSHD_ONION_FILE=/var/lib/onion-chef/${operatorName}/sshd
     if [ -e "$SSHD_ONION_FILE" ]; then
     SSHD_ONION="$(cat $SSHD_ONION_FILE)"
