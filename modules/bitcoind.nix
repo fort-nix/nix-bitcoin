@@ -109,6 +109,7 @@ in {
             options = {
               name = mkOption {
                 type = types.str;
+                default = name;
                 example = "alice";
                 description = ''
                   Username for JSON-RPC connections.
@@ -130,9 +131,6 @@ in {
                   If empty list, rpcwhitelist is disabled for that user.
                 '';
               };
-            };
-            config = {
-              name = mkDefault name;
             };
           }));
           description = ''
