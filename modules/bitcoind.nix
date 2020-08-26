@@ -285,10 +285,23 @@ in {
   config = mkIf cfg.enable {
     environment.systemPackages = [ cfg.package (hiPrio cfg.cli) ];
 
-    services.bitcoind = mkIf cfg.dataDirReadableByGroup {
-      disablewallet = true;
-      sysperms = true;
-    };
+    services.bitcoind = mkMerge [
+      (mkIf cfg.dataDirReadableByGroup {
+        disablewallet = true;
+        sysperms = true;
+      })
+      {
+        rpc.users.privileged = {
+          name = "bitcoinrpc";
+          passwordHMACFromFile = true;
+        };
+        rpc.users.public = {
+          name = "publicrpc";
+          passwordHMACFromFile = true;
+          rpcwhitelist = import ./bitcoind-rpc-public-whitelist.nix;
+        };
+      }
+    ];
 
     systemd.tmpfiles.rules = [
       "d '${cfg.dataDir}' 0770 ${cfg.user} ${cfg.group} - -"
