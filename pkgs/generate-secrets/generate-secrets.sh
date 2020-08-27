@@ -5,6 +5,10 @@ opensslConf=${1:-openssl.cnf}
 makePasswordSecret() {
     [[ -e $1 ]] || apg -m 20 -x 20 -M Ncl -n 1 > "$1"
 }
+makeHMAC() {
+    user=$1
+    rpcauth $user $(cat bitcoin-rpcpassword-$user) | grep rpcauth | cut -d ':' -f 2 > bitcoin-HMAC-$user
+}
 
 makePasswordSecret bitcoin-rpcpassword-privileged
 makePasswordSecret bitcoin-rpcpassword-public
@@ -14,8 +18,8 @@ makePasswordSecret lightning-charge-token
 makePasswordSecret spark-wallet-password
 makePasswordSecret backup-encryption-password
 
-[[ -e bitcoin-HMAC-privileged ]] || rpcauth privileged $(cat bitcoin-rpcpassword-privileged) | grep rpcauth | cut -d ':' -f 2 > bitcoin-HMAC-privileged
-[[ -e bitcoin-HMAC-public ]] || rpcauth public $(cat bitcoin-rpcpassword-public) | grep rpcauth | cut -d ':' -f 2 > bitcoin-HMAC-public
+[[ -e bitcoin-HMAC-privileged ]] || makeHMAC privileged
+[[ -e bitcoin-HMAC-public ]] || makeHMAC public
 [[ -e lightning-charge-env ]] || echo "API_TOKEN=$(cat lightning-charge-token)" > lightning-charge-env
 [[ -e nanopos-env          ]] || echo "CHARGE_TOKEN=$(cat lightning-charge-token)" > nanopos-env
 [[ -e spark-wallet-login   ]] || echo "login=spark-wallet:$(cat spark-wallet-password)" > spark-wallet-login
