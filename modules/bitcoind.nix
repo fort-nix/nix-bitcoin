@@ -30,17 +30,14 @@ let
     ${optionalString (cfg.rpcthreads != null) "rpcthreads=${toString cfg.rpcthreads}"}
     rpcport=${toString cfg.rpc.port}
     rpcwhitelistdefault=0
-    ${concatMapStringsSep  "\n"
-      (rpcUser: ''
-        rpcauth=${rpcUser.name}:${rpcUser.passwordHMAC}
-        ${optionalString (rpcUser.rpcwhitelist != []) "rpcwhitelist=${rpcUser.name}:${lib.strings.concatStringsSep "," rpcUser.rpcwhitelist}"}
-      '')
-      (attrValues cfg.rpc.users)
+    ${concatMapStrings (user: ''
+        ${optionalString (!user.passwordHMACFromFile) "rpcauth=${user.name}:${passwordHMAC}"}
+        ${optionalString (user.rpcwhitelist != [])
+          "rpcwhitelist=${user.name}:${lib.strings.concatStringsSep "," user.rpcwhitelist}"}
+      '') (builtins.attrValues cfg.rpc.users)
     }
     ${lib.concatMapStrings (rpcbind: "rpcbind=${rpcbind}\n") cfg.rpcbind}
     ${lib.concatMapStrings (rpcallowip: "rpcallowip=${rpcallowip}\n") cfg.rpcallowip}
-    # Credentials for bitcoin-cli
-    rpcuser=${cfg.rpc.users.privileged.name}
 
     # Wallet options
     ${optionalString (cfg.addresstype != null) "addresstype=${cfg.addresstype}"}
@@ -109,6 +106,7 @@ in {
             options = {
               name = mkOption {
                 type = types.str;
+                default = name;
                 example = "alice";
                 description = ''
                   Username for JSON-RPC connections.
@@ -122,6 +120,11 @@ in {
                   format <SALT-HEX>$<HMAC-HEX>.
                 '';
               };
+              passwordHMACFromFile = mkOption {
+                type = lib.types.bool;
+                internal = true;
+                default = false;
+              };
               rpcwhitelist = mkOption {
                 type = types.listOf types.str;
                 default = [];
@@ -130,9 +133,6 @@ in {
                   If empty list, rpcwhitelist is disabled for that user.
                 '';
               };
-            };
-            config = {
-              name = mkDefault name;
             };
           }));
           description = ''
@@ -283,10 +283,21 @@ in {
   config = mkIf cfg.enable {
     environment.systemPackages = [ cfg.package (hiPrio cfg.cli) ];
 
-    services.bitcoind = mkIf cfg.dataDirReadableByGroup {
-      disablewallet = true;
-      sysperms = true;
-    };
+    services.bitcoind = mkMerge [
+      (mkIf cfg.dataDirReadableByGroup {
+        disablewallet = true;
+        sysperms = true;
+      })
+      {
+        rpc.users.privileged = {
+          passwordHMACFromFile = true;
+        };
+        rpc.users.public = {
+          passwordHMACFromFile = true;
+          rpcwhitelist = import ./bitcoind-rpc-public-whitelist.nix;
+        };
+      }
+    ];
 
     systemd.tmpfiles.rules = [
       "d '${cfg.dataDir}' 0770 ${cfg.user} ${cfg.group} - -"
@@ -298,16 +309,24 @@ in {
       requires = [ "nix-bitcoin-secrets.target" ];
       after = [ "network.target" "nix-bitcoin-secrets.target" ];
       wantedBy = [ "multi-user.target" ];
-      preStart = ''
-        ${optionalString cfg.dataDirReadableByGroup  "chmod -R g+rX '${cfg.dataDir}/blocks'"}
-
-        cfgpre=$(cat ${configFile}; printf "rpcpassword="; cat "${secretsDir}/bitcoin-rpcpassword-privileged")
-        cfg=$(echo "$cfgpre" | \
-        sed "s/bitcoin-HMAC-privileged/$(cat ${secretsDir}/bitcoin-HMAC-privileged)/g" | \
-        sed "s/bitcoin-HMAC-public/$(cat ${secretsDir}/bitcoin-HMAC-public)/g")
+      preStart = let
+        extraRpcauth = concatMapStrings (name: let
+          user = cfg.rpc.users.${name};
+        in optionalString user.passwordHMACFromFile ''
+            echo "rpcauth=${user.name}:$(cat ${secretsDir}/bitcoin-HMAC-${name})"
+          ''
+        ) (builtins.attrNames cfg.rpc.users);
+      in ''
+        ${optionalString cfg.dataDirReadableByGroup "chmod -R g+rX '${cfg.dataDir}/blocks'"}
+        cfg=$(
+          cat ${configFile};
+          ${extraRpcauth}
+          ${/* Enable bitcoin-cli for group 'bitcoin' */ ""}
+          printf "rpcuser=${cfg.rpc.users.privileged.name}\nrpcpassword="; cat "${secretsDir}/bitcoin-rpcpassword-privileged";
+        )
         confFile='${cfg.dataDir}/bitcoin.conf'
         if [[ ! -e $confFile || $cfg != $(cat $confFile) ]]; then
-          install -o '${cfg.user}' -g '${cfg.group}' -m 640  <(echo "$cfg") $confFile
+          install -o '${cfg.user}' -g '${cfg.group}' -m 640 <(echo "$cfg") $confFile
         fi
       '';
       postStart = ''
