@@ -174,13 +174,12 @@ in {
             mnemonic=${secretsDir}/lnd-seed-mnemonic
             if [[ ! -f $mnemonic ]]; then
               echo Create lnd seed
-
+              umask u=r,go=
               ${pkgs.curl}/bin/curl -s \
                 --cacert ${secretsDir}/lnd-cert \
                 -X GET https://127.0.0.1:${restPort}/v1/genseed | ${pkgs.jq}/bin/jq -c '.cipher_seed_mnemonic' > "$mnemonic"
             fi
             chown lnd: "$mnemonic"
-            chmod 400 "$mnemonic"
           ''}"
           "${let
             mainnetDir = "${cfg.dataDir}/chain/bitcoin/mainnet";
