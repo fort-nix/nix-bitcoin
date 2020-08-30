@@ -78,7 +78,10 @@ def run_tests(extra_tests):
     # Check that lightning-loop fails with the right error, making sure
     # lightning-loop can connect to lnd
     machine.wait_until_succeeds(
-        log_has_string("lightning-loop", "chain notifier RPC isstill in the process of starting")
+        log_has_string(
+            "lightning-loop",
+            "Waiting for lnd to be fully synced to its chain backend, this might take a while",
+        )
     )
 
     assert_running("spark-wallet")
