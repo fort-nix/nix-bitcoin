@@ -4,7 +4,7 @@
 lib: pkgs:
 
 with lib;
-{
+let self = {
   # These settings roughly follow systemd's "strict" security profile
   defaultHardening = {
       PrivateTmp = "true";
@@ -56,10 +56,13 @@ with lib;
     ${src}
   '';
 
+  # Used for ExecStart*
+  privileged = src: "+${self.script src}";
+
   cliExec = mkOption {
     # Used by netns-isolation to execute the cli in the service's private netns
     internal = true;
     type = types.str;
     default = "exec";
   };
-}
+}; in self
