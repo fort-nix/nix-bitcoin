@@ -19,6 +19,7 @@ let
     ${config.services.nbxplorer.dataDir}
     ${config.services.btcpayserver.dataDir}
     ${config.services.joinmarket.dataDir}
+    /secrets/jm-wallet-seed
     /var/lib/tor
     # Extra files
     ${cfg.extraFiles}

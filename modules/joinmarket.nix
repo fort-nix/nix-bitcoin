@@ -143,12 +143,29 @@ in {
       wantedBy = [ "multi-user.target" ];
       requires = [ "bitcoind.service" ];
       after = [ "bitcoind.service" ];
+      path = [ pkgs.sudo ];
       serviceConfig = nix-bitcoin-services.defaultHardening // {
         ExecStartPre = nix-bitcoin-services.privileged ''
           install -o '${cfg.user}' -g '${cfg.group}' -m 640 ${configFile} ${cfg.dataDir}/joinmarket.cfg
           sed -i \
-             "s|@@RPC_PASSWORD@@|rpc_password = $(cat ${config.nix-bitcoin.secretsDir}/bitcoin-rpcpassword-privileged)|" \
+             "s|@@RPC_PASSWORD@@|rpc_password = $(cat ${secretsDir}/bitcoin-rpcpassword-privileged)|" \
              '${cfg.dataDir}/joinmarket.cfg'
+        '';
+        ExecStartPost = nix-bitcoin-services.privileged ''
+          walletname=wallet.jmdat
+          pw=$(cat "${secretsDir}"/jm-wallet-password)
+          mnemonic=${secretsDir}/jm-wallet-seed
+          if [[ ! -f ${cfg.dataDir}/wallets/$walletname ]]; then
+            echo Create joinmarket wallet
+            # Use bash variables so commands don't proceed on previous failures
+            # (like with pipes)
+            cd ${cfg.dataDir} && \
+              out=$(sudo -u ${cfg.user} \
+              ${pkgs.nix-bitcoin.joinmarket}/bin/jm-genwallet \
+              --datadir=${cfg.dataDir} $walletname $pw)
+            recoveryseed=$(echo "$out" | grep 'recovery_seed')
+            echo "$recoveryseed" | cut -d ':' -f2 > $mnemonic
+          fi
         '';
         ExecStart = "${pkgs.nix-bitcoin.joinmarket}/bin/joinmarketd";
         WorkingDirectory = "${cfg.dataDir}"; # The service creates 'commitmentlist' in the working dir

@@ -1,4 +1,4 @@
-{ stdenv, fetchurl, python3 }:
+{ stdenv, fetchurl, python3, pkgs }:
 
 let
   version = "0.7.0";
@@ -32,11 +32,13 @@ let
     joinmarketdaemon
   ];
 
+  genwallet = pkgs.writeScriptBin "genwallet" (builtins.readFile ./genwallet/genwallet.py);
+
   pythonEnv = python.withPackages (_: runtimePackages);
 in
 stdenv.mkDerivation {
   pname = "joinmarket";
-  inherit version src;
+  inherit version src genwallet;
 
   buildInputs = [ pythonEnv ];
 
@@ -57,6 +59,7 @@ stdenv.mkDerivation {
     cpBin tumbler.py
     cpBin wallet-tool.py
     cpBin yg-privacyenhanced.py
+    cp $genwallet/bin/genwallet $out/bin/jm-genwallet
 
     chmod +x -R $out/bin
     patchShebangs $out/bin
