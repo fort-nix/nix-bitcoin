@@ -52,6 +52,11 @@ import ./make-test.nix rec {
 
     services.backups.enable = true;
 
+    services.btcpayserver.enable = true;
+    services.btcpayserver.lightningBackend = "lnd";
+    # needed to test macaroon creation
+    environment.systemPackages = with pkgs; [ openssl xxd ];
+
     # to test that unused secrets are made inaccessible by 'setup-secrets'
     systemd.services.generate-secrets.postStart = ''
       install -o nobody -g nogroup -m777 <(:) /secrets/dummy

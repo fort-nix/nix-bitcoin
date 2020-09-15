@@ -2,6 +2,19 @@ def electrs():
     machine.wait_for_open_port(4224)  # prometeus metrics provider
 
 
+def nbxplorer():
+    machine.wait_for_open_port(24444)
+
+
+def btcpayserver():
+    machine.wait_for_open_port(23000)
+    # test lnd custom macaroon
+    assert_matches(
+        'sudo -u btcpayserver curl -s --cacert /secrets/lnd-cert --header "Grpc-Metadata-macaroon: $(xxd -ps -u -c 1000 /run/lnd/btcpayserver.macaroon)" -X GET https://127.0.0.1:8080/v1/getinfo | jq',
+        '"version"',
+    )
+
+
 def spark_wallet():
     machine.wait_for_open_port(9737)
     spark_auth = re.search("login=(.*)", succeed("cat /secrets/spark-wallet-login"))[1]
@@ -31,6 +44,8 @@ def prestop():
 
 extra_tests = {
     "electrs": electrs,
+    "nbxplorer": nbxplorer,
+    "btcpayserver": btcpayserver,
     "spark-wallet": spark_wallet,
     "lightning-charge": lightning_charge,
     "nanopos": nanopos,

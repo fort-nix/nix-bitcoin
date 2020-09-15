@@ -160,6 +160,8 @@ in {
             ${ipNetns} route add default via ${bridgeIp}
             ${netnsIptables} -w -P INPUT DROP
             ${netnsIptables} -w -A INPUT -s 127.0.0.1,${bridgeIp},${v.address} -j ACCEPT
+            # allow return traffic to outgoing connections initiated by the service itself
+            ${netnsIptables} -w -A INPUT -m conntrack --ctstate ESTABLISHED -j ACCEPT
           '' + (optionalString (config.services.${n}.enforceTor or false)) ''
             ${netnsIptables} -w -P OUTPUT DROP
             ${netnsIptables} -w -A OUTPUT -d 127.0.0.1,${bridgeIp},${v.address} -j ACCEPT
@@ -230,6 +232,16 @@ in {
         id = 22;
         connections = [ "lnd" ];
       };
+      nbxplorer = {
+        id = 23;
+        connections = [ "bitcoind" ];
+      };
+      btcpayserver = {
+        id = 24;
+        connections = [ "nbxplorer" ]
+                      ++ optional (config.services.btcpayserver.lightningBackend == "lnd") "lnd";
+        # communicates with clightning over rpc socket
+      };
     };
 
     services.bitcoind = {
@@ -299,6 +311,9 @@ in {
     };
 
     services.lightning-loop.cliExec = mkCliExec "lightning-loop";
+
+    services.nbxplorer.bind = netns.nbxplorer.address;
+    services.btcpayserver.bind = netns.btcpayserver.address;
   }
   ]);
 }

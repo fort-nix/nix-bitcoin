@@ -7,6 +7,7 @@ let
   inherit (config) nix-bitcoin-services;
   onion-chef-service = (if cfg.announce-tor then [ "onion-chef.service" ] else []);
   secretsDir = config.nix-bitcoin.secretsDir;
+  mainnetDir = "${cfg.dataDir}/chain/bitcoin/mainnet";
   configFile = pkgs.writeText "lnd.conf" ''
     datadir=${cfg.dataDir}
     logdir=${cfg.dataDir}/logs
@@ -97,6 +98,27 @@ in {
       default = false;
       description = "Announce LND Tor Hidden Service";
     };
+    macaroons = mkOption {
+      default = {};
+      type = with types; attrsOf (submodule {
+        options = {
+          user = mkOption {
+            type = types.str;
+            description = "User who owns the macaroon.";
+          };
+          permissions = mkOption {
+            type = types.str;
+            example = ''
+              {"entity":"info","action":"read"},{"entity":"onchain","action":"read"}
+            '';
+            description = "List of granted macaroon permissions.";
+          };
+        };
+      });
+      description = ''
+        Extra macaroon definitions.
+      '';
+    };
     extraConfig = mkOption {
       type = types.lines;
       default = "";
@@ -155,6 +177,8 @@ in {
         ${optionalString cfg.announce-tor "echo externalip=$(cat /var/lib/onion-chef/lnd/lnd) >> '${cfg.dataDir}/lnd.conf'"}
       '';
       serviceConfig = nix-bitcoin-services.defaultHardening // {
+        RuntimeDirectory = "lnd"; # Only used to store custom macaroons
+        RuntimeDirectoryMode = "711";
         ExecStart = "${cfg.package}/bin/lnd --configfile=${cfg.dataDir}/lnd.conf";
         User = "lnd";
         Restart = "on-failure";
@@ -174,17 +198,14 @@ in {
             mnemonic=${secretsDir}/lnd-seed-mnemonic
             if [[ ! -f $mnemonic ]]; then
               echo Create lnd seed
-
+              umask u=r,go=
               ${pkgs.curl}/bin/curl -s \
                 --cacert ${secretsDir}/lnd-cert \
                 -X GET https://127.0.0.1:${restPort}/v1/genseed | ${pkgs.jq}/bin/jq -c '.cipher_seed_mnemonic' > "$mnemonic"
             fi
             chown lnd: "$mnemonic"
-            chmod 400 "$mnemonic"
           ''}"
-          "${let
-            mainnetDir = "${cfg.dataDir}/chain/bitcoin/mainnet";
-          in nix-bitcoin-services.script ''
+          "${nix-bitcoin-services.script ''
             if [[ ! -f ${mainnetDir}/wallet.db ]]; then
               echo Create lnd wallet
 
@@ -214,6 +235,23 @@ in {
             while ! { exec 3>/dev/tcp/127.0.0.1/${toString cfg.rpcPort}; } &>/dev/null; do
               sleep 0.1
             done
+
+          ''}"
+          # Run fully privileged for chown
+          "+${nix-bitcoin-services.script ''
+            umask ug=r,o=
+            ${lib.concatMapStrings (macaroon: ''
+              echo "Create custom macaroon ${macaroon}"
+              macaroonPath="$RUNTIME_DIRECTORY/${macaroon}.macaroon"
+              ${pkgs.curl}/bin/curl -s \
+                -H "Grpc-Metadata-macaroon: $(${pkgs.xxd}/bin/xxd -ps -u -c 99999 '${mainnetDir}/admin.macaroon')" \
+                --cacert ${secretsDir}/lnd-cert \
+                -X POST \
+                -d '{"permissions":[${cfg.macaroons.${macaroon}.permissions}]}' \
+                https://127.0.0.1:${restPort}/v1/macaroon |\
+                ${pkgs.jq}/bin/jq -c '.macaroon' | ${pkgs.xxd}/bin/xxd -p -r > "$macaroonPath"
+              chown ${cfg.macaroons.${macaroon}.user}: "$macaroonPath"
+            '') (attrNames cfg.macaroons)}
           ''}"
         ];
       } // (if cfg.enforceTor
@@ -232,6 +270,7 @@ in {
       lnd-wallet-password.user = "lnd";
       lnd-key.user = "lnd";
       lnd-cert.user = "lnd";
+      lnd-cert.permissions = "0444"; # world readable
     };
   };
 }

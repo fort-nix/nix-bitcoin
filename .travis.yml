@@ -27,6 +27,10 @@ env:
   - PKG=elementsd STABLE=0
   - PKG=electrs STABLE=1
   - PKG=electrs STABLE=0
+  - PKG=nbxplorer STABLE=1
+  - PKG=nbxplorer STABLE=0
+  - PKG=btcpayserver STABLE=1
+  - PKG=btcpayserver STABLE=0
   - PKG=liquid-swap STABLE=1
   - PKG=lightning-loop STABLE=0
   - PKG=nixops19_09 STABLE=1

@@ -76,6 +76,20 @@
   # sync faster. Only available if hardware wallets are disabled.
   # services.electrs.high-memory = true;
 
+  ### BTCPayServer
+  # Enable this module to use BTCPayServer, a self-hosted, open-source
+  # cryptocurrency payment processor.
+  # Privacy Warning: BTCPayServer currently looks up price rates without
+  # proxying them through Tor. This means an outside observer can correlate
+  # your BTCPayServer usage, like invoice creation times, with your IP address.
+  # services.btcpayserver.enable = true;
+  # Enable this option to connect BTCPayServer to clightning.
+  # services.btcpayserver.lightningBackend = "clightning";
+  # Enable this option to connect BTCPayServert to lnd.
+  # services.btcpayserver.lightningBackend = "lnd";
+  # Afterwards you need to go into Store > General Settings > Lightning Nodes
+  # and click to use "the internal lightning node of this BTCPay Server".
+
   ### LIQUIDD
   # Enable this module to use Liquid, a sidechain for an inter-exchange
   # settlement network linking together cryptocurrency exchanges and
