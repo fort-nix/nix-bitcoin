@@ -166,6 +166,10 @@ def run_tests(extra_tests):
         "export $(cat /secrets/backup-encryption-env); duplicity list-current-files 'file:///var/lib/localBackups'",
         "var/lib/bitcoind/wallet.dat",
     )
+    assert_matches(
+        "export $(cat /secrets/backup-encryption-env); duplicity list-current-files 'file:///var/lib/localBackups'",
+        "var/backup/postgresql/btcpaydb.sql.gz",
+    )
 
     ### Check that all extra_tests have been run
     assert len(extra_tests) == 0

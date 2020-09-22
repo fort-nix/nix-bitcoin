@@ -20,6 +20,7 @@ let
     ${config.services.btcpayserver.dataDir}
     ${config.services.joinmarket.dataDir}
     /secrets/jm-wallet-seed
+    ${config.services.postgresqlBackup.location}/btcpaydb.sql.gz
     /var/lib/tor
     # Extra files
     ${cfg.extraFiles}
@@ -69,8 +70,8 @@ in {
     };
   };
 
-  config = mkMerge [
-    (mkIf (cfg.enable && cfg.program == "duplicity") {
+  config = mkIf (cfg.enable && cfg.program == "duplicity") (mkMerge [
+    {
       environment.systemPackages = [ pkgs.duplicity ];
 
       services.duplicity = {
@@ -85,7 +86,17 @@ in {
       };
 
       nix-bitcoin.secrets.backup-encryption-env.user = "root";
-
+    }
+    (mkIf config.services.btcpayserver.enable {
+      services.postgresqlBackup = {
+        enable = true;
+        databases = [ "btcpaydb" ];
+        startAt = [];
+      };
+      systemd.services.duplicity = rec {
+        wants = [ "postgresqlBackup-btcpaydb.service" ];
+        after = wants;
+      };
     })
-  ];
+  ]);
 }
