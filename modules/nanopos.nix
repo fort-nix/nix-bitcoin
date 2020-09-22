@@ -72,6 +72,10 @@ in {
   };
 
   config = mkIf cfg.enable {
+    warnings = [''
+      The nanopos module is deprecated and will be removed soon. You can use the
+      btcpayserver module instead.
+    ''];
     assertions = [
       { assertion = config.services.lightning-charge.enable;
         message = "nanopos requires lightning-charge.";
