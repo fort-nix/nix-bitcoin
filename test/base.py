@@ -102,6 +102,14 @@ def run_tests(extra_tests):
 
     assert_running("onion-chef")
 
+    assert_running("joinmarket")
+    machine.wait_until_succeeds(
+        log_has_string("joinmarket", "P2EPDaemonServerProtocolFactory starting on 27184")
+    )
+    machine.wait_until_succeeds(
+        log_has_string("joinmarket-yieldgenerator", "Failure to get blockheight",)
+    )
+
     # FIXME: use 'wait_for_unit' because 'create-web-index' always fails during startup due
     # to incomplete unit dependencies.
     # 'create-web-index' implicitly tests 'nodeinfo'.
@@ -149,6 +157,10 @@ def run_tests(extra_tests):
     assert_matches(
         "export $(cat /secrets/backup-encryption-env); duplicity list-current-files 'file:///var/lib/localBackups'",
         "secrets/lnd-seed-mnemonic",
+    )
+    assert_matches(
+        "export $(cat /secrets/backup-encryption-env); duplicity list-current-files 'file:///var/lib/localBackups'",
+        "secrets/jm-wallet-seed",
     )
     assert_matches(
         "export $(cat /secrets/backup-encryption-env); duplicity list-current-files 'file:///var/lib/localBackups'",

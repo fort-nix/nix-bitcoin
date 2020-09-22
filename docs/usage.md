@@ -221,3 +221,120 @@ Initialize a Trezor for Bitcoin Core's Hardware Wallet Interface
     ```
 
 8. Follow Bitcoin Core's instructions on [Using Bitcoin Core with Hardware Wallets](https://github.com/bitcoin-core/HWI/blob/master/docs/bitcoin-core-usage.md) to use your Trezor with `bitcoin-cli` on your nix-bitcoin node
+
+JoinMarket
+---
+
+## Diff to regular JoinMarket usage
+
+For clarity reasons, nix-bitcoin renames all scripts to `jm-*` without `.py`, for
+example `wallet-tool.py` becomes `jm-wallet-tool`. The rest of this section
+details nix-bitcoin specific workflows for JoinMarket.
+
+## Initialize JoinMarket Wallet
+
+By default, nix-bitcoin's JoinMarket module automatically generates a wallet for
+you. If however, you want to manually initialize your wallet, follow these steps.
+
+1. Enable JoinMarket in your node configuration
+
+    ```
+    services.joinmarket.enable = true;
+    ```
+
+2. Move the automatically generated `wallet.jmdat`
+
+    ```console
+    rm /var/lib/joinmarket/wallet.jmdat /var/lib/joinmarket/bak.jmdat
+    ```
+
+3. Generate wallet on your node
+
+    ```console
+    jm-wallet-tool generate
+    ```
+    Follow the on-screen instructions and write down your seed.
+
+    In order to use nix-bitcoin's `joinmarket.yieldgenerator`, use the password
+    from `/secrets/jm-wallet-password` and use the suggested default wallet name
+    `wallet.jmdat`. If you want to use your own `jm-wallet-password`, simply
+    replace the password string in your local secrets directory.
+
+## Run the tumbler
+
+The tumbler needs to be able to run in the background for a long time, use screen
+to run it accross ssh sessions. You can also use tmux in the same fashion.
+
+1. Add screen to your `environment.systemPackages`, for example
+
+    ```
+    environment.systemPackages = with pkgs; [
+      vim
+      screen
+    ];
+    ```
+
+2. Start the screen session
+
+    ```console
+    screen -S "tumbler"
+    ```
+
+2. Start the tumbler
+
+    Example: Tumbling into your wallet after buying from an exchange to improve privacy:
+
+    ```console
+    jm-tumbler wallet.jmdat <addr1> <addr2> <addr3>
+    ```
+
+    After tumbling your bitcoin end up in these three addresses. You can now
+    spend them without the exchange collecting data on your purchases.
+
+    Get more information [here](https://github.com/JoinMarket-Org/joinmarket-clientserver/blob/master/docs/tumblerguide.md)
+
+3. Detach the screen session to leave the tumbler running in the background
+
+    ```
+    Ctrl-a d or Ctrl-a Ctrl-d
+    ```
+
+4. Re-attach to the screen session
+
+    ```console
+    screen -r tumbler
+    ```
+
+5. End screen session
+
+    Type exit when tumbler is done
+
+    ```console
+    exit
+    ```
+
+## Run a "maker" or "yield generator"
+
+The maker/yield generator in nix-bitcoin is implemented using a systemd service.
+
+See [here](https://github.com/JoinMarket-Org/joinmarket-clientserver/blob/master/docs/YIELDGENERATOR.md) for more yield generator information.
+
+1. Enable yield generator bot in your node configuration
+
+    ```
+    services.joinmarket.yieldgenerator.enable = true;
+
+    # Optional: Add custom parameters
+    services.joinmarket.yieldgenerator.customParameters = ''
+      txfee = 200
+      cjfee_a = 300
+    '';
+    ```
+
+2. Check service status
+
+    ```console
+    systemctl status joinmarket-yieldgenerator
+    ```
+
+3. Profit

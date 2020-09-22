@@ -12,4 +12,5 @@
   spark-wallet = ./spark-wallet.nix;
   recurring-donations = ./recurring-donations.nix;
   lnd = ./lnd.nix;
+  joinmarket = ./joinmarket.nix;
 }

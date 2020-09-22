@@ -18,6 +18,7 @@ makePasswordSecret liquid-rpcpassword
 makePasswordSecret lightning-charge-token
 makePasswordSecret spark-wallet-password
 makePasswordSecret backup-encryption-password
+makePasswordSecret jm-wallet-password
 
 [[ -e bitcoin-HMAC-privileged ]] || makeHMAC privileged
 [[ -e bitcoin-HMAC-public ]] || makeHMAC public
