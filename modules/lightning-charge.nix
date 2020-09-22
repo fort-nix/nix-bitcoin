@@ -35,6 +35,9 @@ in {
   };
 
   config = mkIf cfg.enable {
+    warnings = [''
+      The lightning-charge module is deprecated and will be removed soon.
+    ''];
     assertions = [
       { assertion = config.services.clightning.enable;
         message = "lightning-charge requires clightning.";
