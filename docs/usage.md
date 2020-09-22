@@ -245,7 +245,7 @@ you. If however, you want to manually initialize your wallet, follow these steps
 2. Move the automatically generated `wallet.jmdat`
 
     ```console
-    rm /var/lib/joinmarket/wallet.jmdat /var/lib/joinmarket/bak.jmdat
+    mv /var/lib/joinmarket/wallet.jmdat /var/lib/joinmarket/bak.jmdat
     ```
 
 3. Generate wallet on your node
