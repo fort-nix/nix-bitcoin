@@ -93,6 +93,15 @@ in {
       "d '${cfg.btcpayserver.dataDir}' 0770 ${cfg.btcpayserver.user} ${cfg.btcpayserver.group} - -"
     ];
 
+    services.postgresql = {
+      enable = true;
+      ensureDatabases = [ "btcpaydb" ];
+      ensureUsers = [{
+        name = "${cfg.btcpayserver.user}";
+        ensurePermissions."DATABASE btcpaydb" = "ALL PRIVILEGES";
+      }];
+    };
+
     systemd.services.nbxplorer = let
       configFile = builtins.toFile "config" ''
         network=mainnet
@@ -130,6 +139,7 @@ in {
     systemd.services.btcpayserver = let
       configFile = builtins.toFile "config" (''
         network=mainnet
+        postgres=User ID=${cfg.btcpayserver.user};Host=/run/postgresql;Database=btcpaydb
         socksendpoint=${cfg.tor.client.socksListenAddress}
         btcexplorerurl=http://${cfg.nbxplorer.bind}:24444/
         btcexplorercookiefile=${cfg.nbxplorer.dataDir}/Main/.cookie
