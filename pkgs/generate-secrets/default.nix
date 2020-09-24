@@ -6,7 +6,7 @@ let
     sha256 = "189mpplam6yzizssrgiyv70c9899ggh8cac76j4n7v0xqzfip07n";
   };
   rpcauth = pkgs.writeScriptBin "rpcauth" ''
-    exec ${pkgs.python35}/bin/python ${rpcauthSrc} "$@"
+    exec ${pkgs.python3}/bin/python ${rpcauthSrc} "$@"
   '';
 in
 writeScript "generate-secrets" ''
