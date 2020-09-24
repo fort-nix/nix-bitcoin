@@ -73,7 +73,7 @@ def run_tests(extra_tests):
     assert_matches("su operator -c 'lncli getinfo' | jq", '"version"')
     assert_no_failure("lnd")
 
-    succeed("systemctl start lightning-loop")
+    assert_running("lightning-loop")
     assert_matches("su operator -c 'loop --version'", "version")
     # Check that lightning-loop fails with the right error, making sure
     # lightning-loop can connect to lnd
