@@ -19,6 +19,9 @@ import ./make-test.nix rec {
       # hardened
     ];
 
+    # needed because duplicity requires 270 MB of free temp space, regardless of backup size.
+    virtualisation.diskSize = 1024;
+
     nix-bitcoin.netns-isolation.enable = (scenario == "withnetns");
 
     services.bitcoind.extraConfig = mkForce "connect=0";
