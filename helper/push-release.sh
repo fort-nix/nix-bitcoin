@@ -68,8 +68,8 @@ fi
 
 post_asset() {
     GH_ASSET="https://uploads.github.com/repos/$REPO/releases/$ID/assets?name="
-    curl -H "Authorization: token $OAUTH_TOKEN" --data-binary "@$TAG_NAME" -H "Content-Type: application/octet-stream" \
-         $GH_ASSET/$(basename $TAG_NAME) &> /dev/null
+    curl -H "Authorization: token $OAUTH_TOKEN" --data-binary "@$1" -H "Content-Type: application/octet-stream" \
+         $GH_ASSET/$(basename $1) &> /dev/null
 }
 post_asset $ARCHIVE
 post_asset $SHA256SUMS
