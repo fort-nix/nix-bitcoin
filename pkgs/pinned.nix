@@ -10,12 +10,13 @@ in
     bitcoin
     bitcoind
     clightning
-    lnd;
+    lnd
+    nbxplorer
+    btcpayserver;
   inherit (nixBitcoinPkgsUnstable)
     electrs
     lightning-loop;
 
   stable = nixBitcoinPkgsStable;
   unstable = nixBitcoinPkgsUnstable;
-  inherit nixpkgsUnstable;
 }
