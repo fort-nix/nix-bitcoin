@@ -149,7 +149,7 @@ build() {
         buildTest "$@"
     else
         scenario=default buildTest "$@"
-        scenario=withnetns buildTest "$@"
+        scenario=netns buildTest "$@"
     fi
 }
 
