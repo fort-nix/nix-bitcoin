@@ -1,76 +1,142 @@
-# Integration test, can be run without internet access.
+# Integration tests, can be run without internet access.
 
-# Make sure to update build() in ./run-tests.sh when adding new scenarios
 { scenario ? "default" }:
 
-import ./make-test.nix rec {
-  name = "nix-bitcoin-${scenario}";
+import ./lib/make-test.nix scenario (
+{ config, pkgs, lib, ... }: with lib;
+let testEnv = rec {
+  cfg = config.services;
+  mkIfTest = test: mkIf (config.tests.${test} or false);
 
-  hardened = {
-    imports = [ <nixpkgs/nixos/modules/profiles/hardened.nix> ];
-    security.allowUserNamespaces = true; # re-enable disabled option
-  };
-
-  machine = { pkgs, lib, ... }: with lib; {
+  baseConfig = {
     imports = [
-      ../modules/presets/secure-node.nix
+      ./lib/test-lib.nix
+      ../modules/modules.nix
       ../modules/secrets/generate-secrets.nix
-      # using the hardened profile increases total test duration by ~50%, so disable it for now
-      # hardened
     ];
 
-    # needed because duplicity requires 270 MB of free temp space, regardless of backup size.
-    virtualisation.diskSize = 1024;
+    config = {
+      tests.bitcoind = cfg.bitcoind.enable;
+      services.bitcoind = {
+        enable = true;
+        extraConfig = mkIf config.test.noConnections (mkForce "connect=0");
+      };
 
-    nix-bitcoin.netns-isolation.enable = (scenario == "netns");
+      tests.clightning = cfg.clightning.enable;
 
-    services.bitcoind.extraConfig = mkForce "connect=0";
+      tests.spark-wallet = cfg.spark-wallet.enable;
 
-    services.clightning.enable = true;
-    services.spark-wallet.enable = true;
-    services.lightning-charge.enable = true;
-    services.nanopos.enable = true;
+      tests.nanopos = cfg.nanopos.enable;
 
-    services.lnd.enable = true;
-    services.lnd.listenPort = 9736;
-    services.lightning-loop.enable = true;
+      tests.lnd = cfg.lnd.enable;
+      services.lnd.listenPort = 9736;
 
-    services.electrs.enable = true;
+      tests.lightning-loop = cfg.lightning-loop.enable;
 
-    services.liquidd = {
-      enable = true;
-      listen = mkForce false;
-      extraConfig = "noconnect=1";
-    };
+      tests.electrs = cfg.electrs.enable;
 
-    services.nix-bitcoin-webindex.enable = true;
+      tests.liquidd = cfg.liquidd.enable;
+      services.liquidd = optionalAttrs config.test.noConnections {
+        listen = mkForce false;
+        extraConfig = "noconnect=1";
+      };
 
-    services.hardware-wallets = {
-      trezor = true;
-      ledger = true;
-    };
+      tests.btcpayserver = cfg.btcpayserver.enable;
+      services.btcpayserver.lightningBackend = "lnd";
+      # Needed to test macaroon creation
+      environment.systemPackages = mkIfTest "btcpayserver" (with pkgs; [ openssl xxd ]);
 
-    services.backups.enable = true;
+      tests.joinmarket = cfg.joinmarket.enable;
+      services.joinmarket.yieldgenerator = {
+        enable = config.services.joinmarket.enable;
+        customParameters = ''
+          txfee = 200
+          cjfee_a = 300
+        '';
+      };
 
-    services.btcpayserver.enable = true;
-    services.btcpayserver.lightningBackend = "lnd";
-    # needed to test macaroon creation
-    environment.systemPackages = with pkgs; [ openssl xxd ];
-    
-    services.joinmarket.enable = true;
-    services.joinmarket.yieldgenerator = {
-      enable = true;
-      customParameters = ''
-        txfee = 200
-        cjfee_a = 300
+      tests.backups = cfg.backups.enable;
+
+      # To test that unused secrets are made inaccessible by 'setup-secrets'
+      systemd.services.generate-secrets.postStart = mkIfTest "security" ''
+        install -o nobody -g nogroup -m777 <(:) /secrets/dummy
       '';
     };
-
-    # to test that unused secrets are made inaccessible by 'setup-secrets'
-    systemd.services.generate-secrets.postStart = ''
-      install -o nobody -g nogroup -m777 <(:) /secrets/dummy
-    '';
   };
-  testScript =
-    builtins.readFile ./tests.py + "\n\n" + builtins.readFile "${./.}/scenarios/${scenario}.py";
-}
+
+  scenarios = {
+    base = baseConfig; # Included in all scenarios
+
+    default = scenarios.secureNode;
+
+    # All available basic services and tests
+    full = {
+      tests.security = true;
+
+      services.clightning.enable = true;
+      services.spark-wallet.enable = true;
+      services.lightning-charge.enable = true;
+      services.nanopos.enable = true;
+      services.lnd.enable = true;
+      services.lightning-loop.enable = true;
+      services.electrs.enable = true;
+      services.liquidd.enable = true;
+      services.btcpayserver.enable = true;
+      services.joinmarket.enable = true;
+      services.backups.enable = true;
+
+      services.hardware-wallets = {
+        trezor = true;
+        ledger = true;
+      };
+    };
+
+    secureNode = {
+      imports = [
+        scenarios.full
+        ../modules/presets/secure-node.nix
+      ];
+      services.nix-bitcoin-webindex.enable = true;
+      tests.secure-node = true;
+      tests.banlist-and-restart = true;
+    };
+
+    netns = {
+      imports = [ scenarios.secureNode ];
+      nix-bitcoin.netns-isolation.enable = true;
+      tests.netns-isolation = true;
+    };
+
+    ## Examples / debug helper
+
+    # Run a selection of tests in scenario 'netns'
+    selectedTests = {
+      imports = [ scenarios.netns ];
+      tests = mkForce {
+        btcpayserver = true;
+        netns-isolation = true;
+      };
+    };
+
+    adhoc = {
+      # <Add your config here>
+      # You can also set the env var `scenarioOverridesFile` (used below) to define custom scenarios.
+    };
+  };
+};
+in
+  let
+    overrides = builtins.getEnv "scenarioOverridesFile";
+    scenarios = testEnv.scenarios // (optionalAttrs (overrides != "") (import overrides {
+      inherit testEnv config pkgs lib;
+    }));
+    autoScenario = {
+      services.${scenario}.enable = true;
+    };
+  in {
+    imports = [
+      scenarios.base
+      (scenarios.${scenario} or autoScenario)
+    ];
+  }
+)

@@ -8,7 +8,10 @@
 #   ./run-tests.sh
 #
 #   Test specific scenario
-#   ./run-tests.sh --scenario <scenario>
+#   ./run-tests.sh --scenario|-s <scenario>
+#
+#     When <scenario> is undefined, the test is run with an adhoc scenario
+#     where services.<scenario> is enabled.
 #
 #   Run test and link results to avoid garbage collection
 #   ./run-tests.sh [--scenario <scenario>] --out-link-prefix /tmp/nix-bitcoin-test build
@@ -19,8 +22,10 @@
 #   Run interactive test debugging
 #   ./run-tests.sh [--scenario <scenario>] debug
 #
-#   This starts the testing VM and drops you into a Python REPL where you can
-#   manually execute the tests from ./test-script.py
+#     This starts the testing VM and drops you into a Python REPL where you can
+#     manually execute the tests from ./tests.py
+#
+#   To add custom scenarios, set the environment variable `scenarioOverridesFile`.
 
 set -eo pipefail
 
@@ -67,20 +72,14 @@ run() {
     export TMPDIR=$(mktemp -d /tmp/nix-bitcoin-test.XXX)
     trap "rm -rf $TMPDIR" EXIT
 
-    nix-build --out-link $TMPDIR/driver -E "import \"$scriptDir/tests.nix\" { scenario = \"$scenario\"; }" -A driver
+    nix-build --out-link $TMPDIR/driver -E "(import \"$scriptDir/tests.nix\" { scenario = \"$scenario\"; }).vm" -A driver
 
     # Variable 'tests' contains the Python code that is executed by the driver on startup
     if [[ $1 == --interactive ]]; then
         echo "Running interactive testing environment"
         tests=$(
             echo 'is_interactive = True'
-            # The test script raises an error when 'is_interactive' is defined so
-            # that it just loads the initial helper functions and stops before
-            # executing the actual tests
-            echo 'try:'
-            echo '    exec(os.environ["testScript"])'
-            echo 'except:'
-            echo '    pass'
+            echo 'exec(os.environ["testScript"])'
             # Start VM
             echo 'start_all()'
             # Start REPL
@@ -135,7 +134,7 @@ exprForCI() {
 
 vmTestNixExpr() {
   cat <<EOF
-    (import "$scriptDir/tests.nix" { scenario = "$scenario"; } {}).overrideAttrs (old: rec {
+    ((import "$scriptDir/tests.nix" { scenario = "$scenario"; }).vm {}).overrideAttrs (old: rec {
       buildCommand = ''
         export QEMU_OPTS="-smp $numCPUs -m $memoryMiB"
         echo "VM stats: CPUs: $numCPUs, memory: $memoryMiB MiB"
