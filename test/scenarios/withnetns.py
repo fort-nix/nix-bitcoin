@@ -15,9 +15,8 @@ btcpayserver_ip = "169.254.1.24"
 
 
 def electrs():
-    machine.wait_until_succeeds(
-        "ip netns exec nb-electrs nc -z localhost 4224"
-    )  # prometeus metrics provider
+    # prometeus metrics provider
+    machine.wait_until_succeeds(f"nc -z {electrs_ip} 4224")
 
 
 def nbxplorer():

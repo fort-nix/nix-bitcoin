@@ -34,12 +34,17 @@ in {
     address = mkOption {
       type = types.str;
       default = "127.0.0.1";
-      description = "RPC listening address.";
+      description = "RPC and monitoring listening address.";
     };
     port = mkOption {
       type = types.port;
       default = 50001;
       description = "RPC port.";
+    };
+    monitoringPort = mkOption {
+      type = types.port;
+      default = 4224;
+      description = "Prometheus monitoring port.";
     };
     extraArgs = mkOption {
       type = types.separatedString " ";
@@ -87,7 +92,8 @@ in {
           } \
           --db-dir='${cfg.dataDir}' \
           --daemon-dir='${bitcoind.dataDir}' \
-          --electrum-rpc-addr=${toString cfg.address}:${toString cfg.port} \
+          --electrum-rpc-addr=${cfg.address}:${toString cfg.port} \
+          --monitoring-addr=${cfg.address}:${toString cfg.monitoringPort} \
           --daemon-rpc-addr=${builtins.elemAt bitcoind.rpcbind 0}:${toString bitcoind.rpc.port} \
           ${cfg.extraArgs}
         '';
