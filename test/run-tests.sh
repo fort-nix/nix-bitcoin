@@ -157,4 +157,6 @@ if [[ $1 && $1 != build ]]; then
     : ${scenario:=default}
 fi
 
-eval "${@:-build}"
+command="${1:-build}"
+shift || true
+$command "$@"
