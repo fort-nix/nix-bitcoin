@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Modules integration test runner.
-# The test (./test.nix) uses the NixOS testing framework and is executed in a VM.
+# The tests (./tests.nix) use the NixOS testing framework and are executed in a VM.
 #
 # Usage:
 #   Run all tests
@@ -67,7 +67,7 @@ run() {
     export TMPDIR=$(mktemp -d /tmp/nix-bitcoin-test.XXX)
     trap "rm -rf $TMPDIR" EXIT
 
-    nix-build --out-link $TMPDIR/driver -E "import \"$scriptDir/test.nix\" { scenario = \"$scenario\"; }" -A driver
+    nix-build --out-link $TMPDIR/driver -E "import \"$scriptDir/tests.nix\" { scenario = \"$scenario\"; }" -A driver
 
     # Variable 'tests' contains the Python code that is executed by the driver on startup
     if [[ $1 == --interactive ]]; then
@@ -135,7 +135,7 @@ exprForCI() {
 
 vmTestNixExpr() {
   cat <<EOF
-    (import "$scriptDir/test.nix" { scenario = "$scenario"; } {}).overrideAttrs (old: rec {
+    (import "$scriptDir/tests.nix" { scenario = "$scenario"; } {}).overrideAttrs (old: rec {
       buildCommand = ''
         export QEMU_OPTS="-smp $numCPUs -m $memoryMiB"
         echo "VM stats: CPUs: $numCPUs, memory: $memoryMiB MiB"
