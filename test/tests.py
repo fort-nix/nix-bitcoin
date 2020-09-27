@@ -252,7 +252,6 @@ def _():
         + "%s %s ||" % (ping_bitcoind, ip("lightning-loop"))
         + "%s %s ||" % (ping_bitcoind, ip("lightning-charge"))
         + "%s %s ||" % (ping_bitcoind, ip("nanopos"))
-        + "%s %s ||" % (ping_bitcoind, ip("recurring-donations"))
         + "%s %s ||" % (ping_bitcoind, ip("nginx"))
         + "%s %s ||" % (ping_nanopos, ip("bitcoind"))
         + "%s %s ||" % (ping_nanopos, ip("clightning"))
@@ -261,7 +260,6 @@ def _():
         + "%s %s ||" % (ping_nanopos, ip("liquidd"))
         + "%s %s ||" % (ping_nanopos, ip("electrs"))
         + "%s %s ||" % (ping_nanopos, ip("spark-wallet"))
-        + "%s %s ||" % (ping_nanopos, ip("recurring-donations"))
         + "%s %s" % (ping_nanopos, ip("btcpayserver"))
     )
 
@@ -330,7 +328,6 @@ if "netns-isolation" in enabled_tests:
         "spark-wallet": "169.254.1.17",
         "lightning-charge": "169.254.1.18",
         "nanopos": "169.254.1.19",
-        "recurring-donations": "169.254.1.20",
         "nginx": "169.254.1.21",
         "lightning-loop": "169.254.1.22",
         "nbxplorer": "169.254.1.23",
