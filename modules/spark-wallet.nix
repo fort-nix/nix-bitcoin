@@ -71,9 +71,6 @@ in {
     };
     users.groups.spark-wallet = {};
 
-    services.tor.enable = cfg.onion-service;
-    # requires client functionality for Bitcoin rate lookup
-    services.tor.client.enable = true;
     services.tor.hiddenServices.spark-wallet = mkIf cfg.onion-service {
       map = [{
         port = 80; toPort = 9737; toHost = cfg.host;
