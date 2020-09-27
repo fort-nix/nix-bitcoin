@@ -5,6 +5,7 @@ let
   cfg = config.services.electrs;
   inherit (config) nix-bitcoin-services;
   secretsDir = config.nix-bitcoin.secretsDir;
+  bitcoind = config.services.bitcoind;
 in {
   options.services.electrs = {
     enable = mkEnableOption "electrs";
@@ -57,7 +58,7 @@ in {
 
   config = mkIf cfg.enable {
     assertions = [
-      { assertion = config.services.bitcoind.prune == 0;
+      { assertion = bitcoind.prune == 0;
         message = "electrs does not support bitcoind pruning.";
       }
     ];
@@ -74,7 +75,7 @@ in {
       requires = [ "bitcoind.service" ];
       after = [ "bitcoind.service" ];
       preStart = ''
-        echo "cookie = \"${config.services.bitcoind.rpc.users.public.name}:$(cat ${secretsDir}/bitcoin-rpcpassword-public)\"" \
+        echo "cookie = \"${bitcoind.rpc.users.public.name}:$(cat ${secretsDir}/bitcoin-rpcpassword-public)\"" \
           > electrs.toml
         '';
       serviceConfig = nix-bitcoin-services.defaultHardening // {
@@ -84,7 +85,7 @@ in {
         ExecStart = ''
           ${pkgs.nix-bitcoin.electrs}/bin/electrs -vvv \
           ${if cfg.high-memory then
-              traceIf (!config.services.bitcoind.dataDirReadableByGroup) ''
+              traceIf (!bitcoind.dataDirReadableByGroup) ''
                 Warning: For optimal electrs syncing performance, enable services.bitcoind.dataDirReadableByGroup.
                 Note that this disables wallet support in bitcoind.
               '' ""
@@ -92,7 +93,7 @@ in {
               "--jsonrpc-import --index-batch-size=10"
           } \
           --db-dir='${cfg.dataDir}' \
-          --daemon-dir='${config.services.bitcoind.dataDir}' \
+          --daemon-dir='${bitcoind.dataDir}' \
           --electrum-rpc-addr=${toString cfg.address}:${toString cfg.port} \
           --daemon-rpc-addr=${toString cfg.daemonrpc} \
           ${cfg.extraArgs}
@@ -101,7 +102,7 @@ in {
         Group = cfg.group;
         Restart = "on-failure";
         RestartSec = "10s";
-        ReadWritePaths = "${cfg.dataDir} ${if cfg.high-memory then "${config.services.bitcoind.dataDir}" else ""}";
+        ReadWritePaths = "${cfg.dataDir} ${if cfg.high-memory then "${bitcoind.dataDir}" else ""}";
       } // (if cfg.enforceTor
           then nix-bitcoin-services.allowTor
           else nix-bitcoin-services.allowAnyIP
