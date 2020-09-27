@@ -25,6 +25,14 @@
 #     This starts the testing VM and drops you into a Python REPL where you can
 #     manually execute the tests from ./tests.py
 #
+#   Run a test scenario in a container
+#   sudo ./run-tests.sh [--scenario <scenario>] container
+#
+#     This is useful for quick experiments; containers start much faster than VMs.
+#     Running the Python test suite in containers is not yet supported.
+#     For now, creating NixOS containers requires root permissions.
+#     See ./lib/make-container.sh for a complete documentation.
+#
 #   To add custom scenarios, set the environment variable `scenarioOverridesFile`.
 
 set -eo pipefail
@@ -106,6 +114,10 @@ run() {
 
 debug() {
     run --interactive
+}
+
+container() {
+  . "$testDir/lib/make-container.sh" "$@"
 }
 
 # Run the test by building the test derivation

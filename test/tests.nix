@@ -115,6 +115,14 @@ let testEnv = rec {
       };
     };
 
+    # Container-specific features
+    containerFeatures = {
+      # Container has WAN access and bitcoind connects to external nodes
+      test.container.enableWAN = true;
+      # See ./lib/test-lib.nix for a description
+      test.container.exposeLocalhost = true;
+    };
+
     adhoc = {
       # <Add your config here>
       # You can also set the env var `scenarioOverridesFile` (used below) to define custom scenarios.
