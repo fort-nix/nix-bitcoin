@@ -166,32 +166,19 @@ def run_tests():
     succeed("systemctl stop bitcoind")
     succeed("systemctl start duplicity")
     machine.wait_until_succeeds(log_has_string("duplicity", "duplicity.service: Succeeded."))
-    # Make sure files in duplicity backup and /var/lib are identical
+    run_duplicity = "export $(cat /secrets/backup-encryption-env); duplicity"
+    # Files in backup and /var/lib should be identical
     assert_matches(
-        "export $(cat /secrets/backup-encryption-env); duplicity verify '--archive-dir' '/var/lib/duplicity' 'file:///var/lib/localBackups' '/var/lib'",
+        f"{run_duplicity} verify --archive-dir /var/lib/duplicity file:///var/lib/localBackups /var/lib",
         "0 differences found",
     )
-    # Make sure duplicity backup includes important files
-    assert_matches(
-        "export $(cat /secrets/backup-encryption-env); duplicity list-current-files 'file:///var/lib/localBackups'",
-        "var/lib/clightning/bitcoin/hsm_secret",
-    )
-    assert_matches(
-        "export $(cat /secrets/backup-encryption-env); duplicity list-current-files 'file:///var/lib/localBackups'",
-        "secrets/lnd-seed-mnemonic",
-    )
-    assert_matches(
-        "export $(cat /secrets/backup-encryption-env); duplicity list-current-files 'file:///var/lib/localBackups'",
-        "secrets/jm-wallet-seed",
-    )
-    assert_matches(
-        "export $(cat /secrets/backup-encryption-env); duplicity list-current-files 'file:///var/lib/localBackups'",
-        "var/lib/bitcoind/wallet.dat",
-    )
-    assert_matches(
-        "export $(cat /secrets/backup-encryption-env); duplicity list-current-files 'file:///var/lib/localBackups'",
-        "var/backup/postgresql/btcpaydb.sql.gz",
-    )
+    # Backup should include important files
+    files = succeed(f"{run_duplicity} list-current-files file:///var/lib/localBackups")
+    assert "var/lib/clightning/bitcoin/hsm_secret" in files
+    assert "secrets/lnd-seed-mnemonic" in files
+    assert "secrets/jm-wallet-seed" in files
+    assert "var/lib/bitcoind/wallet.dat" in files
+    assert "var/backup/postgresql/btcpaydb.sql.gz" in files
 
 
 def test_security():
