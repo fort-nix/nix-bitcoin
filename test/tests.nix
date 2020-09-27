@@ -101,6 +101,7 @@ let testEnv = rec {
     netns = {
       imports = [ scenarios.secureNode ];
       nix-bitcoin.netns-isolation.enable = true;
+      test.data.netns = config.nix-bitcoin.netns-isolation.netns;
       tests.netns-isolation = true;
 
       # This test is rather slow and unaffected by netns settings

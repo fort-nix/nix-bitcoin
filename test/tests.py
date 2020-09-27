@@ -319,23 +319,9 @@ def _():
 
 
 if "netns-isolation" in enabled_tests:
-    netns_ips = {
-        "bitcoind": "169.254.1.12",
-        "clightning": "169.254.1.13",
-        "lnd": "169.254.1.14",
-        "liquidd": "169.254.1.15",
-        "electrs": "169.254.1.16",
-        "spark-wallet": "169.254.1.17",
-        "lightning-charge": "169.254.1.18",
-        "nanopos": "169.254.1.19",
-        "nginx": "169.254.1.21",
-        "lightning-loop": "169.254.1.22",
-        "nbxplorer": "169.254.1.23",
-        "btcpayserver": "169.254.1.24",
-    }
 
-    def ip(netns):
-        return netns_ips[netns]
+    def ip(name):
+        return test_data["netns"][name]["address"]
 
 
 else:
