@@ -91,9 +91,11 @@ in {
             else
               "--jsonrpc-import --index-batch-size=10"
           } \
-          --db-dir '${cfg.dataDir}' --daemon-dir '${config.services.bitcoind.dataDir}' \
+          --db-dir='${cfg.dataDir}' \
+          --daemon-dir='${config.services.bitcoind.dataDir}' \
           --electrum-rpc-addr=${toString cfg.address}:${toString cfg.port} \
-          --daemon-rpc-addr=${toString cfg.daemonrpc} ${cfg.extraArgs}
+          --daemon-rpc-addr=${toString cfg.daemonrpc} \
+          ${cfg.extraArgs}
         '';
         User = cfg.user;
         Group = cfg.group;
