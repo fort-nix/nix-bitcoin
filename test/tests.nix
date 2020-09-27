@@ -102,6 +102,9 @@ let testEnv = rec {
       imports = [ scenarios.secureNode ];
       nix-bitcoin.netns-isolation.enable = true;
       tests.netns-isolation = true;
+
+      # This test is rather slow and unaffected by netns settings
+      tests.backups = mkForce false;
     };
 
     ## Examples / debug helper
