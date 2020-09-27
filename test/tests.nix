@@ -19,7 +19,7 @@ let testEnv = rec {
       tests.bitcoind = cfg.bitcoind.enable;
       services.bitcoind = {
         enable = true;
-        extraConfig = mkIf config.test.noConnections (mkForce "connect=0");
+        extraConfig = mkIf config.test.noConnections "connect=0";
       };
 
       tests.clightning = cfg.clightning.enable;
@@ -36,10 +36,7 @@ let testEnv = rec {
       tests.electrs = cfg.electrs.enable;
 
       tests.liquidd = cfg.liquidd.enable;
-      services.liquidd = optionalAttrs config.test.noConnections {
-        listen = mkForce false;
-        extraConfig = "noconnect=1";
-      };
+      services.liquidd.extraConfig = mkIf config.test.noConnections "connect=0";
 
       tests.btcpayserver = cfg.btcpayserver.enable;
       services.btcpayserver.lightningBackend = "lnd";
