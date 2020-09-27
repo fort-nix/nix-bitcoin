@@ -41,13 +41,6 @@ in {
       default = 50001;
       description = "RPC port.";
     };
-    daemonrpc = mkOption {
-      type = types.str;
-      default = "127.0.0.1:8332";
-      description = ''
-        Bitcoin daemon JSONRPC 'addr:port' to connect
-      '';
-    };
     extraArgs = mkOption {
       type = types.separatedString " ";
       default = "";
@@ -95,7 +88,7 @@ in {
           --db-dir='${cfg.dataDir}' \
           --daemon-dir='${bitcoind.dataDir}' \
           --electrum-rpc-addr=${toString cfg.address}:${toString cfg.port} \
-          --daemon-rpc-addr=${toString cfg.daemonrpc} \
+          --daemon-rpc-addr=${builtins.elemAt bitcoind.rpcbind 0}:${toString bitcoind.rpc.port} \
           ${cfg.extraArgs}
         '';
         User = cfg.user;
