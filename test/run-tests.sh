@@ -39,7 +39,7 @@ while :; do
                 shift
                 shift
             else
-                >&2 echo 'Error: "$1" requires an argument.'
+                >&2 echo "Error: $1 requires an argument."
                 exit 1
             fi
             ;;
@@ -49,7 +49,7 @@ while :; do
                 shift
                 shift
             else
-                >&2 echo 'Error: "$1" requires an argument.'
+                >&2 echo "Error: $1 requires an argument."
                 exit 1
             fi
             ;;
