@@ -62,9 +62,9 @@ numCPUs=${numCPUs:-$(nproc)}
 # Min. 800 MiB needed to avoid 'out of memory' errors
 memoryMiB=${memoryMiB:-2048}
 
-scriptDir=$(cd "${BASH_SOURCE[0]%/*}" && pwd)
+testDir=$(cd "${BASH_SOURCE[0]%/*}" && pwd)
 
-export NIX_PATH=nixpkgs=$(nix eval --raw -f "$scriptDir/../pkgs/nixpkgs-pinned.nix" nixpkgs)
+export NIX_PATH=nixpkgs=$(nix eval --raw -f "$testDir/../pkgs/nixpkgs-pinned.nix" nixpkgs)
 
 # Run the test. No temporary files are left on the host system.
 run() {
@@ -72,7 +72,7 @@ run() {
     export TMPDIR=$(mktemp -d /tmp/nix-bitcoin-test.XXX)
     trap "rm -rf $TMPDIR" EXIT
 
-    nix-build --out-link $TMPDIR/driver -E "(import \"$scriptDir/tests.nix\" { scenario = \"$scenario\"; }).vm" -A driver
+    nix-build --out-link $TMPDIR/driver -E "(import \"$testDir/tests.nix\" { scenario = \"$scenario\"; }).vm" -A driver
 
     # Variable 'tests' contains the Python code that is executed by the driver on startup
     if [[ $1 == --interactive ]]; then
@@ -134,7 +134,7 @@ exprForCI() {
 
 vmTestNixExpr() {
   cat <<EOF
-    ((import "$scriptDir/tests.nix" { scenario = "$scenario"; }).vm {}).overrideAttrs (old: rec {
+    ((import "$testDir/tests.nix" { scenario = "$scenario"; }).vm {}).overrideAttrs (old: rec {
       buildCommand = ''
         export QEMU_OPTS="-smp $numCPUs -m $memoryMiB"
         echo "VM stats: CPUs: $numCPUs, memory: $memoryMiB MiB"
