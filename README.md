@@ -24,11 +24,11 @@ The goal is to make it easy to deploy a reasonably secure Bitcoin node with a us
 It should allow managing bitcoin (the currency) effectively and providing public infrastructure.
 It should be a reproducible and extensible platform for applications building on Bitcoin.
 
-Example
+Examples
 ---
 The easiest way to try out nix-bitcoin is to use one of the provided examples.
 
-```
+```bash
 git clone https://github.com/fort-nix/nix-bitcoin
 cd nix-bitcoin/examples/
 nix-shell
@@ -47,6 +47,28 @@ shut down immediately. They leave no traces (outside of `/nix/store`) on the hos
 - [`./deploy-nixops.sh`](examples/deploy-nixops.sh) creates a VirtualBox VM via [NixOps](https://github.com/NixOS/nixops).\
   NixOps can be used to deploy to various other backends like cloud providers.\
   Requires: [Nix](https://nixos.org/nix/), [VirtualBox](https://www.virtualbox.org)
+
+#### Tests
+The internal test suite is also useful for exploring features.  
+The following `run-tests.sh` commands leave no traces (outside of `/nix/store`) on
+the host system.
+
+```bash
+git clone https://github.com/fort-nix/nix-bitcoin
+cd nix-bitcoin/test
+
+# Run a Python test shell inside a VM node
+./run-tests.sh debug
+print(succeed("systemctl status bitcoind"))
+
+# Run a node in a container. Requires systemd and root privileges.
+./run-tests.sh container
+c systemctl status bitcoind
+
+# Explore a single feature
+./run-tests.sh --scenario electrs container
+```
+See [`run-tests.sh`](test/run-tests.sh) for a complete documentation.
 
 Available modules
 ---

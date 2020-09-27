@@ -13,6 +13,9 @@
 #     When <scenario> is undefined, the test is run with an adhoc scenario
 #     where services.<scenario> is enabled.
 #
+#     Example:
+#     ./run-tests.sh -s electrs
+#
 #   Run test and link results to avoid garbage collection
 #   ./run-tests.sh [--scenario <scenario>] --out-link-prefix /tmp/nix-bitcoin-test build
 #
