@@ -32,11 +32,16 @@ def assert_running(unit):
     assert_no_failure(unit)
 
 
-def run_tests(extra_tests):
-    """
-    :param extra_tests: Test functions that hook into the testing code below
-    :type extra_tests: Dict[str, Callable[]]
-    """
+def wait_for_open_port(address, port):
+    def is_port_open(_):
+        status, _ = machine.execute(f"nc -z {address} {port}")
+        return status == 0
+
+    with log.nested(f"Waiting for TCP port {address}:{port}"):
+        retry(is_port_open)
+
+
+def run_tests():
     # Don't execute the following test suite when this script is running in interactive mode
     if is_interactive:
         raise Exception()
@@ -55,7 +60,7 @@ def run_tests(extra_tests):
     )
 
     assert_running("electrs")
-    extra_tests.pop("electrs")()
+    wait_for_open_port(ip("electrs"), 4224)  # prometeus metrics provider
     # Check RPC connection to bitcoind
     machine.wait_until_succeeds(log_has_string("electrs", "NetworkInfo"))
     # Stop electrs from spamming the test log with 'wait for bitcoind sync' messages
@@ -86,19 +91,34 @@ def run_tests(extra_tests):
 
     assert_running("nbxplorer")
     machine.wait_until_succeeds(log_has_string("nbxplorer", "BTC: RPC connection successful"))
-    extra_tests.pop("nbxplorer")()
+    wait_for_open_port(ip("nbxplorer"), 24444)
     assert_running("btcpayserver")
     machine.wait_until_succeeds(log_has_string("btcpayserver", "Listening on"))
-    extra_tests.pop("btcpayserver")()
+    wait_for_open_port(ip("btcpayserver"), 23000)
+    # test lnd custom macaroon
+    assert_matches(
+        "sudo -u btcpayserver curl -s --cacert /secrets/lnd-cert "
+        '--header "Grpc-Metadata-macaroon: $(xxd -ps -u -c 1000 /run/lnd/btcpayserver.macaroon)" '
+        f"-X GET https://{ip('lnd')}:8080/v1/getinfo | jq",
+        '"version"',
+    )
 
     assert_running("spark-wallet")
-    extra_tests.pop("spark-wallet")()
+    wait_for_open_port(ip("spark-wallet"), 9737)
+    spark_auth = re.search("login=(.*)", succeed("cat /secrets/spark-wallet-login"))[1]
+    assert_matches(f"curl -s {spark_auth}@{ip('spark-wallet')}:9737", "Spark")
 
     assert_running("lightning-charge")
-    extra_tests.pop("lightning-charge")()
+    wait_for_open_port(ip("lightning-charge"), 9112)
+    machine.wait_until_succeeds(f"nc -z {ip('lightning-charge')} 9112")
+    charge_auth = re.search("API_TOKEN=(.*)", succeed("cat /secrets/lightning-charge-env"))[1]
+    assert_matches(
+        f"curl -s api-token:{charge_auth}@{ip('lightning-charge')}:9112/info | jq", '"id"'
+    )
 
     assert_running("nanopos")
-    extra_tests.pop("nanopos")()
+    wait_for_open_port(ip("nanopos"), 9116)
+    assert_matches(f"curl {ip('nanopos')}:9116", "tshirt")
 
     assert_running("onion-chef")
 
@@ -115,7 +135,9 @@ def run_tests(extra_tests):
     # 'create-web-index' implicitly tests 'nodeinfo'.
     machine.wait_for_unit("create-web-index")
     assert_running("nginx")
-    extra_tests.pop("web-index")()
+    wait_for_open_port(ip("nginx"), 80)
+    assert_matches(f"curl {ip('nginx')}", "nix-bitcoin")
+    assert_matches(f"curl -L {ip('nginx')}/store", "tshirt")
 
     machine.wait_until_succeeds(log_has_string("bitcoind-import-banlist", "Importing node banlist"))
     assert_no_failure("bitcoind-import-banlist")
@@ -137,7 +159,7 @@ def run_tests(extra_tests):
     )
     assert_no_failure("bitcoind-import-banlist")
 
-    extra_tests.pop("prestop")()
+    prestop()
 
     ### Test duplicity
 
@@ -171,9 +193,6 @@ def run_tests(extra_tests):
         "var/backup/postgresql/btcpaydb.sql.gz",
     )
 
-    ### Check that all extra_tests have been run
-    assert len(extra_tests) == 0
-
 
 def test_security():
     assert_running("setup-secrets")
@@ -191,3 +210,7 @@ def test_security():
     )
     # The 'operator' with group 'proc' has full access
     assert_full_match("sudo -u operator systemctl status bitcoind 2>&1 >/dev/null", "")
+
+
+def ip(_):
+    return "127.0.0.1"
