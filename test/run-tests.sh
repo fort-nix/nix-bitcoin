@@ -169,6 +169,7 @@ build() {
     else
         scenario=default buildTest "$@"
         scenario=netns buildTest "$@"
+        scenario=full evalTest "$@"
     fi
 }
 

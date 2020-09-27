@@ -16,6 +16,7 @@ env:
   jobs:
   - TestModules=1 STABLE=1 SCENARIO=default
   - TestModules=1 STABLE=1 SCENARIO=netns
+  - EvalModules=1 STABLE=1
   - PKG=hwi STABLE=1
   - PKG=hwi STABLE=0
   - PKG=lightning-charge STABLE=1
@@ -34,6 +35,12 @@ env:
   - PKG=joinmarket STABLE=0
 script:
   - printf '%s (%s)\n' "$NIX_PATH" "$VER"
+  #
+  - |
+    if [[ $EvalModules ]]; then
+      test/run-tests.sh --scenario full eval
+      travis_terminate 0
+    fi
   - |
     getBuildExpr() {
         if [[ $TestModules ]]; then
