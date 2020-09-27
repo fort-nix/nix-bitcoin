@@ -119,6 +119,11 @@ debug() {
     run --interactive
 }
 
+evalTest() {
+    nix eval --raw "($(vmTestNixExpr)).outPath"
+    echo # nix eval doesn't print a newline
+}
+
 container() {
   . "$testDir/lib/make-container.sh" "$@"
 }
@@ -174,4 +179,7 @@ fi
 
 command="${1:-build}"
 shift || true
+if [[ $command == eval ]]; then
+    command=evalTest
+fi
 $command "$@"
