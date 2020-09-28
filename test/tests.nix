@@ -13,6 +13,12 @@ let testEnv = rec {
       ./lib/test-lib.nix
       ../modules/modules.nix
       ../modules/secrets/generate-secrets.nix
+      {
+        # Features required by the Python test suite
+        nix-bitcoin.secretsDir = "/secrets";
+        nix-bitcoin.operator.enable = true;
+        environment.systemPackages = with pkgs; [ jq ];
+      }
     ];
 
     config = {
