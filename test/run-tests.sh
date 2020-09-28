@@ -168,13 +168,26 @@ vmTestNixExpr() {
 EOF
 }
 
+# A basic subset of tests to keep the total runtime within
+# manageable bounds (<3 min on desktop systems).
+# These are also run on the CI server.
+basic() {
+    scenario=default buildTest "$@"
+    scenario=netns buildTest "$@"
+    scenario=full evalTest "$@"
+}
+
+all() {
+    scenario=default buildTest "$@"
+    scenario=netns buildTest "$@"
+    scenario=full buildTest "$@"
+}
+
 build() {
     if [[ $scenario ]]; then
         buildTest "$@"
     else
-        scenario=default buildTest "$@"
-        scenario=netns buildTest "$@"
-        scenario=full evalTest "$@"
+        basic "$@"
     fi
 }
 
