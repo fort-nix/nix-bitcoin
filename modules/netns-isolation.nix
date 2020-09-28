@@ -295,7 +295,6 @@ in {
       rpcallowip = [
         "127.0.0.1"
       ] ++ map (n: "${netns.${n}.address}") netns.liquidd.availableNetns;
-      mainchainrpchost = netns.bitcoind.address;
       cliExec = mkCliExec "liquidd";
     };
 

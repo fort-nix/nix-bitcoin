@@ -102,10 +102,6 @@ in {
     services.liquidd = {
       rpcuser = "liquidrpc";
       prune = 1000;
-      extraConfig = ''
-        mainchainrpcuser=${config.services.bitcoind.rpc.users.public.name}
-        mainchainrpcport=8332
-      '';
       validatepegin = true;
       listen = true;
       proxy = cfg.tor.client.socksListenAddress;

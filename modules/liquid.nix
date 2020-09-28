@@ -30,7 +30,9 @@ let
     ${lib.concatMapStrings (rpcallowip: "rpcallowip=${rpcallowip}\n") cfg.rpcallowip}
     ${optionalString (cfg.rpcuser != null) "rpcuser=${cfg.rpcuser}"}
     ${optionalString (cfg.rpcpassword != null) "rpcpassword=${cfg.rpcpassword}"}
-    ${optionalString (cfg.mainchainrpchost != null) "mainchainrpchost=${cfg.mainchainrpchost}"}
+    mainchainrpchost=${builtins.elemAt config.services.bitcoind.rpcbind 0}
+    mainchainrpcport=${toString config.services.bitcoind.rpc.port}
+    mainchainrpcuser=${config.services.bitcoind.rpc.users.public.name}
 
     # Extra config options (from liquidd nixos service)
     ${cfg.extraConfig}
@@ -146,15 +148,6 @@ in {
           default = null;
           description = "Password for JSON-RPC connections";
       };
-      mainchainrpchost = mkOption {
-        type = types.nullOr types.str;
-        default = null;
-        description = ''
-          The address which the daemon will try to connect to the trusted
-          mainchain daemon to validate peg-ins.
-        '';
-      };
-
       testnet = mkOption {
         type = types.bool;
         default = false;
