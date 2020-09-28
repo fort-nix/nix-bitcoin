@@ -82,6 +82,7 @@ in {
         User that is allowed to execute commands in the service network namespaces.
         The user's group is also authorized.
       '';
+      default = config.nix-bitcoin.operator.name;
     };
 
     netns = mkOption {

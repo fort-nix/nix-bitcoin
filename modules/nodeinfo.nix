@@ -3,7 +3,7 @@
 with lib;
 
 let
-  operatorName = config.nix-bitcoin.operatorName;
+  operatorName = config.nix-bitcoin.operator.name;
   script = pkgs.writeScriptBin "nodeinfo" ''
     set -eo pipefail
 

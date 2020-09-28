@@ -48,6 +48,7 @@ in {
         usbutils
       ];
       users.groups."${cfg.group}" = {};
+      nix-bitcoin.operator.groups = [ cfg.group ];
     })
     (mkIf cfg.ledger {
 

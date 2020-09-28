@@ -4,6 +4,7 @@
   imports = [
     # Core modules
     ./secrets/secrets.nix
+    ./operator.nix
 
     # Main features
     ./bitcoind.nix

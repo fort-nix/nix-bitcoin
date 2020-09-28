@@ -259,6 +259,7 @@ in {
           else nix-bitcoin-services.allowAnyIP
         ) // nix-bitcoin-services.allowAnyProtocol;  # For ZMQ
     };
+
     users.users.lnd = {
       description = "LND User";
       group = "lnd";
@@ -266,6 +267,11 @@ in {
       home = cfg.dataDir; # lnd creates .lnd dir in HOME
     };
     users.groups.lnd = {};
+    nix-bitcoin.operator = {
+      groups = [ "lnd" ];
+      sudoUsers = [ "lnd" ];
+    };
+
     nix-bitcoin.secrets = {
       lnd-wallet-password.user = "lnd";
       lnd-key.user = "lnd";

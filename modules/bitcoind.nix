@@ -380,6 +380,7 @@ in {
     };
     users.groups.${cfg.group} = {};
     users.groups.bitcoinrpc = {};
+    nix-bitcoin.operator.groups = [ cfg.group ];
 
     nix-bitcoin.secrets.bitcoin-rpcpassword-privileged.user = "bitcoin";
     nix-bitcoin.secrets.bitcoin-rpcpassword-public = {
