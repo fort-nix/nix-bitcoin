@@ -16,8 +16,8 @@
 #     Example:
 #     ./run-tests.sh -s electrs
 #
-#   Run test and link results to avoid garbage collection
-#   ./run-tests.sh [--scenario <scenario>] --out-link-prefix /tmp/nix-bitcoin-test build
+#   Run test(s) and link results to avoid garbage collection
+#   ./run-tests.sh [--scenario <scenario>] --out-link-prefix /tmp/nix-bitcoin-test
 #
 #   Pass extra args to nix-build
 #   ./run-tests.sh build --builders 'ssh://mybuildhost - - 15'
@@ -178,13 +178,11 @@ build() {
     fi
 }
 
-# Set default scenario for all actions other than 'build'
-if [[ $1 && $1 != build ]]; then
-    : ${scenario:=default}
-fi
-
 command="${1:-build}"
 shift || true
+if [[ $command != build  ]]; then
+    : ${scenario:=default}
+fi
 if [[ $command == eval ]]; then
     command=evalTest
 fi
