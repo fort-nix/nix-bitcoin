@@ -29,6 +29,8 @@ let testEnv = rec {
       };
 
       tests.clightning = cfg.clightning.enable;
+      # When WAN is disabled, DNS bootstrapping slows down service startup by ~15 s.
+      services.clightning.extraConfig = mkIf config.test.noConnections "disable-dns";
 
       tests.spark-wallet = cfg.spark-wallet.enable;
 
