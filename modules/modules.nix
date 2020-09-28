@@ -2,24 +2,29 @@
 
 {
   imports = [
+    # Core modules
+    ./secrets/secrets.nix
+
+    # Main features
     ./bitcoind.nix
     ./clightning.nix
     ./lightning-charge.nix
     ./nanopos.nix
-    ./liquid.nix
     ./spark-wallet.nix
-    ./electrs.nix
-    ./onion-chef.nix
-    ./recurring-donations.nix
-    ./hardware-wallets.nix
     ./lnd.nix
     ./lightning-loop.nix
-    ./secrets/secrets.nix
-    ./netns-isolation.nix
-    ./security.nix
-    ./backups.nix
     ./btcpayserver.nix
+    ./electrs.nix
+    ./liquid.nix
     ./joinmarket.nix
+    ./hardware-wallets.nix
+    ./recurring-donations.nix
+
+    # Support features
+    ./security.nix
+    ./netns-isolation.nix
+    ./backups.nix
+    ./onion-chef.nix
   ];
 
   disabledModules = [ "services/networking/bitcoind.nix" ];
