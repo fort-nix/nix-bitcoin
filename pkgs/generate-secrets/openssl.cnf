@@ -32,3 +32,5 @@ IP.1 = 127.0.0.1
 DNS.1 = localhost
 # TODO: Remove hardcoded lnd IP
 IP.2 = 169.254.1.14
+# TODO: Remove hardcoded loopd IP
+IP.3 = 169.254.1.22

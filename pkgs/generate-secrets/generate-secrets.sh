@@ -34,3 +34,10 @@ if [[ ! -e lnd-key || ! -e lnd-cert ]]; then
     openssl req -config $opensslConf -x509 -sha256 -days 1825 -key lnd-key -in lnd.csr -out lnd-cert
     rm lnd.csr
 fi
+
+if [[ ! -e loop-key || ! -e loop-cert ]]; then
+    openssl ecparam -genkey -name prime256v1 -out loop-key
+    openssl req -config $opensslConf -new -sha256 -key loop-key -out loop.csr -subj '/CN=localhost/O=loopd'
+    openssl req -config $opensslConf -x509 -sha256 -days 1825 -key loop-key -in loop.csr -out loop-cert
+    rm loop.csr
+fi
