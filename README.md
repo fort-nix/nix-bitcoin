@@ -39,7 +39,7 @@ shut down immediately. They leave no traces (outside of `/nix/store`) on the hos
 
 - [`./deploy-container.sh`](examples/deploy-container.sh) creates a [NixOS container](https://github.com/erikarvstedt/extra-container).\
   This is the fastest way to set up a node.\
-  Requires: [NixOS](https://nixos.org/)
+  Requires: [Nix](https://nixos.org/), a systemd-based Linux distro and root privileges
 
 - [`./deploy-qemu-vm.sh`](examples/deploy-qemu-vm.sh) creates a QEMU VM.\
   Requires: [Nix](https://nixos.org/nix/)

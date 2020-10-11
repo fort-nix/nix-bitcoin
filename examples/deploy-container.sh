@@ -9,11 +9,8 @@ set -euo pipefail
 # script in the interactive shell.
 
 if [[ $(sysctl -n net.ipv4.ip_forward) != 1 ]]; then
-    echo "Error: IP forwarding (net.ipv4.ip_forward) is not enabled"
-    exit 1
-fi
-if [[ ! -e /run/current-system/nixos-version ]]; then
-    echo "Error: This script needs NixOS to run"
+    echo "Error: IP forwarding (net.ipv4.ip_forward) is not enabled."
+    echo "Needed for container WAN access."
     exit 1
 fi
 
@@ -23,54 +20,11 @@ if [[ ! -v IN_NIX_SHELL ]]; then
     exec nix-shell --run "${BASH_SOURCE[0]}"
 fi
 
-# Cleanup on exit
-cleanup() {
-    echo
-    echo "Deleting container..."
-    sudo extra-container destroy demo-node
-}
-trap "cleanup" EXIT
+# Uncomment to start a container shell session
+# interactive=1
 
-# Build container.
-# You can re-run this command with a changed container config.
-# The running container is then switched to the new config.
-# Learn more: https://github.com/erikarvstedt/extra-container
-#
-sudo extra-container create --start <<'EOF'
-{ pkgs, lib, ... }: let
-    containerName = "demo-node"; # container name length is limited to 11 chars
-    localAddress = "10.250.0.2"; # container address
-    hostAddress = "10.250.0.1";
-in {
-  containers.${containerName} = {
-    privateNetwork = true;
-    inherit localAddress hostAddress;
-    config = { pkgs, config, lib, ... }: {
-      imports = [
-        <nix-bitcoin/examples/configuration.nix>
-        <nix-bitcoin/modules/secrets/generate-secrets.nix>
-      ];
-      # Speed up evaluation
-      documentation.nixos.enable = false;
-    };
-  };
-  # Allow WAN access
-  systemd.services."container@${containerName}" = {
-    preStart = "${pkgs.iptables}/bin/iptables -w -t nat -A POSTROUTING -s ${localAddress} -j MASQUERADE";
-    # Delete rule
-    postStop = "${pkgs.iptables}/bin/iptables -w -t nat -D POSTROUTING -s ${localAddress} -j MASQUERADE || true";
-  };
-}
-EOF
-# Run command in container
-c() {
-    if [[ $# > 0 ]]; then
-        sudo extra-container run demo-node -- "$@" | cat;
-    else
-        sudo nixos-container root-login demo-node
-    fi
-}
-
+# These commands can also be executed interactively in a shell session
+demoCmds='
 echo
 echo "Bitcoind service:"
 c systemctl status bitcoind
@@ -86,8 +40,32 @@ c nodeinfo
 echo
 echo "Bitcoind data dir:"
 sudo ls -al /var/lib/containers/demo-node/var/lib/bitcoind
+'
 
-# Uncomment to start a shell session here
-# . start-bash-session.sh
+if [[ ${interactive:-} ]]; then
+    runCmd=
+else
+    runCmd=(--run bash -c "$demoCmds")
+fi
 
-# Cleanup happens at exit (see above)
+# Build container.
+# Learn more: https://github.com/erikarvstedt/extra-container
+#
+read -d '' src <<'EOF' || true
+{ pkgs, lib, ... }: {
+  containers.demo-node = {
+    extra.addressPrefix = "10.250.0";
+    extra.enableWAN = true;
+    config = { pkgs, config, lib, ... }: {
+      imports = [
+        <nix-bitcoin/examples/configuration.nix>
+        <nix-bitcoin/modules/secrets/generate-secrets.nix>
+      ];
+    };
+  };
+}
+EOF
+$([[ $EUID = 0 ]] || echo sudo "PATH=$PATH" "NIX_PATH=$NIX_PATH") \
+    $(type -P extra-container) shell -E "$src" "${runCmd[@]}"
+
+# The container is automatically deleted at exit
