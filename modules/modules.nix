@@ -22,6 +22,7 @@
     ./recurring-donations.nix
 
     # Support features
+    ./versioning.nix
     ./security.nix
     ./netns-isolation.nix
     ./backups.nix
