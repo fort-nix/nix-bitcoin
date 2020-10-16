@@ -206,6 +206,10 @@ def _():
     machine.wait_until_succeeds(
         log_has_string("joinmarket", "P2EPDaemonServerProtocolFactory starting on 27184")
     )
+
+
+@test("joinmarket-yieldgenerator")
+def _():
     machine.wait_until_succeeds(
         log_has_string("joinmarket-yieldgenerator", "Failure to get blockheight",)
     )

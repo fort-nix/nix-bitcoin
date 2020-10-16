@@ -52,6 +52,7 @@ let testEnv = rec {
       environment.systemPackages = mkIfTest "btcpayserver" (with pkgs; [ openssl xxd ]);
 
       tests.joinmarket = cfg.joinmarket.enable;
+      tests.joinmarket-yieldgenerator = cfg.joinmarket.yieldgenerator.enable;
       services.joinmarket.yieldgenerator = {
         enable = config.services.joinmarket.enable;
         customParameters = ''
