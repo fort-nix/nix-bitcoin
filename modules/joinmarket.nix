@@ -9,8 +9,8 @@ let
 
   inherit (config.services) bitcoind;
   torAddress = builtins.head (builtins.split ":" config.services.tor.client.socksListenAddress);
+  # Based on https://github.com/JoinMarket-Org/joinmarket-clientserver/blob/master/jmclient/jmclient/configure.py
   configFile = builtins.toFile "config" ''
-    # Based on https://github.com/JoinMarket-Org/joinmarket-clientserver/blob/master/jmclient/jmclient/configure.py
     [DAEMON]
     no_daemon = 0
     daemon_port = 27183
