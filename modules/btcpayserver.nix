@@ -114,7 +114,7 @@ in {
 
     systemd.services.nbxplorer = let
       configFile = builtins.toFile "config" ''
-        network=mainnet
+        network=${config.services.bitcoind.network}
         btcrpcuser=${cfg.bitcoind.rpc.users.btcpayserver.name}
         btcrpcurl=http://${builtins.elemAt config.services.bitcoind.rpcbind 0}:${toString cfg.bitcoind.rpc.port}
         btcnodeendpoint=${config.services.bitcoind.bind}:8333
@@ -149,11 +149,11 @@ in {
 
     systemd.services.btcpayserver = let
       configFile = builtins.toFile "config" (''
-        network=mainnet
+        network=${config.services.bitcoind.network}
         postgres=User ID=${cfg.btcpayserver.user};Host=/run/postgresql;Database=btcpaydb
         socksendpoint=${cfg.tor.client.socksListenAddress}
         btcexplorerurl=http://${cfg.nbxplorer.bind}:${toString cfg.nbxplorer.port}/
-        btcexplorercookiefile=${cfg.nbxplorer.dataDir}/Main/.cookie
+        btcexplorercookiefile=${cfg.nbxplorer.dataDir}/${config.services.bitcoind.makeNetworkName "Main" "RegTest"}/.cookie
         bind=${cfg.btcpayserver.bind}
         port=${toString cfg.btcpayserver.port}
       '' + optionalString (cfg.btcpayserver.lightningBackend == "clightning") ''
