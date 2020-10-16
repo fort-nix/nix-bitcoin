@@ -18,7 +18,7 @@ let
       --ln-path '${cfg.ln-path}'  \
       --host ${cfg.host} \
       --config '${config.nix-bitcoin.secretsDir}/spark-wallet-login' \
-      ${torRateProvider} \
+      ${optionalString cfg.enforceTor torRateProvider} \
       $publicURL \
       --pairing-qr --print-key ${cfg.extraArgs}
   '';
