@@ -5,8 +5,10 @@ with lib;
 let
   cfg = config.services.lnd;
   inherit (config) nix-bitcoin-services;
-  onion-chef-service = (if cfg.announce-tor then [ "onion-chef.service" ] else []);
   secretsDir = config.nix-bitcoin.secretsDir;
+
+  bitcoind = config.services.bitcoind;
+  onion-chef-service = (if cfg.announce-tor then [ "onion-chef.service" ] else []);
   mainnetDir = "${cfg.dataDir}/chain/bitcoin/mainnet";
   configFile = pkgs.writeText "lnd.conf" ''
     datadir=${cfg.dataDir}
@@ -26,9 +28,9 @@ let
     ${optionalString (cfg.tor-socks != null) "tor.socks=${cfg.tor-socks}"}
 
     bitcoind.rpchost=${cfg.bitcoind-host}
-    bitcoind.rpcuser=${config.services.bitcoind.rpc.users.public.name}
-    bitcoind.zmqpubrawblock=${config.services.bitcoind.zmqpubrawblock}
-    bitcoind.zmqpubrawtx=${config.services.bitcoind.zmqpubrawtx}
+    bitcoind.rpcuser=${bitcoind.rpc.users.public.name}
+    bitcoind.zmqpubrawblock=${bitcoind.zmqpubrawblock}
+    bitcoind.zmqpubrawtx=${bitcoind.zmqpubrawtx}
 
     ${cfg.extraConfig}
   '';
@@ -148,7 +150,7 @@ in {
 
   config = mkIf cfg.enable {
     assertions = [
-      { assertion = config.services.bitcoind.prune == 0;
+      { assertion = bitcoind.prune == 0;
         message = "lnd does not support bitcoind pruning.";
       }
     ];
