@@ -34,6 +34,11 @@ in {
         default = "127.0.0.1";
         description = "The address on which to bind.";
       };
+      port = mkOption {
+        type = types.port;
+        default = 24444;
+        description = "Port on which to bind.";
+      };
       enable = mkOption {
         # This option is only used by netns-isolation
         internal = true;
@@ -69,6 +74,11 @@ in {
         type = types.str;
         default = "127.0.0.1";
         description = "The address on which to bind.";
+      };
+      port = mkOption {
+        type = types.port;
+        default = 23000;
+        description = "Port on which to bind.";
       };
       lightningBackend = mkOption {
         type = types.nullOr (types.enum [ "clightning" "lnd" ]);
@@ -109,6 +119,7 @@ in {
         btcrpcurl=http://${builtins.elemAt config.services.bitcoind.rpcbind 0}:${toString cfg.bitcoind.rpc.port}
         btcnodeendpoint=${config.services.bitcoind.bind}:8333
         bind=${cfg.nbxplorer.bind}
+        port=${toString cfg.nbxplorer.port}
       '';
     in {
       description = "Run nbxplorer";
@@ -141,9 +152,10 @@ in {
         network=mainnet
         postgres=User ID=${cfg.btcpayserver.user};Host=/run/postgresql;Database=btcpaydb
         socksendpoint=${cfg.tor.client.socksListenAddress}
-        btcexplorerurl=http://${cfg.nbxplorer.bind}:24444/
+        btcexplorerurl=http://${cfg.nbxplorer.bind}:${toString cfg.nbxplorer.port}/
         btcexplorercookiefile=${cfg.nbxplorer.dataDir}/Main/.cookie
         bind=${cfg.btcpayserver.bind}
+        port=${toString cfg.btcpayserver.port}
       '' + optionalString (cfg.btcpayserver.lightningBackend == "clightning") ''
         btclightning=type=clightning;server=unix:///${cfg.clightning.dataDir}/bitcoin/lightning-rpc
       '');
