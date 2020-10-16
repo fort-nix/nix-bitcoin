@@ -19,7 +19,7 @@ let
 
     [BLOCKCHAIN]
     blockchain_source = bitcoin-rpc
-    network = mainnet
+    network = ${bitcoind.network}
     rpc_host = ${builtins.elemAt bitcoind.rpcbind 0}
     rpc_port = ${toString bitcoind.rpc.port}
     rpc_user = ${bitcoind.rpc.users.privileged.name}
@@ -156,7 +156,8 @@ in {
              "s|@@RPC_PASSWORD@@|rpc_password = $(cat ${secretsDir}/bitcoin-rpcpassword-privileged)|" \
              '${cfg.dataDir}/joinmarket.cfg'
         '';
-        ExecStartPost = nix-bitcoin-services.privileged ''
+        # Generating wallets (jmclient/wallet.py) is only supported for mainnet or testnet
+        ExecStartPost = mkIf (bitcoind.network == "mainnet") (nix-bitcoin-services.privileged ''
           walletname=wallet.jmdat
           pw=$(cat "${secretsDir}"/jm-wallet-password)
           mnemonic=${secretsDir}/jm-wallet-seed
@@ -171,7 +172,7 @@ in {
             recoveryseed=$(echo "$out" | grep 'recovery_seed')
             echo "$recoveryseed" | cut -d ':' -f2 > $mnemonic
           fi
-        '';
+        '');
         ExecStart = "${pkgs.nix-bitcoin.joinmarket}/bin/joinmarketd";
         WorkingDirectory = "${cfg.dataDir}"; # The service creates 'commitmentlist' in the working dir
         User = "${cfg.user}";
