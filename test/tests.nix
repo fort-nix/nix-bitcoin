@@ -105,6 +105,9 @@ let testEnv = rec {
       services.nix-bitcoin-webindex.enable = true;
       tests.secure-node = true;
       tests.banlist-and-restart = true;
+
+      # Stop electrs from spamming the test log with 'WARN - wait until IBD is over' messages
+      tests.stop-electrs = true;
     };
 
     netns = {

@@ -111,14 +111,18 @@ def _():
     )
 
 
-# Impure: Stops electrs
 @test("electrs")
 def _():
     assert_running("electrs")
     wait_for_open_port(ip("electrs"), 4224)  # prometeus metrics provider
     # Check RPC connection to bitcoind
     machine.wait_until_succeeds(log_has_string("electrs", "NetworkInfo"))
-    # Stop electrs from spamming the test log with 'wait for bitcoind sync' messages
+
+
+# Impure: Stops electrs
+# Stop electrs from spamming the test log with 'WARN - wait until IBD is over' messages
+@test("stop-electrs")
+def _():
     succeed("systemctl stop electrs")
 
 
