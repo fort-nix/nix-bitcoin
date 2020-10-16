@@ -15,7 +15,7 @@ let
       publicURL="--public-url http://$(cat /var/lib/onion-chef/spark-wallet/spark-wallet)"
     ''}
     exec ${pkgs.nix-bitcoin.spark-wallet}/bin/spark-wallet \
-      --ln-path '${cfg.ln-path}'  \
+      --ln-path '${config.services.clightning.networkDir}'  \
       --host ${cfg.host} \
       --config '${config.nix-bitcoin.secretsDir}/spark-wallet-login' \
       ${optionalString cfg.enforceTor torRateProvider} \
@@ -35,13 +35,6 @@ in {
       type = types.str;
       default = "localhost";
       description = "http(s) server listen address.";
-    };
-    ln-path = mkOption {
-      type = types.path;
-      default = "${config.services.clightning.dataDir}/bitcoin";
-      description = ''
-        "The path of the clightning network data directory.";
-      '';
     };
     onion-service = mkOption {
       type = types.bool;

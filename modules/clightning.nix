@@ -68,6 +68,11 @@ in {
       default = "/var/lib/clightning";
       description = "The data directory for clightning.";
     };
+    networkDir = mkOption {
+      readOnly = true;
+      default = "${cfg.dataDir}/${network}";
+      description = "The network data directory.";
+    };
     extraConfig = mkOption {
       type = types.lines;
       default = "";
@@ -119,7 +124,7 @@ in {
         cp ${configFile} ${cfg.dataDir}/config
         chown -R '${cfg.user}:${cfg.group}' '${cfg.dataDir}'
         # The RPC socket has to be removed otherwise we might have stale sockets
-        rm -f ${cfg.dataDir}/bitcoin/lightning-rpc
+        rm -f ${cfg.networkDir}/lightning-rpc
         chmod 640 ${cfg.dataDir}/config
         echo "bitcoin-rpcpassword=$(cat ${config.nix-bitcoin.secretsDir}/bitcoin-rpcpassword-public)" >> '${cfg.dataDir}/config'
         ${optionalString cfg.announce-tor "echo announce-addr=$(cat /var/lib/onion-chef/clightning/clightning) >> '${cfg.dataDir}/config'"}
@@ -136,11 +141,11 @@ in {
         );
       # Wait until the rpc socket appears
       postStart = ''
-        while [[ ! -e ${cfg.dataDir}/${network}/lightning-rpc ]]; do
+        while [[ ! -e ${cfg.networkDir}/lightning-rpc ]]; do
             sleep 0.1
         done
         # Needed to enable lightning-cli for users with group 'clightning'
-        chmod g+x ${cfg.dataDir}/${network}
+        chmod g+x ${cfg.networkDir}
       '';
     };
   };
