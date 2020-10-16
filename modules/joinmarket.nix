@@ -7,6 +7,7 @@ let
   inherit (config) nix-bitcoin-services;
   secretsDir = config.nix-bitcoin.secretsDir;
 
+  inherit (config.services) bitcoind;
   torAddress = builtins.head (builtins.split ":" config.services.tor.client.socksListenAddress);
   configFile = builtins.toFile "config" ''
     # Based on https://github.com/JoinMarket-Org/joinmarket-clientserver/blob/master/jmclient/jmclient/configure.py
@@ -19,9 +20,9 @@ let
     [BLOCKCHAIN]
     blockchain_source = bitcoin-rpc
     network = mainnet
-    rpc_host = ${builtins.elemAt config.services.bitcoind.rpcbind 0}
+    rpc_host = ${builtins.elemAt bitcoind.rpcbind 0}
     rpc_port = 8332
-    rpc_user = ${config.services.bitcoind.rpc.users.privileged.name}
+    rpc_user = ${bitcoind.rpc.users.privileged.name}
     @@RPC_PASSWORD@@
 
     [MESSAGING:server1]
