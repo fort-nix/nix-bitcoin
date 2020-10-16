@@ -123,7 +123,7 @@ in {
         chown -R '${cfg.user}:${cfg.group}' '${cfg.dataDir}'
         # The RPC socket has to be removed otherwise we might have stale sockets
         rm -f ${cfg.dataDir}/bitcoin/lightning-rpc
-        chmod 600 ${cfg.dataDir}/config
+        chmod 640 ${cfg.dataDir}/config
         echo "bitcoin-rpcpassword=$(cat ${config.nix-bitcoin.secretsDir}/bitcoin-rpcpassword-public)" >> '${cfg.dataDir}/config'
         ${optionalString cfg.announce-tor "echo announce-addr=$(cat /var/lib/onion-chef/clightning/clightning) >> '${cfg.dataDir}/config'"}
         '';
