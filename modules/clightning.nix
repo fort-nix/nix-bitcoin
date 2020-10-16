@@ -12,7 +12,8 @@ let
     ${optionalString (cfg.proxy != null) "proxy=${cfg.proxy}"}
     always-use-proxy=${if cfg.always-use-proxy then "true" else "false"}
     bind-addr=${cfg.bind-addr}:${toString cfg.bindport}
-    ${optionalString (cfg.bitcoin-rpcconnect != null) "bitcoin-rpcconnect=${cfg.bitcoin-rpcconnect}"}
+    bitcoin-rpcconnect=${builtins.elemAt config.services.bitcoind.rpcbind 0}
+    bitcoin-rpcport=${toString config.services.bitcoind.rpc.port}
     bitcoin-rpcuser=${config.services.bitcoind.rpc.users.public.name}
     rpc-file-mode=0660
     ${cfg.extraConfig}
@@ -60,11 +61,6 @@ in {
       type = types.bool;
       default = false;
       description = "Announce clightning Tor Hidden Service";
-    };
-    bitcoin-rpcconnect = mkOption {
-      type = types.nullOr types.str;
-      default = null;
-      description = "The bitcoind RPC host to connect to.";
     };
     dataDir = mkOption {
       type = types.path;
