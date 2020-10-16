@@ -106,7 +106,7 @@ in {
       configFile = builtins.toFile "config" ''
         network=mainnet
         btcrpcuser=${cfg.bitcoind.rpc.users.btcpayserver.name}
-        btcrpcurl=http://${builtins.elemAt config.services.bitcoind.rpcbind 0}:8332
+        btcrpcurl=http://${builtins.elemAt config.services.bitcoind.rpcbind 0}:${toString cfg.bitcoind.rpc.port}
         btcnodeendpoint=${config.services.bitcoind.bind}:8333
         bind=${cfg.nbxplorer.bind}
       '';
