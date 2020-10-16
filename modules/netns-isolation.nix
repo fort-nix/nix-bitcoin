@@ -298,10 +298,7 @@ in {
       cliExec = mkCliExec "liquidd";
     };
 
-    services.electrs = {
-      address = netns.electrs.address;
-      daemonrpc = "${netns.bitcoind.address}:${toString config.services.bitcoind.rpc.port}";
-    };
+    services.electrs.address = netns.electrs.address;
 
     services.spark-wallet = {
       host = netns.spark-wallet.address;

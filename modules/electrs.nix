@@ -5,6 +5,7 @@ let
   cfg = config.services.electrs;
   inherit (config) nix-bitcoin-services;
   secretsDir = config.nix-bitcoin.secretsDir;
+  bitcoind = config.services.bitcoind;
 in {
   options.services.electrs = {
     enable = mkEnableOption "electrs";
@@ -33,19 +34,17 @@ in {
     address = mkOption {
       type = types.str;
       default = "127.0.0.1";
-      description = "RPC listening address.";
+      description = "RPC and monitoring listening address.";
     };
     port = mkOption {
       type = types.port;
       default = 50001;
       description = "RPC port.";
     };
-    daemonrpc = mkOption {
-      type = types.str;
-      default = "127.0.0.1:8332";
-      description = ''
-        Bitcoin daemon JSONRPC 'addr:port' to connect
-      '';
+    monitoringPort = mkOption {
+      type = types.port;
+      default = 4224;
+      description = "Prometheus monitoring port.";
     };
     extraArgs = mkOption {
       type = types.separatedString " ";
@@ -57,7 +56,7 @@ in {
 
   config = mkIf cfg.enable {
     assertions = [
-      { assertion = config.services.bitcoind.prune == 0;
+      { assertion = bitcoind.prune == 0;
         message = "electrs does not support bitcoind pruning.";
       }
     ];
@@ -74,7 +73,7 @@ in {
       requires = [ "bitcoind.service" ];
       after = [ "bitcoind.service" ];
       preStart = ''
-        echo "cookie = \"${config.services.bitcoind.rpc.users.public.name}:$(cat ${secretsDir}/bitcoin-rpcpassword-public)\"" \
+        echo "cookie = \"${bitcoind.rpc.users.public.name}:$(cat ${secretsDir}/bitcoin-rpcpassword-public)\"" \
           > electrs.toml
         '';
       serviceConfig = nix-bitcoin-services.defaultHardening // {
@@ -84,22 +83,25 @@ in {
         ExecStart = ''
           ${pkgs.nix-bitcoin.electrs}/bin/electrs -vvv \
           ${if cfg.high-memory then
-              traceIf (!config.services.bitcoind.dataDirReadableByGroup) ''
+              traceIf (!bitcoind.dataDirReadableByGroup) ''
                 Warning: For optimal electrs syncing performance, enable services.bitcoind.dataDirReadableByGroup.
                 Note that this disables wallet support in bitcoind.
               '' ""
             else
               "--jsonrpc-import --index-batch-size=10"
           } \
-          --db-dir '${cfg.dataDir}' --daemon-dir '${config.services.bitcoind.dataDir}' \
-          --electrum-rpc-addr=${toString cfg.address}:${toString cfg.port} \
-          --daemon-rpc-addr=${toString cfg.daemonrpc} ${cfg.extraArgs}
+          --db-dir='${cfg.dataDir}' \
+          --daemon-dir='${bitcoind.dataDir}' \
+          --electrum-rpc-addr=${cfg.address}:${toString cfg.port} \
+          --monitoring-addr=${cfg.address}:${toString cfg.monitoringPort} \
+          --daemon-rpc-addr=${builtins.elemAt bitcoind.rpcbind 0}:${toString bitcoind.rpc.port} \
+          ${cfg.extraArgs}
         '';
         User = cfg.user;
         Group = cfg.group;
         Restart = "on-failure";
         RestartSec = "10s";
-        ReadWritePaths = "${cfg.dataDir} ${if cfg.high-memory then "${config.services.bitcoind.dataDir}" else ""}";
+        ReadWritePaths = "${cfg.dataDir} ${if cfg.high-memory then "${bitcoind.dataDir}" else ""}";
       } // (if cfg.enforceTor
           then nix-bitcoin-services.allowTor
           else nix-bitcoin-services.allowAnyIP

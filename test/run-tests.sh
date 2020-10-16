@@ -1,14 +1,20 @@
 #!/usr/bin/env bash
 
 # Modules integration test runner.
-# The test (./test.nix) uses the NixOS testing framework and is executed in a VM.
+# The tests (./tests.nix) use the NixOS testing framework and are executed in a VM.
 #
 # Usage:
 #   Run all tests
 #   ./run-tests.sh
 #
 #   Test specific scenario
-#   ./run-tests.sh --scenario <scenario>
+#   ./run-tests.sh --scenario|-s <scenario>
+#
+#     When <scenario> is undefined, the test is run with an adhoc scenario
+#     where services.<scenario> is enabled.
+#
+#     Example:
+#     ./run-tests.sh -s electrs
 #
 #   Run test and link results to avoid garbage collection
 #   ./run-tests.sh [--scenario <scenario>] --out-link-prefix /tmp/nix-bitcoin-test build
@@ -19,8 +25,18 @@
 #   Run interactive test debugging
 #   ./run-tests.sh [--scenario <scenario>] debug
 #
-#   This starts the testing VM and drops you into a Python REPL where you can
-#   manually execute the tests from ./test-script.py
+#     This starts the testing VM and drops you into a Python REPL where you can
+#     manually execute the tests from ./tests.py
+#
+#   Run a test scenario in a container
+#   sudo ./run-tests.sh [--scenario <scenario>] container
+#
+#     This is useful for quick experiments; containers start much faster than VMs.
+#     Running the Python test suite in containers is not yet supported.
+#     For now, creating NixOS containers requires root permissions.
+#     See ./lib/make-container.sh for a complete documentation.
+#
+#   To add custom scenarios, set the environment variable `scenarioOverridesFile`.
 
 set -eo pipefail
 
@@ -34,7 +50,7 @@ while :; do
                 shift
                 shift
             else
-                >&2 echo 'Error: "$1" requires an argument.'
+                >&2 echo "Error: $1 requires an argument."
                 exit 1
             fi
             ;;
@@ -44,7 +60,7 @@ while :; do
                 shift
                 shift
             else
-                >&2 echo 'Error: "$1" requires an argument.'
+                >&2 echo "Error: $1 requires an argument."
                 exit 1
             fi
             ;;
@@ -57,9 +73,9 @@ numCPUs=${numCPUs:-$(nproc)}
 # Min. 800 MiB needed to avoid 'out of memory' errors
 memoryMiB=${memoryMiB:-2048}
 
-scriptDir=$(cd "${BASH_SOURCE[0]%/*}" && pwd)
+testDir=$(cd "${BASH_SOURCE[0]%/*}" && pwd)
 
-export NIX_PATH=nixpkgs=$(nix eval --raw -f "$scriptDir/../pkgs/nixpkgs-pinned.nix" nixpkgs)
+export NIX_PATH=nixpkgs=$(nix eval --raw -f "$testDir/../pkgs/nixpkgs-pinned.nix" nixpkgs)
 
 # Run the test. No temporary files are left on the host system.
 run() {
@@ -67,20 +83,14 @@ run() {
     export TMPDIR=$(mktemp -d /tmp/nix-bitcoin-test.XXX)
     trap "rm -rf $TMPDIR" EXIT
 
-    nix-build --out-link $TMPDIR/driver -E "import \"$scriptDir/test.nix\" { scenario = \"$scenario\"; }" -A driver
+    nix-build --out-link $TMPDIR/driver -E "(import \"$testDir/tests.nix\" { scenario = \"$scenario\"; }).vm" -A driver
 
     # Variable 'tests' contains the Python code that is executed by the driver on startup
     if [[ $1 == --interactive ]]; then
         echo "Running interactive testing environment"
         tests=$(
             echo 'is_interactive = True'
-            # The test script raises an error when 'is_interactive' is defined so
-            # that it just loads the initial helper functions and stops before
-            # executing the actual tests
-            echo 'try:'
-            echo '    exec(os.environ["testScript"])'
-            echo 'except:'
-            echo '    pass'
+            echo 'exec(os.environ["testScript"])'
             # Start VM
             echo 'start_all()'
             # Start REPL
@@ -109,6 +119,15 @@ debug() {
     run --interactive
 }
 
+evalTest() {
+    nix eval --raw "($(vmTestNixExpr)).outPath"
+    echo # nix eval doesn't print a newline
+}
+
+container() {
+  . "$testDir/lib/make-container.sh" "$@"
+}
+
 # Run the test by building the test derivation
 buildTest() {
     if [[ $outLinkPrefix ]]; then
@@ -130,14 +149,19 @@ exprForCI() {
     ((memAvailableMiB < memoryMiB)) && memoryMiB=$memAvailableMiB
     >&2 echo "VM stats: CPUs: $numCPUs, memory: $memoryMiB MiB"
     >&2 echo "Host memory total: $((memTotalKiB / 1024)) MiB, available: $memAvailableMiB MiB"
-    vmTestNixExpr
+
+    # VMX is usually not available on CI nodes due to recursive virtualisation.
+    # Explicitly disable VMX, otherwise QEMU 4.20 fails with message
+    # "error: failed to set MSR 0x48b to 0x159ff00000000"
+    vmTestNixExpr "-cpu host,-vmx"
 }
 
 vmTestNixExpr() {
+  extraQEMUOpts="$1"
   cat <<EOF
-    (import "$scriptDir/test.nix" { scenario = "$scenario"; } {}).overrideAttrs (old: rec {
+    ((import "$testDir/tests.nix" { scenario = "$scenario"; }).vm {}).overrideAttrs (old: rec {
       buildCommand = ''
-        export QEMU_OPTS="-smp $numCPUs -m $memoryMiB"
+        export QEMU_OPTS="-smp $numCPUs -m $memoryMiB $extraQEMUOpts"
         echo "VM stats: CPUs: $numCPUs, memory: $memoryMiB MiB"
       '' + old.buildCommand;
     })
@@ -149,7 +173,8 @@ build() {
         buildTest "$@"
     else
         scenario=default buildTest "$@"
-        scenario=withnetns buildTest "$@"
+        scenario=netns buildTest "$@"
+        scenario=full evalTest "$@"
     fi
 }
 
@@ -158,4 +183,9 @@ if [[ $1 && $1 != build ]]; then
     : ${scenario:=default}
 fi
 
-eval "${@:-build}"
+command="${1:-build}"
+shift || true
+if [[ $command == eval ]]; then
+    command=evalTest
+fi
+$command "$@"

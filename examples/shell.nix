@@ -11,11 +11,6 @@ let
   nixpkgs = import nixpkgs-path {};
   nix-bitcoin = nixpkgs.callPackage nix-bitcoin-path {};
 
-  extraContainer = nixpkgs.callPackage (builtins.fetchTarball {
-    url = "https://github.com/erikarvstedt/extra-container/archive/6cced2c26212cc1c8cc7cac3547660642eb87e71.tar.gz";
-    sha256 = "0qr41mma2iwxckdhqfabw3vjcbp2ffvshnc3k11kwriwj14b766v";
-  }) {};
-
   nix-bitcoin-unpacked = (import <nixpkgs> {}).runCommand "nix-bitcoin-src" {} ''
     mkdir $out; tar xf ${builtins.fetchurl nix-bitcoin-release} -C $out
   '';
@@ -25,7 +20,7 @@ with nixpkgs;
 stdenv.mkDerivation rec {
   name = "nix-bitcoin-environment";
 
-  buildInputs = [ nix-bitcoin.nixops19_09 figlet extraContainer ];
+  buildInputs = [ nix-bitcoin.nixops19_09 nix-bitcoin.extra-container figlet ];
 
   shellHook = ''
     export NIX_PATH="nixpkgs=${nixpkgs-path}:nix-bitcoin=${toString nix-bitcoin-path}:."
