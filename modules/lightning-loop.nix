@@ -6,9 +6,10 @@ let
   cfg = config.services.lightning-loop;
   inherit (config) nix-bitcoin-services;
   secretsDir = config.nix-bitcoin.secretsDir;
+  network = config.services.bitcoind.network;
   configFile = builtins.toFile "loop.conf" ''
     datadir=${cfg.dataDir}
-    network=${config.services.bitcoind.network}
+    network=${network}
     logdir=${cfg.dataDir}/logs
     tlscertpath=${secretsDir}/loop-cert
     tlskeypath=${secretsDir}/loop-key
@@ -50,7 +51,9 @@ in {
     };
     cli = mkOption {
       default = pkgs.writeScriptBin "loop" ''
-        ${cfg.cliExec} ${cfg.package}/bin/loop --tlscertpath ${secretsDir}/loop-cert "$@"
+        ${cfg.cliExec} ${cfg.package}/bin/loop \
+        --macaroonpath '${cfg.dataDir}/${network}/loop.macaroon' \
+        --tlscertpath '${secretsDir}/loop-cert' "$@"
       '';
       description = "Binary to connect with the lightning-loop instance.";
     };

@@ -14,8 +14,6 @@ echo "Latest release is ${latest}"
 
 # GPG verification
 export GNUPGHOME=$TMPDIR
-echo "Fetching Joost Jager's Key"
-gpg --keyserver hkps://keyserver.ubuntu.com --recv-keys D146D0F68939436268FA9A130E26BB61B76C4D3A 2> /dev/null
 echo "Fetching Alex Bosworth's Key"
 gpg --keyserver hkps://keyserver.ubuntu.com --recv-keys DE23E73BFA8A0AD5587D2FCDE80D2F3F311FD87E 2> /dev/null
 
