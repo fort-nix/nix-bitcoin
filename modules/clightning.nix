@@ -6,8 +6,9 @@ let
   cfg = config.services.clightning;
   inherit (config) nix-bitcoin-services;
   onion-chef-service = (if cfg.announce-tor then [ "onion-chef.service" ] else []);
+  network = config.services.bitcoind.makeNetworkName "bitcoin" "regtest";
   configFile = pkgs.writeText "config" ''
-    network=bitcoin
+    network=${network}
     bitcoin-datadir=${config.services.bitcoind.dataDir}
     ${optionalString (cfg.proxy != null) "proxy=${cfg.proxy}"}
     always-use-proxy=${if cfg.always-use-proxy then "true" else "false"}
@@ -135,11 +136,11 @@ in {
         );
       # Wait until the rpc socket appears
       postStart = ''
-        while [[ ! -e ${cfg.dataDir}/bitcoin/lightning-rpc ]]; do
+        while [[ ! -e ${cfg.dataDir}/${network}/lightning-rpc ]]; do
             sleep 0.1
         done
         # Needed to enable lightning-cli for users with group 'clightning'
-        chmod g+x ${cfg.dataDir}/bitcoin
+        chmod g+x ${cfg.dataDir}/${network}
       '';
     };
   };
