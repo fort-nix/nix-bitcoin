@@ -82,6 +82,7 @@ in {
         User that is allowed to execute commands in the service network namespaces.
         The user's group is also authorized.
       '';
+      default = config.nix-bitcoin.operator.name;
     };
 
     netns = mkOption {
@@ -294,7 +295,6 @@ in {
       rpcallowip = [
         "127.0.0.1"
       ] ++ map (n: "${netns.${n}.address}") netns.liquidd.availableNetns;
-      mainchainrpchost = netns.bitcoind.address;
       cliExec = mkCliExec "liquidd";
     };
 

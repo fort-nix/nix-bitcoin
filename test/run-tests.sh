@@ -16,8 +16,8 @@
 #     Example:
 #     ./run-tests.sh -s electrs
 #
-#   Run test and link results to avoid garbage collection
-#   ./run-tests.sh [--scenario <scenario>] --out-link-prefix /tmp/nix-bitcoin-test build
+#   Run test(s) and link results to avoid garbage collection
+#   ./run-tests.sh [--scenario <scenario>] --out-link-prefix /tmp/nix-bitcoin-test
 #
 #   Pass extra args to nix-build
 #   ./run-tests.sh build --builders 'ssh://mybuildhost - - 15'
@@ -168,23 +168,34 @@ vmTestNixExpr() {
 EOF
 }
 
+# A basic subset of tests to keep the total runtime within
+# manageable bounds (<3 min on desktop systems).
+# These are also run on the CI server.
+basic() {
+    scenario=default buildTest "$@"
+    scenario=netns buildTest "$@"
+    scenario=full evalTest "$@"
+}
+
+all() {
+    scenario=default buildTest "$@"
+    scenario=netns buildTest "$@"
+    scenario=full buildTest "$@"
+}
+
 build() {
     if [[ $scenario ]]; then
         buildTest "$@"
     else
-        scenario=default buildTest "$@"
-        scenario=netns buildTest "$@"
-        scenario=full evalTest "$@"
+        basic "$@"
     fi
 }
 
-# Set default scenario for all actions other than 'build'
-if [[ $1 && $1 != build ]]; then
-    : ${scenario:=default}
-fi
-
 command="${1:-build}"
 shift || true
+if [[ $command != build  ]]; then
+    : ${scenario:=default}
+fi
 if [[ $command == eval ]]; then
     command=evalTest
 fi

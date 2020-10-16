@@ -89,7 +89,7 @@ in {
         User = "spark-wallet";
         Restart = "on-failure";
         RestartSec = "10s";
-        ReadWritePaths = "/var/lib/onion-chef";
+        ReadWritePaths = mkIf cfg.onion-service "/var/lib/onion-chef";
       } // (if cfg.enforceTor
             then nix-bitcoin-services.allowTor
             else nix-bitcoin-services.allowAnyIP)

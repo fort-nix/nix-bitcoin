@@ -125,6 +125,10 @@ in {
         home = cfg.dataDir;
     };
     users.groups.${cfg.group} = {};
+    nix-bitcoin.operator = {
+      groups = [ cfg.group ];
+      sudoUsers = [ cfg.group ];
+    };
 
     systemd.tmpfiles.rules = [
       "d '${cfg.dataDir}' 0770 ${cfg.user} ${cfg.group} - -"

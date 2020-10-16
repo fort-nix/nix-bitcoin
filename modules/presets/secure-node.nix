@@ -5,7 +5,7 @@ with lib;
 let
   cfg = config.services;
 
-  operatorName = config.nix-bitcoin.operatorName;
+  operatorName = config.nix-bitcoin.operator.name;
 
   mkHiddenService = map: {
     map = [ map ];
@@ -28,11 +28,6 @@ in {
       type = types.ints.u16;
       default = 9735;
       description = "Port on which to listen for tor client connections.";
-    };
-    nix-bitcoin.operatorName = mkOption {
-      type = types.str;
-      default = "operator";
-      description = "Less-privileged user's name.";
     };
   };
 
@@ -107,10 +102,6 @@ in {
     services.liquidd = {
       rpcuser = "liquidrpc";
       prune = 1000;
-      extraConfig = ''
-        mainchainrpcuser=${config.services.bitcoind.rpc.users.public.name}
-        mainchainrpcport=8332
-      '';
       validatepegin = true;
       listen = true;
       proxy = cfg.tor.client.socksListenAddress;
@@ -159,35 +150,15 @@ in {
       qrencode
     ];
 
-    # Create operator user which can access the node's services
+    services.onion-chef = {
+      enable = true;
+      access.${operatorName} = [ "bitcoind" "clightning" "nginx" "liquidd" "spark-wallet" "electrs" "btcpayserver" "sshd" ];
+    };
+
+    nix-bitcoin.operator.enable = true;
     users.users.${operatorName} = {
-      isNormalUser = true;
-      extraGroups = [
-          "systemd-journal"
-          "proc" # Enable full /proc access and systemd-status
-          cfg.bitcoind.group
-        ]
-        ++ (optionals cfg.clightning.enable [ "clightning" ])
-        ++ (optionals cfg.lnd.enable [ "lnd" ])
-        ++ (optionals cfg.liquidd.enable [ cfg.liquidd.group ])
-        ++ (optionals (cfg.hardware-wallets.ledger || cfg.hardware-wallets.trezor)
-            [ cfg.hardware-wallets.group ])
-        ++ (optionals cfg.joinmarket.enable [ cfg.joinmarket.group ]);
       openssh.authorizedKeys.keys = config.users.users.root.openssh.authorizedKeys.keys;
     };
-    nix-bitcoin.netns-isolation.allowedUser = operatorName;
-    # Give operator access to onion hostnames
-    services.onion-chef.enable = true;
-    services.onion-chef.access.${operatorName} = [ "bitcoind" "clightning" "nginx" "liquidd" "spark-wallet" "electrs" "btcpayserver" "sshd" ];
-
-    security.sudo.configFile =
-     (optionalString cfg.lnd.enable ''
-       ${operatorName}    ALL=(lnd) NOPASSWD: ALL
-     '') +
-     (optionalString cfg.joinmarket.enable ''
-       ${operatorName}    ALL=(${cfg.joinmarket.user}) NOPASSWD: ALL
-     '');
-
     # Enable nixops ssh for operator (`nixops ssh operator@mynode`) on nixops-vbox deployments
     systemd.services.get-vbox-nixops-client-key =
       mkIf (builtins.elem ".vbox-nixops-client-key" config.services.openssh.authorizedKeysFiles) {

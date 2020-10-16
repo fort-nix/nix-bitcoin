@@ -15,6 +15,7 @@ let
     ${optionalString (cfg.bitcoin-rpcconnect != null) "bitcoin-rpcconnect=${cfg.bitcoin-rpcconnect}"}
     bitcoin-rpcuser=${config.services.bitcoind.rpc.users.public.name}
     rpc-file-mode=0660
+    ${cfg.extraConfig}
   '';
 in {
   options.services.clightning = {
@@ -70,6 +71,11 @@ in {
       default = "/var/lib/clightning";
       description = "The data directory for clightning.";
     };
+    extraConfig = mkOption {
+      type = types.lines;
+      default = "";
+      description = "Additional lines appended to the config file.";
+    };
     user = mkOption {
       type = types.str;
       default = "clightning";
@@ -99,6 +105,7 @@ in {
         extraGroups = [ "bitcoinrpc" ];
     };
     users.groups.${cfg.group} = {};
+    nix-bitcoin.operator.groups = [ cfg.group ];
 
     systemd.tmpfiles.rules = [
       "d '${cfg.dataDir}' 0770 ${cfg.user} ${cfg.group} - -"

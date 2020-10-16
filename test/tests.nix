@@ -13,6 +13,12 @@ let testEnv = rec {
       ./lib/test-lib.nix
       ../modules/modules.nix
       ../modules/secrets/generate-secrets.nix
+      {
+        # Features required by the Python test suite
+        nix-bitcoin.secretsDir = "/secrets";
+        nix-bitcoin.operator.enable = true;
+        environment.systemPackages = with pkgs; [ jq ];
+      }
     ];
 
     config = {
@@ -23,6 +29,8 @@ let testEnv = rec {
       };
 
       tests.clightning = cfg.clightning.enable;
+      # When WAN is disabled, DNS bootstrapping slows down service startup by ~15 s.
+      services.clightning.extraConfig = mkIf config.test.noConnections "disable-dns";
 
       tests.spark-wallet = cfg.spark-wallet.enable;
 
