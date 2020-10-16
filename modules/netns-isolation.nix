@@ -279,7 +279,6 @@ in {
         "${netns.lnd.address}"
         "127.0.0.1"
       ];
-      bitcoind-host = netns.bitcoind.address;
       cliExec = mkCliExec "lnd";
     };
 

@@ -8,6 +8,7 @@ let
   secretsDir = config.nix-bitcoin.secretsDir;
 
   bitcoind = config.services.bitcoind;
+  bitcoindRpcAddress = builtins.elemAt bitcoind.rpcbind 0;
   onion-chef-service = (if cfg.announce-tor then [ "onion-chef.service" ] else []);
   mainnetDir = "${cfg.dataDir}/chain/bitcoin/mainnet";
   configFile = pkgs.writeText "lnd.conf" ''
@@ -27,7 +28,7 @@ let
     tor.active=true
     ${optionalString (cfg.tor-socks != null) "tor.socks=${cfg.tor-socks}"}
 
-    bitcoind.rpchost=${cfg.bitcoind-host}
+    bitcoind.rpchost=${bitcoindRpcAddress}:${toString bitcoind.rpc.port}
     bitcoind.rpcuser=${bitcoind.rpc.users.public.name}
     bitcoind.zmqpubrawblock=${bitcoind.zmqpubrawblock}
     bitcoind.zmqpubrawtx=${bitcoind.zmqpubrawtx}
@@ -82,13 +83,6 @@ in {
       type = types.port;
       default = 8080;
       description = "Port on which to listen for REST connections.";
-    };
-    bitcoind-host = mkOption {
-      type = types.str;
-      default = "127.0.0.1";
-      description = ''
-        The host that your local bitcoind daemon is listening on.
-      '';
     };
     tor-socks = mkOption {
       type = types.nullOr types.str;
@@ -162,8 +156,8 @@ in {
     ];
 
     services.bitcoind = {
-      zmqpubrawblock = "tcp://${cfg.bitcoind-host}:28332";
-      zmqpubrawtx = "tcp://${cfg.bitcoind-host}:28333";
+      zmqpubrawblock = "tcp://${bitcoindRpcAddress}:28332";
+      zmqpubrawtx = "tcp://${bitcoindRpcAddress}:28333";
     };
 
     services.onion-chef.access.lnd = if cfg.announce-tor then [ "lnd" ] else [];
