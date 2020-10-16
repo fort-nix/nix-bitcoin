@@ -10,11 +10,10 @@ let
   bitcoind = config.services.bitcoind;
   bitcoindRpcAddress = builtins.elemAt bitcoind.rpcbind 0;
   onion-chef-service = (if cfg.announce-tor then [ "onion-chef.service" ] else []);
-  mainnetDir = "${cfg.dataDir}/chain/bitcoin/mainnet";
+  networkDir = "${cfg.dataDir}/chain/bitcoin/${bitcoind.network}";
   configFile = pkgs.writeText "lnd.conf" ''
     datadir=${cfg.dataDir}
     logdir=${cfg.dataDir}/logs
-    bitcoin.mainnet=1
     tlscertpath=${secretsDir}/lnd-cert
     tlskeypath=${secretsDir}/lnd-key
 
@@ -22,6 +21,7 @@ let
     ${lib.concatMapStrings (rpclisten: "rpclisten=${rpclisten}:${toString cfg.rpcPort}\n") cfg.rpclisten}
     ${lib.concatMapStrings (restlisten: "restlisten=${restlisten}:${toString cfg.restPort}\n") cfg.restlisten}
 
+    bitcoin.${bitcoind.network}=1
     bitcoin.active=1
     bitcoin.node=bitcoind
 
@@ -49,6 +49,11 @@ in {
       type = types.path;
       default = "/var/lib/lnd";
       description = "The data directory for LND.";
+    };
+    networkDir = mkOption {
+      readOnly = true;
+      default = networkDir;
+      description = "The network data directory.";
     };
     listen = mkOption {
       type = pkgs.nix-bitcoin.lib.ipv4Address;
@@ -134,7 +139,7 @@ in {
       # Switch user because lnd makes datadir contents readable by user only
       ''
         ${cfg.cliExec} sudo -u lnd ${cfg.package}/bin/lncli --tlscertpath ${secretsDir}/lnd-cert \
-          --macaroonpath '${cfg.dataDir}/chain/bitcoin/mainnet/admin.macaroon' "$@"
+          --macaroonpath '${networkDir}/admin.macaroon' "$@"
       '';
       description = "Binary to connect with the lnd instance.";
     };
@@ -202,7 +207,7 @@ in {
             chown lnd: "$mnemonic"
           ''}"
           "${nix-bitcoin-services.script ''
-            if [[ ! -f ${mainnetDir}/wallet.db ]]; then
+            if [[ ! -f ${networkDir}/wallet.db ]]; then
               echo Create lnd wallet
 
               ${pkgs.curl}/bin/curl -s --output /dev/null --show-error \
@@ -213,14 +218,14 @@ in {
 
               # Guarantees that RPC calls with cfg.cli succeed after the service is started
               echo Wait until wallet is created
-              while [[ ! -f ${mainnetDir}/admin.macaroon ]]; do
+              while [[ ! -f ${networkDir}/admin.macaroon ]]; do
                 sleep 0.1
               done
             else
               echo Unlock lnd wallet
 
               ${pkgs.curl}/bin/curl -s \
-                -H "Grpc-Metadata-macaroon: $(${pkgs.xxd}/bin/xxd -ps -u -c 99999 '${mainnetDir}/admin.macaroon')" \
+                -H "Grpc-Metadata-macaroon: $(${pkgs.xxd}/bin/xxd -ps -u -c 99999 '${networkDir}/admin.macaroon')" \
                 --cacert ${secretsDir}/lnd-cert \
                 -X POST \
                 -d "{\"wallet_password\": \"$(cat ${secretsDir}/lnd-wallet-password | tr -d '\n' | base64 -w0)\"}" \
@@ -240,7 +245,7 @@ in {
               echo "Create custom macaroon ${macaroon}"
               macaroonPath="$RUNTIME_DIRECTORY/${macaroon}.macaroon"
               ${pkgs.curl}/bin/curl -s \
-                -H "Grpc-Metadata-macaroon: $(${pkgs.xxd}/bin/xxd -ps -u -c 99999 '${mainnetDir}/admin.macaroon')" \
+                -H "Grpc-Metadata-macaroon: $(${pkgs.xxd}/bin/xxd -ps -u -c 99999 '${networkDir}/admin.macaroon')" \
                 --cacert ${secretsDir}/lnd-cert \
                 -X POST \
                 -d '{"permissions":[${cfg.macaroons.${macaroon}.permissions}]}' \
