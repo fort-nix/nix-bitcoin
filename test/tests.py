@@ -326,6 +326,27 @@ def _():
     assert_no_failure("bitcoind-import-banlist")
 
 
+@test("regtest")
+def _():
+    if "electrs" in enabled_tests:
+        machine.wait_until_succeeds(log_has_string("electrs", "BlockchainInfo"))
+        get_block_height_cmd = (
+            """echo '{"method": "blockchain.headers.subscribe", "id": 0, "params": []}'"""
+            f" | nc -N {ip('electrs')} 50001 | jq -M .result.height"
+        )
+        assert_full_match(get_block_height_cmd, "10\n")
+    if "clightning" in enabled_tests:
+        machine.wait_until_succeeds(
+            "[[ $(sudo -u operator lightning-cli getinfo | jq -M .blockheight) == 10 ]]"
+        )
+    if "lnd" in enabled_tests:
+        machine.wait_until_succeeds(
+            "[[ $(sudo -u operator lncli getinfo | jq -M .block_height) == 10 ]]"
+        )
+    if "lightning-loop" in enabled_tests:
+        machine.wait_until_succeeds(log_has_string("lightning-loop", "Connected to lnd node"))
+
+
 if "netns-isolation" in enabled_tests:
 
     def ip(name):

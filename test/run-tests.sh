@@ -181,6 +181,7 @@ all() {
     scenario=default buildTest "$@"
     scenario=netns buildTest "$@"
     scenario=full buildTest "$@"
+    scenario=regtest buildTest "$@"
 }
 
 build() {
