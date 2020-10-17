@@ -8,12 +8,13 @@ let
   secretsDir = config.nix-bitcoin.secretsDir;
   configFile = builtins.toFile "loop.conf" ''
     datadir=${cfg.dataDir}
+    network=${config.services.bitcoind.network}
     logdir=${cfg.dataDir}/logs
     tlscertpath=${secretsDir}/loop-cert
     tlskeypath=${secretsDir}/loop-key
 
     lnd.host=${builtins.elemAt config.services.lnd.rpclisten 0}:${toString config.services.lnd.rpcPort}
-    lnd.macaroondir=${config.services.lnd.dataDir}/chain/bitcoin/mainnet
+    lnd.macaroondir=${config.services.lnd.networkDir}
     lnd.tlspath=${secretsDir}/lnd-cert
 
     ${optionalString (cfg.proxy != null) "server.proxy=${cfg.proxy}"}

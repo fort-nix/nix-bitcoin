@@ -7,9 +7,10 @@ let
   inherit (config) nix-bitcoin-services;
   secretsDir = config.nix-bitcoin.secretsDir;
 
+  inherit (config.services) bitcoind;
   torAddress = builtins.head (builtins.split ":" config.services.tor.client.socksListenAddress);
+  # Based on https://github.com/JoinMarket-Org/joinmarket-clientserver/blob/master/jmclient/jmclient/configure.py
   configFile = builtins.toFile "config" ''
-    # Based on https://github.com/JoinMarket-Org/joinmarket-clientserver/blob/master/jmclient/jmclient/configure.py
     [DAEMON]
     no_daemon = 0
     daemon_port = 27183
@@ -18,10 +19,10 @@ let
 
     [BLOCKCHAIN]
     blockchain_source = bitcoin-rpc
-    network = mainnet
-    rpc_host = ${builtins.elemAt config.services.bitcoind.rpcbind 0}
-    rpc_port = 8332
-    rpc_user = ${config.services.bitcoind.rpc.users.privileged.name}
+    network = ${bitcoind.network}
+    rpc_host = ${builtins.elemAt bitcoind.rpcbind 0}
+    rpc_port = ${toString bitcoind.rpc.port}
+    rpc_user = ${bitcoind.rpc.users.privileged.name}
     @@RPC_PASSWORD@@
 
     [MESSAGING:server1]
@@ -155,7 +156,8 @@ in {
              "s|@@RPC_PASSWORD@@|rpc_password = $(cat ${secretsDir}/bitcoin-rpcpassword-privileged)|" \
              '${cfg.dataDir}/joinmarket.cfg'
         '';
-        ExecStartPost = nix-bitcoin-services.privileged ''
+        # Generating wallets (jmclient/wallet.py) is only supported for mainnet or testnet
+        ExecStartPost = mkIf (bitcoind.network == "mainnet") (nix-bitcoin-services.privileged ''
           walletname=wallet.jmdat
           pw=$(cat "${secretsDir}"/jm-wallet-password)
           mnemonic=${secretsDir}/jm-wallet-seed
@@ -170,7 +172,7 @@ in {
             recoveryseed=$(echo "$out" | grep 'recovery_seed')
             echo "$recoveryseed" | cut -d ':' -f2 > $mnemonic
           fi
-        '';
+        '');
         ExecStart = "${pkgs.nix-bitcoin.joinmarket}/bin/joinmarketd";
         WorkingDirectory = "${cfg.dataDir}"; # The service creates 'commitmentlist' in the working dir
         User = "${cfg.user}";

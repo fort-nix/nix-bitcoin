@@ -11,7 +11,10 @@ let
     # We're already logging via journald
     nodebuglogfile=1
 
-    ${optionalString cfg.testnet "testnet=1"}
+    ${optionalString cfg.regtest ''
+      regtest=1
+      [regtest]
+    ''}
     ${optionalString (cfg.dbCache != null) "dbcache=${toString cfg.dbCache}"}
     prune=${toString cfg.prune}
     ${optionalString (cfg.sysperms != null) "sysperms=${if cfg.sysperms then "1" else "0"}"}
@@ -159,10 +162,18 @@ in {
           Allow JSON-RPC connections from specified source.
         '';
       };
-      testnet = mkOption {
+      regtest = mkOption {
         type = types.bool;
         default = false;
-        description = "Whether to use the test chain.";
+        description = "Enable regtest mode.";
+      };
+      network = mkOption {
+        readOnly = true;
+        default = if cfg.regtest then "regtest" else "mainnet";
+      };
+      makeNetworkName = mkOption {
+        readOnly = true;
+        default = mainnet: regtest: if cfg.regtest then regtest else mainnet;
       };
       port = mkOption {
         type = types.nullOr types.port;

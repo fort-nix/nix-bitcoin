@@ -6,19 +6,21 @@ let
   cfg = config.services.spark-wallet;
   inherit (config) nix-bitcoin-services;
   onion-chef-service = (if cfg.onion-service then [ "onion-chef.service" ] else []);
-  run-spark-wallet = pkgs.writeScript "run-spark-wallet" ''
-    CMD="${pkgs.nix-bitcoin.spark-wallet}/bin/spark-wallet --ln-path ${cfg.ln-path} --host ${cfg.host} -Q -k -c ${config.nix-bitcoin.secretsDir}/spark-wallet-login ${cfg.extraArgs}"
-    ${optionalString cfg.onion-service
-      ''
-      echo Getting onion hostname
-      CMD="$CMD --public-url http://$(cat /var/lib/onion-chef/spark-wallet/spark-wallet)"
-      ''
-    }
-    # Use rate provide wasabi because default (bitstamp) doesn't accept
-    # connections through Tor and add proxy for rate lookup.
-    CMD="$CMD --rate-provider wasabi --proxy socks5h://${config.services.tor.client.socksListenAddress}"
-    echo Running $CMD
-    $CMD
+
+  # Use wasabi rate provider because the default (bitstamp) doesn't accept
+  # connections through Tor
+  torRateProvider = "--rate-provider wasabi --proxy socks5h://${config.services.tor.client.socksListenAddress}";
+  startScript = ''
+    ${optionalString cfg.onion-service ''
+      publicURL="--public-url http://$(cat /var/lib/onion-chef/spark-wallet/spark-wallet)"
+    ''}
+    exec ${pkgs.nix-bitcoin.spark-wallet}/bin/spark-wallet \
+      --ln-path '${config.services.clightning.networkDir}'  \
+      --host ${cfg.host} \
+      --config '${config.nix-bitcoin.secretsDir}/spark-wallet-login' \
+      ${optionalString cfg.enforceTor torRateProvider} \
+      $publicURL \
+      --pairing-qr --print-key ${cfg.extraArgs}
   '';
 in {
   options.services.spark-wallet = {
@@ -33,13 +35,6 @@ in {
       type = types.str;
       default = "localhost";
       description = "http(s) server listen address.";
-    };
-    ln-path = mkOption {
-      type = types.path;
-      default = "${config.services.clightning.dataDir}/bitcoin";
-      description = ''
-        "The path of the clightning network data directory.";
-      '';
     };
     onion-service = mkOption {
       type = types.bool;
@@ -84,8 +79,8 @@ in {
       wantedBy = [ "multi-user.target" ];
       requires = [ "clightning.service" ] ++ onion-chef-service;
       after = [ "clightning.service" ]  ++ onion-chef-service;
+      script = startScript;
       serviceConfig = nix-bitcoin-services.defaultHardening // {
-        ExecStart = "${pkgs.bash}/bin/bash ${run-spark-wallet}";
         User = "spark-wallet";
         Restart = "on-failure";
         RestartSec = "10s";

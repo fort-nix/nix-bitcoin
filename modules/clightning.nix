@@ -6,13 +6,15 @@ let
   cfg = config.services.clightning;
   inherit (config) nix-bitcoin-services;
   onion-chef-service = (if cfg.announce-tor then [ "onion-chef.service" ] else []);
+  network = config.services.bitcoind.makeNetworkName "bitcoin" "regtest";
   configFile = pkgs.writeText "config" ''
-    network=bitcoin
+    network=${network}
     bitcoin-datadir=${config.services.bitcoind.dataDir}
     ${optionalString (cfg.proxy != null) "proxy=${cfg.proxy}"}
     always-use-proxy=${if cfg.always-use-proxy then "true" else "false"}
-    ${optionalString (cfg.bind-addr != null) "bind-addr=${cfg.bind-addr}:${toString cfg.bindport}"}
-    ${optionalString (cfg.bitcoin-rpcconnect != null) "bitcoin-rpcconnect=${cfg.bitcoin-rpcconnect}"}
+    bind-addr=${cfg.bind-addr}:${toString cfg.bindport}
+    bitcoin-rpcconnect=${builtins.elemAt config.services.bitcoind.rpcbind 0}
+    bitcoin-rpcport=${toString config.services.bitcoind.rpc.port}
     bitcoin-rpcuser=${config.services.bitcoind.rpc.users.public.name}
     rpc-file-mode=0660
     ${cfg.extraConfig}
@@ -61,15 +63,15 @@ in {
       default = false;
       description = "Announce clightning Tor Hidden Service";
     };
-    bitcoin-rpcconnect = mkOption {
-      type = types.nullOr types.str;
-      default = null;
-      description = "The bitcoind RPC host to connect to.";
-    };
     dataDir = mkOption {
       type = types.path;
       default = "/var/lib/clightning";
       description = "The data directory for clightning.";
+    };
+    networkDir = mkOption {
+      readOnly = true;
+      default = "${cfg.dataDir}/${network}";
+      description = "The network data directory.";
     };
     extraConfig = mkOption {
       type = types.lines;
@@ -122,8 +124,8 @@ in {
         cp ${configFile} ${cfg.dataDir}/config
         chown -R '${cfg.user}:${cfg.group}' '${cfg.dataDir}'
         # The RPC socket has to be removed otherwise we might have stale sockets
-        rm -f ${cfg.dataDir}/bitcoin/lightning-rpc
-        chmod 600 ${cfg.dataDir}/config
+        rm -f ${cfg.networkDir}/lightning-rpc
+        chmod 640 ${cfg.dataDir}/config
         echo "bitcoin-rpcpassword=$(cat ${config.nix-bitcoin.secretsDir}/bitcoin-rpcpassword-public)" >> '${cfg.dataDir}/config'
         ${optionalString cfg.announce-tor "echo announce-addr=$(cat /var/lib/onion-chef/clightning/clightning) >> '${cfg.dataDir}/config'"}
         '';
@@ -139,11 +141,11 @@ in {
         );
       # Wait until the rpc socket appears
       postStart = ''
-        while [[ ! -e ${cfg.dataDir}/bitcoin/lightning-rpc ]]; do
+        while [[ ! -e ${cfg.networkDir}/lightning-rpc ]]; do
             sleep 0.1
         done
         # Needed to enable lightning-cli for users with group 'clightning'
-        chmod g+x ${cfg.dataDir}/bitcoin
+        chmod g+x ${cfg.networkDir}
       '';
     };
   };

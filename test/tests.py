@@ -111,14 +111,18 @@ def _():
     )
 
 
-# Impure: Stops electrs
 @test("electrs")
 def _():
     assert_running("electrs")
     wait_for_open_port(ip("electrs"), 4224)  # prometeus metrics provider
     # Check RPC connection to bitcoind
     machine.wait_until_succeeds(log_has_string("electrs", "NetworkInfo"))
-    # Stop electrs from spamming the test log with 'wait for bitcoind sync' messages
+
+
+# Impure: Stops electrs
+# Stop electrs from spamming the test log with 'WARN - wait until IBD is over' messages
+@test("stop-electrs")
+def _():
     succeed("systemctl stop electrs")
 
 
@@ -206,6 +210,10 @@ def _():
     machine.wait_until_succeeds(
         log_has_string("joinmarket", "P2EPDaemonServerProtocolFactory starting on 27184")
     )
+
+
+@test("joinmarket-yieldgenerator")
+def _():
     machine.wait_until_succeeds(
         log_has_string("joinmarket-yieldgenerator", "Failure to get blockheight",)
     )
@@ -316,6 +324,27 @@ def _():
         log_has_string(f"bitcoind-import-banlist --since=@{pre_restart}", "Importing node banlist")
     )
     assert_no_failure("bitcoind-import-banlist")
+
+
+@test("regtest")
+def _():
+    if "electrs" in enabled_tests:
+        machine.wait_until_succeeds(log_has_string("electrs", "BlockchainInfo"))
+        get_block_height_cmd = (
+            """echo '{"method": "blockchain.headers.subscribe", "id": 0, "params": []}'"""
+            f" | nc -N {ip('electrs')} 50001 | jq -M .result.height"
+        )
+        assert_full_match(get_block_height_cmd, "10\n")
+    if "clightning" in enabled_tests:
+        machine.wait_until_succeeds(
+            "[[ $(sudo -u operator lightning-cli getinfo | jq -M .blockheight) == 10 ]]"
+        )
+    if "lnd" in enabled_tests:
+        machine.wait_until_succeeds(
+            "[[ $(sudo -u operator lncli getinfo | jq -M .block_height) == 10 ]]"
+        )
+    if "lightning-loop" in enabled_tests:
+        machine.wait_until_succeeds(log_has_string("lightning-loop", "Connected to lnd node"))
 
 
 if "netns-isolation" in enabled_tests:

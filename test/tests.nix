@@ -52,6 +52,7 @@ let testEnv = rec {
       environment.systemPackages = mkIfTest "btcpayserver" (with pkgs; [ openssl xxd ]);
 
       tests.joinmarket = cfg.joinmarket.enable;
+      tests.joinmarket-yieldgenerator = cfg.joinmarket.yieldgenerator.enable;
       services.joinmarket.yieldgenerator = {
         enable = config.services.joinmarket.enable;
         customParameters = ''
@@ -104,6 +105,9 @@ let testEnv = rec {
       services.nix-bitcoin-webindex.enable = true;
       tests.secure-node = true;
       tests.banlist-and-restart = true;
+
+      # Stop electrs from spamming the test log with 'WARN - wait until IBD is over' messages
+      tests.stop-electrs = true;
     };
 
     netns = {
@@ -114,6 +118,38 @@ let testEnv = rec {
 
       # This test is rather slow and unaffected by netns settings
       tests.backups = mkForce false;
+    };
+
+    # All regtest-enabled services
+    regtest = {
+      imports = [ scenarios.regtestBase ];
+      services.clightning.enable = true;
+      services.spark-wallet.enable = true;
+      services.lnd.enable = true;
+      services.lightning-loop.enable = true;
+      services.electrs.enable = true;
+      services.btcpayserver.enable = true;
+      services.joinmarket.enable = true;
+    };
+
+    regtestBase = {
+      tests.regtest = true;
+
+      services.bitcoind.regtest = true;
+      systemd.services.bitcoind.postStart = mkAfter ''
+        cli=${config.services.bitcoind.cli}/bin/bitcoin-cli
+        address=$($cli getnewaddress)
+        $cli generatetoaddress 10 $address
+      '';
+
+      # lightning-loop contains no builtin swap server for regtest.
+      # Add a dummy definition.
+      services.lightning-loop.extraConfig = ''
+        server.host=localhost
+      '';
+
+      # Needs wallet support which is unavailable for regtest
+      services.joinmarket.yieldgenerator.enable = mkForce false;
     };
 
     ## Examples / debug helper
