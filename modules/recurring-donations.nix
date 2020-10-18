@@ -79,11 +79,7 @@ in {
   };
 
   config = mkIf cfg.enable {
-    assertions = [
-      { assertion = config.services.clightning.enable;
-        message = "recurring-donations requires clightning.";
-      }
-    ];
+    services.clightning.enable = true;
 
     users.users.recurring-donations = {
         description = "recurring-donations User";

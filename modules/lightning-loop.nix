@@ -59,11 +59,7 @@ in {
   };
 
   config = mkIf cfg.enable {
-    assertions = [
-      { assertion = config.services.lnd.enable;
-        message = "lightning-loop requires lnd.";
-      }
-    ];
+    services.lnd.enable = true;
 
     environment.systemPackages = [ cfg.package (hiPrio cfg.cli) ];
 
