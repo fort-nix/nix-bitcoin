@@ -1,10 +1,10 @@
 { stdenv, fetchurl, python3, pkgs }:
 
 let
-  version = "0.7.0";
+  version = "0.7.2";
   src = fetchurl {
     url = "https://github.com/JoinMarket-Org/joinmarket-clientserver/archive/v${version}.tar.gz";
-    sha256 = "0ha73n3y5lykyj3pl97a619sxd2zz0lb32s5c61wm0l1h47v9l1g";
+    sha256 = "03gvs20d2cfzy9x82l6v4c69w0j9mr4p9zj2hpymnb6xs1yq6dr1";
   };
 
   python = python3.override {
@@ -32,13 +32,11 @@ let
     joinmarketdaemon
   ];
 
-  genwallet = pkgs.writeScriptBin "genwallet" (builtins.readFile ./genwallet/genwallet.py);
-
   pythonEnv = python.withPackages (_: runtimePackages);
 in
 stdenv.mkDerivation {
   pname = "joinmarket";
-  inherit version src genwallet;
+  inherit version src;
 
   buildInputs = [ pythonEnv ];
 
@@ -59,7 +57,7 @@ stdenv.mkDerivation {
     cpBin tumbler.py
     cpBin wallet-tool.py
     cpBin yg-privacyenhanced.py
-    cp $genwallet/bin/genwallet $out/bin/jm-genwallet
+    cpBin genwallet.py
 
     chmod +x -R $out/bin
     patchShebangs $out/bin

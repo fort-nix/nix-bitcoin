@@ -9,7 +9,7 @@ cd $TMPDIR
 echo "Fetching latest release"
 git clone https://github.com/simplexum/python-bitcointx 2> /dev/null
 cd python-bitcointx
-latest=$(git describe --tags `git rev-list --tags --max-count=1`)
+latest=python-bitcointx-v1.1.1.post0
 echo "Latest release is ${latest}"
 
 # GPG verification
