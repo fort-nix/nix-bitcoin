@@ -208,14 +208,14 @@ def _():
 def _():
     assert_running("joinmarket")
     machine.wait_until_succeeds(
-        log_has_string("joinmarket", "P2EPDaemonServerProtocolFactory starting on 27184")
+        log_has_string("joinmarket", "JMDaemonServerProtocolFactory starting on 27183")
     )
 
 
 @test("joinmarket-yieldgenerator")
 def _():
     machine.wait_until_succeeds(
-        log_has_string("joinmarket-yieldgenerator", "Failure to get blockheight",)
+        log_has_string("joinmarket-yieldgenerator", "Critical error updating blockheight.",)
     )
 
 
