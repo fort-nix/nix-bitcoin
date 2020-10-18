@@ -20,6 +20,11 @@ if [[ ! -v IN_NIX_SHELL ]]; then
     exec nix-shell --run "./${BASH_SOURCE[0]##*/} $*"
 fi
 
+if [[ $EUID != 0 ]]; then
+    # NixOS containers require root permissions
+    exec sudo "PATH=$PATH" "NIX_PATH=$NIX_PATH" "IN_NIX_SHELL=$IN_NIX_SHELL" "${BASH_SOURCE[0]}" "$@"
+fi
+
 # These commands can also be executed interactively in a shell session
 demoCmds='
 echo
@@ -65,7 +70,6 @@ read -d '' src <<'EOF' || true
   };
 }
 EOF
-$([[ $EUID = 0 ]] || echo sudo "PATH=$PATH" "NIX_PATH=$NIX_PATH") \
-    $(type -P extra-container) shell -E "$src" "${runCmd[@]}"
+extra-container shell -E "$src" "${runCmd[@]}"
 
 # The container is automatically deleted at exit
