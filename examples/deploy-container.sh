@@ -17,11 +17,8 @@ fi
 if [[ ! -v IN_NIX_SHELL ]]; then
     echo "Running script in nix shell env..."
     cd "${BASH_SOURCE[0]%/*}"
-    exec nix-shell --run "./${BASH_SOURCE[0]##*/}"
+    exec nix-shell --run "./${BASH_SOURCE[0]##*/} $*"
 fi
-
-# Uncomment to start a container shell session
-# interactive=1
 
 # These commands can also be executed interactively in a shell session
 demoCmds='
@@ -42,11 +39,14 @@ echo "Bitcoind data dir:"
 sudo ls -al /var/lib/containers/demo-node/var/lib/bitcoind
 '
 
-if [[ ${interactive:-} ]]; then
-    runCmd=
-else
-    runCmd=(--run bash -c "$demoCmds")
-fi
+case ${1:-} in
+    -i|--interactive)
+        runCmd=
+        ;;
+    *)
+        runCmd=(--run bash -c "$demoCmds")
+        ;;
+esac
 
 # Build container.
 # Learn more: https://github.com/erikarvstedt/extra-container

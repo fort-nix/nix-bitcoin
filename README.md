@@ -48,6 +48,12 @@ shut down immediately. They leave no traces (outside of `/nix/store`) on the hos
   NixOps can be used to deploy to various other backends like cloud providers.\
   Requires: [Nix](https://nixos.org/nix/), [VirtualBox](https://www.virtualbox.org)
 
+Run the examples with option `--interactive` or `-i` to start a shell for interacting with
+the node:
+```bash
+./deploy-qemu-vm.sh -i
+```
+
 #### Tests
 The internal test suite is also useful for exploring features.  
 The following `run-tests.sh` commands leave no traces (outside of `/nix/store`) on
