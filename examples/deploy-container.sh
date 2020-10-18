@@ -17,7 +17,7 @@ fi
 if [[ ! -v IN_NIX_SHELL ]]; then
     echo "Running script in nix shell env..."
     cd "${BASH_SOURCE[0]%/*}"
-    exec nix-shell --run "${BASH_SOURCE[0]}"
+    exec nix-shell --run "./${BASH_SOURCE[0]##*/}"
 fi
 
 # Uncomment to start a container shell session
