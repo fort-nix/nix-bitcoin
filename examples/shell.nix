@@ -20,10 +20,12 @@ with nixpkgs;
 stdenv.mkDerivation rec {
   name = "nix-bitcoin-environment";
 
-  buildInputs = [ nix-bitcoin.nixops19_09 nix-bitcoin.extra-container figlet ];
+  path = lib.makeBinPath [ nix-bitcoin.nixops19_09 nix-bitcoin.extra-container figlet ];
 
   shellHook = ''
     export NIX_PATH="nixpkgs=${nixpkgs-path}:nix-bitcoin=${toString nix-bitcoin-path}:."
+    export PATH="${path}''${PATH:+:}$PATH"
+
     alias fetch-release="${toString nix-bitcoin-path}/helper/fetch-release"
 
     # ssh-agent and nixops don't play well together (see
@@ -33,7 +35,7 @@ stdenv.mkDerivation rec {
     export SSH_AUTH_SOCK=""
 
     figlet "nix-bitcoin"
-    (mkdir -p secrets; cd secrets; ${nix-bitcoin.generate-secrets})
+    (mkdir -p secrets; cd secrets; env -i ${nix-bitcoin.generate-secrets})
 
     # Don't run this hook when another nix-shell is run inside this shell
     unset shellHook
