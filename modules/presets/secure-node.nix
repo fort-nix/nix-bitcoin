@@ -43,8 +43,6 @@ in {
     services.tor = {
       enable = true;
       client.enable = true;
-      # LND uses ControlPort to create onion services
-      controlPort = mkIf cfg.lnd.enable 9051;
 
       hiddenServices.sshd = mkHiddenService { port = 22; };
     };
