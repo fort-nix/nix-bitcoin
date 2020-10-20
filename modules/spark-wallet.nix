@@ -52,11 +52,7 @@ in {
   };
 
   config = mkIf cfg.enable {
-    assertions = [
-      { assertion = config.services.clightning.enable;
-        message = "spark-wallet requires clightning.";
-      }
-    ];
+    services.clightning.enable = true;
 
     environment.systemPackages = [ pkgs.nix-bitcoin.spark-wallet ];
     users.users.spark-wallet = {

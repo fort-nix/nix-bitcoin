@@ -65,7 +65,7 @@
   ### SPARK WALLET
   # Enable this module to use spark-wallet, a minimalistic wallet GUI for
   # c-lightning, accessible over the web or through mobile and desktop apps.
-  # Only available if clightning is enabled.
+  # Automatically enables clightning.
   # services.spark-wallet.enable = true;
 
   ### ELECTRS
@@ -87,6 +87,7 @@
   # services.btcpayserver.lightningBackend = "clightning";
   # Enable this option to connect BTCPayServert to lnd.
   # services.btcpayserver.lightningBackend = "lnd";
+  # The lightning backend service automatically enabled.
   # Afterwards you need to go into Store > General Settings > Lightning Nodes
   # and click to use "the internal lightning node of this BTCPay Server".
 
@@ -99,13 +100,14 @@
 
   ### LIGHTNING CHARGE
   # Enable this module to use lightning-charge, a simple drop-in solution for
-  # accepting lightning payments. Only available if clightning is enabled.
+  # accepting lightning payments.
+  # Automatically enables clightning.
   # services.lightning-charge.enable = true;
 
   ### NANOPOS
   # Enable this module to use nanopos, a simple Lightning point-of-sale
-  # system, powered by Lightning Charge. Only available if clightning and
-  # lightning-charge are enabled.
+  # system, powered by Lightning Charge.
+  # Automatically enables lightning-charge.
   # services.nanopos.enable = true;
 
   ### WEBINDEX
@@ -117,7 +119,8 @@
   ### RECURRING-DONATIONS
   # Enable this module to send recurring donations. This is EXPERIMENTAL; it's
   # not guaranteed that payments are succeeding or that you will notice payment
-  # failure. Only available if clightning is enabled.
+  # failure.
+  # Automatically enables clightning.
   # services.recurring-donations.enable = true;
   # Specify the receivers of the donations. By default donations are every
   # Monday at a randomized time. Check `journalctl -eu recurring-donations` or
@@ -149,6 +152,7 @@
   # Enable this module to use lightninglab's non-custodial off/on chain bridge.
   # loopd (lightning-loop daemon) will be started automatically. Users can
   # interact with off/on chain bridge using `loop in` and `loop out`.
+  # Automatically enables lnd.
   # services.lightning-loop.enable = true;
 
   ### Backups

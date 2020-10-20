@@ -154,6 +154,8 @@ in {
       }
     ];
 
+    services.bitcoind.enable = true;
+
     environment.systemPackages = [ cfg.package (hiPrio cfg.cli) ];
 
     systemd.tmpfiles.rules = [

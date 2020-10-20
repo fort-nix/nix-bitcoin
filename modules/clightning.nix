@@ -100,6 +100,8 @@ in {
   };
 
   config = mkIf cfg.enable {
+    services.bitcoind.enable = true;
+
     environment.systemPackages = [ pkgs.nix-bitcoin.clightning (hiPrio cfg.cli) ];
     users.users.${cfg.user} = {
         description = "clightning User";

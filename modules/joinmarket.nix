@@ -117,6 +117,8 @@ in {
   };
 
   config = mkIf cfg.enable (mkMerge [{
+    services.bitcoind.enable = true;
+
     environment.systemPackages = [
       (hiPrio cfg.cli)
     ];

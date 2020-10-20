@@ -90,13 +90,9 @@ in {
   };
 
   config = mkIf cfg.btcpayserver.enable {
-    assertions = let
-      backend = cfg.btcpayserver.lightningBackend;
-    in [
-      { assertion = (backend != null) -> cfg.${backend}.enable;
-        message = "btcpayserver requires ${backend}.";
-      }
-    ];
+    services.bitcoind.enable = true;
+    services.clightning.enable = mkIf (cfg.btcpayserver.lightningBackend == "clightning") true;
+    services.lnd.enable = mkIf (cfg.btcpayserver.lightningBackend == "lnd") true;
 
     systemd.tmpfiles.rules = [
       "d '${cfg.nbxplorer.dataDir}' 0770 ${cfg.nbxplorer.user} ${cfg.nbxplorer.group} - -"

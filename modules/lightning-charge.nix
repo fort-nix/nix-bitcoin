@@ -38,11 +38,7 @@ in {
     warnings = [''
       The lightning-charge module is deprecated and will be removed soon.
     ''];
-    assertions = [
-      { assertion = config.services.clightning.enable;
-        message = "lightning-charge requires clightning.";
-      }
-    ];
+    services.clightning.enable = true;
 
     users.users.lightning-charge = {
       description = "lightning-charge User";

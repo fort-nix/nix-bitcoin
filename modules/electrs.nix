@@ -61,6 +61,8 @@ in {
       }
     ];
 
+    services.bitcoind.enable = true;
+
     environment.systemPackages = [ pkgs.nix-bitcoin.electrs ];
 
     systemd.tmpfiles.rules = [

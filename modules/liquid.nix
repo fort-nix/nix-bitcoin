@@ -221,6 +221,8 @@ in {
   };
 
   config = mkIf cfg.enable {
+    services.bitcoind.enable = true;
+
     environment.systemPackages = [
       pkgs.nix-bitcoin.elementsd
       (hiPrio cfg.cli)
