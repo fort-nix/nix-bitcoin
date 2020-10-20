@@ -11,7 +11,7 @@ set -euo pipefail
 if [[ ! -v IN_NIX_SHELL ]]; then
     echo "Running script in nix shell env..."
     cd "${BASH_SOURCE[0]%/*}"
-    exec nix-shell --run "${BASH_SOURCE[0]}"
+    exec nix-shell --run "./${BASH_SOURCE[0]##*/} $*"
 fi
 
 # Cleanup on exit
@@ -40,7 +40,11 @@ nixops deploy -d bitcoin-node
 nixops ssh bitcoin-node systemctl status bitcoind
 
 c() { nixops ssh bitcoin-node "$@"; }
-# Uncomment to start a shell session here
-# . start-bash-session.sh
+
+case ${1:-} in
+    -i|--interactive)
+        . start-bash-session.sh
+        ;;
+esac
 
 # Cleanup happens at exit (see above)
