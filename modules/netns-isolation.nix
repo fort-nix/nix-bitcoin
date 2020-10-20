@@ -50,7 +50,7 @@ in {
 
     addressblock = mkOption {
       type = types.ints.u8;
-      default = "1";
+      default = 1;
       description = ''
         The address block N in 169.254.N.0/24, used as the prefix for netns addresses.
       '';
