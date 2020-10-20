@@ -4,13 +4,13 @@
 
 let
   sources = {
-    "@babel/polyfill-7.10.4" = {
+    "@babel/polyfill-7.12.1" = {
       name = "_at_babel_slash_polyfill";
       packageName = "@babel/polyfill";
-      version = "7.10.4";
+      version = "7.12.1";
       src = fetchurl {
-        url = "https://registry.npmjs.org/@babel/polyfill/-/polyfill-7.10.4.tgz";
-        sha512 = "8BYcnVqQ5kMD2HXoHInBH7H1b/uP3KdnwCYXOqFnXqguOyuu443WXusbIUbWEfY3Z0Txk0M1uG/8YuAMhNl6zg==";
+        url = "https://registry.npmjs.org/@babel/polyfill/-/polyfill-7.12.1.tgz";
+        sha512 = "X0pi0V6gxLi6lFZpGmeNa4zxtwEmCs42isWLNjZZDE0Y8yVfgu0T2OAHlzBbdYlqbW/YXVvoBHpATEM+goCj8g==";
       };
     };
     "accepts-1.3.7" = {
@@ -85,13 +85,13 @@ let
         sha1 = "898508da2226f380df904728456849c1501a4b0d";
       };
     };
-    "ast-types-0.14.1" = {
+    "ast-types-0.14.2" = {
       name = "ast-types";
       packageName = "ast-types";
-      version = "0.14.1";
+      version = "0.14.2";
       src = fetchurl {
-        url = "https://registry.npmjs.org/ast-types/-/ast-types-0.14.1.tgz";
-        sha512 = "pfSiukbt23P1qMhNnsozLzhMLBs7EEeXqPyvPmnuZM+RMfwfqwDbSVKYflgGuVI7/VehR4oMks0igzdNAg4VeQ==";
+        url = "https://registry.npmjs.org/ast-types/-/ast-types-0.14.2.tgz";
+        sha512 = "O0yuUDnZeQDL+ncNGlJ78BiO4jnYI3bvMsD5prT0/nsgijG/LpNBIr63gTjVTNsiGkgQhiyCShTgxt8oXOrklA==";
       };
     };
     "asynckit-0.4.0" = {
@@ -418,13 +418,13 @@ let
         sha512 = "mel+jf7nrtEl5Pn1Qx46zARXKDpBbvzezse7p7LqINmdoIk8PYP5SySaxEmYv6TZ0JyEKA1hsCId6DIhgITtWQ==";
       };
     };
-    "debug-4.2.0" = {
+    "debug-4.3.0" = {
       name = "debug";
       packageName = "debug";
-      version = "4.2.0";
+      version = "4.3.0";
       src = fetchurl {
-        url = "https://registry.npmjs.org/debug/-/debug-4.2.0.tgz";
-        sha512 = "IX2ncY78vDTjZMFUdmsvIRFY2Cf4FnD0wRs+nQwJU8Lu99/tPFdb0VybiiMTPe3I6rQmwsqQqRBvxU+bZ/I8sg==";
+        url = "https://registry.npmjs.org/debug/-/debug-4.3.0.tgz";
+        sha512 = "jjO6JD2rKfiZQnBoRzhRTbXjHLGLfH+UtGkWLc/UXAh/rzZMyjbgn0NcfFpqT8nd1kTtFnDiJcrIFkq4UKeJVg==";
       };
     };
     "decamelize-1.2.0" = {
@@ -778,13 +778,13 @@ let
         sha512 = "WjKPNJF79dtJAVniUlGGWHYGz2jWxT6VhN/4m1NdkbZ2nOsEF+cI1Edgql5zCRhs/VsQYRvrXctxktVXZUkixw==";
       };
     };
-    "helmet-4.1.0" = {
+    "helmet-4.1.1" = {
       name = "helmet";
       packageName = "helmet";
-      version = "4.1.0";
+      version = "4.1.1";
       src = fetchurl {
-        url = "https://registry.npmjs.org/helmet/-/helmet-4.1.0.tgz";
-        sha512 = "KWy75fYN8hOG2Rhl8e5B3WhOzb0by1boQum85TiddIE9iu6gV+TXbUjVC17wfej0o/ZUpqB9kxM0NFCZRMzf+Q==";
+        url = "https://registry.npmjs.org/helmet/-/helmet-4.1.1.tgz";
+        sha512 = "Avg4XxSBrehD94mkRwEljnO+6RZx7AGfk8Wa6K1nxaU+hbXlFOhlOIMgPfFqOYQB/dBCsTpootTGuiOG+CHiQA==";
       };
     };
     "hosted-git-info-2.8.8" = {
@@ -877,13 +877,13 @@ let
         sha1 = "bdded70114290828c0a039e72ef25f5aaec4354a";
       };
     };
-    "ip-regex-4.1.0" = {
+    "ip-regex-4.2.0" = {
       name = "ip-regex";
       packageName = "ip-regex";
-      version = "4.1.0";
+      version = "4.2.0";
       src = fetchurl {
-        url = "https://registry.npmjs.org/ip-regex/-/ip-regex-4.1.0.tgz";
-        sha512 = "pKnZpbgCTfH/1NLIlOduP/V+WRXzC2MOz3Qo8xmxk8C5GudJLgK5QyLVXOSWy3ParAH7Eemurl3xjv/WXYFvMA==";
+        url = "https://registry.npmjs.org/ip-regex/-/ip-regex-4.2.0.tgz";
+        sha512 = "n5cDDeTWWRwK1EBoWwRti+8nP4NbytBBY0pldmnIkq6Z55KNFmWofh4rl9dPZpj+U/nVq7gweR3ylrvMt4YZ5A==";
       };
     };
     "ipaddr.js-1.9.1" = {
@@ -1724,13 +1724,13 @@ let
         sha512 = "cbqHunsQWnJNE6KhVSMsMeH5H/L9EpymbzqTQ3uLwNCLZ1Q481oWaofqH7nO6V07xlXwY6PhQdQ2IedWx/ZK4Q==";
       };
     };
-    "spdx-license-ids-3.0.5" = {
+    "spdx-license-ids-3.0.6" = {
       name = "spdx-license-ids";
       packageName = "spdx-license-ids";
-      version = "3.0.5";
+      version = "3.0.6";
       src = fetchurl {
-        url = "https://registry.npmjs.org/spdx-license-ids/-/spdx-license-ids-3.0.5.tgz";
-        sha512 = "J+FWzZoynJEXGphVIS+XEh3kFSjZX/1i9gFBaWQcB+/tmpe2qUsSBABpcxqxnAxFdiUFEgAX1bjYGQvIZmoz9Q==";
+        url = "https://registry.npmjs.org/spdx-license-ids/-/spdx-license-ids-3.0.6.tgz";
+        sha512 = "+orQK83kyMva3WyPf59k1+Y525csj5JejicWut55zeTWANuN17qSiSLUXWtzHeNWORSvT7GLDJ/E/XiIWoXBTw==";
       };
     };
     "statuses-1.5.0" = {
@@ -1814,13 +1814,13 @@ let
         sha1 = "5ef8db295d01e6ed6cbf7aab96998d7822527b68";
       };
     };
-    "superagent-5.3.1" = {
+    "superagent-6.1.0" = {
       name = "superagent";
       packageName = "superagent";
-      version = "5.3.1";
+      version = "6.1.0";
       src = fetchurl {
-        url = "https://registry.npmjs.org/superagent/-/superagent-5.3.1.tgz";
-        sha512 = "wjJ/MoTid2/RuGCOFtlacyGNxN9QLMgcpYLDQlWFIhhdJ93kNscFonGvrpAHSCVjRVj++DGCglocF7Aej1KHvQ==";
+        url = "https://registry.npmjs.org/superagent/-/superagent-6.1.0.tgz";
+        sha512 = "OUDHEssirmplo3F+1HWKUrUjvnQuA+nZI6i/JJBdXb5eq9IyEQwPyPpqND+SSsxf6TygpBEkUjISVRN4/VOpeg==";
       };
     };
     "superagent-proxy-git://github.com/shesek/superagent-proxy#b512f8bbcf1baa196058922ee3b6cfe45375ebc9" = {
@@ -1860,13 +1860,13 @@ let
         sha1 = "b403d0b91be50c331dfc4b82eeceb22c3de16d20";
       };
     };
-    "tslib-2.0.1" = {
+    "tslib-2.0.3" = {
       name = "tslib";
       packageName = "tslib";
-      version = "2.0.1";
+      version = "2.0.3";
       src = fetchurl {
-        url = "https://registry.npmjs.org/tslib/-/tslib-2.0.1.tgz";
-        sha512 = "SgIkNheinmEBgx1IUNirK0TUD4X9yjjBRTqqjggWCU3pUEqIk3/Uwl3yRixYKT6WjQuGiwDv4NomL3wqRCj+CQ==";
+        url = "https://registry.npmjs.org/tslib/-/tslib-2.0.3.tgz";
+        sha512 = "uZtkfKblCEQtZKBF6EBXVZeQNl82yqtDQdv+eck8u7tdPxjLu2/lp5/uPW+um2tpuxINHWy3GhiccY7QgEaVHQ==";
       };
     };
     "type-check-0.3.2" = {
@@ -2019,13 +2019,13 @@ in
   "spark-wallet-file:./package" = nodeEnv.buildNodePackage {
     name = "spark-wallet";
     packageName = "spark-wallet";
-    version = "0.2.16";
+    version = "0.2.17";
     src = fetchurl {
-      url = "https://github.com/shesek/spark-wallet/releases/download/v0.2.16/spark-wallet-0.2.16-npm.tgz";
-      sha256 = "b0e23db0daef606f68ca17b4192a3d7758f3fc2f9d6b20adc62d72a3adff362b";
+      url = "https://github.com/shesek/spark-wallet/releases/download/v0.2.17/spark-wallet-0.2.17-npm.tgz";
+      sha256 = "fb61f8246a219cf41694f38ec81ab925142060d67ad4f423ec9c643e49567320";
     };
     dependencies = [
-      sources."@babel/polyfill-7.10.4"
+      sources."@babel/polyfill-7.12.1"
       sources."accepts-1.3.7"
       sources."agent-base-4.3.0"
       sources."ansi-regex-4.1.0"
@@ -2033,7 +2033,7 @@ in
       sources."array-find-index-1.0.2"
       sources."array-flatten-1.1.1"
       sources."arrify-1.0.1"
-      sources."ast-types-0.14.1"
+      sources."ast-types-0.14.2"
       sources."asynckit-0.4.0"
       sources."base64-js-1.3.1"
       sources."basic-auth-2.0.1"
@@ -2048,7 +2048,7 @@ in
       sources."camelcase-keys-4.2.0"
       (sources."clightning-client-0.1.2" // {
         dependencies = [
-          sources."debug-4.2.0"
+          sources."debug-4.3.0"
           sources."ms-2.1.2"
         ];
       })
@@ -2131,7 +2131,7 @@ in
         ];
       })
       sources."graceful-fs-4.2.4"
-      sources."helmet-4.1.0"
+      sources."helmet-4.1.1"
       sources."hosted-git-info-2.8.8"
       sources."http-errors-1.7.2"
       (sources."http-proxy-agent-2.1.0" // {
@@ -2151,7 +2151,7 @@ in
       sources."inherits-2.0.3"
       sources."ini-1.3.5"
       sources."ip-1.1.5"
-      sources."ip-regex-4.1.0"
+      sources."ip-regex-4.2.0"
       sources."ipaddr.js-1.9.1"
       sources."is-arrayish-0.2.1"
       sources."is-fullwidth-code-point-2.0.0"
@@ -2192,7 +2192,7 @@ in
       sources."p-try-1.0.0"
       (sources."pac-proxy-agent-3.0.1" // {
         dependencies = [
-          sources."debug-4.2.0"
+          sources."debug-4.3.0"
           sources."ms-2.1.2"
         ];
       })
@@ -2210,7 +2210,7 @@ in
       sources."proxy-addr-2.0.6"
       (sources."proxy-agent-git://github.com/shesek/node-proxy-agent#0d916427f586e41a1a4485db88509218017f9696" // {
         dependencies = [
-          sources."debug-4.2.0"
+          sources."debug-4.3.0"
           sources."ms-2.1.2"
         ];
       })
@@ -2252,7 +2252,7 @@ in
       sources."spdx-correct-3.1.1"
       sources."spdx-exceptions-2.3.0"
       sources."spdx-expression-parse-3.0.1"
-      sources."spdx-license-ids-3.0.5"
+      sources."spdx-license-ids-3.0.6"
       sources."statuses-1.5.0"
       sources."string-template-0.2.1"
       sources."string-width-3.1.0"
@@ -2264,9 +2264,9 @@ in
       sources."strip-ansi-5.2.0"
       sources."strip-bom-3.0.0"
       sources."strip-indent-2.0.0"
-      (sources."superagent-5.3.1" // {
+      (sources."superagent-6.1.0" // {
         dependencies = [
-          sources."debug-4.2.0"
+          sources."debug-4.3.0"
           sources."mime-2.4.6"
           sources."ms-2.1.2"
           sources."qs-6.9.4"
@@ -2282,7 +2282,7 @@ in
       sources."thunkify-2.1.2"
       sources."toidentifier-1.0.0"
       sources."trim-newlines-2.0.0"
-      sources."tslib-2.0.1"
+      sources."tslib-2.0.3"
       sources."type-check-0.3.2"
       sources."type-is-1.6.18"
       sources."unpipe-1.0.0"

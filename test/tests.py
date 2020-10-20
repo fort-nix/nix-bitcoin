@@ -344,7 +344,10 @@ def _():
             "[[ $(sudo -u operator lncli getinfo | jq -M .block_height) == 10 ]]"
         )
     if "lightning-loop" in enabled_tests:
-        machine.wait_until_succeeds(log_has_string("lightning-loop", "Connected to lnd node"))
+        machine.wait_until_succeeds(
+            log_has_string("lightning-loop", "Starting event loop at height 10")
+        )
+        succeed("sudo -u operator loop getparams | jq -e '.rules'")
 
 
 if "netns-isolation" in enabled_tests:
