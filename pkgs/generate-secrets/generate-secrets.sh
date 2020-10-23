@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -euo pipefail
+
 opensslConf=${1:-openssl.cnf}
 
 makePasswordSecret() {

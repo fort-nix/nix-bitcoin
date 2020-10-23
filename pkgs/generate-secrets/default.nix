@@ -9,7 +9,7 @@ let
     exec ${pkgs.python3}/bin/python ${rpcauthSrc} "$@"
   '';
 in
-writeScript "generate-secrets" ''
+writers.writeBash "generate-secrets" ''
   export PATH=${lib.makeBinPath [ coreutils apg openssl gnugrep rpcauth ]}
   . ${./generate-secrets.sh} ${./openssl.cnf}
 ''
