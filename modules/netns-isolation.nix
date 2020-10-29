@@ -175,7 +175,6 @@ in {
           '') v.availableNetns;
           preStop = ''
             ${ip} netns delete ${netnsName}
-            ${ip} link del ${peer}
           '';
           serviceConfig = {
             Type = "oneshot";
