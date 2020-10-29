@@ -291,7 +291,7 @@ in {
       host = netns.nanopos.address;
     };
 
-    services.lightning-loop.cliExec = mkCliExec "lightning-loop";
+    services.lightning-loop.rpcAddress = netns.lightning-loop.address;
 
     services.nbxplorer.bind = netns.nbxplorer.address;
     services.btcpayserver.bind = netns.btcpayserver.address;

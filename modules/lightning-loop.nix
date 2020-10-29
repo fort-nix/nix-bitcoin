@@ -74,14 +74,13 @@ in {
     };
     cli = mkOption {
       default = pkgs.writeScriptBin "loop" ''
-        ${cfg.cliExec} ${cfg.package}/bin/loop \
+        ${cfg.package}/bin/loop \
         --rpcserver ${rpclisten} \
         --macaroonpath '${cfg.dataDir}/${network}/loop.macaroon' \
         --tlscertpath '${secretsDir}/loop-cert' "$@"
       '';
       description = "Binary to connect with the lightning-loop instance.";
     };
-    inherit (nix-bitcoin-services) cliExec;
     enforceTor = nix-bitcoin-services.enforceTor;
   };
 
