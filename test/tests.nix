@@ -115,6 +115,7 @@ let testEnv = rec {
       nix-bitcoin.netns-isolation.enable = true;
       test.data.netns = config.nix-bitcoin.netns-isolation.netns;
       tests.netns-isolation = true;
+      environment.systemPackages = [ pkgs.fping ];
 
       # This test is rather slow and unaffected by netns settings
       tests.backups = mkForce false;
