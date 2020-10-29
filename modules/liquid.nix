@@ -26,8 +26,8 @@ let
       (rpcUser: "rpcauth=${rpcUser.name}:${rpcUser.passwordHMAC}")
       (attrValues cfg.rpc.users)
     }
-    ${lib.concatMapStrings (rpcbind: "rpcbind=${rpcbind}\n") cfg.rpcbind}
-    rpcconnect=${builtins.elemAt cfg.rpcbind 0}
+    rpcbind=${cfg.rpcbind}
+    rpcconnect=${cfg.rpcbind}
     ${lib.concatMapStrings (rpcallowip: "rpcallowip=${rpcallowip}\n") cfg.rpcallowip}
     ${optionalString (cfg.rpcuser != null) "rpcuser=${cfg.rpcuser}"}
     ${optionalString (cfg.rpcpassword != null) "rpcpassword=${cfg.rpcpassword}"}
@@ -126,8 +126,8 @@ in {
       };
 
       rpcbind = mkOption {
-        type = types.listOf types.str;
-        default = [ "127.0.0.1" ];
+        type = types.str;
+        default = "127.0.0.1";
         description = ''
           Bind to given address to listen for JSON-RPC connections.
         '';
