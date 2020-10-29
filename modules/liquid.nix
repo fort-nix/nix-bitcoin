@@ -27,6 +27,7 @@ let
       (attrValues cfg.rpc.users)
     }
     ${lib.concatMapStrings (rpcbind: "rpcbind=${rpcbind}\n") cfg.rpcbind}
+    rpcconnect=${builtins.elemAt cfg.rpcbind 0}
     ${lib.concatMapStrings (rpcallowip: "rpcallowip=${rpcallowip}\n") cfg.rpcallowip}
     ${optionalString (cfg.rpcuser != null) "rpcuser=${cfg.rpcuser}"}
     ${optionalString (cfg.rpcpassword != null) "rpcpassword=${cfg.rpcpassword}"}
@@ -205,17 +206,16 @@ in {
       cli = mkOption {
         readOnly = true;
         default = pkgs.writeScriptBin "elements-cli" ''
-          ${cfg.cliExec} ${pkgs.nix-bitcoin.elementsd}/bin/elements-cli -datadir='${cfg.dataDir}' "$@"
+          ${pkgs.nix-bitcoin.elementsd}/bin/elements-cli -datadir='${cfg.dataDir}' "$@"
         '';
         description = "Binary to connect with the liquidd instance.";
       };
       swapCli = mkOption {
         default = pkgs.writeScriptBin "liquidswap-cli" ''
-          ${cfg.cliExec} ${pkgs.nix-bitcoin.liquid-swap}/bin/liquidswap-cli -c '${cfg.dataDir}/elements.conf' "$@"
+          ${pkgs.nix-bitcoin.liquid-swap}/bin/liquidswap-cli -c '${cfg.dataDir}/elements.conf' "$@"
         '';
         description = "Binary for managing liquid swaps.";
       };
-      inherit (nix-bitcoin-services) cliExec;
       enforceTor =  nix-bitcoin-services.enforceTor;
     };
   };

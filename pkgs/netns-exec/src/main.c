@@ -11,7 +11,6 @@
 
 static char *allowed_netns[] = {
     "nb-lightning-loop",
-    "nb-liquidd",
     "nb-joinmarket"
 };
 

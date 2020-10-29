@@ -270,14 +270,11 @@ in {
 
     services.liquidd = {
       bind = netns.liquidd.address;
-      rpcbind = [
-        "${netns.liquidd.address}"
-        "127.0.0.1"
-      ];
+      rpcbind = [ netns.liquidd.address ];
       rpcallowip = [
-        "127.0.0.1"
-      ] ++ map (n: "${netns.${n}.address}") netns.liquidd.availableNetns;
-      cliExec = mkCliExec "liquidd";
+        bridgeIp # For operator user
+        netns.liquidd.address
+      ] ++ map (n: netns.${n}.address) netns.liquidd.availableNetns;
     };
 
     services.electrs.address = netns.electrs.address;
