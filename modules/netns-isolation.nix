@@ -252,18 +252,11 @@ in {
 
     services.bitcoind = {
       bind = netns.bitcoind.address;
-      rpcbind = [
-        "${netns.bitcoind.address}"
-        "127.0.0.1"
-      ];
+      rpcbind = [ netns.bitcoind.address ];
       rpcallowip = [
-        "127.0.0.1"
-      ] ++ map (n: "${netns.${n}.address}") netns.bitcoind.availableNetns;
-      cli = let
-        inherit (config.services.bitcoind) cliBase;
-      in pkgs.writeScriptBin cliBase.name ''
-        exec netns-exec ${netns.bitcoind.netnsName} ${cliBase}/bin/${cliBase.name} "$@"
-      '';
+        bridgeIp # For operator user
+        netns.bitcoind.address
+      ] ++ map (n: netns.${n}.address) netns.bitcoind.availableNetns;
     };
     systemd.services.bitcoind-import-banlist.serviceConfig.NetworkNamespacePath = "/var/run/netns/nb-bitcoind";
 

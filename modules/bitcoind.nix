@@ -40,6 +40,7 @@ let
       '') (builtins.attrValues cfg.rpc.users)
     }
     ${lib.concatMapStrings (rpcbind: "rpcbind=${rpcbind}\n") cfg.rpcbind}
+    rpcconnect=${builtins.elemAt cfg.rpcbind 0}
     ${lib.concatMapStrings (rpcallowip: "rpcallowip=${rpcallowip}\n") cfg.rpcallowip}
 
     # Wallet options
@@ -275,17 +276,12 @@ in {
         description = "What type of addresses to use";
       };
       cli = mkOption {
-        type = types.package;
-        # Overriden on netns-isolation
-        default = cfg.cliBase;
-        description = "Binary to connect with the bitcoind instance.";
-      };
-      cliBase = mkOption {
         readOnly = true;
         type = types.package;
         default = pkgs.writeScriptBin "bitcoin-cli" ''
           exec ${cfg.package}/bin/bitcoin-cli -datadir='${cfg.dataDir}' "$@"
         '';
+        description = "Binary to connect with the bitcoind instance.";
       };
       enforceTor =  nix-bitcoin-services.enforceTor;
     };
@@ -341,9 +337,8 @@ in {
         fi
       '';
       postStart = ''
-        cd ${cfg.cliBase}/bin
         # Poll until bitcoind accepts commands. This can take a long time.
-        while ! ./bitcoin-cli getnetworkinfo &> /dev/null; do
+        while ! ${cfg.cli}/bin/bitcoin-cli getnetworkinfo &> /dev/null; do
           sleep 1
         done
       '';
@@ -368,7 +363,7 @@ in {
       bindsTo = [ "bitcoind.service" ];
       after = [ "bitcoind.service" ];
       script = ''
-        cd ${cfg.cliBase}/bin
+        cd ${cfg.cli}/bin
         echo "Importing node banlist..."
         cat ${./banlist.cli.txt} | while read line; do
             if ! err=$(eval "$line" 2>&1) && [[ $err != *already\ banned* ]]; then

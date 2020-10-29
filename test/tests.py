@@ -259,10 +259,11 @@ def _():
     assert_unreachable("bitcoind", ["btcpayserver", "spark-wallet", "lightning-loop"])
     assert_unreachable("btcpayserver", ["bitcoind", "lightning-loop", "liquidd"])
 
-    # netns-exec should drop capabilities
-    assert_full_match(
-        "su operator -c 'netns-exec nb-bitcoind capsh --print | grep Current '", "Current: =\n"
-    )
+    if "joinmarket" in enabled_tests:
+        # netns-exec should drop capabilities
+        assert_full_match(
+            "su operator -c 'netns-exec nb-joinmarket capsh --print | grep Current'", "Current: =\n"
+        )
 
     if "clightning" in enabled_tests:
         # netns-exec should fail for unauthorized namespaces

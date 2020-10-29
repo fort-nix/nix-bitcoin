@@ -145,7 +145,7 @@ let testEnv = rec {
 
       services.bitcoind.regtest = true;
       systemd.services.bitcoind.postStart = mkAfter ''
-        cli=${config.services.bitcoind.cliBase}/bin/bitcoin-cli
+        cli=${config.services.bitcoind.cli}/bin/bitcoin-cli
         address=$($cli getnewaddress)
         $cli generatetoaddress 10 $address
       '';
