@@ -259,16 +259,17 @@ def _():
     assert_unreachable("bitcoind", ["btcpayserver", "spark-wallet", "lightning-loop"])
     assert_unreachable("btcpayserver", ["bitcoind", "lightning-loop", "liquidd"])
 
-    # test that netns-exec can't be run for unauthorized namespace
-    machine.fail("netns-exec nb-electrs ip a")
-
-    # test that netns-exec drops capabilities
+    # netns-exec should drop capabilities
     assert_full_match(
         "su operator -c 'netns-exec nb-bitcoind capsh --print | grep Current '", "Current: =\n"
     )
 
-    # test that netns-exec can not be executed by users that are not operator
-    machine.fail("sudo -u clightning netns-exec nb-bitcoind ip a")
+    if "clightning" in enabled_tests:
+        # netns-exec should fail for unauthorized namespaces
+        machine.fail("netns-exec nb-clightning ip a")
+
+        # netns-exec should only be executable by the operator user
+        machine.fail("sudo -u clightning netns-exec nb-bitcoind ip a")
 
 
 # Impure: stops bitcoind (and dependent services)
