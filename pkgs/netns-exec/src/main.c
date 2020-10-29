@@ -10,7 +10,6 @@
 #include <sys/capability.h>
 
 static char *allowed_netns[] = {
-    "nb-lnd",
     "nb-lightning-loop",
     "nb-liquidd",
     "nb-joinmarket"

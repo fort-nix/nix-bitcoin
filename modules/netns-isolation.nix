@@ -264,15 +264,8 @@ in {
 
     services.lnd = {
       listen = netns.lnd.address;
-      rpclisten = [
-        "${netns.lnd.address}"
-        "127.0.0.1"
-      ];
-      restlisten = [
-        "${netns.lnd.address}"
-        "127.0.0.1"
-      ];
-      cliExec = mkCliExec "lnd";
+      rpclisten = [ netns.lnd.address ];
+      restlisten = [ netns.lnd.address ];
     };
 
     services.liquidd = {

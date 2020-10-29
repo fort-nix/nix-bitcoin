@@ -138,12 +138,13 @@ in {
       default = pkgs.writeScriptBin "lncli"
       # Switch user because lnd makes datadir contents readable by user only
       ''
-        ${cfg.cliExec} sudo -u lnd ${cfg.package}/bin/lncli --tlscertpath ${secretsDir}/lnd-cert \
+        sudo -u lnd ${cfg.package}/bin/lncli \
+          --rpcserver ${builtins.elemAt cfg.rpclisten 0}:${toString cfg.rpcPort} \
+          --tlscertpath '${secretsDir}/lnd-cert' \
           --macaroonpath '${networkDir}/admin.macaroon' "$@"
       '';
       description = "Binary to connect with the lnd instance.";
     };
-    inherit (nix-bitcoin-services) cliExec;
     enforceTor =  nix-bitcoin-services.enforceTor;
   };
 
@@ -188,12 +189,12 @@ in {
         RestartSec = "10s";
         ReadWritePaths = "${cfg.dataDir}";
         ExecStartPost = let
-          restPort = toString cfg.restPort;
+          restUrl = "https://${builtins.elemAt cfg.restlisten 0}:${toString cfg.restPort}/v1";
         in [
           # Run fully privileged for secrets dir write access
           "+${nix-bitcoin-services.script ''
             attempts=250
-            while ! { exec 3>/dev/tcp/127.0.0.1/${restPort} && exec 3>&-; } &>/dev/null; do
+            while ! { exec 3>/dev/tcp/${builtins.elemAt cfg.restlisten 0}/${toString cfg.restPort} && exec 3>&-; } &>/dev/null; do
                   ((attempts-- == 0)) && { echo "lnd REST service unreachable"; exit 1; }
                   sleep 0.1
             done
@@ -204,7 +205,7 @@ in {
               umask u=r,go=
               ${pkgs.curl}/bin/curl -s \
                 --cacert ${secretsDir}/lnd-cert \
-                -X GET https://127.0.0.1:${restPort}/v1/genseed | ${pkgs.jq}/bin/jq -c '.cipher_seed_mnemonic' > "$mnemonic"
+                -X GET ${restUrl}/genseed | ${pkgs.jq}/bin/jq -c '.cipher_seed_mnemonic' > "$mnemonic"
             fi
             chown lnd: "$mnemonic"
           ''}"
@@ -216,7 +217,7 @@ in {
                 --cacert ${secretsDir}/lnd-cert \
                 -X POST -d "{\"wallet_password\": \"$(cat ${secretsDir}/lnd-wallet-password | tr -d '\n' | base64 -w0)\", \
                 \"cipher_seed_mnemonic\": $(cat ${secretsDir}/lnd-seed-mnemonic | tr -d '\n')}" \
-                https://127.0.0.1:${restPort}/v1/initwallet
+                ${restUrl}/initwallet
 
               # Guarantees that RPC calls with cfg.cli succeed after the service is started
               echo Wait until wallet is created
@@ -231,11 +232,11 @@ in {
                 --cacert ${secretsDir}/lnd-cert \
                 -X POST \
                 -d "{\"wallet_password\": \"$(cat ${secretsDir}/lnd-wallet-password | tr -d '\n' | base64 -w0)\"}" \
-                https://127.0.0.1:${restPort}/v1/unlockwallet
+                ${restUrl}/unlockwallet
             fi
 
             # Wait until the RPC port is open
-            while ! { exec 3>/dev/tcp/127.0.0.1/${toString cfg.rpcPort}; } &>/dev/null; do
+            while ! { exec 3>/dev/tcp/${builtins.elemAt cfg.rpclisten 0}/${toString cfg.rpcPort}; } &>/dev/null; do
               sleep 0.1
             done
 
@@ -251,7 +252,7 @@ in {
                 --cacert ${secretsDir}/lnd-cert \
                 -X POST \
                 -d '{"permissions":[${cfg.macaroons.${macaroon}.permissions}]}' \
-                https://127.0.0.1:${restPort}/v1/macaroon |\
+                ${restUrl}/macaroon |\
                 ${pkgs.jq}/bin/jq -c '.macaroon' | ${pkgs.xxd}/bin/xxd -p -r > "$macaroonPath"
               chown ${cfg.macaroons.${macaroon}.user}: "$macaroonPath"
             '') (attrNames cfg.macaroons)}
