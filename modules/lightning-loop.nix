@@ -7,9 +7,12 @@ let
   inherit (config) nix-bitcoin-services;
   secretsDir = config.nix-bitcoin.secretsDir;
   network = config.services.bitcoind.network;
+  rpclisten = "${cfg.rpcAddress}:${toString cfg.rpcPort}";
   configFile = builtins.toFile "loop.conf" ''
     datadir=${cfg.dataDir}
     network=${network}
+    rpclisten=${rpclisten}
+    restlisten=${cfg.restAddress}:${toString cfg.restPort}
     logdir=${cfg.dataDir}/logs
     tlscertpath=${secretsDir}/loop-cert
     tlskeypath=${secretsDir}/loop-key
@@ -25,6 +28,26 @@ let
 in {
   options.services.lightning-loop = {
     enable = mkEnableOption "lightning-loop";
+    rpcAddress = mkOption {
+       type = types.str;
+       default = "localhost";
+       description = "Address to listen for gRPC connections.";
+    };
+    rpcPort = mkOption {
+       type = types.port;
+       default = 11010;
+       description = "Port to listen for gRPC connections.";
+    };
+    restAddress = mkOption {
+       type = types.str;
+       default = cfg.rpcAddress;
+       description = "Address to listen for REST connections.";
+    };
+    restPort = mkOption {
+       type = types.port;
+       default = 8081;
+       description = "Port to listen for REST connections.";
+    };
     package = mkOption {
       type = types.package;
       default = pkgs.nix-bitcoin.lightning-loop;
@@ -52,6 +75,7 @@ in {
     cli = mkOption {
       default = pkgs.writeScriptBin "loop" ''
         ${cfg.cliExec} ${cfg.package}/bin/loop \
+        --rpcserver ${rpclisten} \
         --macaroonpath '${cfg.dataDir}/${network}/loop.macaroon' \
         --tlscertpath '${secretsDir}/loop-cert' "$@"
       '';
