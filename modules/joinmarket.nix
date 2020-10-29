@@ -61,6 +61,16 @@ let
     taker_utxo_amtpercent = 20
     accept_commitment_broadcasts = 1
     commit_file_location = cmtdata/commitments.json
+
+    [PAYJOIN]
+    payjoin_version = 1
+    disable_output_substitution = 0
+    max_additional_fee_contribution = default
+    min_fee_rate = 1.1
+    onion_socks5_host = ${torAddress}
+    onion_socks5_port = 9050
+    tor_control_host = unix:/run/tor/control
+    hidden_service_ssl = false
   '';
 
    # The jm scripts create a 'logs' dir in the working dir,
@@ -126,6 +136,7 @@ in {
         description = "joinmarket User";
         group = "${cfg.group}";
         home = cfg.dataDir;
+        extraGroups = [ "tor" ];
     };
     users.groups.${cfg.group} = {};
     nix-bitcoin.operator = {
@@ -143,6 +154,7 @@ in {
     services.tor = {
       enable = true;
       client.enable = true;
+      controlSocket.enable = true;
     };
 
     systemd.services.joinmarket = {
