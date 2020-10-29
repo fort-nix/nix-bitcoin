@@ -337,7 +337,7 @@ def _():
         machine.wait_until_succeeds(
             log_has_string("lightning-loop", "Starting event loop at height 10")
         )
-        succeed("sudo -u operator loop getparams | jq -e '.rules'")
+        succeed("sudo -u operator loop getparams")
 
 
 if "netns-isolation" in enabled_tests:
