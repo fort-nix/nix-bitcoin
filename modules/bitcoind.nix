@@ -39,8 +39,8 @@ let
           "rpcwhitelist=${user.name}:${lib.strings.concatStringsSep "," user.rpcwhitelist}"}
       '') (builtins.attrValues cfg.rpc.users)
     }
-    ${lib.concatMapStrings (rpcbind: "rpcbind=${rpcbind}\n") cfg.rpcbind}
-    rpcconnect=${builtins.elemAt cfg.rpcbind 0}
+    rpcbind=${cfg.rpcbind}
+    rpcconnect=${cfg.rpcbind}
     ${lib.concatMapStrings (rpcallowip: "rpcallowip=${rpcallowip}\n") cfg.rpcallowip}
 
     # Wallet options
@@ -150,8 +150,8 @@ in {
         description = "Set the number of threads to service RPC calls";
       };
       rpcbind = mkOption {
-        type = types.listOf types.str;
-        default = [ "127.0.0.1" ];
+        type = types.str;
+        default = "127.0.0.1";
         description = ''
           Bind to given address to listen for JSON-RPC connections.
         '';

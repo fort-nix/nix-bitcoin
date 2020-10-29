@@ -20,7 +20,7 @@ let
     [BLOCKCHAIN]
     blockchain_source = bitcoin-rpc
     network = ${bitcoind.network}
-    rpc_host = ${builtins.elemAt bitcoind.rpcbind 0}
+    rpc_host = ${bitcoind.rpcbind}
     rpc_port = ${toString bitcoind.rpc.port}
     rpc_user = ${bitcoind.rpc.users.privileged.name}
     @@RPC_PASSWORD@@

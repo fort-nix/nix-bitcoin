@@ -13,7 +13,7 @@ let
     ${optionalString (cfg.proxy != null) "proxy=${cfg.proxy}"}
     always-use-proxy=${if cfg.always-use-proxy then "true" else "false"}
     bind-addr=${cfg.bind-addr}:${toString cfg.bindport}
-    bitcoin-rpcconnect=${builtins.elemAt config.services.bitcoind.rpcbind 0}
+    bitcoin-rpcconnect=${config.services.bitcoind.rpcbind}
     bitcoin-rpcport=${toString config.services.bitcoind.rpc.port}
     bitcoin-rpcuser=${config.services.bitcoind.rpc.users.public.name}
     rpc-file-mode=0660

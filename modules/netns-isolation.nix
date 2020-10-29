@@ -252,7 +252,7 @@ in {
 
     services.bitcoind = {
       bind = netns.bitcoind.address;
-      rpcbind = [ netns.bitcoind.address ];
+      rpcbind = netns.bitcoind.address;
       rpcallowip = [
         bridgeIp # For operator user
         netns.bitcoind.address
