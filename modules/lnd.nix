@@ -18,8 +18,8 @@ let
     tlskeypath=${secretsDir}/lnd-key
 
     listen=${toString cfg.listen}:${toString cfg.listenPort}
-    ${lib.concatMapStrings (rpclisten: "rpclisten=${rpclisten}:${toString cfg.rpcPort}\n") cfg.rpclisten}
-    ${lib.concatMapStrings (restlisten: "restlisten=${restlisten}:${toString cfg.restPort}\n") cfg.restlisten}
+    rpclisten=${cfg.rpclisten}
+    restlisten=${cfg.restlisten}
 
     bitcoin.${bitcoind.network}=1
     bitcoin.active=1
@@ -66,15 +66,15 @@ in {
       description = "Bind to given port to listen to peer connections";
     };
     rpclisten = mkOption {
-      type = types.listOf types.str;
-      default = [ "localhost" ];
+      type = types.str;
+      default = "localhost";
       description = ''
         Bind to given address to listen to RPC connections.
       '';
     };
     restlisten = mkOption {
-      type = types.listOf types.str;
-      default = [ "localhost" ];
+      type = types.str;
+      default = "localhost";
       description = ''
         Bind to given address to listen to REST connections.
       '';
@@ -139,7 +139,7 @@ in {
       # Switch user because lnd makes datadir contents readable by user only
       ''
         sudo -u lnd ${cfg.package}/bin/lncli \
-          --rpcserver ${builtins.elemAt cfg.rpclisten 0}:${toString cfg.rpcPort} \
+          --rpcserver ${cfg.rpclisten}:${toString cfg.rpcPort} \
           --tlscertpath '${secretsDir}/lnd-cert' \
           --macaroonpath '${networkDir}/admin.macaroon' "$@"
       '';
@@ -189,12 +189,12 @@ in {
         RestartSec = "10s";
         ReadWritePaths = "${cfg.dataDir}";
         ExecStartPost = let
-          restUrl = "https://${builtins.elemAt cfg.restlisten 0}:${toString cfg.restPort}/v1";
+          restUrl = "https://${cfg.restlisten}:${toString cfg.restPort}/v1";
         in [
           # Run fully privileged for secrets dir write access
           "+${nix-bitcoin-services.script ''
             attempts=250
-            while ! { exec 3>/dev/tcp/${builtins.elemAt cfg.restlisten 0}/${toString cfg.restPort} && exec 3>&-; } &>/dev/null; do
+            while ! { exec 3>/dev/tcp/${cfg.restlisten}/${toString cfg.restPort} && exec 3>&-; } &>/dev/null; do
                   ((attempts-- == 0)) && { echo "lnd REST service unreachable"; exit 1; }
                   sleep 0.1
             done
@@ -236,7 +236,7 @@ in {
             fi
 
             # Wait until the RPC port is open
-            while ! { exec 3>/dev/tcp/${builtins.elemAt cfg.rpclisten 0}/${toString cfg.rpcPort}; } &>/dev/null; do
+            while ! { exec 3>/dev/tcp/${cfg.rpclisten}/${toString cfg.rpcPort}; } &>/dev/null; do
               sleep 0.1
             done
 
