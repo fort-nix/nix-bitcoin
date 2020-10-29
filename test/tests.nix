@@ -111,12 +111,7 @@ let testEnv = rec {
     };
 
     netns = {
-      imports = [ scenarios.secureNode ];
-      nix-bitcoin.netns-isolation.enable = true;
-      test.data.netns = config.nix-bitcoin.netns-isolation.netns;
-      tests.netns-isolation = true;
-      environment.systemPackages = [ pkgs.fping ];
-
+      imports = with scenarios; [ netnsBase secureNode ];
       # This test is rather slow and unaffected by netns settings
       tests.backups = mkForce false;
     };
@@ -133,12 +128,24 @@ let testEnv = rec {
       services.joinmarket.enable = true;
     };
 
+    # netns and regtest, without secure-node.nix
+    netnsRegtest = {
+      imports = with scenarios; [ netnsBase regtest ];
+    };
+
+    netnsBase = {
+      nix-bitcoin.netns-isolation.enable = true;
+      test.data.netns = config.nix-bitcoin.netns-isolation.netns;
+      tests.netns-isolation = true;
+      environment.systemPackages = [ pkgs.fping ];
+    };
+
     regtestBase = {
       tests.regtest = true;
 
       services.bitcoind.regtest = true;
       systemd.services.bitcoind.postStart = mkAfter ''
-        cli=${config.services.bitcoind.cli}/bin/bitcoin-cli
+        cli=${config.services.bitcoind.cliBase}/bin/bitcoin-cli
         address=$($cli getnewaddress)
         $cli generatetoaddress 10 $address
       '';
