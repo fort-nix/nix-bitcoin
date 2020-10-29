@@ -141,6 +141,7 @@ in {
         inherit (v) netnsName;
         ipNetns = "${ip} -n ${netnsName}";
         netnsIptables = "${ip} netns exec ${netnsName} ${config.networking.firewall.package}/bin/iptables";
+        allowedAddresses = concatMapStringsSep "," (available: netns.${available}.address) v.availableNetns;
       in {
         "${n}".serviceConfig.NetworkNamespacePath = "/var/run/netns/${netnsName}";
 
@@ -165,15 +166,13 @@ in {
             ${netnsIptables} -w -A INPUT -s 127.0.0.1,${bridgeIp},${v.address} -j ACCEPT
             # allow return traffic to outgoing connections initiated by the service itself
             ${netnsIptables} -w -A INPUT -m conntrack --ctstate ESTABLISHED -j ACCEPT
-          '' + (optionalString (config.services.${n}.enforceTor or false)) ''
+          '' + optionalString (config.services.${n}.enforceTor or false) ''
             ${netnsIptables} -w -P OUTPUT DROP
             ${netnsIptables} -w -A OUTPUT -d 127.0.0.1,${bridgeIp},${v.address} -j ACCEPT
-          '' + concatMapStrings (otherNetns: let
-            other = netns.${otherNetns};
-          in ''
-            ${netnsIptables} -w -A INPUT -s ${other.address} -j ACCEPT
-            ${netnsIptables} -w -A OUTPUT -d ${other.address} -j ACCEPT
-          '') v.availableNetns;
+          '' + optionalString (v.availableNetns != []) ''
+            ${netnsIptables} -w -A INPUT -s ${allowedAddresses} -j ACCEPT
+            ${netnsIptables} -w -A OUTPUT -d ${allowedAddresses} -j ACCEPT
+          '';
           preStop = ''
             ${ip} netns delete ${netnsName}
           '';
