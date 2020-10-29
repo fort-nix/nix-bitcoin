@@ -91,7 +91,7 @@ in {
     };
     tor-socks = mkOption {
       type = types.nullOr types.str;
-      default = null;
+      default = if cfg.enforceTor then config.services.tor.client.socksListenAddress else null;
       description = "Set a socks proxy to use to connect to Tor nodes";
     };
     announce-tor = mkOption {
