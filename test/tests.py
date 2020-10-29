@@ -259,6 +259,12 @@ def _():
     assert_unreachable("bitcoind", ["btcpayserver", "spark-wallet", "lightning-loop"])
     assert_unreachable("btcpayserver", ["bitcoind", "lightning-loop", "liquidd"])
 
+    # netns addresses can not be bound to in the main netns.
+    # This prevents processes in the main netns from impersonating nix-bitcoin services.
+    assert_matches(
+        f"nc -l {ip('bitcoind')} 1080 2>&1 || true", "nc: Cannot assign requested address"
+    )
+
     if "joinmarket" in enabled_tests:
         # netns-exec should drop capabilities
         assert_full_match(
