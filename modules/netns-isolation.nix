@@ -50,7 +50,7 @@ in {
 
     addressblock = mkOption {
       type = types.ints.u8;
-      default = "1";
+      default = 1;
       description = ''
         The address block N in 169.254.N.0/24, used as the prefix for netns addresses.
       '';
@@ -141,6 +141,7 @@ in {
         inherit (v) netnsName;
         ipNetns = "${ip} -n ${netnsName}";
         netnsIptables = "${ip} netns exec ${netnsName} ${config.networking.firewall.package}/bin/iptables";
+        allowedAddresses = concatMapStringsSep "," (available: netns.${available}.address) v.availableNetns;
       in {
         "${n}".serviceConfig.NetworkNamespacePath = "/var/run/netns/${netnsName}";
 
@@ -151,6 +152,7 @@ in {
           requiredBy = bindsTo;
           before = bindsTo;
           script = ''
+            ${ip} netns delete ${netnsName} 2> /dev/null || true
             ${ip} netns add ${netnsName}
             ${ipNetns} link set lo up
             ${ip} link add ${veth} type veth peer name ${peer}
@@ -164,23 +166,19 @@ in {
             ${netnsIptables} -w -A INPUT -s 127.0.0.1,${bridgeIp},${v.address} -j ACCEPT
             # allow return traffic to outgoing connections initiated by the service itself
             ${netnsIptables} -w -A INPUT -m conntrack --ctstate ESTABLISHED -j ACCEPT
-          '' + (optionalString (config.services.${n}.enforceTor or false)) ''
+          '' + optionalString (config.services.${n}.enforceTor or false) ''
             ${netnsIptables} -w -P OUTPUT DROP
             ${netnsIptables} -w -A OUTPUT -d 127.0.0.1,${bridgeIp},${v.address} -j ACCEPT
-          '' + concatMapStrings (otherNetns: let
-            other = netns.${otherNetns};
-          in ''
-            ${netnsIptables} -w -A INPUT -s ${other.address} -j ACCEPT
-            ${netnsIptables} -w -A OUTPUT -d ${other.address} -j ACCEPT
-          '') v.availableNetns;
+          '' + optionalString (v.availableNetns != []) ''
+            ${netnsIptables} -w -A INPUT -s ${allowedAddresses} -j ACCEPT
+            ${netnsIptables} -w -A OUTPUT -d ${allowedAddresses} -j ACCEPT
+          '';
           preStop = ''
             ${ip} netns delete ${netnsName}
-            ${ip} link del ${peer}
           '';
           serviceConfig = {
             Type = "oneshot";
             RemainAfterExit = "yes";
-            ExecStartPre = "-${ip} netns delete ${netnsName}";
           };
         };
       };
@@ -252,18 +250,11 @@ in {
 
     services.bitcoind = {
       bind = netns.bitcoind.address;
-      rpcbind = [
-        "${netns.bitcoind.address}"
-        "127.0.0.1"
-      ];
+      rpcbind = netns.bitcoind.address;
       rpcallowip = [
-        "127.0.0.1"
-      ] ++ map (n: "${netns.${n}.address}") netns.bitcoind.availableNetns;
-      cli = let
-        inherit (config.services.bitcoind) cliBase;
-      in pkgs.writeScriptBin cliBase.name ''
-        exec netns-exec ${netns.bitcoind.netnsName} ${cliBase}/bin/${cliBase.name} "$@"
-      '';
+        bridgeIp # For operator user
+        netns.bitcoind.address
+      ] ++ map (n: netns.${n}.address) netns.bitcoind.availableNetns;
     };
     systemd.services.bitcoind-import-banlist.serviceConfig.NetworkNamespacePath = "/var/run/netns/nb-bitcoind";
 
@@ -271,27 +262,17 @@ in {
 
     services.lnd = {
       listen = netns.lnd.address;
-      rpclisten = [
-        "${netns.lnd.address}"
-        "127.0.0.1"
-      ];
-      restlisten = [
-        "${netns.lnd.address}"
-        "127.0.0.1"
-      ];
-      cliExec = mkCliExec "lnd";
+      rpclisten = netns.lnd.address;
+      restlisten = netns.lnd.address;
     };
 
     services.liquidd = {
       bind = netns.liquidd.address;
-      rpcbind = [
-        "${netns.liquidd.address}"
-        "127.0.0.1"
-      ];
+      rpcbind = netns.liquidd.address;
       rpcallowip = [
-        "127.0.0.1"
-      ] ++ map (n: "${netns.${n}.address}") netns.liquidd.availableNetns;
-      cliExec = mkCliExec "liquidd";
+        bridgeIp # For operator user
+        netns.liquidd.address
+      ] ++ map (n: netns.${n}.address) netns.liquidd.availableNetns;
     };
 
     services.electrs.address = netns.electrs.address;
@@ -308,7 +289,7 @@ in {
       host = netns.nanopos.address;
     };
 
-    services.lightning-loop.cliExec = mkCliExec "lightning-loop";
+    services.lightning-loop.rpcAddress = netns.lightning-loop.address;
 
     services.nbxplorer.bind = netns.nbxplorer.address;
     services.btcpayserver.bind = netns.btcpayserver.address;

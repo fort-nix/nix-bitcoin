@@ -26,11 +26,12 @@ let
       (rpcUser: "rpcauth=${rpcUser.name}:${rpcUser.passwordHMAC}")
       (attrValues cfg.rpc.users)
     }
-    ${lib.concatMapStrings (rpcbind: "rpcbind=${rpcbind}\n") cfg.rpcbind}
+    rpcbind=${cfg.rpcbind}
+    rpcconnect=${cfg.rpcbind}
     ${lib.concatMapStrings (rpcallowip: "rpcallowip=${rpcallowip}\n") cfg.rpcallowip}
     ${optionalString (cfg.rpcuser != null) "rpcuser=${cfg.rpcuser}"}
     ${optionalString (cfg.rpcpassword != null) "rpcpassword=${cfg.rpcpassword}"}
-    mainchainrpchost=${builtins.elemAt config.services.bitcoind.rpcbind 0}
+    mainchainrpchost=${config.services.bitcoind.rpcbind}
     mainchainrpcport=${toString config.services.bitcoind.rpc.port}
     mainchainrpcuser=${config.services.bitcoind.rpc.users.public.name}
 
@@ -125,8 +126,8 @@ in {
       };
 
       rpcbind = mkOption {
-        type = types.listOf types.str;
-        default = [ "127.0.0.1" ];
+        type = types.str;
+        default = "127.0.0.1";
         description = ''
           Bind to given address to listen for JSON-RPC connections.
         '';
@@ -160,7 +161,7 @@ in {
       };
       proxy = mkOption {
         type = types.nullOr types.str;
-        default = null;
+        default = if cfg.enforceTor then config.services.tor.client.socksListenAddress else null;
         description = "Connect through SOCKS5 proxy";
       };
       listen = mkOption {
@@ -205,17 +206,16 @@ in {
       cli = mkOption {
         readOnly = true;
         default = pkgs.writeScriptBin "elements-cli" ''
-          ${cfg.cliExec} ${pkgs.nix-bitcoin.elementsd}/bin/elements-cli -datadir='${cfg.dataDir}' "$@"
+          ${pkgs.nix-bitcoin.elementsd}/bin/elements-cli -datadir='${cfg.dataDir}' "$@"
         '';
         description = "Binary to connect with the liquidd instance.";
       };
       swapCli = mkOption {
         default = pkgs.writeScriptBin "liquidswap-cli" ''
-          ${cfg.cliExec} ${pkgs.nix-bitcoin.liquid-swap}/bin/liquidswap-cli -c '${cfg.dataDir}/elements.conf' "$@"
+          ${pkgs.nix-bitcoin.liquid-swap}/bin/liquidswap-cli -c '${cfg.dataDir}/elements.conf' "$@"
         '';
         description = "Binary for managing liquid swaps.";
       };
-      inherit (nix-bitcoin-services) cliExec;
       enforceTor =  nix-bitcoin-services.enforceTor;
     };
   };

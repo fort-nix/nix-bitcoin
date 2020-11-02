@@ -13,7 +13,7 @@ let
     ${optionalString (cfg.proxy != null) "proxy=${cfg.proxy}"}
     always-use-proxy=${if cfg.always-use-proxy then "true" else "false"}
     bind-addr=${cfg.bind-addr}:${toString cfg.bindport}
-    bitcoin-rpcconnect=${builtins.elemAt config.services.bitcoind.rpcbind 0}
+    bitcoin-rpcconnect=${config.services.bitcoind.rpcbind}
     bitcoin-rpcport=${toString config.services.bitcoind.rpc.port}
     bitcoin-rpcuser=${config.services.bitcoind.rpc.users.public.name}
     rpc-file-mode=0660
@@ -38,12 +38,12 @@ in {
     };
     proxy = mkOption {
       type = types.nullOr types.str;
-      default = null;
+      default = if cfg.enforceTor then config.services.tor.client.socksListenAddress else null;
       description = "Set a socks proxy to use to connect to Tor nodes (or for all connections if *always-use-proxy* is set)";
     };
     always-use-proxy = mkOption {
       type = types.bool;
-      default = false;
+      default = cfg.enforceTor;
       description = ''
         Always use the *proxy*, even to connect to normal IP addresses (you can still connect to Unix domain sockets manually). This also disables all DNS lookups, to avoid leaking information.
       '';

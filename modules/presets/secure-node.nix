@@ -49,17 +49,11 @@ in {
       hiddenServices.sshd = mkHiddenService { port = 22; };
     };
 
-    # netns-isolation
-    nix-bitcoin.netns-isolation = {
-      addressblock = 1;
-    };
-
     # bitcoind
     services.bitcoind = {
       enable = true;
       listen = true;
       dataDirReadableByGroup = mkIf cfg.electrs.high-memory true;
-      proxy = cfg.tor.client.socksListenAddress;
       enforceTor = true;
       port = 8333;
       assumevalid = "00000000000000000000e5abc3a74fe27dc0ead9c70ea1deb456f11c15fd7bc6";
@@ -74,11 +68,7 @@ in {
     services.tor.hiddenServices.bitcoind = mkHiddenService { port = cfg.bitcoind.port; toHost = cfg.bitcoind.bind; };
 
     # clightning
-    services.clightning = {
-      proxy = cfg.tor.client.socksListenAddress;
-      enforceTor = true;
-      always-use-proxy = true;
-    };
+    services.clightning.enforceTor = true;
     services.tor.hiddenServices.clightning = mkIf cfg.clightning.enable (mkHiddenService {
       port = cfg.clightning.onionport;
       toHost = cfg.clightning.bind-addr;
@@ -86,17 +76,11 @@ in {
     });
 
     # lnd
-    services.lnd = {
-      tor-socks = cfg.tor.client.socksListenAddress;
-      enforceTor = true;
-    };
+    services.lnd.enforceTor = true;
     services.tor.hiddenServices.lnd = mkIf cfg.lnd.enable (mkHiddenService { port = cfg.lnd.onionport; toHost = cfg.lnd.listen; toPort = cfg.lnd.listenPort; });
 
     # lightning-loop
-    services.lightning-loop = {
-      proxy = cfg.tor.client.socksListenAddress;
-      enforceTor = true;
-    };
+    services.lightning-loop.enforceTor = true;
 
     # liquidd
     services.liquidd = {
@@ -104,7 +88,6 @@ in {
       prune = 1000;
       validatepegin = true;
       listen = true;
-      proxy = cfg.tor.client.socksListenAddress;
       enforceTor = true;
       port = 7042;
     };

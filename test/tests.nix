@@ -111,11 +111,7 @@ let testEnv = rec {
     };
 
     netns = {
-      imports = [ scenarios.secureNode ];
-      nix-bitcoin.netns-isolation.enable = true;
-      test.data.netns = config.nix-bitcoin.netns-isolation.netns;
-      tests.netns-isolation = true;
-
+      imports = with scenarios; [ netnsBase secureNode ];
       # This test is rather slow and unaffected by netns settings
       tests.backups = mkForce false;
     };
@@ -130,6 +126,18 @@ let testEnv = rec {
       services.electrs.enable = true;
       services.btcpayserver.enable = true;
       services.joinmarket.enable = true;
+    };
+
+    # netns and regtest, without secure-node.nix
+    netnsRegtest = {
+      imports = with scenarios; [ netnsBase regtest ];
+    };
+
+    netnsBase = {
+      nix-bitcoin.netns-isolation.enable = true;
+      test.data.netns = config.nix-bitcoin.netns-isolation.netns;
+      tests.netns-isolation = true;
+      environment.systemPackages = [ pkgs.fping ];
     };
 
     regtestBase = {

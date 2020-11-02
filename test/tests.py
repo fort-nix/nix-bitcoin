@@ -237,50 +237,46 @@ def _():
 # (and their corresponding network namespaces).
 @test("netns-isolation")
 def _():
-    ping_bitcoind = "ip netns exec nb-bitcoind ping -c 1 -w 1"
-    ping_nanopos = "ip netns exec nb-nanopos ping -c 1 -w 1"
-    ping_nbxplorer = "ip netns exec nb-nbxplorer ping -c 1 -w 1"
+    def get_ips(services):
+        enabled = enabled_tests.intersection(services)
+        return " ".join(ip(service) for service in enabled)
 
-    # Positive ping tests (non-exhaustive)
-    machine.succeed(
-        "%s %s &&" % (ping_bitcoind, ip("bitcoind"))
-        + "%s %s &&" % (ping_bitcoind, ip("clightning"))
-        + "%s %s &&" % (ping_bitcoind, ip("lnd"))
-        + "%s %s &&" % (ping_bitcoind, ip("liquidd"))
-        + "%s %s &&" % (ping_bitcoind, ip("nbxplorer"))
-        + "%s %s &&" % (ping_nbxplorer, ip("btcpayserver"))
-        + "%s %s &&" % (ping_nanopos, ip("lightning-charge"))
-        + "%s %s &&" % (ping_nanopos, ip("nanopos"))
-        + "%s %s" % (ping_nanopos, ip("nginx"))
+    def assert_reachable(src, dests):
+        dest_ips = get_ips(dests)
+        if src in enabled_tests and dest_ips:
+            machine.succeed(f"ip netns exec nb-{src} fping -c1 -t100 {dest_ips}")
+
+    def assert_unreachable(src, dests):
+        dest_ips = get_ips(dests)
+        if src in enabled_tests and dest_ips:
+            machine.fail(
+                # This fails when no host is reachable within 100 ms
+                f"ip netns exec nb-{src} fping -c1 -t100 --reachable=1 {dest_ips}"
+            )
+
+    # These reachability tests are non-exhaustive
+    assert_reachable("bitcoind", ["clightning", "lnd", "liquidd"])
+    assert_unreachable("bitcoind", ["btcpayserver", "spark-wallet", "lightning-loop"])
+    assert_unreachable("btcpayserver", ["bitcoind", "lightning-loop", "liquidd"])
+
+    # netns addresses can not be bound to in the main netns.
+    # This prevents processes in the main netns from impersonating nix-bitcoin services.
+    assert_matches(
+        f"nc -l {ip('bitcoind')} 1080 2>&1 || true", "nc: Cannot assign requested address"
     )
 
-    # Negative ping tests (non-exhaustive)
-    machine.fail(
-        "%s %s ||" % (ping_bitcoind, ip("spark-wallet"))
-        + "%s %s ||" % (ping_bitcoind, ip("lightning-loop"))
-        + "%s %s ||" % (ping_bitcoind, ip("lightning-charge"))
-        + "%s %s ||" % (ping_bitcoind, ip("nanopos"))
-        + "%s %s ||" % (ping_bitcoind, ip("nginx"))
-        + "%s %s ||" % (ping_nanopos, ip("bitcoind"))
-        + "%s %s ||" % (ping_nanopos, ip("clightning"))
-        + "%s %s ||" % (ping_nanopos, ip("lnd"))
-        + "%s %s ||" % (ping_nanopos, ip("lightning-loop"))
-        + "%s %s ||" % (ping_nanopos, ip("liquidd"))
-        + "%s %s ||" % (ping_nanopos, ip("electrs"))
-        + "%s %s ||" % (ping_nanopos, ip("spark-wallet"))
-        + "%s %s" % (ping_nanopos, ip("btcpayserver"))
-    )
+    if "joinmarket" in enabled_tests:
+        # netns-exec should drop capabilities
+        assert_full_match(
+            "su operator -c 'netns-exec nb-joinmarket capsh --print | grep Current'", "Current: =\n"
+        )
 
-    # test that netns-exec can't be run for unauthorized namespace
-    machine.fail("netns-exec nb-electrs ip a")
+    if "clightning" in enabled_tests:
+        # netns-exec should fail for unauthorized namespaces
+        machine.fail("netns-exec nb-clightning ip a")
 
-    # test that netns-exec drops capabilities
-    assert_full_match(
-        "su operator -c 'netns-exec nb-bitcoind capsh --print | grep Current '", "Current: =\n"
-    )
-
-    # test that netns-exec can not be executed by users that are not operator
-    machine.fail("sudo -u clightning netns-exec nb-bitcoind ip a")
+        # netns-exec should only be executable by the operator user
+        machine.fail("sudo -u clightning netns-exec nb-bitcoind ip a")
 
 
 # Impure: stops bitcoind (and dependent services)
@@ -347,7 +343,7 @@ def _():
         machine.wait_until_succeeds(
             log_has_string("lightning-loop", "Starting event loop at height 10")
         )
-        succeed("sudo -u operator loop getparams | jq -e '.rules'")
+        succeed("sudo -u operator loop getparams")
 
 
 if "netns-isolation" in enabled_tests:
