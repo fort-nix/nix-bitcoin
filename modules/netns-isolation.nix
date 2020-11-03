@@ -152,7 +152,6 @@ in {
           requiredBy = bindsTo;
           before = bindsTo;
           script = ''
-            ${ip} netns delete ${netnsName} 2> /dev/null || true
             ${ip} netns add ${netnsName}
             ${ipNetns} link set lo up
             ${ip} link add ${veth} type veth peer name ${peer}
