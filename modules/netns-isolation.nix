@@ -152,7 +152,6 @@ in {
           requiredBy = bindsTo;
           before = bindsTo;
           script = ''
-            ${ip} netns delete ${netnsName} 2> /dev/null || true
             ${ip} netns add ${netnsName}
             ${ipNetns} link set lo up
             ${ip} link add ${veth} type veth peer name ${peer}
@@ -173,8 +172,13 @@ in {
             ${netnsIptables} -w -A INPUT -s ${allowedAddresses} -j ACCEPT
             ${netnsIptables} -w -A OUTPUT -d ${allowedAddresses} -j ACCEPT
           '';
+          # Link deletion is implicit in netns deletion, but it sometimes only happens
+          # after `netns delete` finishes. Add an extra `link del` to ensure that
+          # the link is deleted before the service stops, which is needed for service
+          # restart to succeed.
           preStop = ''
             ${ip} netns delete ${netnsName}
+            ${ip} link del ${peer} 2> /dev/null || true
           '';
           serviceConfig = {
             Type = "oneshot";
