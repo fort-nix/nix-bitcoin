@@ -8,11 +8,11 @@ in
 {
   # To update, run ../helper/fetch-channel REV
   nixpkgs = fetch {
-    rev = "5659cb448e9b615d642c5fe52779c2223e72f7eb";
-    sha256 = "1ijwr9jlvdnvr1qqpfdm61nwd871sj4dam28pcv0pvnmp8ndylak";
+    rev = "a9226f2b3a52fcbbc5587d2fa030729e714f40fe";
+    sha256 = "0xlzkymfrkj7z7b6hwliq2zn6pbjw08zka0qyv5bbnkhnv16x1dh";
   };
   nixpkgs-unstable = fetch {
-    rev = "daaa0e33505082716beb52efefe3064f0332b521";
-    sha256 = "15vprzpbllp9hy5md36ch1llzhxhd44d291kawcslgrzibw51f95";
+    rev = "84d74ae9c9cbed73274b8e4e00be14688ffc93fe";
+    sha256 = "0ww70kl08rpcsxb9xdx8m48vz41dpss4hh3vvsmswll35l158x0v";
   };
 }
