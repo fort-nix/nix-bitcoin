@@ -5,6 +5,7 @@ with lib;
 let
   cfg = config.services.liquidd;
   inherit (config) nix-bitcoin-services;
+  nbPkgs = config.nix-bitcoin.pkgs;
   secretsDir = config.nix-bitcoin.secretsDir;
   pidFile = "${cfg.dataDir}/liquidd.pid";
   configFile = pkgs.writeText "elements.conf" ''
@@ -206,13 +207,13 @@ in {
       cli = mkOption {
         readOnly = true;
         default = pkgs.writeScriptBin "elements-cli" ''
-          ${pkgs.nix-bitcoin.elementsd}/bin/elements-cli -datadir='${cfg.dataDir}' "$@"
+          ${nbPkgs.elementsd}/bin/elements-cli -datadir='${cfg.dataDir}' "$@"
         '';
         description = "Binary to connect with the liquidd instance.";
       };
       swapCli = mkOption {
         default = pkgs.writeScriptBin "liquidswap-cli" ''
-          ${pkgs.nix-bitcoin.liquid-swap}/bin/liquidswap-cli -c '${cfg.dataDir}/elements.conf' "$@"
+          ${nbPkgs.liquid-swap}/bin/liquidswap-cli -c '${cfg.dataDir}/elements.conf' "$@"
         '';
         description = "Binary for managing liquid swaps.";
       };
@@ -224,7 +225,7 @@ in {
     services.bitcoind.enable = true;
 
     environment.systemPackages = [
-      pkgs.nix-bitcoin.elementsd
+      nbPkgs.elementsd
       (hiPrio cfg.cli)
       (hiPrio cfg.swapCli)
     ];
@@ -249,7 +250,7 @@ in {
         Type = "simple";
         User = "${cfg.user}";
         Group = "${cfg.group}";
-        ExecStart = "${pkgs.nix-bitcoin.elementsd}/bin/elementsd ${cmdlineOptions}";
+        ExecStart = "${nbPkgs.elementsd}/bin/elementsd ${cmdlineOptions}";
         PIDFile = "${pidFile}";
         Restart = "on-failure";
         ReadWritePaths = "${cfg.dataDir}";

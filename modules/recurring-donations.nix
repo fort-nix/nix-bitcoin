@@ -6,7 +6,7 @@ let
   cfg = config.services.recurring-donations;
   inherit (config) nix-bitcoin-services;
   recurring-donations-script = pkgs.writeScript "recurring-donations.sh" ''
-    LNCLI="${pkgs.nix-bitcoin.clightning}/bin/lightning-cli --lightning-dir=${config.services.clightning.dataDir}"
+    LNCLI="${config.nix-bitcoin.pkgs.clightning}/bin/lightning-cli --lightning-dir=${config.services.clightning.dataDir}"
     pay_tallycoin() {
       NAME=$1
       AMOUNT=$2

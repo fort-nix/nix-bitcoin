@@ -59,7 +59,7 @@ in {
       enable = mkEnableOption "Bitcoin daemon";
       package = mkOption {
         type = types.package;
-        default = pkgs.nix-bitcoin.bitcoind;
+        default = config.nix-bitcoin.pkgs.bitcoind;
         defaultText = "pkgs.blockchains.bitcoind";
         description = "The package providing bitcoin binaries.";
       };

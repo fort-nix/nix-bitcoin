@@ -50,8 +50,7 @@ in {
     };
     package = mkOption {
       type = types.package;
-      default = pkgs.nix-bitcoin.lightning-loop;
-      defaultText = "pkgs.nix-bitcoin.lightning-loop";
+      default = config.nix-bitcoin.pkgs.lightning-loop;
       description = "The package providing lightning-loop binaries.";
     };
     dataDir = mkOption {

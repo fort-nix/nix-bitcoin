@@ -5,13 +5,13 @@ with lib;
 let
   cfg = config.services;
   inherit (config) nix-bitcoin-services;
+  nbPkgs = config.nix-bitcoin.pkgs;
 in {
   options.services = {
     nbxplorer = {
       package = mkOption {
         type = types.package;
-        default = pkgs.nix-bitcoin.nbxplorer;
-        defaultText = "pkgs.nix-bitcoin.nbxplorer";
+        default = nbPkgs.nbxplorer;
         description = "The package providing nbxplorer binaries.";
       };
       dataDir = mkOption {
@@ -51,8 +51,7 @@ in {
       enable = mkEnableOption "btcpayserver";
       package = mkOption {
         type = types.package;
-        default = pkgs.nix-bitcoin.btcpayserver;
-        defaultText = "pkgs.nix-bitcoin.btcpayserver";
+        default = nbPkgs.btcpayserver;
         description = "The package providing btcpayserver binaries.";
       };
       dataDir = mkOption {

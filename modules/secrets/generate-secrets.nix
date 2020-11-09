@@ -20,7 +20,7 @@ with lib;
       cd "${config.nix-bitcoin.secretsDir}"
       chown root: .
       chmod 0700 .
-      ${pkgs.nix-bitcoin.generate-secrets}
+      ${config.nix-bitcoin.pkgs.generate-secrets}
     '';
   };
 }

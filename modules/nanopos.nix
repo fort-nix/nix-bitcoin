@@ -99,7 +99,7 @@ in {
       after = [ "lightning-charge.service" ];
       serviceConfig = nix-bitcoin-services.defaultHardening // {
         EnvironmentFile = "${config.nix-bitcoin.secretsDir}/nanopos-env";
-        ExecStart = "${pkgs.nix-bitcoin.nanopos}/bin/nanopos -y ${cfg.itemsFile} -i ${toString cfg.host} -p ${toString cfg.port} -c ${toString cfg.charged-url} --show-bolt11 ${cfg.extraArgs}";
+        ExecStart = "${config.nix-bitcoin.pkgs.nanopos}/bin/nanopos -y ${cfg.itemsFile} -i ${toString cfg.host} -p ${toString cfg.port} -c ${toString cfg.charged-url} --show-bolt11 ${cfg.extraArgs}";
         User = "nanopos";
         Restart = "on-failure";
         RestartSec = "10s";

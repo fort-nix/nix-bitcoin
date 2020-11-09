@@ -56,7 +56,7 @@ in {
       description = "The network data directory.";
     };
     listen = mkOption {
-      type = pkgs.nix-bitcoin.lib.ipv4Address;
+      type = config.nix-bitcoin.pkgs.lib.ipv4Address;
       default = "localhost";
       description = "Bind to given address to listen to peer connections";
     };
@@ -130,8 +130,7 @@ in {
     };
     package = mkOption {
       type = types.package;
-      default = pkgs.nix-bitcoin.lnd;
-      defaultText = "pkgs.nix-bitcoin.lnd";
+      default = config.nix-bitcoin.pkgs.lnd;
       description = "The package providing lnd binaries.";
     };
     cli = mkOption {
