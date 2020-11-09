@@ -171,7 +171,6 @@ in {
     services.onion-chef.access.lnd = if cfg.announce-tor then [ "lnd" ] else [];
     systemd.services.lnd = {
       description = "Run LND";
-      path  = [ pkgs.nix-bitcoin.bitcoind ];
       wantedBy = [ "multi-user.target" ];
       requires = [ "bitcoind.service" ] ++ onion-chef-service;
       after = [ "bitcoind.service" ] ++ onion-chef-service;
