@@ -79,8 +79,6 @@ in {
 
     services.lightning-charge.enable = true;
 
-    environment.systemPackages = [ pkgs.nix-bitcoin.nanopos ];
-
     services.nginx = {
       enable = true;
       virtualHosts."_" = {

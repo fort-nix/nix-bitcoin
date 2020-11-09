@@ -51,7 +51,6 @@ in {
       "d '${cfg.dataDir}' 0700 ${user} ${group} - -"
     ];
 
-    environment.systemPackages = [ pkgs.nix-bitcoin.lightning-charge ];
     systemd.services.lightning-charge = {
       description = "Run lightning-charge";
       wantedBy = [ "multi-user.target" ];

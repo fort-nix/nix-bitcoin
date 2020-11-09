@@ -63,8 +63,6 @@ in {
 
     services.bitcoind.enable = true;
 
-    environment.systemPackages = [ pkgs.nix-bitcoin.electrs ];
-
     systemd.tmpfiles.rules = [
       "d '${cfg.dataDir}' 0770 ${cfg.user} ${cfg.group} - -"
     ];

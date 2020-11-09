@@ -54,7 +54,6 @@ in {
   config = mkIf cfg.enable {
     services.clightning.enable = true;
 
-    environment.systemPackages = [ pkgs.nix-bitcoin.spark-wallet ];
     users.users.spark-wallet = {
       description = "spark-wallet User";
       group = "spark-wallet";
