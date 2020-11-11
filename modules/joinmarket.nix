@@ -5,6 +5,7 @@ with lib;
 let
   cfg = config.services.joinmarket;
   inherit (config) nix-bitcoin-services;
+  nbPkgs = config.nix-bitcoin.pkgs;
   secretsDir = config.nix-bitcoin.secretsDir;
 
   inherit (config.services) bitcoind;
@@ -77,7 +78,7 @@ let
    # so run them inside dataDir.
    cli = pkgs.runCommand "joinmarket-cli" {} ''
      mkdir -p $out/bin
-     jm=${pkgs.nix-bitcoin.joinmarket}/bin
+     jm=${nbPkgs.joinmarket}/bin
      cd $jm
      for bin in jm-*; do
        {
@@ -181,13 +182,13 @@ in {
             # (like with pipes)
             cd ${cfg.dataDir} && \
               out=$(sudo -u ${cfg.user} \
-              ${pkgs.nix-bitcoin.joinmarket}/bin/jm-genwallet \
+              ${nbPkgs.joinmarket}/bin/jm-genwallet \
               --datadir=${cfg.dataDir} $walletname $pw)
             recoveryseed=$(echo "$out" | grep 'recovery_seed')
             echo "$recoveryseed" | cut -d ':' -f2 > $mnemonic
           fi
         '');
-        ExecStart = "${pkgs.nix-bitcoin.joinmarket}/bin/joinmarketd";
+        ExecStart = "${nbPkgs.joinmarket}/bin/joinmarketd";
         WorkingDirectory = "${cfg.dataDir}"; # The service creates 'commitmentlist' in the working dir
         User = "${cfg.user}";
         Restart = "on-failure";
@@ -201,7 +202,7 @@ in {
     nix-bitcoin.secrets.jm-wallet-password.user = cfg.user;
 
     systemd.services.joinmarket-yieldgenerator = let
-      ygDefault = "${pkgs.nix-bitcoin.joinmarket}/bin/jm-yg-privacyenhanced";
+      ygDefault = "${nbPkgs.joinmarket}/bin/jm-yg-privacyenhanced";
       ygBinary = if cfg.yieldgenerator.customParameters == "" then
         ygDefault
       else

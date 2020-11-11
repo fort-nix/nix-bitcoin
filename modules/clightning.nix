@@ -5,6 +5,7 @@ with lib;
 let
   cfg = config.services.clightning;
   inherit (config) nix-bitcoin-services;
+  nbPkgs = config.nix-bitcoin.pkgs;
   onion-chef-service = (if cfg.announce-tor then [ "onion-chef.service" ] else []);
   network = config.services.bitcoind.makeNetworkName "bitcoin" "regtest";
   configFile = pkgs.writeText "config" ''
@@ -49,7 +50,7 @@ in {
       '';
     };
     bind-addr = mkOption {
-      type = pkgs.nix-bitcoin.lib.ipv4Address;
+      type = nbPkgs.lib.ipv4Address;
       default = "127.0.0.1";
       description = "Set an IP address or UNIX domain socket to listen to";
     };
@@ -92,7 +93,7 @@ in {
       readOnly = true;
       default = pkgs.writeScriptBin "lightning-cli"
       ''
-        ${pkgs.nix-bitcoin.clightning}/bin/lightning-cli --lightning-dir='${cfg.dataDir}' "$@"
+        ${nbPkgs.clightning}/bin/lightning-cli --lightning-dir='${cfg.dataDir}' "$@"
       '';
       description = "Binary to connect with the clightning instance.";
     };
@@ -102,7 +103,7 @@ in {
   config = mkIf cfg.enable {
     services.bitcoind.enable = true;
 
-    environment.systemPackages = [ pkgs.nix-bitcoin.clightning (hiPrio cfg.cli) ];
+    environment.systemPackages = [ nbPkgs.clightning (hiPrio cfg.cli) ];
     users.users.${cfg.user} = {
         description = "clightning User";
         group = cfg.group;
@@ -118,7 +119,7 @@ in {
     services.onion-chef.access.clightning = if cfg.announce-tor then [ "clightning" ] else [];
     systemd.services.clightning = {
       description = "Run clightningd";
-      path  = [ pkgs.nix-bitcoin.bitcoind ];
+      path  = [ nbPkgs.bitcoind ];
       wantedBy = [ "multi-user.target" ];
       requires = [ "bitcoind.service" ] ++ onion-chef-service;
       after = [ "bitcoind.service" ] ++ onion-chef-service;
@@ -132,7 +133,7 @@ in {
         ${optionalString cfg.announce-tor "echo announce-addr=$(cat /var/lib/onion-chef/clightning/clightning) >> '${cfg.dataDir}/config'"}
         '';
       serviceConfig = nix-bitcoin-services.defaultHardening // {
-        ExecStart = "${pkgs.nix-bitcoin.clightning}/bin/lightningd --lightning-dir=${cfg.dataDir}";
+        ExecStart = "${nbPkgs.clightning}/bin/lightningd --lightning-dir=${cfg.dataDir}";
         User = "${cfg.user}";
         Restart = "on-failure";
         RestartSec = "10s";

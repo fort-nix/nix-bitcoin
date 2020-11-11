@@ -63,8 +63,6 @@ in {
 
     services.bitcoind.enable = true;
 
-    environment.systemPackages = [ pkgs.nix-bitcoin.electrs ];
-
     systemd.tmpfiles.rules = [
       "d '${cfg.dataDir}' 0770 ${cfg.user} ${cfg.group} - -"
     ];
@@ -83,7 +81,7 @@ in {
         RuntimeDirectoryMode = "700";
         WorkingDirectory = "/run/electrs";
         ExecStart = ''
-          ${pkgs.nix-bitcoin.electrs}/bin/electrs -vvv \
+          ${config.nix-bitcoin.pkgs.electrs}/bin/electrs -vvv \
           ${if cfg.high-memory then
               traceIf (!bitcoind.dataDirReadableByGroup) ''
                 Warning: For optimal electrs syncing performance, enable services.bitcoind.dataDirReadableByGroup.

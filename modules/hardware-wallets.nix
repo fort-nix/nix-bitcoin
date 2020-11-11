@@ -42,10 +42,10 @@ in {
         }
       ];
 
-      environment.systemPackages = with pkgs; [
-        nix-bitcoin.hwi
+      environment.systemPackages = [
+        config.nix-bitcoin.pkgs.hwi
         # Provides lsusb for debugging
-        usbutils
+        pkgs.usbutils
       ];
       users.groups."${cfg.group}" = {};
       nix-bitcoin.operator.groups = [ cfg.group ];

@@ -1,5 +1,5 @@
 { pkgs ? import <nixpkgs> {} }:
-{
+let self = {
   lightning-charge = pkgs.callPackage ./lightning-charge { };
   nanopos = pkgs.callPackage ./nanopos { };
   spark-wallet = pkgs.callPackage ./spark-wallet { };
@@ -18,4 +18,6 @@
   pinned = import ./pinned.nix;
 
   lib = import ./lib.nix { inherit (pkgs) lib; };
-}
+
+  modulesPkgs = self // self.pinned;
+}; in self

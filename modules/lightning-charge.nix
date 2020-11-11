@@ -51,7 +51,6 @@ in {
       "d '${cfg.dataDir}' 0700 ${user} ${group} - -"
     ];
 
-    environment.systemPackages = [ pkgs.nix-bitcoin.lightning-charge ];
     systemd.services.lightning-charge = {
       description = "Run lightning-charge";
       wantedBy = [ "multi-user.target" ];
@@ -70,7 +69,7 @@ in {
           # Needed to access clightning.dataDir in preStart
           PermissionsStartOnly = "true";
           EnvironmentFile = "${config.nix-bitcoin.secretsDir}/lightning-charge-env";
-          ExecStart = "${pkgs.nix-bitcoin.lightning-charge}/bin/charged -l ${config.services.clightning.dataDir}/bitcoin -d ${cfg.dataDir}/lightning-charge.db -i ${cfg.host} ${cfg.extraArgs}";
+          ExecStart = "${config.nix-bitcoin.pkgs.lightning-charge}/bin/charged -l ${config.services.clightning.dataDir}/bitcoin -d ${cfg.dataDir}/lightning-charge.db -i ${cfg.host} ${cfg.extraArgs}";
           User = user;
           Restart = "on-failure";
           RestartSec = "10s";

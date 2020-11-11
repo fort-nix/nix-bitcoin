@@ -36,6 +36,11 @@
       readOnly = true;
       default = import ./nix-bitcoin-services.nix lib pkgs;
     };
+
+    nix-bitcoin.pkgs = lib.mkOption {
+      type = lib.types.attrs;
+      default = (import ../pkgs { inherit pkgs; }).modulesPkgs;
+    };
   };
 
   config = {
@@ -48,12 +53,5 @@
         '';
       }
     ];
-
-    nixpkgs.overlays = [ (self: super: {
-      nix-bitcoin = let
-        pkgs = import ../pkgs { pkgs = super; };
-      in
-        pkgs // pkgs.pinned;
-    }) ];
   };
 }

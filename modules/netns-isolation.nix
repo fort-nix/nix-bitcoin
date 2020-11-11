@@ -102,7 +102,7 @@ in {
     boot.kernel.sysctl."net.ipv4.ip_forward" = true;
 
     security.wrappers.netns-exec = {
-      source = pkgs.nix-bitcoin.netns-exec;
+      source = config.nix-bitcoin.pkgs.netns-exec;
       capabilities = "cap_sys_admin=ep";
       owner = cfg.allowedUser;
       permissions = "u+rx,g+rx,o-rwx";

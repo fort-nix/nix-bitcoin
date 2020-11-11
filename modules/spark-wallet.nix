@@ -14,7 +14,7 @@ let
     ${optionalString cfg.onion-service ''
       publicURL="--public-url http://$(cat /var/lib/onion-chef/spark-wallet/spark-wallet)"
     ''}
-    exec ${pkgs.nix-bitcoin.spark-wallet}/bin/spark-wallet \
+    exec ${config.nix-bitcoin.pkgs.spark-wallet}/bin/spark-wallet \
       --ln-path '${config.services.clightning.networkDir}'  \
       --host ${cfg.host} \
       --config '${config.nix-bitcoin.secretsDir}/spark-wallet-login' \
@@ -54,7 +54,6 @@ in {
   config = mkIf cfg.enable {
     services.clightning.enable = true;
 
-    environment.systemPackages = [ pkgs.nix-bitcoin.spark-wallet ];
     users.users.spark-wallet = {
       description = "spark-wallet User";
       group = "spark-wallet";
