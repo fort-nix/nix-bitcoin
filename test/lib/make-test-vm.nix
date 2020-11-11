@@ -19,7 +19,19 @@ let
            '';
          };
        };
+       test' = test (args // { pkgs = pkgsFixed; });
     in
-      test (args // { pkgs = pkgsFixed; });
+      # See nixpkgs/nixos/lib/testing-python.nix for the original definition
+      test'.overrideAttrs (_: {
+        # 1. Save test output
+        # 2. Add link to driver so that a gcroot to a test prevents the driver from
+        #    being garbage-collected
+        buildCommand = ''
+          mkdir $out
+          LOGFILE=$out/output.xml tests='exec(os.environ["testScript"])' ${test'.driver}/bin/nixos-test-driver
+          ln -s ${test'.driver} $out/driver
+        '';
+      }) // { inherit (test') nodes driver; } ;
+
 in
   fixedTest
