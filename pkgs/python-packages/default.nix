@@ -12,6 +12,7 @@ in {
   secp256k1 = callPackage ./secp256k1 {};
   urldecode = callPackage ./urldecode {};
   chromalog = callPackage ./chromalog {};
+  txzmq = callPackage ./txzmq {};
 
   joinmarketbase = joinmarketPkg ./jmbase;
   joinmarketclient = joinmarketPkg ./jmclient;
