@@ -6,7 +6,6 @@ let self = {
   electrs = pkgs.callPackage ./electrs { };
   elementsd = pkgs.callPackage ./elementsd { withGui = false; };
   hwi = pkgs.callPackage ./hwi { };
-  pylightning = pkgs.python3Packages.callPackage ./pylightning { };
   liquid-swap = pkgs.python3Packages.callPackage ./liquid-swap { };
   joinmarket = pkgs.callPackage ./joinmarket { inherit (self) nbPython3Packages; };
   generate-secrets = pkgs.callPackage ./generate-secrets { };
