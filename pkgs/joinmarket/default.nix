@@ -1,4 +1,4 @@
-{ stdenv, fetchurl, python3, pkgs }:
+{ stdenv, lib, fetchurl, python3, nbPython3Packages, pkgs }:
 
 let
   version = "0.7.2";
@@ -7,32 +7,14 @@ let
     sha256 = "03gvs20d2cfzy9x82l6v4c69w0j9mr4p9zj2hpymnb6xs1yq6dr1";
   };
 
-  python = python3.override {
-    packageOverrides = self: super: let
-      joinmarketPkg = pkg: self.callPackage pkg { inherit version src; };
-    in {
-      joinmarketbase = joinmarketPkg ./jmbase;
-      joinmarketclient = joinmarketPkg ./jmclient;
-      joinmarketbitcoin = joinmarketPkg ./jmbitcoin;
-      joinmarketdaemon = joinmarketPkg ./jmdaemon;
-
-      chromalog = self.callPackage ./chromalog {};
-      bencoderpyx = self.callPackage ./bencoderpyx {};
-      coincurve = self.callPackage ./coincurve {};
-      urldecode = self.callPackage ./urldecode {};
-      python-bitcointx = self.callPackage ./python-bitcointx {};
-      secp256k1 = self.callPackage ./secp256k1 {};
-    };
-  };
-
-  runtimePackages = with python.pkgs; [
+  runtimePackages = with nbPython3Packages; [
     joinmarketbase
     joinmarketclient
     joinmarketbitcoin
     joinmarketdaemon
   ];
 
-  pythonEnv = python.withPackages (_: runtimePackages);
+  pythonEnv = python3.withPackages (_: runtimePackages);
 in
 stdenv.mkDerivation {
   pname = "joinmarket";
@@ -62,8 +44,4 @@ stdenv.mkDerivation {
     chmod +x -R $out/bin
     patchShebangs $out/bin
   '';
-
-  passthru = {
-      inherit python runtimePackages pythonEnv;
-  };
 }
