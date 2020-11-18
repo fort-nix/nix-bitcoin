@@ -16,6 +16,8 @@ echo "Latest release is ${latest}"
 export GNUPGHOME=$TMPDIR
 echo "Fetching Alex Bosworth's Key"
 gpg --keyserver hkps://keyserver.ubuntu.com --recv-keys DE23E73BFA8A0AD5587D2FCDE80D2F3F311FD87E 2> /dev/null
+echo "Fetching Oliver Gugger's Key"
+gpg --keyserver hkps://keys.openpgp.org --recv-keys F4FC70F07310028424EFC20A8E4256593F177720 2> /dev/null
 
 echo "Verifying latest release"
 git verify-tag ${latest}
