@@ -13,6 +13,7 @@ let self = {
   netns-exec = pkgs.callPackage ./netns-exec { };
   lightning-loop = pkgs.callPackage ./lightning-loop { };
   extra-container = pkgs.callPackage ./extra-container { };
+  clightning-plugins = import ./clightning-plugins pkgs self.nbPython3Packages;
 
   nbPython3Packages = (pkgs.python3.override {
     packageOverrides = pySelf: super: import ./python-packages self pySelf;
@@ -23,4 +24,8 @@ let self = {
   lib = import ./lib.nix { inherit (pkgs) lib; };
 
   modulesPkgs = self // self.pinned;
+
+  # Used in ../.travis.yml
+  clightning-plugins-all = pkgs.writeText "clightning-plugins"
+    (pkgs.lib.concatMapStringsSep "\n" toString (builtins.attrValues self.clightning-plugins));
 }; in self

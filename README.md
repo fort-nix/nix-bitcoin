@@ -91,7 +91,7 @@ By default the `configuration.nix` provides:
 * adds non-root user "operator" which has access to bitcoin-cli and lightning-cli
 
 In `configuration.nix` the user can enable:
-* a clightning hidden service
+* a clightning hidden service with [plugins](https://github.com/lightningd/plugins)
 * [liquid](https://github.com/elementsproject/elements)
 * [lightning charge](https://github.com/ElementsProject/lightning-charge)
 * [nanopos](https://github.com/ElementsProject/nanopos)

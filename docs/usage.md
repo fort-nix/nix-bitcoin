@@ -338,3 +338,31 @@ See [here](https://github.com/JoinMarket-Org/joinmarket-clientserver/blob/master
     ```
 
 3. Profit
+
+clightning
+---
+
+## Plugins
+
+There are a number of [plugins](https://github.com/lightningd/plugins) available for clightning. Currently `nix-bitcoin` supports:
+
+- helpme
+- monitor
+- prometheus
+- rebalance
+- summary
+- zmq
+
+You can activate and configure these plugins like so:
+
+```nix
+services.clightning = {
+    enable = true;
+    plugins = {
+        prometheus.enable = true;
+        prometheus.listen = "0.0.0.0:9900";
+    };
+};
+```
+
+Please have a look at the module for a plugin (e.g. [prometheus.nix](../modules/clightning-plugins/prometheus.nix)) to learn its configuration options.

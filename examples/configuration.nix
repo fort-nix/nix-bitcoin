@@ -38,10 +38,14 @@
   # Enable this module to use clightning, a Lightning Network implementation
   # in C.
   services.clightning.enable = true;
+  # == TOR
   # Enable this option to announce our Tor Hidden Service. By default clightning
   # offers outgoing functionality, but doesn't announce the Tor Hidden Service
   # under which peers can reach us.
   # services.clightning.announce-tor = true;
+  # == Plugins
+  # See ../docs/usage.md for the list of available plugins.
+  # services.clightning.plugins.prometheus.enable = true;
 
   ### LND
   # Uncomment the following line in order to enable lnd, a lightning

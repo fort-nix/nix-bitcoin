@@ -33,6 +33,7 @@ env:
   - PKG=nixops19_09 STABLE=1
   - PKG=joinmarket STABLE=1
   - PKG=joinmarket STABLE=0
+  - PKG=clightning-plugins-all STABLE=1
 script:
   - printf '%s (%s)\n' "$NIX_PATH" "$VER"
   - |

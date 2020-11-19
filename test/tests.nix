@@ -21,7 +21,11 @@ let testEnv = rec {
       }
     ];
 
-    config = {
+    options.test.features = {
+      clightningPlugins = mkEnableOption "all clightning plugins";
+    };
+
+    config = mkMerge [{
       tests.bitcoind = cfg.bitcoind.enable;
       services.bitcoind = {
         enable = true;
@@ -31,6 +35,11 @@ let testEnv = rec {
       tests.clightning = cfg.clightning.enable;
       # When WAN is disabled, DNS bootstrapping slows down service startup by ~15 s.
       services.clightning.extraConfig = mkIf config.test.noConnections "disable-dns";
+      test.data.clightning-plugins = let
+        plugins = config.services.clightning.plugins;
+        enabled = builtins.filter (plugin: plugins.${plugin}.enable) (builtins.attrNames plugins);
+        pluginPkgs = config.nix-bitcoin.pkgs.clightning-plugins;
+      in map (plugin: pluginPkgs.${plugin}.path) enabled;
 
       tests.spark-wallet = cfg.spark-wallet.enable;
 
@@ -67,7 +76,28 @@ let testEnv = rec {
       systemd.services.generate-secrets.postStart = mkIfTest "security" ''
         install -o nobody -g nogroup -m777 <(:) /secrets/dummy
       '';
-    };
+    }
+    (mkIf config.test.features.clightningPlugins {
+      services.clightning.plugins = {
+        helpme.enable = true;
+        monitor.enable = true;
+        prometheus.enable = true;
+        rebalance.enable = true;
+        summary.enable = true;
+        zmq = let tcpEndpoint = "tcp://127.0.0.1:5501"; in {
+          enable = true;
+          channel-opened = tcpEndpoint;
+          connect = tcpEndpoint;
+          disconnect = tcpEndpoint;
+          invoice-payment = tcpEndpoint;
+          warning = tcpEndpoint;
+          forward-event = tcpEndpoint;
+          sendpay-success = tcpEndpoint;
+          sendpay-failure = tcpEndpoint;
+        };
+      };
+    })
+    ];
   };
 
   scenarios = {
@@ -80,6 +110,7 @@ let testEnv = rec {
       tests.security = true;
 
       services.clightning.enable = true;
+      test.features.clightningPlugins = true;
       services.spark-wallet.enable = true;
       services.lightning-charge.enable = true;
       services.nanopos.enable = true;
@@ -120,6 +151,7 @@ let testEnv = rec {
     regtest = {
       imports = [ scenarios.regtestBase ];
       services.clightning.enable = true;
+      test.features.clightningPlugins = true;
       services.spark-wallet.enable = true;
       services.lnd.enable = true;
       services.lightning-loop.enable = true;
