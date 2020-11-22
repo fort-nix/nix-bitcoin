@@ -3,7 +3,7 @@ testArgs:
 let
   pkgs = import <nixpkgs> { config = {}; overlays = []; };
 
-  test = (import "${pkgs.path}/nixos/tests/make-test-python.nix") testArgs;
+  test = (import "${pkgs.path}/nixos/tests/make-test-python.nix") (testArgs pkgs);
 
   fixedTest = { system ? builtins.currentSystem, ... }@args:
     let

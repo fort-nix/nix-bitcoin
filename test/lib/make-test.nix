@@ -1,7 +1,7 @@
 scenario: testConfig:
 
 {
-  vm = import ./make-test-vm.nix {
+  vm = import ./make-test-vm.nix (pkgs: {
     name = "nix-bitcoin-${scenario}";
 
     machine = {
@@ -16,7 +16,7 @@ scenario: testConfig:
         data = cfg.test.data;
         tests = cfg.tests;
       };
-      dataFile = builtins.toFile "test-data" (builtins.toJSON data);
+      dataFile = pkgs.writeText "test-data" (builtins.toJSON data);
       initData = ''
         import json
 
@@ -37,7 +37,7 @@ scenario: testConfig:
               run_tests()
         ''
       ];
-  };
+  });
 
   container = {
     # The container name has a 11 char length limit

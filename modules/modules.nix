@@ -9,6 +9,7 @@
     # Main features
     ./bitcoind.nix
     ./clightning.nix
+    ./clightning-plugins
     ./lightning-charge.nix
     ./nanopos.nix
     ./spark-wallet.nix
