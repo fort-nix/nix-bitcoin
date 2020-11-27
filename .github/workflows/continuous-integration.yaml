@@ -1,0 +1,72 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - testmodules: 1
+            stable: 1
+            scenario: "default"
+          - pkg: "hwi"
+            stable: 1
+          - pkg: "hwi"
+            stable: 0
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+      - name: Build
+        env:
+          PKG: ${{ matrix.pkg }}
+          STABLE: ${{ matrix.stable }}
+          TestModules: ${{ matrix.testmodules }}
+          SCENARIO: ${{ matrix.scenario }}
+        run: |
+          curl -L https://nixos.org/nix/install | sh
+          . /home/runner/.nix-profile/etc/profile.d/nix.sh
+          if [[ $STABLE == 1 ]]; then export NIX_PATH="nixpkgs=$(nix eval --raw -f pkgs/nixpkgs-pinned.nix nixpkgs)"; fi
+          if [[ $STABLE == 0 ]]; then export NIX_PATH="nixpkgs=$(nix eval --raw -f pkgs/nixpkgs-pinned.nix nixpkgs-unstable)"; fi
+          nix-env -iA cachix -f https://cachix.org/api/v1/install
+          cachix use nix-bitcoin
+          VER="$(nix eval nixpkgs.lib.version)"
+          nix --version
+          printf '%s (%s)\n' "$NIX_PATH" "$VER"
+          getBuildExpr() {
+            if [[ $TestModules ]]; then
+              if [[ ! -e /dev/kvm ]]; then
+                >&2 echo "No KVM available on VM Host."
+                exit 1
+              fi
+              sudo chmod go+rw /dev/kvm
+              test/run-tests.sh --scenario $SCENARIO exprForCI
+            else
+              echo "(import ./. {}).$PKG"
+            fi
+          }
+          buildExpr=$(getBuildExpr)
+          time nix-instantiate -E "$buildExpr" --add-root ./drv --indirect
+          outPath=$(nix-store --query ./drv)
+          # TODO: re-enable
+          #if nix path-info --store https://nix-bitcoin.cachix.org $outPath &>/dev/null; then
+          if false; then
+              echo "$outPath" has already been built successfully.
+          else
+            # Travis doesn't expose secrets to pull-request builds,
+            # so skip cache uploading in this case
+            if [[ $CACHIX_SIGNING_KEY ]]; then
+                cachix push nix-bitcoin --watch-store &
+                cachixPid=$!
+            fi
+            nix-build ./drv
+            if [[ $CACHIX_SIGNING_KEY ]]; then
+                # Wait until cachix has finished uploading
+                # Run as root because yama/ptrace_scope != 0
+                ruby=$(nix-build '<nixpkgs>' -A ruby)/bin/ruby
+                time sudo $ruby helper/wait-for-network-idle.rb $cachixPid
+            fi
+          fi
