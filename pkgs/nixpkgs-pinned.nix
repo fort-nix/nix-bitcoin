@@ -1,7 +1,7 @@
 let
   fetch = { rev, sha256 }:
     builtins.fetchTarball {
-      url = "https://github.com/nixos/nixpkgs-channels/archive/${rev}.tar.gz";
+      url = "https://github.com/nixos/nixpkgs/archive/${rev}.tar.gz";
       inherit sha256;
     };
 in
