@@ -1,7 +1,7 @@
 nix-bitcoin
 ===
 
-[![Build Status](https://travis-ci.org/fort-nix/nix-bitcoin.svg?branch=master)](https://travis-ci.org/fort-nix/nix-bitcoin)
+[![Build Status](https://api.cirrus-ci.com/github/fort-nix/nix-bitcoin.svg?branch=master)](https://cirrus-ci.com/github/fort-nix/nix-bitcoin)
 
 Nix packages and nixos modules for easily installing Bitcoin nodes and higher layer protocols with an emphasis on security.
 This is a work in progress - don't expect it to be bug-free, secure or stable.

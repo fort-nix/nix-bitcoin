@@ -141,7 +141,7 @@ buildTest() {
 # On continuous integration nodes there are few other processes running alongside the
 # test, so use more memory here for maximum performance.
 exprForCI() {
-    memoryMiB=3072
+    memoryMiB=4096
     memTotalKiB=$(awk '/MemTotal/ { print $2 }' /proc/meminfo)
     memAvailableKiB=$(awk '/MemAvailable/ { print $2 }' /proc/meminfo)
     # Round down to nearest multiple of 50 MiB for improved test build caching
