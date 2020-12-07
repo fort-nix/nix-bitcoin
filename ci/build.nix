@@ -6,9 +6,7 @@ let
     elementsd
     hwi
     joinmarket
-    lightning-charge
     lightning-loop
-    nanopos
   ];
 in
 pkgs.writeText "ci-pkgs" (pkgs.lib.concatMapStringsSep "\n" toString ciPkgs)
