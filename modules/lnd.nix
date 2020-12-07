@@ -18,8 +18,8 @@ let
     tlskeypath=${secretsDir}/lnd-key
 
     listen=${toString cfg.listen}:${toString cfg.listenPort}
-    rpclisten=${cfg.rpclisten}
-    restlisten=${cfg.restlisten}
+    rpclisten=${cfg.rpclisten}:${toString cfg.rpcPort}
+    restlisten=${cfg.restlisten}:${toString cfg.restPort}
 
     bitcoin.${bitcoind.network}=1
     bitcoin.active=1
