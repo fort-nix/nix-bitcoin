@@ -2,12 +2,12 @@
 
 buildGoModule rec {
   pname = "lightning-loop";
-  version = "0.11.1-beta";
+  version = "0.11.2-beta";
 
   src = fetchurl {
     url = "https://github.com/lightninglabs/loop/archive/v${version}.tar.gz";
     # Use ./get-sha256.sh to fetch latest (verified) sha256
-    sha256 = "ab0ee694cf3c3113a6d61098ada1953911558fa700dc6f9e90fa4ea1de44ffdb";
+    sha256 = "88fb0f1560a551778407f45a537de67366fe60d2c77e5bdff0e60b562cdb571b";
   };
 
   subPackages = [ "cmd/loop" "cmd/loopd" ];
