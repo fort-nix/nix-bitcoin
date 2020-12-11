@@ -5,7 +5,7 @@ let
 
   test = (import "${pkgs.path}/nixos/tests/make-test-python.nix") (testArgs pkgs);
 
-  fixedTest = { system ? builtins.currentSystem, ... }@args:
+  fixedTest = { ... }@args:
     let
        pkgsFixed = pkgs // {
          # Fix the black Python code formatter that's used in the test to allow the test
