@@ -41,11 +41,13 @@ scenario: testConfig:
 
   container = {
     # The container name has a 11 char length limit
-    containers.nb-test = { config, ...}: {
+    containers.nb-test = { config, ... }: {
       config = {
         extra = config.config.test.container;
         config = testConfig;
       };
     };
   };
+
+  config = testConfig;
 }
