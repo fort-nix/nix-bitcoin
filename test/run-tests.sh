@@ -185,20 +185,22 @@ all() {
     scenario=netnsRegtest buildTest "$@"
 }
 
+# An alias for buildTest
 build() {
-    if [[ $scenario ]]; then
-        buildTest "$@"
-    else
-        basic "$@"
-    fi
+    buildTest "$@"
 }
 
-command="${1:-build}"
-shift || true
-if [[ $command != build  ]]; then
+if [[ $# > 0 && $1 != -* ]]; then
+    # An explicit command was provided
+    command=$1
+    shift
+    if [[ $command == eval ]]; then
+        command=evalTest
+    fi
     : ${scenario:=default}
-fi
-if [[ $command == eval ]]; then
-    command=evalTest
+elif [[ $scenario ]]; then
+    command=buildTest
+else
+    command=basic
 fi
 $command "$@"
