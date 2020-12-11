@@ -132,14 +132,20 @@ container() {
   . "$scriptDir/lib/make-container.sh" "$@"
 }
 
+doBuild() {
+    name=$1
+    shift
+    if [[ $outLinkPrefix ]]; then
+        outLink="--out-link $outLinkPrefix-$name"
+    else
+        outLink=--no-out-link
+    fi
+    nix-build $outLink "$@"
+}
+
 # Run the test by building the test derivation
 buildTest() {
-    if [[ $outLinkPrefix ]]; then
-        buildArgs="--out-link $outLinkPrefix-$scenario"
-    else
-        buildArgs=--no-out-link
-    fi
-    vmTestNixExpr | nix-build $buildArgs "$@" -
+    vmTestNixExpr | doBuild $scenario $outLinkArg "$@" -
 }
 
 # On continuous integration nodes there are few other processes running alongside the
@@ -172,6 +178,10 @@ vmTestNixExpr() {
 EOF
 }
 
+pkgsUnstable() {
+    doBuild pkgs-unstable "$scriptDir/pkgs-unstable.nix"
+}
+
 # A basic subset of tests to keep the total runtime within
 # manageable bounds (<4 min on desktop systems).
 # These are also run on the CI server.
@@ -179,14 +189,13 @@ basic() {
     scenario=default buildTest "$@"
     scenario=netns buildTest "$@"
     scenario=netnsRegtest buildTest "$@"
+    pkgsUnstable
 }
 
 all() {
-    scenario=default buildTest "$@"
-    scenario=netns buildTest "$@"
+    basic
     scenario=full buildTest "$@"
     scenario=regtest buildTest "$@"
-    scenario=netnsRegtest buildTest "$@"
 }
 
 # An alias for buildTest
