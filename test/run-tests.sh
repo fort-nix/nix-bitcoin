@@ -124,6 +124,10 @@ evalTest() {
     echo # nix eval doesn't print a newline
 }
 
+instantiate() {
+    nix-instantiate -E "$(vmTestNixExpr)" "$@"
+}
+
 container() {
   . "$testDir/lib/make-container.sh" "$@"
 }
