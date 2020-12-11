@@ -40,8 +40,11 @@
 
 set -eo pipefail
 
+scriptDir=$(cd "${BASH_SOURCE[0]%/*}" && pwd)
+
 scenario=
 outLinkPrefix=
+ciBuild=
 while :; do
     case $1 in
         --scenario|-s)
@@ -64,6 +67,10 @@ while :; do
                 exit 1
             fi
             ;;
+        --ci)
+            shift
+            ciBuild=1
+            ;;
         *)
             break
     esac
@@ -73,9 +80,7 @@ numCPUs=${numCPUs:-$(nproc)}
 # Min. 800 MiB needed to avoid 'out of memory' errors
 memoryMiB=${memoryMiB:-2048}
 
-testDir=$(cd "${BASH_SOURCE[0]%/*}" && pwd)
-
-export NIX_PATH=nixpkgs=$(nix eval --raw -f "$testDir/../pkgs/nixpkgs-pinned.nix" nixpkgs)
+export NIX_PATH=nixpkgs=$(nix eval --raw -f "$scriptDir/../pkgs/nixpkgs-pinned.nix" nixpkgs)
 
 # Run the test. No temporary files are left on the host system.
 run() {
@@ -83,7 +88,7 @@ run() {
     export TMPDIR=$(mktemp -d /tmp/nix-bitcoin-test.XXX)
     trap "rm -rf $TMPDIR" EXIT
 
-    nix-build --out-link $TMPDIR/driver -E "(import \"$testDir/tests.nix\" { scenario = \"$scenario\"; }).vm" -A driver
+    nix-build --out-link $TMPDIR/driver -E "(import \"$scriptDir/tests.nix\" { scenario = \"$scenario\"; }).vm" -A driver
 
     # Variable 'tests' contains the Python code that is executed by the driver on startup
     if [[ $1 == --interactive ]]; then
@@ -124,48 +129,67 @@ evalTest() {
     echo # nix eval doesn't print a newline
 }
 
+instantiate() {
+    nix-instantiate -E "$(vmTestNixExpr)" "$@"
+}
+
 container() {
-  . "$testDir/lib/make-container.sh" "$@"
+  . "$scriptDir/lib/make-container.sh" "$@"
+}
+
+doBuild() {
+    name=$1
+    shift
+    if [[ $ciBuild ]]; then
+        "$scriptDir/../ci/build-to-cachix.sh" "$@"
+    else
+        if [[ $outLinkPrefix ]]; then
+            outLink="--out-link $outLinkPrefix-$name"
+        else
+            outLink=--no-out-link
+        fi
+        nix-build $outLink "$@"
+    fi
 }
 
 # Run the test by building the test derivation
 buildTest() {
-    if [[ $outLinkPrefix ]]; then
-        buildArgs="--out-link $outLinkPrefix-$scenario"
-    else
-        buildArgs=--no-out-link
-    fi
-    vmTestNixExpr | nix-build $buildArgs "$@" -
-}
-
-# On continuous integration nodes there are few other processes running alongside the
-# test, so use more memory here for maximum performance.
-exprForCI() {
-    memoryMiB=4096
-    memTotalKiB=$(awk '/MemTotal/ { print $2 }' /proc/meminfo)
-    memAvailableKiB=$(awk '/MemAvailable/ { print $2 }' /proc/meminfo)
-    # Round down to nearest multiple of 50 MiB for improved test build caching
-    ((memAvailableMiB = memAvailableKiB / (1024 * 50) * 50))
-    ((memAvailableMiB < memoryMiB)) && memoryMiB=$memAvailableMiB
-    >&2 echo "VM stats: CPUs: $numCPUs, memory: $memoryMiB MiB"
-    >&2 echo "Host memory total: $((memTotalKiB / 1024)) MiB, available: $memAvailableMiB MiB"
-
-    # VMX is usually not available on CI nodes due to recursive virtualisation.
-    # Explicitly disable VMX, otherwise QEMU 4.20 fails with message
-    # "error: failed to set MSR 0x48b to 0x159ff00000000"
-    vmTestNixExpr "-cpu host,-vmx"
+    vmTestNixExpr | doBuild $scenario $outLinkArg "$@" -
 }
 
 vmTestNixExpr() {
-  extraQEMUOpts="$1"
-  cat <<EOF
-    ((import "$testDir/tests.nix" { scenario = "$scenario"; }).vm {}).overrideAttrs (old: rec {
+    extraQEMUOpts=
+
+    if [[ $ciBuild ]]; then
+        # On continuous integration nodes there are few other processes running alongside the
+        # test, so use more memory here for maximum performance.
+        memoryMiB=4096
+        memTotalKiB=$(awk '/MemTotal/ { print $2 }' /proc/meminfo)
+        memAvailableKiB=$(awk '/MemAvailable/ { print $2 }' /proc/meminfo)
+        # Round down to nearest multiple of 50 MiB for improved test build caching
+        ((memAvailableMiB = memAvailableKiB / (1024 * 50) * 50))
+        ((memAvailableMiB < memoryMiB)) && memoryMiB=$memAvailableMiB
+        >&2 echo "VM stats: CPUs: $numCPUs, memory: $memoryMiB MiB"
+        >&2 echo "Host memory total: $((memTotalKiB / 1024)) MiB, available: $memAvailableMiB MiB"
+
+        # VMX is usually not available on CI nodes due to recursive virtualisation.
+        # Explicitly disable VMX, otherwise QEMU 4.20 fails with message
+        # "error: failed to set MSR 0x48b to 0x159ff00000000"
+        extraQEMUOpts="-cpu host,-vmx"
+    fi
+
+    cat <<EOF
+    ((import "$scriptDir/tests.nix" { scenario = "$scenario"; }).vm {}).overrideAttrs (old: rec {
       buildCommand = ''
         export QEMU_OPTS="-smp $numCPUs -m $memoryMiB $extraQEMUOpts"
         echo "VM stats: CPUs: $numCPUs, memory: $memoryMiB MiB"
       '' + old.buildCommand;
     })
 EOF
+}
+
+pkgsUnstable() {
+    doBuild pkgs-unstable "$scriptDir/pkgs-unstable.nix"
 }
 
 # A basic subset of tests to keep the total runtime within
@@ -175,30 +199,31 @@ basic() {
     scenario=default buildTest "$@"
     scenario=netns buildTest "$@"
     scenario=netnsRegtest buildTest "$@"
+    pkgsUnstable
 }
 
 all() {
-    scenario=default buildTest "$@"
-    scenario=netns buildTest "$@"
+    basic
     scenario=full buildTest "$@"
     scenario=regtest buildTest "$@"
-    scenario=netnsRegtest buildTest "$@"
 }
 
+# An alias for buildTest
 build() {
-    if [[ $scenario ]]; then
-        buildTest "$@"
-    else
-        basic "$@"
-    fi
+    buildTest "$@"
 }
 
-command="${1:-build}"
-shift || true
-if [[ $command != build  ]]; then
+if [[ $# > 0 && $1 != -* ]]; then
+    # An explicit command was provided
+    command=$1
+    shift
+    if [[ $command == eval ]]; then
+        command=evalTest
+    fi
     : ${scenario:=default}
-fi
-if [[ $command == eval ]]; then
-    command=evalTest
+elif [[ $scenario ]]; then
+    command=buildTest
+else
+    command=basic
 fi
 $command "$@"
