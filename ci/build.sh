@@ -21,9 +21,9 @@ fi
 echo "$NIX_PATH ($(nix eval --raw nixpkgs.lib.version))"
 
 if [[ $scenario ]]; then
-    buildExpr=$(../test/run-tests.sh --scenario $scenario exprForCI)
+    testArgs="--scenario $scenario"
 else
-    buildExpr="import ./build.nix"
+    testArgs=pkgsUnstable
 fi
 
-"${BASH_SOURCE[0]%/*}/build-to-cachix.sh" -E "$buildExpr"
+"${BASH_SOURCE[0]%/*}/../test/run-tests.sh" --ci $testArgs

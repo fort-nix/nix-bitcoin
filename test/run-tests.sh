@@ -44,6 +44,7 @@ scriptDir=$(cd "${BASH_SOURCE[0]%/*}" && pwd)
 
 scenario=
 outLinkPrefix=
+ciBuild=
 while :; do
     case $1 in
         --scenario|-s)
@@ -65,6 +66,10 @@ while :; do
                 >&2 echo "Error: $1 requires an argument."
                 exit 1
             fi
+            ;;
+        --ci)
+            shift
+            ciBuild=1
             ;;
         *)
             break
@@ -135,12 +140,16 @@ container() {
 doBuild() {
     name=$1
     shift
-    if [[ $outLinkPrefix ]]; then
-        outLink="--out-link $outLinkPrefix-$name"
+    if [[ $ciBuild ]]; then
+        "$scriptDir/../ci/build-to-cachix.sh" "$@"
     else
-        outLink=--no-out-link
+        if [[ $outLinkPrefix ]]; then
+            outLink="--out-link $outLinkPrefix-$name"
+        else
+            outLink=--no-out-link
+        fi
+        nix-build $outLink "$@"
     fi
-    nix-build $outLink "$@"
 }
 
 # Run the test by building the test derivation
@@ -148,27 +157,28 @@ buildTest() {
     vmTestNixExpr | doBuild $scenario $outLinkArg "$@" -
 }
 
-# On continuous integration nodes there are few other processes running alongside the
-# test, so use more memory here for maximum performance.
-exprForCI() {
-    memoryMiB=4096
-    memTotalKiB=$(awk '/MemTotal/ { print $2 }' /proc/meminfo)
-    memAvailableKiB=$(awk '/MemAvailable/ { print $2 }' /proc/meminfo)
-    # Round down to nearest multiple of 50 MiB for improved test build caching
-    ((memAvailableMiB = memAvailableKiB / (1024 * 50) * 50))
-    ((memAvailableMiB < memoryMiB)) && memoryMiB=$memAvailableMiB
-    >&2 echo "VM stats: CPUs: $numCPUs, memory: $memoryMiB MiB"
-    >&2 echo "Host memory total: $((memTotalKiB / 1024)) MiB, available: $memAvailableMiB MiB"
-
-    # VMX is usually not available on CI nodes due to recursive virtualisation.
-    # Explicitly disable VMX, otherwise QEMU 4.20 fails with message
-    # "error: failed to set MSR 0x48b to 0x159ff00000000"
-    vmTestNixExpr "-cpu host,-vmx"
-}
-
 vmTestNixExpr() {
-  extraQEMUOpts="$1"
-  cat <<EOF
+    extraQEMUOpts=
+
+    if [[ $ciBuild ]]; then
+        # On continuous integration nodes there are few other processes running alongside the
+        # test, so use more memory here for maximum performance.
+        memoryMiB=4096
+        memTotalKiB=$(awk '/MemTotal/ { print $2 }' /proc/meminfo)
+        memAvailableKiB=$(awk '/MemAvailable/ { print $2 }' /proc/meminfo)
+        # Round down to nearest multiple of 50 MiB for improved test build caching
+        ((memAvailableMiB = memAvailableKiB / (1024 * 50) * 50))
+        ((memAvailableMiB < memoryMiB)) && memoryMiB=$memAvailableMiB
+        >&2 echo "VM stats: CPUs: $numCPUs, memory: $memoryMiB MiB"
+        >&2 echo "Host memory total: $((memTotalKiB / 1024)) MiB, available: $memAvailableMiB MiB"
+
+        # VMX is usually not available on CI nodes due to recursive virtualisation.
+        # Explicitly disable VMX, otherwise QEMU 4.20 fails with message
+        # "error: failed to set MSR 0x48b to 0x159ff00000000"
+        extraQEMUOpts="-cpu host,-vmx"
+    fi
+
+    cat <<EOF
     ((import "$scriptDir/tests.nix" { scenario = "$scenario"; }).vm {}).overrideAttrs (old: rec {
       buildCommand = ''
         export QEMU_OPTS="-smp $numCPUs -m $memoryMiB $extraQEMUOpts"
