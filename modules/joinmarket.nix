@@ -50,7 +50,7 @@ let
 
     [POLICY]
     segwit = true
-    native = false
+    native = true
     merge_algorithm = default
     tx_fees = 3
     absurd_fee_per_kb = 350000
