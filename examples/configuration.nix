@@ -9,8 +9,7 @@
     # FIXME: The hardened kernel profile improves security but
     # decreases performance by ~50%.
     # Turn it off when not needed.
-    # Source: https://github.com/NixOS/nixpkgs/blob/master/nixos/modules/profiles/hardened.nix
-    <nixpkgs/nixos/modules/profiles/hardened.nix>
+    <nix-bitcoin/modules/presets/hardened.nix>
 
     # FIXME: Uncomment next line to import your hardware configuration. If so,
     # add the hardware configuration file to the same directory as this file.
@@ -207,10 +206,6 @@
 
   # FIXME: Add custom options (like boot options, output of
   # nixos-generate-config, etc.):
-
-  # If the hardened profile is imported above, we need to explicitly allow
-  # user namespaces to enable sanboxed builds and services.
-  security.allowUserNamespaces = true;
 
   # This value determines the NixOS release with which your system is to be
   # compatible, in order to avoid breaking some software such as database
