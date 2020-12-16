@@ -5,7 +5,8 @@ set -euo pipefail
 opensslConf=${1:-openssl.cnf}
 
 makePasswordSecret() {
-    [[ -e $1 ]] || apg -m 20 -x 20 -M Ncl -n 1 > "$1"
+    # Passwords have alphabet {a-z, A-Z, 0-9} and ~119 bits of entropy
+    [[ -e $1 ]] || pwgen -s 20 1 > "$1"
 }
 makeHMAC() {
     user=$1

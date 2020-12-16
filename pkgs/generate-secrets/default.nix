@@ -10,6 +10,6 @@ let
   '';
 in
 writers.writeBash "generate-secrets" ''
-  export PATH=${lib.makeBinPath [ coreutils apg openssl gnugrep rpcauth ]}
+  export PATH=${lib.makeBinPath [ coreutils pwgen openssl gnugrep rpcauth ]}
   . ${./generate-secrets.sh} ${./openssl.cnf}
 ''
