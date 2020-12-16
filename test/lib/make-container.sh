@@ -57,8 +57,8 @@ if [[ $EUID != 0 ]]; then
     # NixOS containers require root permissions.
     # By using sudo here and not at the user's call-site extra-container can detect if it is running
     # inside an existing shell session (by checking an internal environment variable).
-    exec sudo scenario="$scenario" testDir="$testDir" NIX_PATH="$NIX_PATH" PATH="$PATH" \
-         scenarioOverridesFile="${scenarioOverridesFile:-}" "$testDir/lib/make-container.sh" "$@"
+    exec sudo scenario="$scenario" scriptDir="$scriptDir" NIX_PATH="$NIX_PATH" PATH="$PATH" \
+         scenarioOverridesFile="${scenarioOverridesFile:-}" "$scriptDir/lib/make-container.sh" "$@"
 fi
 
 export containerName=nb-test
@@ -79,11 +79,11 @@ done
 containerBin=$(type -P extra-container) || true
 if [[ ! ($containerBin && $(realpath $containerBin) == *extra-container-0.5*) ]]; then
     echo "Building extra-container. Skip this step by adding extra-container 0.5 to PATH."
-    nix-build --out-link /tmp/extra-container "$testDir"/../pkgs -A extra-container >/dev/null
+    nix-build --out-link /tmp/extra-container "$scriptDir"/../pkgs -A extra-container >/dev/null
     export PATH="/tmp/extra-container/bin${PATH:+:}$PATH"
 fi
 
 read -d '' src <<EOF || true
-(import "$testDir/tests.nix" { scenario = "$scenario"; }).container
+(import "$scriptDir/tests.nix" { scenario = "$scenario"; }).container
 EOF
 exec extra-container $containerCommand -E "$src" "$@"
