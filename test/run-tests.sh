@@ -206,6 +206,7 @@ all() {
     basic
     scenario=full buildTest "$@"
     scenario=regtest buildTest "$@"
+    scenario=hardened buildTest "$@"
 }
 
 # An alias for buildTest

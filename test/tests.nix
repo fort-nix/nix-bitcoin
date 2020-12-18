@@ -165,6 +165,13 @@ let testEnv = rec {
       imports = with scenarios; [ netnsBase regtest ];
     };
 
+    hardened = {
+      imports = [
+        scenarios.secureNode
+        ../modules/presets/hardened.nix
+      ];
+    };
+
     netnsBase = {
       nix-bitcoin.netns-isolation.enable = true;
       test.data.netns = config.nix-bitcoin.netns-isolation.netns;
