@@ -17,6 +17,8 @@ if [[ ! -v IN_NIX_SHELL ]]; then
     exec nix-shell --run "./${BASH_SOURCE[0]##*/} $*"
 fi
 
+cd "${BASH_SOURCE[0]%/*}"
+
 tmpDir=/tmp/nix-bitcoin-qemu-vm
 mkdir -p $tmpDir
 

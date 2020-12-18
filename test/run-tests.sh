@@ -202,11 +202,27 @@ basic() {
     pkgsUnstable
 }
 
-all() {
+# All tests that only consist of building a nix derivation.
+# Their output is cached in /nix/store.
+buildable() {
     basic
     scenario=full buildTest "$@"
     scenario=regtest buildTest "$@"
     scenario=hardened buildTest "$@"
+}
+
+examples() {
+    script="
+      set -e
+      ./deploy-container.sh
+      ./deploy-qemu-vm.sh
+    "
+    (cd $scriptDir/../examples && nix-shell --run "$script")
+}
+
+all() {
+    buildable
+    examples
 }
 
 # An alias for buildTest
