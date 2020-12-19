@@ -28,7 +28,7 @@
 #         This args disables auto-destructing containers.
 #
 #
-#   run-tests.sh container --run|-r c systemctl status bitcoind
+#   run-tests.sh container --run c systemctl status bitcoind
 #
 #     Run a command in the shell session environmentand exit.
 #     Destroy the container afterwards.
@@ -39,7 +39,7 @@
 #     run-tests.sh container --run c
 #
 #
-#   run-tests.sh [--scenario|-s <scenario>] container --command|--c
+#   run-tests.sh [--scenario|-s <scenario>] container --command|-c
 #
 #     Provide a custom extra-container command.
 #
