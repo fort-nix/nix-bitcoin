@@ -32,5 +32,3 @@
     * **A:** Check your clightning logs with `journalctl -eu clightning`. Do you see something like `bitcoin-cli getblock ... false` failed? Are you using pruned mode? That means that clightning hasn't seen all the blocks it needs to and it can't get that block because your node is pruned. If you're just setting up a new node you can `systemctl stop clightning` and wipe your `/var/lib/clightning` directory. Otherwise you need to reindex the Bitcoin node.
 * **Q:** My disk space is getting low due to nix.
     * **A:** run `nix-collect-garbage -d`
-* **Q:** `nix-shell` takes too long and doesn't finish generating `/secrets`
-    * **A:** This might be the result of low system entropy. Check your entropy with `cat /proc/sys/kernel/random/entropy_avail`. If necessary, take steps to increase entropy like performing some tasks on the system or acquiring a hardware true random number generator.

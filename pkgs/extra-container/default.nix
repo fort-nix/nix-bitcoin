@@ -4,11 +4,11 @@
 
 stdenv.mkDerivation rec {
   name = "extra-container-${version}";
-  version = "0.5-pre";
+  version = "0.5";
 
   src = builtins.fetchTarball {
     url = "https://github.com/erikarvstedt/extra-container/archive/${version}.tar.gz";
-    sha256 = "0gdy2dpqrdv7f4kyqz88j34x1p2fpav04kznv41hwqq88hmzap90";
+    sha256 = "12xqa11v583ajdv51g1833rxvrndmly9h4r62wc3llm8xs6k7ais";
   };
 
   buildCommand = ''
@@ -17,7 +17,7 @@ stdenv.mkDerivation rec {
     share=$out/share/extra-container
     install $src/eval-config.nix -Dt $share
 
-    # Use existing PATH for systemctl and machinectl (for nixos-container)
+    # Use existing PATH for systemctl and machinectl
     scriptPath="export PATH=${lib.makeBinPath [ nixos-container openssh ]}:\$PATH"
 
     sed -i \
