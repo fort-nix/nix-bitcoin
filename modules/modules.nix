@@ -1,5 +1,6 @@
 { config, pkgs, lib, ... }:
 
+with lib;
 {
   imports = [
     # Core modules
@@ -33,14 +34,27 @@
   disabledModules = [ "services/networking/bitcoind.nix" ];
 
   options = {
-    nix-bitcoin-services = lib.mkOption {
+    nix-bitcoin-services = mkOption {
       readOnly = true;
       default = import ./nix-bitcoin-services.nix lib pkgs;
     };
 
-    nix-bitcoin.pkgs = lib.mkOption {
-      type = lib.types.attrs;
-      default = (import ../pkgs { inherit pkgs; }).modulesPkgs;
+    nix-bitcoin = {
+      pkgs = mkOption {
+        type = types.attrs;
+        default = (import ../pkgs { inherit pkgs; }).modulesPkgs;
+      };
+
+      # Torify binary that works with custom Tor SOCKS addresses
+      # Related issue: https://github.com/NixOS/nixpkgs/issues/94236
+      torify = mkOption {
+        readOnly = true;
+        default = pkgs.writeScriptBin "torify" ''
+          ${pkgs.tor}/bin/torify \
+            --address ${head (splitString ":" config.services.tor.client.socksListenAddress)} \
+            "$@"
+        '';
+      };
     };
   };
 
