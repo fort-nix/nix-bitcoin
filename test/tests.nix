@@ -79,6 +79,7 @@ let testEnv = rec {
     }
     (mkIf config.test.features.clightningPlugins {
       services.clightning.plugins = {
+        # TODO: add clboss when https://github.com/ZmnSCPxj/clboss/issues/49 is closed
         helpme.enable = true;
         monitor.enable = true;
         prometheus.enable = true;
