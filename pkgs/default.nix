@@ -14,6 +14,7 @@ let self = {
   lightning-loop = pkgs.callPackage ./lightning-loop { };
   extra-container = pkgs.callPackage ./extra-container { };
   clightning-plugins = import ./clightning-plugins pkgs self.nbPython3Packages;
+  clboss = pkgs.callPackage ./clboss { };
 
   nbPython3Packages = (pkgs.python3.override {
     packageOverrides = pySelf: super: import ./python-packages self pySelf;

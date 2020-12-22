@@ -6,6 +6,7 @@ let
   pluginPkgs = config.nix-bitcoin.pkgs.clightning-plugins;
 in {
   imports = [
+    ./clboss.nix
     ./prometheus.nix
     ./summary.nix
     ./zmq.nix
