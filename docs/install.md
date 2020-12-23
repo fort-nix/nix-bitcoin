@@ -389,7 +389,7 @@ Follow the [Setup deployment directory](#3-setup-deployment-directory) instructi
 
     Option 1: Enable systemd boot for UEFI
     ```
-    boot.loader.grub.device = "/dev/sda";
+    boot.loader.systemd-boot.enable = true;
     ```
     Option 2: Set grub device for Legacy Boot (MBR)
     ```
