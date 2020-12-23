@@ -407,7 +407,7 @@ Follow the [Setup deployment directory](#3-setup-deployment-directory) instructi
 6. Create nixops [deployment](https://nixos.org/nixops/manual/#sec-deploying-to-physical-nixos) in nix-shell.
 
     ```
-    nixops create nixops/node.nix nixops/node-nixos.nix -d bitcoin-node
+    nixops create nixops/node.nix -d bitcoin-node
     ```
 
 7. Adjust configuration by opening the `configuration.nix` file and enable/disable the modules you want by editing this file. Pay particular attention to lines that are preceded by `FIXME` comments.
