@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Modules integration test runner.
-# The tests (./tests.nix) use the NixOS testing framework and are executed in a VM.
+# The tests (defined in ./tests.nix) use the NixOS testing framework and are executed in a VM.
 #
 # Usage:
 #   Run all tests
