@@ -84,6 +84,12 @@ in {
         default = null;
         description = "The lightning node implementation to use.";
       };
+      rootpath = mkOption {
+        type = types.nullOr types.str;
+        default = null;
+        example = "btcpayserver";
+        description = "The prefix for root-relative btcpayserver URLs.";
+      };
       enforceTor = nix-bitcoin-services.enforceTor;
     };
   };
@@ -150,6 +156,7 @@ in {
         btcexplorerurl=http://${cfg.nbxplorer.bind}:${toString cfg.nbxplorer.port}/
         btcexplorercookiefile=${cfg.nbxplorer.dataDir}/${config.services.bitcoind.makeNetworkName "Main" "RegTest"}/.cookie
         bind=${cfg.btcpayserver.bind}
+        ${optionalString (cfg.btcpayserver.rootpath != null) "rootpath=${cfg.btcpayserver.rootpath}"}
         port=${toString cfg.btcpayserver.port}
       '' + optionalString (cfg.btcpayserver.lightningBackend == "clightning") ''
         btclightning=type=clightning;server=unix:///${cfg.clightning.dataDir}/bitcoin/lightning-rpc
