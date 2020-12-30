@@ -196,11 +196,11 @@ in {
         ReadWritePaths = "${cfg.dataDir}";
       } // nix-bitcoin-services.allowTor;
     };
+
+    nix-bitcoin.secrets.jm-wallet-password.user = cfg.user;
   }
 
   (mkIf cfg.yieldgenerator.enable {
-    nix-bitcoin.secrets.jm-wallet-password.user = cfg.user;
-
     systemd.services.joinmarket-yieldgenerator = let
       ygDefault = "${nbPkgs.joinmarket}/bin/jm-yg-privacyenhanced";
       ygBinary = if cfg.yieldgenerator.customParameters == "" then
