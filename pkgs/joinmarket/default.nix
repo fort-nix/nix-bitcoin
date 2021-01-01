@@ -22,15 +22,15 @@ stdenv.mkDerivation {
 
   buildInputs = [ pythonEnv ];
 
-  buildCommand = ''
-    mkdir -p $src-unpacked $out/bin
-    tar xzf $src --strip 1 -C $src-unpacked
+  installPhase = ''
+    mkdir -p $out/bin
 
     # add-utxo.py -> bin/jm-add-utxo
     cpBin() {
-      cp $src-unpacked/scripts/$1 $out/bin/jm-''${1%.py}
+      cp scripts/$1 $out/bin/jm-''${1%.py}
     }
-    cp $src-unpacked/scripts/joinmarketd.py $out/bin/joinmarketd
+
+    cp scripts/joinmarketd.py $out/bin/joinmarketd
     cpBin add-utxo.py
     cpBin convert_old_wallet.py
     cpBin receive-payjoin.py
