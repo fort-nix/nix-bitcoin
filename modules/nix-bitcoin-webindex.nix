@@ -13,7 +13,6 @@ let
             nix-bitcoin
           </h1>
         </p>
-        ${optionalString config.services.nanopos.enable ''<p><h2><a href="store/">store</a></h2></p>''}
         <p>
         <h3>
           lightning node: CLIGHTNING_ID
@@ -52,8 +51,8 @@ in {
 
   config = mkIf cfg.enable {
     assertions = [
-      { assertion = config.services.nanopos.enable;
-        message = "nix-bitcoin-webindex requires nanopos.";
+      { assertion = config.services.clightning.enable;
+        message = "nix-bitcoin-webindex requires clightning.";
       }
     ];
 

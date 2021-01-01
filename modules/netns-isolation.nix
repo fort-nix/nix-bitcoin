@@ -221,10 +221,6 @@ in {
         id = 18;
         # communicates with clightning over lightning-rpc socket
       };
-      nanopos = {
-        id = 19;
-        connections = [ "nginx" "lightning-charge" ];
-      };
       recurring-donations = {
         id = 20;
         # communicates with clightning over lightning-rpc socket
@@ -287,11 +283,6 @@ in {
     };
 
     services.lightning-charge.host = netns.lightning-charge.address;
-
-    services.nanopos = {
-      charged-url = "http://${netns.lightning-charge.address}:9112";
-      host = netns.nanopos.address;
-    };
 
     services.lightning-loop.rpcAddress = netns.lightning-loop.address;
 

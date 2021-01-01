@@ -43,8 +43,6 @@ let testEnv = rec {
 
       tests.spark-wallet = cfg.spark-wallet.enable;
 
-      tests.nanopos = cfg.nanopos.enable;
-
       tests.lnd = cfg.lnd.enable;
       services.lnd.listenPort = 9736;
 
@@ -114,7 +112,6 @@ let testEnv = rec {
       test.features.clightningPlugins = true;
       services.spark-wallet.enable = true;
       services.lightning-charge.enable = true;
-      services.nanopos.enable = true;
       services.lnd.enable = true;
       services.lightning-loop.enable = true;
       services.electrs.enable = true;

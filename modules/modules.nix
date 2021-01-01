@@ -12,7 +12,6 @@ with lib;
     ./clightning.nix
     ./clightning-plugins
     ./lightning-charge.nix
-    ./nanopos.nix
     ./spark-wallet.nix
     ./lnd.nix
     ./lightning-loop.nix

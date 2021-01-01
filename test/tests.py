@@ -212,13 +212,6 @@ def _():
     )
 
 
-@test("nanopos")
-def _():
-    assert_running("nanopos")
-    wait_for_open_port(ip("nanopos"), 9116)
-    assert_matches(f"curl {ip('nanopos')}:9116", "tshirt")
-
-
 @test("joinmarket")
 def _():
     assert_running("joinmarket")
@@ -245,7 +238,6 @@ def _():
     assert_running("nginx")
     wait_for_open_port(ip("nginx"), 80)
     assert_matches(f"curl {ip('nginx')}", "nix-bitcoin")
-    assert_matches(f"curl -L {ip('nginx')}/store", "tshirt")
 
 
 # Run this test before the following tests that shut down services
@@ -326,7 +318,7 @@ def _():
 
     # Sanity-check system by restarting all services
     succeed(
-        "systemctl restart bitcoind clightning lnd lightning-loop spark-wallet lightning-charge nanopos liquidd"
+        "systemctl restart bitcoind clightning lnd lightning-loop spark-wallet lightning-charge liquidd"
     )
 
     # Now that the bitcoind restart triggered a banlist import restart, check that
