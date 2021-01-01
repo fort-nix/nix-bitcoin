@@ -201,24 +201,6 @@ def _():
     assert_matches(f"curl -s {spark_auth}@{ip('spark-wallet')}:9737", "Spark")
 
 
-@test("lightning-charge")
-def _():
-    assert_running("lightning-charge")
-    wait_for_open_port(ip("lightning-charge"), 9112)
-    machine.wait_until_succeeds(f"nc -z {ip('lightning-charge')} 9112")
-    charge_auth = re.search("API_TOKEN=(.*)", succeed("cat /secrets/lightning-charge-env"))[1]
-    assert_matches(
-        f"curl -s api-token:{charge_auth}@{ip('lightning-charge')}:9112/info | jq", '"id"'
-    )
-
-
-@test("nanopos")
-def _():
-    assert_running("nanopos")
-    wait_for_open_port(ip("nanopos"), 9116)
-    assert_matches(f"curl {ip('nanopos')}:9116", "tshirt")
-
-
 @test("joinmarket")
 def _():
     assert_running("joinmarket")
@@ -245,7 +227,6 @@ def _():
     assert_running("nginx")
     wait_for_open_port(ip("nginx"), 80)
     assert_matches(f"curl {ip('nginx')}", "nix-bitcoin")
-    assert_matches(f"curl -L {ip('nginx')}/store", "tshirt")
 
 
 # Run this test before the following tests that shut down services
@@ -325,9 +306,7 @@ def _():
     pre_restart = succeed("date +%s.%6N").rstrip()
 
     # Sanity-check system by restarting all services
-    succeed(
-        "systemctl restart bitcoind clightning lnd lightning-loop spark-wallet lightning-charge nanopos liquidd"
-    )
+    succeed("systemctl restart bitcoind clightning lnd lightning-loop spark-wallet liquidd")
 
     # Now that the bitcoind restart triggered a banlist import restart, check that
     # re-importing already banned addresses works

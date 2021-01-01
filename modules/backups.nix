@@ -15,7 +15,6 @@ let
     ${optionalString (!cfg.with-bulk-data) "- ${config.services.liquidd.dataDir}/*/chainstate"}
     ${config.services.liquidd.dataDir}
     ${optionalString cfg.with-bulk-data "${config.services.electrs.dataDir}"}
-    ${config.services.lightning-charge.dataDir}
     ${config.services.nbxplorer.dataDir}
     ${config.services.btcpayserver.dataDir}
     ${config.services.joinmarket.dataDir}

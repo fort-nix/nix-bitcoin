@@ -18,7 +18,6 @@ makePasswordSecret bitcoin-rpcpassword-btcpayserver
 makePasswordSecret bitcoin-rpcpassword-public
 makePasswordSecret lnd-wallet-password
 makePasswordSecret liquid-rpcpassword
-makePasswordSecret lightning-charge-token
 makePasswordSecret spark-wallet-password
 makePasswordSecret backup-encryption-password
 makePasswordSecret jm-wallet-password
@@ -26,8 +25,6 @@ makePasswordSecret jm-wallet-password
 [[ -e bitcoin-HMAC-privileged ]] || makeHMAC privileged
 [[ -e bitcoin-HMAC-public ]] || makeHMAC public
 [[ -e bitcoin-HMAC-btcpayserver ]] || makeHMAC btcpayserver
-[[ -e lightning-charge-env ]] || echo "API_TOKEN=$(cat lightning-charge-token)" > lightning-charge-env
-[[ -e nanopos-env          ]] || echo "CHARGE_TOKEN=$(cat lightning-charge-token)" > nanopos-env
 [[ -e spark-wallet-login   ]] || echo "login=spark-wallet:$(cat spark-wallet-password)" > spark-wallet-login
 [[ -e backup-encryption-env ]] || echo "PASSPHRASE=$(cat backup-encryption-password)" > backup-encryption-env
 

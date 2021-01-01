@@ -37,7 +37,6 @@ rename() {
 extractPassword bitcoinrpcpassword bitcoin-rpcpassword
 extractPassword lnd-wallet-password
 extractPassword liquidrpcpassword liquid-rpcpassword
-extractPassword lightning-charge-api-token lightning-charge-token
 extractPassword spark-wallet-password
 
 rename lnd.key lnd-key

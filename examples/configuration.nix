@@ -101,22 +101,9 @@
   # tool run as user operator.
   # services.liquidd.enable = true;
 
-  ### LIGHTNING CHARGE
-  # Enable this module to use lightning-charge, a simple drop-in solution for
-  # accepting lightning payments.
-  # Automatically enables clightning.
-  # services.lightning-charge.enable = true;
-
-  ### NANOPOS
-  # Enable this module to use nanopos, a simple Lightning point-of-sale
-  # system, powered by Lightning Charge.
-  # Automatically enables lightning-charge.
-  # services.nanopos.enable = true;
-
   ### WEBINDEX
   # Enable this module to use the nix-bitcoin-webindex, a simple website
-  # displaying your node information and link to nanopos store. Only available
-  # if clightning, lightning-charge, and nanopos are enabled.
+  # displaying your node information. Only available if clightning is enabled.
   # services.nix-bitcoin-webindex.enable = true;
 
   ### RECURRING-DONATIONS
