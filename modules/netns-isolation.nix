@@ -217,10 +217,6 @@ in {
         id = 17;
         # communicates with clightning over lightning-rpc socket
       };
-      lightning-charge = {
-        id = 18;
-        # communicates with clightning over lightning-rpc socket
-      };
       recurring-donations = {
         id = 20;
         # communicates with clightning over lightning-rpc socket
@@ -281,8 +277,6 @@ in {
       host = netns.spark-wallet.address;
       extraArgs = "--no-tls";
     };
-
-    services.lightning-charge.host = netns.lightning-charge.address;
 
     services.lightning-loop.rpcAddress = netns.lightning-loop.address;
 

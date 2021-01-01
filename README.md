@@ -68,7 +68,6 @@ NixOS modules
   * [electrs](https://github.com/romanz/electrs)
   * [btcpayserver](https://github.com/btcpayserver/btcpayserver)
   * [liquid](https://github.com/elementsproject/elements)
-  * [lightning charge](https://github.com/ElementsProject/lightning-charge) (deprecated)
   * [Lightning Loop](https://github.com/lightninglabs/loop)
   * [JoinMarket](https://github.com/joinmarket-org/joinmarket-clientserver)
   * [recurring-donations](modules/recurring-donations.nix): for periodic lightning payments

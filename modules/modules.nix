@@ -11,7 +11,6 @@ with lib;
     ./bitcoind.nix
     ./clightning.nix
     ./clightning-plugins
-    ./lightning-charge.nix
     ./spark-wallet.nix
     ./lnd.nix
     ./lightning-loop.nix

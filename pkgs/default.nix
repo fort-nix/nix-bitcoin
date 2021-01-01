@@ -1,6 +1,5 @@
 { pkgs ? import <nixpkgs> {} }:
 let self = {
-  lightning-charge = pkgs.callPackage ./lightning-charge { };
   spark-wallet = pkgs.callPackage ./spark-wallet { };
   electrs = pkgs.callPackage ./electrs { };
   elementsd = pkgs.callPackage ./elementsd { withGui = false; };

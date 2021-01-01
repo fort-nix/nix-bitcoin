@@ -111,7 +111,6 @@ let testEnv = rec {
       services.clightning.enable = true;
       test.features.clightningPlugins = true;
       services.spark-wallet.enable = true;
-      services.lightning-charge.enable = true;
       services.lnd.enable = true;
       services.lightning-loop.enable = true;
       services.electrs.enable = true;

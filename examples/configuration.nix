@@ -101,12 +101,6 @@
   # tool run as user operator.
   # services.liquidd.enable = true;
 
-  ### LIGHTNING CHARGE
-  # Enable this module to use lightning-charge, a simple drop-in solution for
-  # accepting lightning payments.
-  # Automatically enables clightning.
-  # services.lightning-charge.enable = true;
-
   ### WEBINDEX
   # Enable this module to use the nix-bitcoin-webindex, a simple website
   # displaying your node information. Only available if clightning is enabled.

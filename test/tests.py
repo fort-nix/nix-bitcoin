@@ -201,17 +201,6 @@ def _():
     assert_matches(f"curl -s {spark_auth}@{ip('spark-wallet')}:9737", "Spark")
 
 
-@test("lightning-charge")
-def _():
-    assert_running("lightning-charge")
-    wait_for_open_port(ip("lightning-charge"), 9112)
-    machine.wait_until_succeeds(f"nc -z {ip('lightning-charge')} 9112")
-    charge_auth = re.search("API_TOKEN=(.*)", succeed("cat /secrets/lightning-charge-env"))[1]
-    assert_matches(
-        f"curl -s api-token:{charge_auth}@{ip('lightning-charge')}:9112/info | jq", '"id"'
-    )
-
-
 @test("joinmarket")
 def _():
     assert_running("joinmarket")
@@ -317,9 +306,7 @@ def _():
     pre_restart = succeed("date +%s.%6N").rstrip()
 
     # Sanity-check system by restarting all services
-    succeed(
-        "systemctl restart bitcoind clightning lnd lightning-loop spark-wallet lightning-charge liquidd"
-    )
+    succeed("systemctl restart bitcoind clightning lnd lightning-loop spark-wallet liquidd")
 
     # Now that the bitcoind restart triggered a banlist import restart, check that
     # re-importing already banned addresses works
