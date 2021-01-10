@@ -132,6 +132,11 @@ in {
     cli = mkOption {
       default = cli;
     };
+    # This option is only used by netns-isolation
+    enforceTor = mkOption {
+      readOnly = true;
+      default = true;
+    };
     inherit (nix-bitcoin-services) cliExec;
   };
 
