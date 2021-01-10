@@ -25,6 +25,7 @@ let
     rpc_port = ${toString bitcoind.rpc.port}
     rpc_user = ${bitcoind.rpc.users.privileged.name}
     @@RPC_PASSWORD@@
+    ${optionalString (cfg.rpcWalletFile != null) "rpc_wallet_file=${cfg.rpcWalletFile}"}
 
     [MESSAGING:server1]
     host = darksci3bfoka7tw.onion
@@ -120,6 +121,13 @@ in {
       type = types.str;
       default = cfg.user;
       description = "The group as which to run JoinMarket.";
+    };
+    rpcWalletFile = mkOption {
+      type = types.nullOr types.str;
+      default = null;
+      description = ''
+        Name of the watch-only bitcoind wallet the JoinMarket addresses are imported to.
+      '';
     };
     cli = mkOption {
       default = cli;
