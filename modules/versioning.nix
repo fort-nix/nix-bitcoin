@@ -76,6 +76,10 @@ let
   lastChange = builtins.elemAt changes (builtins.length changes - 1);
 in
 {
+  imports = [
+    ./obsolete-options.nix
+  ];
+
   options = {
     nix-bitcoin.configVersion = mkOption {
       type = with types; nullOr str;
