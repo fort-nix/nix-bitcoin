@@ -22,16 +22,18 @@ let
     ${optionalString (cfg.assumevalid != null) "assumevalid=${cfg.assumevalid}"}
 
     # Connection options
-    ${optionalString cfg.listen "bind=${cfg.bind}"}
-    ${optionalString (cfg.port != null) "port=${toString cfg.port}"}
+    ${optionalString cfg.listen "bind=${cfg.address}"}
+    port=${toString cfg.port}
     ${optionalString (cfg.proxy != null) "proxy=${cfg.proxy}"}
     listen=${if cfg.listen then "1" else "0"}
     ${optionalString (cfg.discover != null) "discover=${if cfg.discover then "1" else "0"}"}
     ${lib.concatMapStrings (node: "addnode=${node}\n") cfg.addnodes}
 
     # RPC server options
-    ${optionalString (cfg.rpcthreads != null) "rpcthreads=${toString cfg.rpcthreads}"}
+    rpcbind=${cfg.rpc.address}
     rpcport=${toString cfg.rpc.port}
+    rpcconnect=${cfg.rpc.address}
+    ${optionalString (cfg.rpc.threads != null) "rpcthreads=${toString cfg.rpc.threads}"}
     rpcwhitelistdefault=0
     ${concatMapStrings (user: ''
         ${optionalString (!user.passwordHMACFromFile) "rpcauth=${user.name}:${passwordHMAC}"}
@@ -39,9 +41,7 @@ let
           "rpcwhitelist=${user.name}:${lib.strings.concatStringsSep "," user.rpcwhitelist}"}
       '') (builtins.attrValues cfg.rpc.users)
     }
-    rpcbind=${cfg.rpcbind}
-    rpcconnect=${cfg.rpcbind}
-    ${lib.concatMapStrings (rpcallowip: "rpcallowip=${rpcallowip}\n") cfg.rpcallowip}
+    ${lib.concatMapStrings (rpcallowip: "rpcallowip=${rpcallowip}\n") cfg.rpc.allowip}
 
     # Wallet options
     ${optionalString (cfg.addresstype != null) "addresstype=${cfg.addresstype}"}
@@ -57,6 +57,16 @@ in {
   options = {
     services.bitcoind = {
       enable = mkEnableOption "Bitcoin daemon";
+      address = mkOption {
+        type = types.str;
+        default = "127.0.0.1";
+        description = "Address to listen for peer connections.";
+      };
+      port = mkOption {
+        type = types.port;
+        default = 8333;
+        description = "Port to listen for peer connections.";
+      };
       package = mkOption {
         type = types.package;
         default = config.nix-bitcoin.pkgs.bitcoind;
@@ -77,13 +87,6 @@ in {
         default = "/var/lib/bitcoind";
         description = "The data directory for bitcoind.";
       };
-      bind = mkOption {
-        type = types.str;
-        default = "127.0.0.1";
-        description = ''
-          Bind to given address and always listen on it.
-        '';
-      };
       user = mkOption {
         type = types.str;
         default = "bitcoin";
@@ -95,10 +98,29 @@ in {
         description = "The group as which to run bitcoind.";
       };
       rpc = {
+        address = mkOption {
+          type = types.str;
+          default = "127.0.0.1";
+          description = ''
+            Address to listen for JSON-RPC connections.
+          '';
+        };
         port = mkOption {
           type = types.port;
           default = 8332;
-          description = "Port on which to listen for JSON-RPC connections.";
+          description = "Port to listen for JSON-RPC connections.";
+        };
+        threads = mkOption {
+          type = types.nullOr types.ints.u16;
+          default = null;
+          description = "The number of threads to service RPC calls.";
+        };
+        allowip = mkOption {
+          type = types.listOf types.str;
+          default = [ "127.0.0.1" ];
+          description = ''
+            Allow JSON-RPC connections from specified sources.
+          '';
         };
         users = mkOption {
           default = {};
@@ -144,25 +166,6 @@ in {
           '';
         };
       };
-      rpcthreads = mkOption {
-        type = types.nullOr types.ints.u16;
-        default = null;
-        description = "Set the number of threads to service RPC calls";
-      };
-      rpcbind = mkOption {
-        type = types.str;
-        default = "127.0.0.1";
-        description = ''
-          Bind to given address to listen for JSON-RPC connections.
-        '';
-      };
-      rpcallowip = mkOption {
-        type = types.listOf types.str;
-        default = [ "127.0.0.1" ];
-        description = ''
-          Allow JSON-RPC connections from specified source.
-        '';
-      };
       regtest = mkOption {
         type = types.bool;
         default = false;
@@ -175,11 +178,6 @@ in {
       makeNetworkName = mkOption {
         readOnly = true;
         default = mainnet: regtest: if cfg.regtest then regtest else mainnet;
-      };
-      port = mkOption {
-        type = types.nullOr types.port;
-        default = null;
-        description = "Override the default port on which to listen for connections.";
       };
       proxy = mkOption {
         type = types.nullOr types.str;

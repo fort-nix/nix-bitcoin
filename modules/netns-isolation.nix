@@ -245,26 +245,26 @@ in {
     };
 
     services.bitcoind = {
-      bind = netns.bitcoind.address;
-      rpcbind = netns.bitcoind.address;
-      rpcallowip = [
+      address = netns.bitcoind.address;
+      rpc.address = netns.bitcoind.address;
+      rpc.allowip = [
         bridgeIp # For operator user
         netns.bitcoind.address
       ] ++ map (n: netns.${n}.address) netns.bitcoind.availableNetns;
     };
     systemd.services.bitcoind-import-banlist.serviceConfig.NetworkNamespacePath = "/var/run/netns/nb-bitcoind";
 
-    services.clightning.bind-addr = netns.clightning.address;
+    services.clightning.address = netns.clightning.address;
 
     services.lnd = {
-      listen = netns.lnd.address;
-      rpclisten = netns.lnd.address;
-      restlisten = netns.lnd.address;
+      address = netns.lnd.address;
+      rpcAddress = netns.lnd.address;
+      restAddress = netns.lnd.address;
     };
 
     services.liquidd = {
-      bind = netns.liquidd.address;
-      rpcbind = netns.liquidd.address;
+      address = netns.liquidd.address;
+      rpc.address = netns.liquidd.address;
       rpcallowip = [
         bridgeIp # For operator user
         netns.liquidd.address
@@ -274,14 +274,14 @@ in {
     services.electrs.address = netns.electrs.address;
 
     services.spark-wallet = {
-      host = netns.spark-wallet.address;
+      address = netns.spark-wallet.address;
       extraArgs = "--no-tls";
     };
 
     services.lightning-loop.rpcAddress = netns.lightning-loop.address;
 
-    services.nbxplorer.bind = netns.nbxplorer.address;
-    services.btcpayserver.bind = netns.btcpayserver.address;
+    services.nbxplorer.address = netns.nbxplorer.address;
+    services.btcpayserver.address = netns.btcpayserver.address;
 
     services.joinmarket.cliExec = mkCliExec "joinmarket";
     systemd.services.joinmarket-yieldgenerator.serviceConfig.NetworkNamespacePath = "/var/run/netns/nb-joinmarket";

@@ -16,23 +16,22 @@ let
     ${optionalString (cfg.validatepegin != null) "validatepegin=${if cfg.validatepegin then "1" else "0"}"}
 
     # Connection options
-    ${optionalString cfg.listen "bind=${cfg.bind}"}
-    ${optionalString (cfg.port != null) "port=${toString cfg.port}"}
+    ${optionalString cfg.listen "bind=${cfg.address}"}
+    port=${toString cfg.port}
     ${optionalString (cfg.proxy != null) "proxy=${cfg.proxy}"}
     listen=${if cfg.listen then "1" else "0"}
 
     # RPC server options
-    ${optionalString (cfg.rpc.port != null) "rpcport=${toString cfg.rpc.port}"}
+    rpcport=${toString cfg.rpc.port}
     ${concatMapStringsSep  "\n"
       (rpcUser: "rpcauth=${rpcUser.name}:${rpcUser.passwordHMAC}")
       (attrValues cfg.rpc.users)
     }
-    rpcbind=${cfg.rpcbind}
-    rpcconnect=${cfg.rpcbind}
+    rpcbind=${cfg.rpc.address}
+    rpcconnect=${cfg.rpc.address}
     ${lib.concatMapStrings (rpcallowip: "rpcallowip=${rpcallowip}\n") cfg.rpcallowip}
-    ${optionalString (cfg.rpcuser != null) "rpcuser=${cfg.rpcuser}"}
-    ${optionalString (cfg.rpcpassword != null) "rpcpassword=${cfg.rpcpassword}"}
-    mainchainrpchost=${config.services.bitcoind.rpcbind}
+    rpcuser=${cfg.rpcuser}
+    mainchainrpchost=${config.services.bitcoind.rpc.address}
     mainchainrpcport=${toString config.services.bitcoind.rpc.port}
     mainchainrpcuser=${config.services.bitcoind.rpc.users.public.name}
 
@@ -71,7 +70,16 @@ in {
 
     services.liquidd = {
       enable = mkEnableOption "Liquid sidechain";
-
+      address = mkOption {
+        type = types.str;
+        default = "127.0.0.1";
+        description = "Address to listen for peer connections.";
+      };
+      port = mkOption {
+        type = types.port;
+        default = 7042;
+        description = "Override the default port on which to listen for connections.";
+      };
       extraConfig = mkOption {
         type = types.lines;
         default = "";
@@ -88,14 +96,6 @@ in {
         default = "/var/lib/liquidd";
         description = "The data directory for liquidd.";
       };
-      bind = mkOption {
-        type = types.str;
-        default = "127.0.0.1";
-        description = ''
-          Bind to given address and always listen on it.
-        '';
-      };
-
       user = mkOption {
         type = types.str;
         default = "liquid";
@@ -106,12 +106,16 @@ in {
         default = cfg.user;
         description = "The group as which to run liquidd.";
       };
-
       rpc = {
+        address = mkOption {
+          type = types.str;
+          default = "127.0.0.1";
+          description = "Address to listen for JSON-RPC connections.";
+        };
         port = mkOption {
-          type = types.nullOr types.port;
-          default = null;
-          description = "Override the default port on which to listen for JSON-RPC connections.";
+          type = types.port;
+          default = 7041;
+          description = "Port to listen for JSON-RPC connections.";
         };
         users = mkOption {
           default = {};
@@ -125,14 +129,6 @@ in {
           '';
         };
       };
-
-      rpcbind = mkOption {
-        type = types.str;
-        default = "127.0.0.1";
-        description = ''
-          Bind to given address to listen for JSON-RPC connections.
-        '';
-      };
       rpcallowip = mkOption {
         type = types.listOf types.str;
         default = [ "127.0.0.1" ];
@@ -141,24 +137,14 @@ in {
         '';
       };
       rpcuser = mkOption {
-          type = types.nullOr types.str;
-          default = null;
+          type = types.str;
+          default = "liquidrpc";
           description = "Username for JSON-RPC connections";
-      };
-      rpcpassword = mkOption {
-          type = types.nullOr types.str;
-          default = null;
-          description = "Password for JSON-RPC connections";
       };
       testnet = mkOption {
         type = types.bool;
         default = false;
         description = "Whether to use the test chain.";
-      };
-      port = mkOption {
-        type = types.nullOr types.port;
-        default = null;
-        description = "Override the default port on which to listen for connections.";
       };
       proxy = mkOption {
         type = types.nullOr types.str;

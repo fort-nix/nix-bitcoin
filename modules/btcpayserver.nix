@@ -14,6 +14,16 @@ in {
         default = nbPkgs.nbxplorer;
         description = "The package providing nbxplorer binaries.";
       };
+      address = mkOption {
+        type = types.str;
+        default = "127.0.0.1";
+        description = "Address to listen on.";
+      };
+      port = mkOption {
+        type = types.port;
+        default = 24444;
+        description = "Port to listen on.";
+      };
       dataDir = mkOption {
         type = types.path;
         default = "/var/lib/nbxplorer";
@@ -29,16 +39,6 @@ in {
         default = cfg.nbxplorer.user;
         description = "The group as which to run nbxplorer.";
       };
-      bind = mkOption {
-        type = types.str;
-        default = "127.0.0.1";
-        description = "The address on which to bind.";
-      };
-      port = mkOption {
-        type = types.port;
-        default = 24444;
-        description = "Port on which to bind.";
-      };
       enable = mkOption {
         # This option is only used by netns-isolation
         internal = true;
@@ -49,6 +49,16 @@ in {
 
     btcpayserver = {
       enable = mkEnableOption "btcpayserver";
+      address = mkOption {
+        type = types.str;
+        default = "127.0.0.1";
+        description = "Address to listen on.";
+      };
+      port = mkOption {
+        type = types.port;
+        default = 23000;
+        description = "Port to listen on.";
+      };
       package = mkOption {
         type = types.package;
         default = nbPkgs.btcpayserver;
@@ -68,16 +78,6 @@ in {
         type = types.str;
         default = cfg.btcpayserver.user;
         description = "The group as which to run btcpayserver.";
-      };
-      bind = mkOption {
-        type = types.str;
-        default = "127.0.0.1";
-        description = "The address on which to bind.";
-      };
-      port = mkOption {
-        type = types.port;
-        default = 23000;
-        description = "Port on which to bind.";
       };
       lightningBackend = mkOption {
         type = types.nullOr (types.enum [ "clightning" "lnd" ]);
@@ -117,9 +117,9 @@ in {
       configFile = builtins.toFile "config" ''
         network=${config.services.bitcoind.network}
         btcrpcuser=${cfg.bitcoind.rpc.users.btcpayserver.name}
-        btcrpcurl=http://${config.services.bitcoind.rpcbind}:${toString cfg.bitcoind.rpc.port}
-        btcnodeendpoint=${config.services.bitcoind.bind}:8333
-        bind=${cfg.nbxplorer.bind}
+        btcrpcurl=http://${config.services.bitcoind.rpc.address}:${toString cfg.bitcoind.rpc.port}
+        btcnodeendpoint=${config.services.bitcoind.address}:${toString config.services.bitcoind.port}
+        bind=${cfg.nbxplorer.address}
         port=${toString cfg.nbxplorer.port}
       '';
     in {
@@ -153,9 +153,9 @@ in {
         network=${config.services.bitcoind.network}
         postgres=User ID=${cfg.btcpayserver.user};Host=/run/postgresql;Database=btcpaydb
         socksendpoint=${cfg.tor.client.socksListenAddress}
-        btcexplorerurl=http://${cfg.nbxplorer.bind}:${toString cfg.nbxplorer.port}/
+        btcexplorerurl=http://${cfg.nbxplorer.address}:${toString cfg.nbxplorer.port}/
         btcexplorercookiefile=${cfg.nbxplorer.dataDir}/${config.services.bitcoind.makeNetworkName "Main" "RegTest"}/.cookie
-        bind=${cfg.btcpayserver.bind}
+        bind=${cfg.btcpayserver.address}
         ${optionalString (cfg.btcpayserver.rootpath != null) "rootpath=${cfg.btcpayserver.rootpath}"}
         port=${toString cfg.btcpayserver.port}
       '' + optionalString (cfg.btcpayserver.lightningBackend == "clightning") ''
@@ -163,7 +163,7 @@ in {
       '');
       lndConfig =
         "btclightning=type=lnd-rest;" +
-        "server=https://${toString cfg.lnd.listen}:${toString cfg.lnd.restPort}/;" +
+        "server=https://${cfg.lnd.restAddress}:${toString cfg.lnd.restPort}/;" +
         "macaroonfilepath=/run/lnd/btcpayserver.macaroon;" +
         "certthumbprint=";
     in let self = {

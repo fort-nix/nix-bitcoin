@@ -20,7 +20,5 @@ let self = {
 
   pinned = import ./pinned.nix;
 
-  lib = import ./lib.nix { inherit (pkgs) lib; };
-
   modulesPkgs = self // self.pinned;
 }; in self

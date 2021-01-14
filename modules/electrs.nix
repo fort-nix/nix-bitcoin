@@ -9,6 +9,16 @@ let
 in {
   options.services.electrs = {
     enable = mkEnableOption "electrs";
+    address = mkOption {
+      type = types.str;
+      default = "127.0.0.1";
+      description = "Address to listen for RPC connections.";
+    };
+    port = mkOption {
+      type = types.port;
+      default = 50001;
+      description = "RPC port.";
+    };
     dataDir = mkOption {
       type = types.path;
       default = "/var/lib/electrs";
@@ -30,16 +40,6 @@ in {
       description = ''
         If enabled, the electrs service will sync faster on high-memory systems (≥ 8GB).
       '';
-    };
-    address = mkOption {
-      type = types.str;
-      default = "127.0.0.1";
-      description = "RPC and monitoring listening address.";
-    };
-    port = mkOption {
-      type = types.port;
-      default = 50001;
-      description = "RPC port.";
     };
     monitoringPort = mkOption {
       type = types.port;
@@ -95,7 +95,7 @@ in {
           --daemon-dir='${bitcoind.dataDir}' \
           --electrum-rpc-addr=${cfg.address}:${toString cfg.port} \
           --monitoring-addr=${cfg.address}:${toString cfg.monitoringPort} \
-          --daemon-rpc-addr=${bitcoind.rpcbind}:${toString bitcoind.rpc.port} \
+          --daemon-rpc-addr=${bitcoind.rpc.address}:${toString bitcoind.rpc.port} \
           ${cfg.extraArgs}
         '';
         User = cfg.user;

@@ -44,7 +44,7 @@ let testEnv = rec {
       tests.spark-wallet = cfg.spark-wallet.enable;
 
       tests.lnd = cfg.lnd.enable;
-      services.lnd.listenPort = 9736;
+      services.lnd.port = 9736;
 
       tests.lightning-loop = cfg.lightning-loop.enable;
 
@@ -67,6 +67,8 @@ let testEnv = rec {
           cjfee_a = 300
         '';
       };
+
+      tests.nodeinfo = config.nix-bitcoin.nodeinfo.enable;
 
       tests.backups = cfg.backups.enable;
 
@@ -119,6 +121,8 @@ let testEnv = rec {
       services.joinmarket.enable = true;
       services.backups.enable = true;
 
+      nix-bitcoin.nodeinfo.enable = true;
+
       services.hardware-wallets = {
         trezor = true;
         ledger = true;
@@ -130,7 +134,6 @@ let testEnv = rec {
         scenarios.full
         ../modules/presets/secure-node.nix
       ];
-      services.nix-bitcoin-webindex.enable = true;
       tests.secure-node = true;
       tests.banlist-and-restart = true;
 

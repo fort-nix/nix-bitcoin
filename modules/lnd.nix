@@ -8,8 +8,7 @@ let
   secretsDir = config.nix-bitcoin.secretsDir;
 
   bitcoind = config.services.bitcoind;
-  bitcoindRpcAddress = bitcoind.rpcbind;
-  onion-chef-service = (if cfg.announce-tor then [ "onion-chef.service" ] else []);
+  bitcoindRpcAddress = bitcoind.rpc.address;
   networkDir = "${cfg.dataDir}/chain/bitcoin/${bitcoind.network}";
   configFile = pkgs.writeText "lnd.conf" ''
     datadir=${cfg.dataDir}
@@ -17,9 +16,9 @@ let
     tlscertpath=${secretsDir}/lnd-cert
     tlskeypath=${secretsDir}/lnd-key
 
-    listen=${toString cfg.listen}:${toString cfg.listenPort}
-    rpclisten=${cfg.rpclisten}:${toString cfg.rpcPort}
-    restlisten=${cfg.restlisten}:${toString cfg.restPort}
+    listen=${toString cfg.address}:${toString cfg.port}
+    rpclisten=${cfg.rpcAddress}:${toString cfg.rpcPort}
+    restlisten=${cfg.restAddress}:${toString cfg.restPort}
 
     bitcoin.${bitcoind.network}=1
     bitcoin.active=1
@@ -55,49 +54,42 @@ in {
       default = networkDir;
       description = "The network data directory.";
     };
-    listen = mkOption {
-      type = config.nix-bitcoin.pkgs.lib.ipv4Address;
+    address = mkOption {
+      type = types.str;
       default = "localhost";
-      description = "Bind to given address to listen to peer connections";
+      description = "Address to listen for peer connections";
     };
-    listenPort = mkOption {
+    port = mkOption {
       type = types.port;
       default = 9735;
-      description = "Bind to given port to listen to peer connections";
+      description = "Port to listen for peer connections";
     };
-    rpclisten = mkOption {
+    rpcAddress = mkOption {
       type = types.str;
       default = "localhost";
-      description = ''
-        Bind to given address to listen to RPC connections.
-      '';
-    };
-    restlisten = mkOption {
-      type = types.str;
-      default = "localhost";
-      description = ''
-        Bind to given address to listen to REST connections.
-      '';
+      description = "Address to listen for RPC connections.";
     };
     rpcPort = mkOption {
       type = types.port;
       default = 10009;
-      description = "Port on which to listen for gRPC connections.";
+      description = "Port to listen for gRPC connections.";
+    };
+    restAddress = mkOption {
+      type = types.str;
+      default = "localhost";
+      description = ''
+        Address to listen for REST connections.
+      '';
     };
     restPort = mkOption {
       type = types.port;
       default = 8080;
-      description = "Port on which to listen for REST connections.";
+      description = "Port to listen for REST connections.";
     };
     tor-socks = mkOption {
       type = types.nullOr types.str;
       default = if cfg.enforceTor then config.services.tor.client.socksListenAddress else null;
       description = "Set a socks proxy to use to connect to Tor nodes";
-    };
-    announce-tor = mkOption {
-      type = types.bool;
-      default = false;
-      description = "Announce LND Tor Hidden Service";
     };
     macaroons = mkOption {
       default = {};
@@ -138,13 +130,21 @@ in {
       # Switch user because lnd makes datadir contents readable by user only
       ''
         sudo -u lnd ${cfg.package}/bin/lncli \
-          --rpcserver ${cfg.rpclisten}:${toString cfg.rpcPort} \
+          --rpcserver ${cfg.rpcAddress}:${toString cfg.rpcPort} \
           --tlscertpath '${secretsDir}/lnd-cert' \
           --macaroonpath '${networkDir}/admin.macaroon' "$@"
       '';
       description = "Binary to connect with the lnd instance.";
     };
-    enforceTor =  nix-bitcoin-services.enforceTor;
+    getPublicAddressCmd = mkOption {
+      type = types.str;
+      default = "";
+      description = ''
+        Bash expression which outputs the public service address to announce to peers.
+        If left empty, no address is announced.
+      '';
+    };
+    inherit (nix-bitcoin-services) enforceTor;
   };
 
   config = mkIf cfg.enable {
@@ -154,7 +154,12 @@ in {
       }
     ];
 
-    services.bitcoind.enable = true;
+    services.bitcoind = {
+      enable = true;
+      # Increase rpc thread count due to reports that lightning implementations fail
+      # under high bitcoind rpc load
+      rpc.threads = 16;
+    };
 
     environment.systemPackages = [ cfg.package (hiPrio cfg.cli) ];
 
@@ -167,16 +172,19 @@ in {
       zmqpubrawtx = "tcp://${bitcoindRpcAddress}:28333";
     };
 
-    services.onion-chef.access.lnd = if cfg.announce-tor then [ "lnd" ] else [];
     systemd.services.lnd = {
       description = "Run LND";
       wantedBy = [ "multi-user.target" ];
-      requires = [ "bitcoind.service" ] ++ onion-chef-service;
-      after = [ "bitcoind.service" ] ++ onion-chef-service;
+      requires = [ "bitcoind.service" ];
+      after = [ "bitcoind.service" ];
       preStart = ''
         install -m600 ${configFile} '${cfg.dataDir}/lnd.conf'
-        echo "bitcoind.rpcpass=$(cat ${secretsDir}/bitcoin-rpcpassword-public)" >> '${cfg.dataDir}/lnd.conf'
-        ${optionalString cfg.announce-tor "echo externalip=$(cat /var/lib/onion-chef/lnd/lnd) >> '${cfg.dataDir}/lnd.conf'"}
+        {
+          echo "bitcoind.rpcpass=$(cat ${secretsDir}/bitcoin-rpcpassword-public)"
+          ${optionalString (cfg.getPublicAddressCmd != "") ''
+            echo "externalip=$(${cfg.getPublicAddressCmd})"
+          ''}
+        } >> '${cfg.dataDir}/lnd.conf'
       '';
       serviceConfig = nix-bitcoin-services.defaultHardening // {
         RuntimeDirectory = "lnd"; # Only used to store custom macaroons
@@ -187,12 +195,12 @@ in {
         RestartSec = "10s";
         ReadWritePaths = "${cfg.dataDir}";
         ExecStartPost = let
-          restUrl = "https://${cfg.restlisten}:${toString cfg.restPort}/v1";
+          restUrl = "https://${cfg.restAddress}:${toString cfg.restPort}/v1";
         in [
           # Run fully privileged for secrets dir write access
           "+${nix-bitcoin-services.script ''
             attempts=250
-            while ! { exec 3>/dev/tcp/${cfg.restlisten}/${toString cfg.restPort} && exec 3>&-; } &>/dev/null; do
+            while ! { exec 3>/dev/tcp/${cfg.restAddress}/${toString cfg.restPort} && exec 3>&-; } &>/dev/null; do
                   ((attempts-- == 0)) && { echo "lnd REST service unreachable"; exit 1; }
                   sleep 0.1
             done
@@ -234,7 +242,7 @@ in {
             fi
 
             # Wait until the RPC port is open
-            while ! { exec 3>/dev/tcp/${cfg.rpclisten}/${toString cfg.rpcPort}; } &>/dev/null; do
+            while ! { exec 3>/dev/tcp/${cfg.rpcAddress}/${toString cfg.rpcPort}; } &>/dev/null; do
               sleep 0.1
             done
 

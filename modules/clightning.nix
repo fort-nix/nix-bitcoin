@@ -6,15 +6,14 @@ let
   cfg = config.services.clightning;
   inherit (config) nix-bitcoin-services;
   nbPkgs = config.nix-bitcoin.pkgs;
-  onion-chef-service = (if cfg.announce-tor then [ "onion-chef.service" ] else []);
   network = config.services.bitcoind.makeNetworkName "bitcoin" "regtest";
   configFile = pkgs.writeText "config" ''
     network=${network}
     bitcoin-datadir=${config.services.bitcoind.dataDir}
     ${optionalString (cfg.proxy != null) "proxy=${cfg.proxy}"}
     always-use-proxy=${if cfg.always-use-proxy then "true" else "false"}
-    bind-addr=${cfg.bind-addr}:${toString cfg.bindport}
-    bitcoin-rpcconnect=${config.services.bitcoind.rpcbind}
+    bind-addr=${cfg.address}:${toString cfg.port}
+    bitcoin-rpcconnect=${config.services.bitcoind.rpc.address}
     bitcoin-rpcport=${toString config.services.bitcoind.rpc.port}
     bitcoin-rpcuser=${config.services.bitcoind.rpc.users.public.name}
     rpc-file-mode=0660
@@ -29,13 +28,15 @@ in {
         If enabled, the clightning service will be installed.
       '';
     };
-    autolisten = mkOption {
-      type = types.bool;
-      default = false;
-      description = ''
-        Bind (and maybe announce) on IPv4 and IPv6 interfaces if no addr,
-        bind-addr or  announce-addr  options  are specified.
-      '';
+    address = mkOption {
+      type = types.str;
+      default = "127.0.0.1";
+      description = "IP address or UNIX domain socket to listen for peer connections.";
+    };
+    port = mkOption {
+      type = types.port;
+      default = 9735;
+      description = "Port to listen for peer connections.";
     };
     proxy = mkOption {
       type = types.nullOr types.str;
@@ -48,21 +49,6 @@ in {
       description = ''
         Always use the *proxy*, even to connect to normal IP addresses (you can still connect to Unix domain sockets manually). This also disables all DNS lookups, to avoid leaking information.
       '';
-    };
-    bind-addr = mkOption {
-      type = nbPkgs.lib.ipv4Address;
-      default = "127.0.0.1";
-      description = "Set an IP address or UNIX domain socket to listen to";
-    };
-    bindport = mkOption {
-      type = types.port;
-      default = 9735;
-      description = "Set a Port to listen to locally";
-    };
-    announce-tor = mkOption {
-      type = types.bool;
-      default = false;
-      description = "Announce clightning Tor Hidden Service";
     };
     dataDir = mkOption {
       type = types.path;
@@ -97,11 +83,24 @@ in {
       '';
       description = "Binary to connect with the clightning instance.";
     };
-    enforceTor =  nix-bitcoin-services.enforceTor;
+    getPublicAddressCmd = mkOption {
+      type = types.str;
+      default = "";
+      description = ''
+        Bash expression which outputs the public service address to announce to peers.
+        If left empty, no address is announced.
+      '';
+    };
+    inherit (nix-bitcoin-services) enforceTor;
   };
 
   config = mkIf cfg.enable {
-    services.bitcoind.enable = true;
+    services.bitcoind = {
+      enable = true;
+      # Increase rpc thread count due to reports that lightning implementations fail
+      # under high bitcoind rpc load
+      rpc.threads = 16;
+    };
 
     environment.systemPackages = [ nbPkgs.clightning (hiPrio cfg.cli) ];
     users.users.${cfg.user} = {
@@ -116,21 +115,25 @@ in {
       "d '${cfg.dataDir}' 0770 ${cfg.user} ${cfg.group} - -"
     ];
 
-    services.onion-chef.access.clightning = if cfg.announce-tor then [ "clightning" ] else [];
     systemd.services.clightning = {
       description = "Run clightningd";
       path  = [ nbPkgs.bitcoind ];
       wantedBy = [ "multi-user.target" ];
-      requires = [ "bitcoind.service" ] ++ onion-chef-service;
-      after = [ "bitcoind.service" ] ++ onion-chef-service;
+      requires = [ "bitcoind.service" ];
+      after = [ "bitcoind.service" ];
       preStart = ''
         cp ${configFile} ${cfg.dataDir}/config
         chown -R '${cfg.user}:${cfg.group}' '${cfg.dataDir}'
         # The RPC socket has to be removed otherwise we might have stale sockets
         rm -f ${cfg.networkDir}/lightning-rpc
         chmod 640 ${cfg.dataDir}/config
-        echo "bitcoin-rpcpassword=$(cat ${config.nix-bitcoin.secretsDir}/bitcoin-rpcpassword-public)" >> '${cfg.dataDir}/config'
-        ${optionalString cfg.announce-tor "echo announce-addr=$(cat /var/lib/onion-chef/clightning/clightning) >> '${cfg.dataDir}/config'"}
+        {
+          echo "bitcoin-rpcpassword=$(cat ${config.nix-bitcoin.secretsDir}/bitcoin-rpcpassword-public)"
+          ${optionalString (cfg.getPublicAddressCmd != "") ''
+            echo "announce-addr=$(${cfg.getPublicAddressCmd})"
+          ''}
+        } >> '${cfg.dataDir}/config'
+
         '';
       serviceConfig = nix-bitcoin-services.defaultHardening // {
         ExecStart = "${nbPkgs.clightning}/bin/lightningd --lightning-dir=${cfg.dataDir}";

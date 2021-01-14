@@ -5,7 +5,19 @@ let
   version = config.nix-bitcoin.configVersion;
 
   # Sorted by increasing version numbers
-  changes = [
+  changes = let
+    mkOnionServiceChange = service: {
+      version = "0.0.30";
+      condition = config.services.${service}.enable;
+      message = ''
+        The onion service for ${service} has been disabled in the default
+        configuration (`secure-node.nix`).
+
+        To enable the onion service, add the following to your configuration:
+        nix-bitcon.onionServices.${service}.enable = true;
+      '';
+    };
+  in [
     {
       version = "0.0.26";
       condition = config.services.joinmarket.enable;
@@ -54,6 +66,9 @@ let
         https://github.com/JoinMarket-Org/joinmarket-clientserver/blob/v0.8.0/docs/NATIVE-SEGWIT-UPGRADE.md
       '';
     }
+    (mkOnionServiceChange "clightning")
+    (mkOnionServiceChange "lnd")
+    (mkOnionServiceChange "btcpayserver")
   ];
 
   incompatibleChanges = optionals
@@ -76,6 +91,10 @@ let
   lastChange = builtins.elemAt changes (builtins.length changes - 1);
 in
 {
+  imports = [
+    ./obsolete-options.nix
+  ];
+
   options = {
     nix-bitcoin.configVersion = mkOption {
       type = with types; nullOr str;
@@ -93,6 +112,6 @@ in
 
   config = {
     # Force evaluation. An actual option value is never assigned
-    system.extraDependencies = optional (builtins.length incompatibleChanges > 0) (builtins.throw errorMsg);
+    system = optionalAttrs (builtins.length incompatibleChanges > 0) (builtins.throw errorMsg);
   };
 }

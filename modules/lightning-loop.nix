@@ -17,7 +17,7 @@ let
     tlscertpath=${secretsDir}/loop-cert
     tlskeypath=${secretsDir}/loop-key
 
-    lnd.host=${config.services.lnd.rpclisten}:${toString config.services.lnd.rpcPort}
+    lnd.host=${config.services.lnd.rpcAddress}:${toString config.services.lnd.rpcPort}
     lnd.macaroondir=${config.services.lnd.networkDir}
     lnd.tlspath=${secretsDir}/lnd-cert
 

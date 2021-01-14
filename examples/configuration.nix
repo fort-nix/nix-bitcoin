@@ -37,11 +37,12 @@
   # Enable this module to use clightning, a Lightning Network implementation
   # in C.
   services.clightning.enable = true;
-  # == TOR
-  # Enable this option to announce our Tor Hidden Service. By default clightning
-  # offers outgoing functionality, but doesn't announce the Tor Hidden Service
-  # under which peers can reach us.
-  # services.clightning.announce-tor = true;
+  #
+  # Set this to create an onion service by which clightning can accept incoming connections
+  # via Tor.
+  # The onion service is automatically announced to peers.
+  # nix-bitcoin.onionServices.clightning.public = true;
+  #
   # == Plugins
   # See ../docs/usage.md for the list of available plugins.
   # services.clightning.plugins.prometheus.enable = true;
@@ -49,13 +50,15 @@
   ### LND
   # Uncomment the following line in order to enable lnd, a lightning
   # implementation written in Go. In order to avoid collisions with clightning
-  # you must disable clightning or change the services.clightning.bindport or
-  # services.lnd.listenPort to a port other than 9735.
+  # you must disable clightning or change the services.clightning.port or
+  # services.lnd.port to a port other than 9735.
   # services.lnd.enable = true;
-  # Enable this option to announce our Tor Hidden Service. By default lnd
-  # offers outgoing functionality, but doesn't announce the Tor Hidden Service
-  # under which peers can reach us.
-  # services.lnd.announce-tor = true;
+  #
+  # Set this to create an onion service by which lnd can accept incoming connections
+  # via Tor.
+  # The onion service is automatically announced to peers.
+  # nix-bitcoin.onionServices.lnd.public = true;
+  #
   ## WARNING
   # If you use lnd, you should manually backup your wallet mnemonic
   # seed. This will allow you to recover on-chain funds. You can run the
@@ -93,6 +96,12 @@
   # The lightning backend service automatically enabled.
   # Afterwards you need to go into Store > General Settings > Lightning Nodes
   # and click to use "the internal lightning node of this BTCPay Server".
+  #
+  # Set this to create an onion service to make the btcpayserver web interface
+  # accessible via Tor.
+  # Security WARNING: Create a btcpayserver administrator account before allowing
+  # public access to the web interface.
+  # nix-bitcoin.onionServices.btcpayserver.enable = true;
 
   ### LIQUIDD
   # Enable this module to use Liquid, a sidechain for an inter-exchange
@@ -100,11 +109,6 @@
   # institutions around the world. Liquid is accessed with the elements-cli
   # tool run as user operator.
   # services.liquidd.enable = true;
-
-  ### WEBINDEX
-  # Enable this module to use the nix-bitcoin-webindex, a simple website
-  # displaying your node information. Only available if clightning is enabled.
-  # services.nix-bitcoin-webindex.enable = true;
 
   ### RECURRING-DONATIONS
   # Enable this module to send recurring donations. This is EXPERIMENTAL; it's
@@ -203,5 +207,5 @@
   # The nix-bitcoin release version that your config is compatible with.
   # When upgrading to a backwards-incompatible release, nix-bitcoin will display an
   # an error and provide hints for migrating your config to the new release.
-  nix-bitcoin.configVersion = "0.0.26";
+  nix-bitcoin.configVersion = "0.0.30";
 }

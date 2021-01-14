@@ -216,17 +216,19 @@ def _():
     )
 
 
+@test("nodeinfo")
+def _():
+    status, _ = machine.execute("systemctl is-enabled --quiet onion-addresses 2> /dev/null")
+    if status == 0:
+        machine.wait_for_unit("onion-addresses")
+    json_info = succeed("sudo -u operator nodeinfo")
+    info = json.loads(json_info)
+    assert info["bitcoind"]["local_address"]
+
+
 @test("secure-node")
 def _():
-    assert_running("onion-chef")
-
-    # FIXME: use 'wait_for_unit' because 'create-web-index' always fails during startup due
-    # to incomplete unit dependencies.
-    # 'create-web-index' implicitly tests 'nodeinfo'.
-    machine.wait_for_unit("create-web-index")
-    assert_running("nginx")
-    wait_for_open_port(ip("nginx"), 80)
-    assert_matches(f"curl {ip('nginx')}", "nix-bitcoin")
+    assert_running("onion-addresses")
 
 
 # Run this test before the following tests that shut down services
