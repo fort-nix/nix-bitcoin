@@ -45,17 +45,17 @@ let
 in {
   options.nix-bitcoin.onionAddresses = {
     access = mkOption {
-      type = types.attrs;
+      type = with types; attrsOf (listOf str);
       default = {};
       description = ''
-        This option controls who is allowed to access onion hostnames.  For
-        example the following allows the user operator to access the bitcoind
-        and clightning onion.
+        This option controls who is allowed to access onion addresses.
+        For example, the following allows user 'myuser' to access bitcoind
+        and clightning onion addresses:
         {
-          "operator" = [ "bitcoind" "clightning" ];
+          "myuser" = [ "bitcoind" "clightning" ];
         };
         The onion hostnames can then be read from
-        /var/lib/onion-addresses/<user>.
+        /var/lib/onion-addresses/myuser.
       '';
     };
   };
