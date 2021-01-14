@@ -58,9 +58,7 @@ in {
     };
 
     environment.systemPackages = with pkgs; [
-      tor
       jq
-      qrencode
     ];
 
     nix-bitcoin.operator.enable = true;
