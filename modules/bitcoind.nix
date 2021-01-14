@@ -33,7 +33,7 @@ let
     rpcbind=${cfg.rpc.address}
     rpcport=${toString cfg.rpc.port}
     rpcconnect=${cfg.rpc.address}
-    ${optionalString (cfg.rpc.threads != null) "rpcthreads=${toString cfg.rpcthreads}"}
+    ${optionalString (cfg.rpc.threads != null) "rpcthreads=${toString cfg.rpc.threads}"}
     rpcwhitelistdefault=0
     ${concatMapStrings (user: ''
         ${optionalString (!user.passwordHMACFromFile) "rpcauth=${user.name}:${passwordHMAC}"}
@@ -41,7 +41,7 @@ let
           "rpcwhitelist=${user.name}:${lib.strings.concatStringsSep "," user.rpcwhitelist}"}
       '') (builtins.attrValues cfg.rpc.users)
     }
-    ${lib.concatMapStrings (rpcallowip: "rpcallowip=${rpcallowip}\n") cfg.rpcallowip}
+    ${lib.concatMapStrings (rpcallowip: "rpcallowip=${rpcallowip}\n") cfg.rpc.allowip}
 
     # Wallet options
     ${optionalString (cfg.addresstype != null) "addresstype=${cfg.addresstype}"}
@@ -110,6 +110,18 @@ in {
           default = 8332;
           description = "Port to listen for JSON-RPC connections.";
         };
+        threads = mkOption {
+          type = types.nullOr types.ints.u16;
+          default = null;
+          description = "The number of threads to service RPC calls.";
+        };
+        allowip = mkOption {
+          type = types.listOf types.str;
+          default = [ "127.0.0.1" ];
+          description = ''
+            Allow JSON-RPC connections from specified sources.
+          '';
+        };
         users = mkOption {
           default = {};
           example = {
@@ -153,18 +165,6 @@ in {
             RPC user information for JSON-RPC connections.
           '';
         };
-      };
-      rpcthreads = mkOption {
-        type = types.nullOr types.ints.u16;
-        default = null;
-        description = "Set the number of threads to service RPC calls";
-      };
-      rpcallowip = mkOption {
-        type = types.listOf types.str;
-        default = [ "127.0.0.1" ];
-        description = ''
-          Allow JSON-RPC connections from specified source.
-        '';
       };
       regtest = mkOption {
         type = types.bool;

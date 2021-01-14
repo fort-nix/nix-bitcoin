@@ -247,7 +247,7 @@ in {
     services.bitcoind = {
       address = netns.bitcoind.address;
       rpc.address = netns.bitcoind.address;
-      rpcallowip = [
+      rpc.allowip = [
         bridgeIp # For operator user
         netns.bitcoind.address
       ] ++ map (n: netns.${n}.address) netns.bitcoind.availableNetns;

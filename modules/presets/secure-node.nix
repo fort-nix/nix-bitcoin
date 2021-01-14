@@ -60,7 +60,7 @@ in {
       dbCache = 1000;
       # higher rpcthread count due to reports that lightning implementations fail
       # under high bitcoind rpc load
-      rpcthreads = 16;
+      rpc.threads = 16;
     };
     services.tor.hiddenServices.bitcoind = mkHiddenService { port = cfg.bitcoind.port; toHost = cfg.bitcoind.address; };
 
