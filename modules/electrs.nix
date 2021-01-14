@@ -95,7 +95,7 @@ in {
           --daemon-dir='${bitcoind.dataDir}' \
           --electrum-rpc-addr=${cfg.address}:${toString cfg.port} \
           --monitoring-addr=${cfg.address}:${toString cfg.monitoringPort} \
-          --daemon-rpc-addr=${bitcoind.rpcbind}:${toString bitcoind.rpc.port} \
+          --daemon-rpc-addr=${bitcoind.rpc.address}:${toString bitcoind.rpc.port} \
           ${cfg.extraArgs}
         '';
         User = cfg.user;

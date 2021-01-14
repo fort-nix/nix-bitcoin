@@ -53,7 +53,6 @@ in {
       listen = true;
       dataDirReadableByGroup = mkIf cfg.electrs.high-memory true;
       enforceTor = true;
-      port = 8333;
       assumevalid = "00000000000000000000e5abc3a74fe27dc0ead9c70ea1deb456f11c15fd7bc6";
       addnodes = [ "ecoc5q34tmbq54wl.onion" ];
       discover = false;
@@ -63,7 +62,7 @@ in {
       # under high bitcoind rpc load
       rpcthreads = 16;
     };
-    services.tor.hiddenServices.bitcoind = mkHiddenService { port = cfg.bitcoind.port; toHost = cfg.bitcoind.bind; };
+    services.tor.hiddenServices.bitcoind = mkHiddenService { port = cfg.bitcoind.port; toHost = cfg.bitcoind.address; };
 
     # clightning
     services.clightning.enforceTor = true;

@@ -8,7 +8,7 @@ let
   secretsDir = config.nix-bitcoin.secretsDir;
 
   bitcoind = config.services.bitcoind;
-  bitcoindRpcAddress = bitcoind.rpcbind;
+  bitcoindRpcAddress = bitcoind.rpc.address;
   onion-chef-service = (if cfg.announce-tor then [ "onion-chef.service" ] else []);
   networkDir = "${cfg.dataDir}/chain/bitcoin/${bitcoind.network}";
   configFile = pkgs.writeText "lnd.conf" ''

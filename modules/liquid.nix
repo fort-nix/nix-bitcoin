@@ -32,7 +32,7 @@ let
     ${lib.concatMapStrings (rpcallowip: "rpcallowip=${rpcallowip}\n") cfg.rpcallowip}
     ${optionalString (cfg.rpcuser != null) "rpcuser=${cfg.rpcuser}"}
     ${optionalString (cfg.rpcpassword != null) "rpcpassword=${cfg.rpcpassword}"}
-    mainchainrpchost=${config.services.bitcoind.rpcbind}
+    mainchainrpchost=${config.services.bitcoind.rpc.address}
     mainchainrpcport=${toString config.services.bitcoind.rpc.port}
     mainchainrpcuser=${config.services.bitcoind.rpc.users.public.name}
 
