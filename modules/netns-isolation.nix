@@ -280,8 +280,8 @@ in {
 
     services.lightning-loop.rpcAddress = netns.lightning-loop.address;
 
-    services.nbxplorer.bind = netns.nbxplorer.address;
-    services.btcpayserver.bind = netns.btcpayserver.address;
+    services.nbxplorer.address = netns.nbxplorer.address;
+    services.btcpayserver.address = netns.btcpayserver.address;
 
     services.joinmarket.cliExec = mkCliExec "joinmarket";
     systemd.services.joinmarket-yieldgenerator.serviceConfig.NetworkNamespacePath = "/var/run/netns/nb-joinmarket";
