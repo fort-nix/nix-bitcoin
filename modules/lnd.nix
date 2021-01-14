@@ -154,7 +154,12 @@ in {
       }
     ];
 
-    services.bitcoind.enable = true;
+    services.bitcoind = {
+      enable = true;
+      # Increase rpc thread count due to reports that lightning implementations fail
+      # under high bitcoind rpc load
+      rpc.threads = 16;
+    };
 
     environment.systemPackages = [ cfg.package (hiPrio cfg.cli) ];
 

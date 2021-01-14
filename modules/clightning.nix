@@ -95,7 +95,12 @@ in {
   };
 
   config = mkIf cfg.enable {
-    services.bitcoind.enable = true;
+    services.bitcoind = {
+      enable = true;
+      # Increase rpc thread count due to reports that lightning implementations fail
+      # under high bitcoind rpc load
+      rpc.threads = 16;
+    };
 
     environment.systemPackages = [ nbPkgs.clightning (hiPrio cfg.cli) ];
     users.users.${cfg.user} = {
