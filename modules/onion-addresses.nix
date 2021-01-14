@@ -44,13 +44,6 @@ let
   '';
 in {
   options.nix-bitcoin.onionAddresses = {
-    enable = mkOption {
-      type = types.bool;
-      default = false;
-      description = ''
-        If enabled, the onion-addresses service will be installed.
-      '';
-    };
     access = mkOption {
       type = types.attrs;
       default = {};
@@ -67,9 +60,8 @@ in {
     };
   };
 
-  config = mkIf cfg.enable {
+  config = mkIf (cfg.access != {}) {
     systemd.services.onion-addresses = {
-      description = "Run onion-addresses";
       wantedBy = [ "tor.service" ];
       bindsTo = [ "tor.service" ];
       after = [ "tor.service" ];

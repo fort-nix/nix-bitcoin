@@ -125,7 +125,6 @@ in {
     ];
 
     nix-bitcoin.onionAddresses = {
-      enable = true;
       access.${operatorName} = [ "bitcoind" "clightning" "nginx" "liquidd" "spark-wallet" "electrs" "btcpayserver" "sshd" ];
     };
 

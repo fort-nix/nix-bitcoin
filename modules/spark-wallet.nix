@@ -72,7 +72,6 @@ in {
       }];
       version = 3;
     };
-    nix-bitcoin.onionAddresses.enable = cfg.onion-service;
     nix-bitcoin.onionAddresses.access.spark-wallet = if cfg.onion-service then [ "spark-wallet" ] else [];
     systemd.services.spark-wallet = {
       description = "Run spark-wallet";
