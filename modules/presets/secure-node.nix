@@ -25,10 +25,14 @@ in {
 
     nix-bitcoin.security.hideProcessInformation = true;
 
+    environment.systemPackages = with pkgs; [
+      jq
+    ];
+
+    # sshd
     services.tor.hiddenServices.sshd = mkHiddenService { port = 22; };
     nix-bitcoin.onionAddresses.access.${operatorName} = [ "sshd" ];
 
-    # bitcoind
     services.bitcoind = {
       enable = true;
       listen = true;
@@ -43,7 +47,6 @@ in {
       rpc.threads = 16;
     };
 
-    # liquidd
     services.liquidd = {
       rpcuser = "liquidrpc";
       prune = 1000;
@@ -51,13 +54,11 @@ in {
       listen = true;
     };
 
-    # Backups
+    nix-bitcoin.nodeinfo.enable = true;
+
     services.backups.frequency = "daily";
 
-    environment.systemPackages = with pkgs; [
-      jq
-    ];
-
+    # operator
     nix-bitcoin.operator.enable = true;
     users.users.${operatorName} = {
       openssh.authorizedKeys.keys = config.users.users.root.openssh.authorizedKeys.keys;
@@ -69,7 +70,5 @@ in {
           cp "${config.users.users.root.home}/.vbox-nixops-client-key" "${config.users.users.${operatorName}.home}"
         '';
       };
-
-    nix-bitcoin.nodeinfo.enable = true;
   };
 }
