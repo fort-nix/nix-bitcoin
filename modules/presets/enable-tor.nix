@@ -31,5 +31,6 @@ in {
     liquidd.enable = defaultTrue;
     electrs.enable = defaultTrue;
     btcpayserver.enable = defaultTrue;
+    spark-wallet.enable = defaultTrue;
   };
 }

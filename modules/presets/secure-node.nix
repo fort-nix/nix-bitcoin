@@ -53,10 +53,6 @@ in {
       listen = true;
     };
 
-    services.spark-wallet = {
-      onion-service = true;
-    };
-
     # Backups
     services.backups = {
       program = "duplicity";
