@@ -11,7 +11,6 @@ with lib;
 let
   cfg = config.nix-bitcoin.onionAddresses;
   inherit (config) nix-bitcoin-services;
-  dataDir = "/var/lib/onion-addresses/";
 in {
   options.nix-bitcoin.onionAddresses = {
     access = mkOption {
@@ -27,6 +26,10 @@ in {
         The onion hostnames can then be read from
         /var/lib/onion-addresses/myuser.
       '';
+    };
+    dataDir = mkOption {
+      readOnly = true;
+      default = "/var/lib/onion-addresses";
     };
   };
 
@@ -47,7 +50,7 @@ in {
         # Wait until tor is up
         until [[ -e /var/lib/tor/state ]]; do sleep 0.1; done
 
-        cd ${dataDir}
+        cd ${cfg.dataDir}
         rm -rf *
 
         ${concatMapStrings
