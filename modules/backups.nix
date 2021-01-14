@@ -31,13 +31,6 @@ let
 in {
   options.services.backups = {
     enable = mkEnableOption "Backups service";
-    program = mkOption {
-      type = types.enum [ "duplicity" ];
-      default = "duplicity";
-      description = ''
-        Program with which to do backups.
-      '';
-    };
     with-bulk-data = mkOption {
       type = types.bool;
       default = false;
@@ -69,7 +62,7 @@ in {
     };
   };
 
-  config = mkIf (cfg.enable && cfg.program == "duplicity") (mkMerge [
+  config = mkIf cfg.enable (mkMerge [
     {
       environment.systemPackages = [ pkgs.duplicity ];
 

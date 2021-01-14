@@ -52,10 +52,7 @@ in {
     };
 
     # Backups
-    services.backups = {
-      program = "duplicity";
-      frequency = "daily";
-    };
+    services.backups.frequency = "daily";
 
     environment.systemPackages = with pkgs; [
       jq
