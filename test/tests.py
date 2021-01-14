@@ -218,7 +218,7 @@ def _():
 
 @test("secure-node")
 def _():
-    assert_running("onion-chef")
+    assert_running("onion-addresses")
 
     # FIXME: use 'wait_for_unit' because 'create-web-index' always fails during startup due
     # to incomplete unit dependencies.

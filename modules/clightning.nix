@@ -6,7 +6,7 @@ let
   cfg = config.services.clightning;
   inherit (config) nix-bitcoin-services;
   nbPkgs = config.nix-bitcoin.pkgs;
-  onion-chef-service = (if cfg.announce-tor then [ "onion-chef.service" ] else []);
+  onionAddressesService = (if cfg.announce-tor then [ "onion-addresses.service" ] else []);
   network = config.services.bitcoind.makeNetworkName "bitcoin" "regtest";
   configFile = pkgs.writeText "config" ''
     network=${network}
@@ -108,13 +108,13 @@ in {
       "d '${cfg.dataDir}' 0770 ${cfg.user} ${cfg.group} - -"
     ];
 
-    services.onion-chef.access.clightning = if cfg.announce-tor then [ "clightning" ] else [];
+    nix-bitcoin.onionAddresses.access.clightning = if cfg.announce-tor then [ "clightning" ] else [];
     systemd.services.clightning = {
       description = "Run clightningd";
       path  = [ nbPkgs.bitcoind ];
       wantedBy = [ "multi-user.target" ];
-      requires = [ "bitcoind.service" ] ++ onion-chef-service;
-      after = [ "bitcoind.service" ] ++ onion-chef-service;
+      requires = [ "bitcoind.service" ] ++ onionAddressesService;
+      after = [ "bitcoind.service" ] ++ onionAddressesService;
       preStart = ''
         cp ${configFile} ${cfg.dataDir}/config
         chown -R '${cfg.user}:${cfg.group}' '${cfg.dataDir}'
@@ -122,7 +122,7 @@ in {
         rm -f ${cfg.networkDir}/lightning-rpc
         chmod 640 ${cfg.dataDir}/config
         echo "bitcoin-rpcpassword=$(cat ${config.nix-bitcoin.secretsDir}/bitcoin-rpcpassword-public)" >> '${cfg.dataDir}/config'
-        ${optionalString cfg.announce-tor "echo announce-addr=$(cat /var/lib/onion-chef/clightning/clightning) >> '${cfg.dataDir}/config'"}
+        ${optionalString cfg.announce-tor "echo announce-addr=$(cat /var/lib/onion-addresses/clightning/clightning) >> '${cfg.dataDir}/config'"}
         '';
       serviceConfig = nix-bitcoin-services.defaultHardening // {
         ExecStart = "${nbPkgs.clightning}/bin/lightningd --lightning-dir=${cfg.dataDir}";

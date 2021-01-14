@@ -1,17 +1,18 @@
-# The onion chef module allows unprivileged users to read onion hostnames.
-# By default the onion hostnames in /var/lib/tor/onion are only readable by the
-# tor user. The onion chef copies the onion hostnames into into
-# /var/lib/onion-chef and sets permissions according to the access option.
+# This module enables unprivileged users to read onion addresses.
+# By default, onion addresses in /var/lib/tor/onion are only readable by the
+# tor user.
+# The included service copies onion addresses to /var/lib/onion-addresses/<user>/
+# and sets permissions according to option 'access'.
 
 { config, lib, pkgs, ... }:
 
 with lib;
 
 let
-  cfg = config.services.onion-chef;
+  cfg = config.nix-bitcoin.onionAddresses;
   inherit (config) nix-bitcoin-services;
-  dataDir = "/var/lib/onion-chef/";
-  onion-chef-script = pkgs.writeScript "onion-chef.sh" ''
+  dataDir = "/var/lib/onion-addresses/";
+  onion-addresses-script = pkgs.writeScript "onion-addresses.sh" ''
     # wait until tor is up
     until ls -l /var/lib/tor/state; do sleep 1; done
 
@@ -42,12 +43,12 @@ let
     }
   '';
 in {
-  options.services.onion-chef = {
+  options.nix-bitcoin.onionAddresses = {
     enable = mkOption {
       type = types.bool;
       default = false;
       description = ''
-        If enabled, the onion-chef service will be installed.
+        If enabled, the onion-addresses service will be installed.
       '';
     };
     access = mkOption {
@@ -61,7 +62,7 @@ in {
           "operator" = [ "bitcoind" "clightning" ];
         };
         The onion hostnames can then be read from
-        /var/lib/onion-chef/<user>.
+        /var/lib/onion-addresses/<user>.
       '';
     };
   };
@@ -71,13 +72,13 @@ in {
       "d '${dataDir}' 0755 root root - -"
     ];
 
-    systemd.services.onion-chef = {
-      description = "Run onion-chef";
+    systemd.services.onion-addresses = {
+      description = "Run onion-addresses";
       wantedBy = [ "tor.service" ];
       bindsTo = [ "tor.service" ];
       after = [ "tor.service" ];
       serviceConfig = nix-bitcoin-services.defaultHardening // {
-        ExecStart = "${pkgs.bash}/bin/bash ${onion-chef-script}";
+        ExecStart = "${pkgs.bash}/bin/bash ${onion-addresses-script}";
         Type = "oneshot";
         RemainAfterExit = true;
         PrivateNetwork = "true"; # This service needs no network access

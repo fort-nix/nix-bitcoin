@@ -7,12 +7,12 @@ let
   script = pkgs.writeScriptBin "nodeinfo" ''
     set -eo pipefail
 
-    BITCOIND_ONION="$(cat /var/lib/onion-chef/${operatorName}/bitcoind)"
+    BITCOIND_ONION="$(cat /var/lib/onion-addresses/${operatorName}/bitcoind)"
     echo BITCOIND_ONION="$BITCOIND_ONION"
 
     if systemctl is-active --quiet clightning; then
       CLIGHTNING_NODEID=$(lightning-cli getinfo | jq -r '.id')
-      CLIGHTNING_ONION="$(cat /var/lib/onion-chef/${operatorName}/clightning)"
+      CLIGHTNING_ONION="$(cat /var/lib/onion-addresses/${operatorName}/clightning)"
       CLIGHTNING_ID="$CLIGHTNING_NODEID@$CLIGHTNING_ONION:9735"
       echo CLIGHTNING_NODEID="$CLIGHTNING_NODEID"
       echo CLIGHTNING_ONION="$CLIGHTNING_ONION"
@@ -24,37 +24,37 @@ let
       echo LND_NODEID="$LND_NODEID"
     fi
 
-    NGINX_ONION_FILE=/var/lib/onion-chef/${operatorName}/nginx
+    NGINX_ONION_FILE=/var/lib/onion-addresses/${operatorName}/nginx
     if [ -e "$NGINX_ONION_FILE" ]; then
       NGINX_ONION="$(cat $NGINX_ONION_FILE)"
       echo NGINX_ONION="$NGINX_ONION"
     fi
 
-    LIQUIDD_ONION_FILE=/var/lib/onion-chef/${operatorName}/liquidd
+    LIQUIDD_ONION_FILE=/var/lib/onion-addresses/${operatorName}/liquidd
     if [ -e "$LIQUIDD_ONION_FILE" ]; then
       LIQUIDD_ONION="$(cat $LIQUIDD_ONION_FILE)"
       echo LIQUIDD_ONION="$LIQUIDD_ONION"
     fi
 
-    SPARKWALLET_ONION_FILE=/var/lib/onion-chef/${operatorName}/spark-wallet
+    SPARKWALLET_ONION_FILE=/var/lib/onion-addresses/${operatorName}/spark-wallet
     if [ -e "$SPARKWALLET_ONION_FILE" ]; then
       SPARKWALLET_ONION="$(cat $SPARKWALLET_ONION_FILE)"
       echo SPARKWALLET_ONION="http://$SPARKWALLET_ONION"
     fi
 
-    ELECTRS_ONION_FILE=/var/lib/onion-chef/${operatorName}/electrs
+    ELECTRS_ONION_FILE=/var/lib/onion-addresses/${operatorName}/electrs
     if [ -e "$ELECTRS_ONION_FILE" ]; then
       ELECTRS_ONION="$(cat $ELECTRS_ONION_FILE)"
       echo ELECTRS_ONION="$ELECTRS_ONION"
     fi
 
-    BTCPAYSERVER_ONION_FILE=/var/lib/onion-chef/${operatorName}/btcpayserver
+    BTCPAYSERVER_ONION_FILE=/var/lib/onion-addresses/${operatorName}/btcpayserver
     if [ -e "$BTCPAYSERVER_ONION_FILE" ]; then
       BTCPAYSERVER_ONION="$(cat $BTCPAYSERVER_ONION_FILE)"
       echo BTCPAYSERVER_ONION="$BTCPAYSERVER_ONION"
     fi
 
-    SSHD_ONION_FILE=/var/lib/onion-chef/${operatorName}/sshd
+    SSHD_ONION_FILE=/var/lib/onion-addresses/${operatorName}/sshd
     if [ -e "$SSHD_ONION_FILE" ]; then
     SSHD_ONION="$(cat $SSHD_ONION_FILE)"
     echo SSHD_ONION="$SSHD_ONION"

@@ -24,9 +24,9 @@ with lib;
     # Support features
     ./versioning.nix
     ./security.nix
+    ./onion-addresses.nix
     ./netns-isolation.nix
     ./backups.nix
-    ./onion-chef.nix
   ];
 
   disabledModules = [ "services/networking/bitcoind.nix" ];

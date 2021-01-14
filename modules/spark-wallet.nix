@@ -5,14 +5,14 @@ with lib;
 let
   cfg = config.services.spark-wallet;
   inherit (config) nix-bitcoin-services;
-  onion-chef-service = (if cfg.onion-service then [ "onion-chef.service" ] else []);
+  onionAddressesService = (if cfg.onion-service then [ "onion-addresses.service" ] else []);
 
   # Use wasabi rate provider because the default (bitstamp) doesn't accept
   # connections through Tor
   torRateProvider = "--rate-provider wasabi --proxy socks5h://${config.services.tor.client.socksListenAddress}";
   startScript = ''
     ${optionalString cfg.onion-service ''
-      publicURL="--public-url http://$(cat /var/lib/onion-chef/spark-wallet/spark-wallet)"
+      publicURL="--public-url http://$(cat /var/lib/onion-addresses/spark-wallet/spark-wallet)"
     ''}
     exec ${config.nix-bitcoin.pkgs.spark-wallet}/bin/spark-wallet \
       --ln-path '${config.services.clightning.networkDir}'  \
@@ -72,19 +72,19 @@ in {
       }];
       version = 3;
     };
-    services.onion-chef.enable = cfg.onion-service;
-    services.onion-chef.access.spark-wallet = if cfg.onion-service then [ "spark-wallet" ] else [];
+    nix-bitcoin.onionAddresses.enable = cfg.onion-service;
+    nix-bitcoin.onionAddresses.access.spark-wallet = if cfg.onion-service then [ "spark-wallet" ] else [];
     systemd.services.spark-wallet = {
       description = "Run spark-wallet";
       wantedBy = [ "multi-user.target" ];
-      requires = [ "clightning.service" ] ++ onion-chef-service;
-      after = [ "clightning.service" ]  ++ onion-chef-service;
+      requires = [ "clightning.service" ] ++ onionAddressesService;
+      after = [ "clightning.service" ]  ++ onionAddressesService;
       script = startScript;
       serviceConfig = nix-bitcoin-services.defaultHardening // {
         User = "spark-wallet";
         Restart = "on-failure";
         RestartSec = "10s";
-        ReadWritePaths = mkIf cfg.onion-service "/var/lib/onion-chef";
+        ReadWritePaths = mkIf cfg.onion-service "/var/lib/onion-addresses";
       } // (if cfg.enforceTor
             then nix-bitcoin-services.allowTor
             else nix-bitcoin-services.allowAnyIP)
