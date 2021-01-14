@@ -93,6 +93,6 @@ in
 
   config = {
     # Force evaluation. An actual option value is never assigned
-    system.extraDependencies = optional (builtins.length incompatibleChanges > 0) (builtins.throw errorMsg);
+    system = optionalAttrs (builtins.length incompatibleChanges > 0) (builtins.throw errorMsg);
   };
 }
