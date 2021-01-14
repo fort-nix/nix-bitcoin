@@ -274,7 +274,7 @@ in {
     services.electrs.address = netns.electrs.address;
 
     services.spark-wallet = {
-      host = netns.spark-wallet.address;
+      address = netns.spark-wallet.address;
       extraArgs = "--no-tls";
     };
 

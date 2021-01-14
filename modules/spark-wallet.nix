@@ -16,7 +16,7 @@ let
     ''}
     exec ${config.nix-bitcoin.pkgs.spark-wallet}/bin/spark-wallet \
       --ln-path '${config.services.clightning.networkDir}'  \
-      --host ${cfg.host} \
+      --host ${cfg.address} --port ${toString cfg.port} \
       --config '${config.nix-bitcoin.secretsDir}/spark-wallet-login' \
       ${optionalString cfg.enforceTor torRateProvider} \
       $publicURL \
@@ -31,10 +31,15 @@ in {
         If enabled, the spark-wallet service will be installed.
       '';
     };
-    host = mkOption {
+    address = mkOption {
       type = types.str;
       default = "localhost";
-      description = "http(s) server listen address.";
+      description = "http(s) server address.";
+    };
+    port = mkOption {
+      type = types.port;
+      default = 9737;
+      description = "http(s) server port.";
     };
     onion-service = mkOption {
       type = types.bool;
@@ -63,7 +68,7 @@ in {
 
     services.tor.hiddenServices.spark-wallet = mkIf cfg.onion-service {
       map = [{
-        port = 80; toPort = 9737; toHost = cfg.host;
+        port = 80; toPort = cfg.port; toHost = cfg.address;
       }];
       version = 3;
     };
