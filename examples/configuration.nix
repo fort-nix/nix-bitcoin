@@ -53,10 +53,12 @@
   # you must disable clightning or change the services.clightning.port or
   # services.lnd.port to a port other than 9735.
   # services.lnd.enable = true;
-  # Enable this option to announce our Tor Hidden Service. By default lnd
-  # offers outgoing functionality, but doesn't announce the Tor Hidden Service
-  # under which peers can reach us.
-  # services.lnd.announce-tor = true;
+  #
+  # Set this to create an onion service by which lnd can accept incoming connections
+  # via Tor.
+  # The onion service is automatically announced to peers.
+  # nix-bitcoin.onionServices.lnd.public = true;
+  #
   ## WARNING
   # If you use lnd, you should manually backup your wallet mnemonic
   # seed. This will allow you to recover on-chain funds. You can run the

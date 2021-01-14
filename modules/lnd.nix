@@ -9,7 +9,6 @@ let
 
   bitcoind = config.services.bitcoind;
   bitcoindRpcAddress = bitcoind.rpc.address;
-  onionAddressesService = (if cfg.announce-tor then [ "onion-addresses.service" ] else []);
   networkDir = "${cfg.dataDir}/chain/bitcoin/${bitcoind.network}";
   configFile = pkgs.writeText "lnd.conf" ''
     datadir=${cfg.dataDir}
@@ -92,11 +91,6 @@ in {
       default = if cfg.enforceTor then config.services.tor.client.socksListenAddress else null;
       description = "Set a socks proxy to use to connect to Tor nodes";
     };
-    announce-tor = mkOption {
-      type = types.bool;
-      default = false;
-      description = "Announce LND Tor Hidden Service";
-    };
     macaroons = mkOption {
       default = {};
       type = with types; attrsOf (submodule {
@@ -142,7 +136,15 @@ in {
       '';
       description = "Binary to connect with the lnd instance.";
     };
-    enforceTor =  nix-bitcoin-services.enforceTor;
+    getPublicAddressCmd = mkOption {
+      type = types.str;
+      default = "";
+      description = ''
+        Bash expression which outputs the public service address to announce to peers.
+        If left empty, no address is announced.
+      '';
+    };
+    inherit (nix-bitcoin-services) enforceTor;
   };
 
   config = mkIf cfg.enable {
@@ -165,16 +167,19 @@ in {
       zmqpubrawtx = "tcp://${bitcoindRpcAddress}:28333";
     };
 
-    nix-bitcoin.onionAddresses.access.lnd = if cfg.announce-tor then [ "lnd" ] else [];
     systemd.services.lnd = {
       description = "Run LND";
       wantedBy = [ "multi-user.target" ];
-      requires = [ "bitcoind.service" ] ++ onionAddressesService;
-      after = [ "bitcoind.service" ] ++ onionAddressesService;
+      requires = [ "bitcoind.service" ];
+      after = [ "bitcoind.service" ];
       preStart = ''
         install -m600 ${configFile} '${cfg.dataDir}/lnd.conf'
-        echo "bitcoind.rpcpass=$(cat ${secretsDir}/bitcoin-rpcpassword-public)" >> '${cfg.dataDir}/lnd.conf'
-        ${optionalString cfg.announce-tor "echo externalip=$(cat /var/lib/onion-addresses/lnd/lnd) >> '${cfg.dataDir}/lnd.conf'"}
+        {
+          echo "bitcoind.rpcpass=$(cat ${secretsDir}/bitcoin-rpcpassword-public)"
+          ${optionalString (cfg.getPublicAddressCmd != "") ''
+            echo "externalip=$(${cfg.getPublicAddressCmd})"
+          ''}
+        } >> '${cfg.dataDir}/lnd.conf'
       '';
       serviceConfig = nix-bitcoin-services.defaultHardening // {
         RuntimeDirectory = "lnd"; # Only used to store custom macaroons
