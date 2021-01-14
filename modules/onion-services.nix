@@ -99,5 +99,14 @@ in {
         getPublicAddressCmd = "cat ${config.nix-bitcoin.onionAddresses.dataDir}/${service}/${service}";
       });
     }
+
+    # Set sensible defaults for some services
+    {
+      nix-bitcoin.onionServices = {
+        btcpayserver = {
+          externalPort = 80;
+        };
+      };
+    }
   ];
 }

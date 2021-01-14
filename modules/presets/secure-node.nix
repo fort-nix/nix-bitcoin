@@ -16,20 +16,8 @@ in {
     ../modules.nix
     ../nodeinfo.nix
     ../nix-bitcoin-webindex.nix
+    ./enable-tor.nix
   ];
-
-  options = {
-    services.clightning.onionport = mkOption {
-      type = types.port;
-      default = 9735;
-      description = "Port on which to listen for tor client connections.";
-    };
-    services.lnd.onionport = mkOption {
-      type = types.ints.u16;
-      default = 9735;
-      description = "Port on which to listen for tor client connections.";
-    };
-  };
 
   config =  {
     # For backwards compatibility only
@@ -39,20 +27,14 @@ in {
 
     nix-bitcoin.security.hideProcessInformation = true;
 
-    # Tor
-    services.tor = {
-      enable = true;
-      client.enable = true;
-
-      hiddenServices.sshd = mkHiddenService { port = 22; };
-    };
+    services.tor.hiddenServices.sshd = mkHiddenService { port = 22; };
+    nix-bitcoin.onionAddresses.access.${operatorName} = [ "sshd" ];
 
     # bitcoind
     services.bitcoind = {
       enable = true;
       listen = true;
       dataDirReadableByGroup = mkIf cfg.electrs.high-memory true;
-      enforceTor = true;
       assumevalid = "00000000000000000000e5abc3a74fe27dc0ead9c70ea1deb456f11c15fd7bc6";
       addnodes = [ "ecoc5q34tmbq54wl.onion" ];
       discover = false;
@@ -62,22 +44,6 @@ in {
       # under high bitcoind rpc load
       rpc.threads = 16;
     };
-    services.tor.hiddenServices.bitcoind = mkHiddenService { port = cfg.bitcoind.port; toHost = cfg.bitcoind.address; };
-
-    # clightning
-    services.clightning.enforceTor = true;
-    services.tor.hiddenServices.clightning = mkIf cfg.clightning.enable (mkHiddenService {
-      port = cfg.clightning.onionport;
-      toHost = cfg.clightning.address;
-      toPort = cfg.clightning.port;
-    });
-
-    # lnd
-    services.lnd.enforceTor = true;
-    services.tor.hiddenServices.lnd = mkIf cfg.lnd.enable (mkHiddenService { port = cfg.lnd.onionport; toHost = cfg.lnd.address; toPort = cfg.lnd.port; });
-
-    # lightning-loop
-    services.lightning-loop.enforceTor = true;
 
     # liquidd
     services.liquidd = {
@@ -85,32 +51,11 @@ in {
       prune = 1000;
       validatepegin = true;
       listen = true;
-      enforceTor = true;
     };
-    services.tor.hiddenServices.liquidd = mkIf cfg.liquidd.enable (mkHiddenService { port = cfg.liquidd.port; toHost = cfg.liquidd.address; });
-
-    # electrs
-    services.electrs = {
-      enforceTor = true;
-    };
-    services.tor.hiddenServices.electrs = mkIf cfg.electrs.enable (mkHiddenService {
-      port = cfg.electrs.port; toHost = cfg.electrs.address;
-    });
-
-    # btcpayserver
-    # disable tor enforcement until btcpayserver can fetch rates over Tor
-    services.btcpayserver.enforceTor = false;
-    services.nbxplorer.enforceTor = true;
-    services.tor.hiddenServices.btcpayserver = mkIf cfg.btcpayserver.enable (mkHiddenService { port = 80; toPort = 23000; toHost = cfg.btcpayserver.address; });
 
     services.spark-wallet = {
       onion-service = true;
-      enforceTor = true;
     };
-
-    services.recurring-donations.enforceTor = true;
-
-    services.nix-bitcoin-webindex.enforceTor = true;
 
     # Backups
     services.backups = {
@@ -123,10 +68,6 @@ in {
       jq
       qrencode
     ];
-
-    nix-bitcoin.onionAddresses = {
-      access.${operatorName} = [ "bitcoind" "clightning" "nginx" "liquidd" "spark-wallet" "electrs" "btcpayserver" "sshd" ];
-    };
 
     nix-bitcoin.operator.enable = true;
     users.users.${operatorName} = {
