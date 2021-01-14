@@ -263,8 +263,8 @@ in {
     };
 
     services.liquidd = {
-      bind = netns.liquidd.address;
-      rpcbind = netns.liquidd.address;
+      address = netns.liquidd.address;
+      rpc.address = netns.liquidd.address;
       rpcallowip = [
         bridgeIp # For operator user
         netns.liquidd.address

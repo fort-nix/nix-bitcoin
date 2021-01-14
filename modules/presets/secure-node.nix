@@ -86,9 +86,8 @@ in {
       validatepegin = true;
       listen = true;
       enforceTor = true;
-      port = 7042;
     };
-    services.tor.hiddenServices.liquidd = mkIf cfg.liquidd.enable (mkHiddenService { port = cfg.liquidd.port; toHost = cfg.liquidd.bind; });
+    services.tor.hiddenServices.liquidd = mkIf cfg.liquidd.enable (mkHiddenService { port = cfg.liquidd.port; toHost = cfg.liquidd.address; });
 
     # electrs
     services.electrs = {
