@@ -48,7 +48,6 @@ in {
     };
 
     services.liquidd = {
-      rpcuser = "liquidrpc";
       prune = 1000;
       validatepegin = true;
       listen = true;

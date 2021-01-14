@@ -30,7 +30,7 @@ let
     rpcbind=${cfg.rpc.address}
     rpcconnect=${cfg.rpc.address}
     ${lib.concatMapStrings (rpcallowip: "rpcallowip=${rpcallowip}\n") cfg.rpcallowip}
-    ${optionalString (cfg.rpcuser != null) "rpcuser=${cfg.rpcuser}"}
+    rpcuser=${cfg.rpcuser}
     ${optionalString (cfg.rpcpassword != null) "rpcpassword=${cfg.rpcpassword}"}
     mainchainrpchost=${config.services.bitcoind.rpc.address}
     mainchainrpcport=${toString config.services.bitcoind.rpc.port}
@@ -138,8 +138,8 @@ in {
         '';
       };
       rpcuser = mkOption {
-          type = types.nullOr types.str;
-          default = null;
+          type = types.str;
+          default = "liquidrpc";
           description = "Username for JSON-RPC connections";
       };
       rpcpassword = mkOption {
