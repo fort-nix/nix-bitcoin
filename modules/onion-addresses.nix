@@ -4,7 +4,7 @@
 # The included service copies onion addresses to /var/lib/onion-addresses/<user>/
 # and sets permissions according to option 'access'.
 
-{ config, lib, pkgs, ... }:
+{ config, lib, ... }:
 
 with lib;
 
@@ -12,36 +12,6 @@ let
   cfg = config.nix-bitcoin.onionAddresses;
   inherit (config) nix-bitcoin-services;
   dataDir = "/var/lib/onion-addresses/";
-  onion-addresses-script = pkgs.writeScript "onion-addresses.sh" ''
-    # wait until tor is up
-    until ls -l /var/lib/tor/state; do sleep 1; done
-
-    cd ${dataDir}
-
-    # Create directory for every user and set permissions
-    ${ builtins.foldl'
-      (x: user: x +
-        ''
-        mkdir -p -m 0700 ${user}
-        chown ${user} ${user}
-          # Copy onion hostnames into the user's directory
-          ${ builtins.foldl'
-            (x: onion: x +
-              ''
-              ONION_FILE=/var/lib/tor/onion/${onion}/hostname
-              if [ -e "$ONION_FILE" ]; then
-                cp $ONION_FILE ${user}/${onion}
-                chown ${user} ${user}/${onion}
-              fi
-              '')
-            ""
-            (builtins.getAttr user cfg.access)
-          }
-        '')
-      ""
-      (builtins.attrNames cfg.access)
-    }
-  '';
 in {
   options.nix-bitcoin.onionAddresses = {
     access = mkOption {
@@ -66,7 +36,6 @@ in {
       bindsTo = [ "tor.service" ];
       after = [ "tor.service" ];
       serviceConfig = nix-bitcoin-services.defaultHardening // {
-        ExecStart = "${pkgs.bash}/bin/bash ${onion-addresses-script}";
         Type = "oneshot";
         RemainAfterExit = true;
         StateDirectory = "onion-addresses";
@@ -74,6 +43,36 @@ in {
         PrivateUsers = "false";
         CapabilityBoundingSet = "CAP_CHOWN CAP_FSETID CAP_SETFCAP CAP_DAC_OVERRIDE CAP_DAC_READ_SEARCH CAP_FOWNER CAP_IPC_OWNER";
       };
+      script = ''
+        # wait until tor is up
+        until ls -l /var/lib/tor/state; do sleep 1; done
+
+        cd ${dataDir}
+
+        # Create directory for every user and set permissions
+        ${ builtins.foldl'
+          (x: user: x +
+            ''
+            mkdir -p -m 0700 ${user}
+            chown ${user} ${user}
+              # Copy onion hostnames into the user's directory
+              ${ builtins.foldl'
+                (x: onion: x +
+                  ''
+                  ONION_FILE=/var/lib/tor/onion/${onion}/hostname
+                  if [ -e "$ONION_FILE" ]; then
+                    cp $ONION_FILE ${user}/${onion}
+                    chown ${user} ${user}/${onion}
+                  fi
+                  '')
+                ""
+                (builtins.getAttr user cfg.access)
+              }
+            '')
+          ""
+          (builtins.attrNames cfg.access)
+        }
+      '';
     };
   };
 }
