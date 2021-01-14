@@ -44,7 +44,7 @@ let testEnv = rec {
       tests.spark-wallet = cfg.spark-wallet.enable;
 
       tests.lnd = cfg.lnd.enable;
-      services.lnd.listenPort = 9736;
+      services.lnd.port = 9736;
 
       tests.lightning-loop = cfg.lightning-loop.enable;
 

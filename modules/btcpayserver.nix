@@ -163,7 +163,7 @@ in {
       '');
       lndConfig =
         "btclightning=type=lnd-rest;" +
-        "server=https://${toString cfg.lnd.listen}:${toString cfg.lnd.restPort}/;" +
+        "server=https://${cfg.lnd.restAddress}:${toString cfg.lnd.restPort}/;" +
         "macaroonfilepath=/run/lnd/btcpayserver.macaroon;" +
         "certthumbprint=";
     in let self = {

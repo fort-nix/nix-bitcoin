@@ -74,7 +74,7 @@ in {
 
     # lnd
     services.lnd.enforceTor = true;
-    services.tor.hiddenServices.lnd = mkIf cfg.lnd.enable (mkHiddenService { port = cfg.lnd.onionport; toHost = cfg.lnd.listen; toPort = cfg.lnd.listenPort; });
+    services.tor.hiddenServices.lnd = mkIf cfg.lnd.enable (mkHiddenService { port = cfg.lnd.onionport; toHost = cfg.lnd.address; toPort = cfg.lnd.port; });
 
     # lightning-loop
     services.lightning-loop.enforceTor = true;

@@ -257,9 +257,9 @@ in {
     services.clightning.bind-addr = netns.clightning.address;
 
     services.lnd = {
-      listen = netns.lnd.address;
-      rpclisten = netns.lnd.address;
-      restlisten = netns.lnd.address;
+      address = netns.lnd.address;
+      rpcAddress = netns.lnd.address;
+      restAddress = netns.lnd.address;
     };
 
     services.liquidd = {

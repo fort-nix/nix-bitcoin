@@ -17,9 +17,9 @@ let
     tlscertpath=${secretsDir}/lnd-cert
     tlskeypath=${secretsDir}/lnd-key
 
-    listen=${toString cfg.listen}:${toString cfg.listenPort}
-    rpclisten=${cfg.rpclisten}:${toString cfg.rpcPort}
-    restlisten=${cfg.restlisten}:${toString cfg.restPort}
+    listen=${toString cfg.address}:${toString cfg.port}
+    rpclisten=${cfg.rpcAddress}:${toString cfg.rpcPort}
+    restlisten=${cfg.restAddress}:${toString cfg.restPort}
 
     bitcoin.${bitcoind.network}=1
     bitcoin.active=1
@@ -55,39 +55,37 @@ in {
       default = networkDir;
       description = "The network data directory.";
     };
-    listen = mkOption {
-      type = config.nix-bitcoin.pkgs.lib.ipv4Address;
+    address = mkOption {
+      type = types.str;
       default = "localhost";
-      description = "Bind to given address to listen to peer connections";
+      description = "Address to listen for peer connections";
     };
-    listenPort = mkOption {
+    port = mkOption {
       type = types.port;
       default = 9735;
-      description = "Bind to given port to listen to peer connections";
+      description = "Port to listen for peer connections";
     };
-    rpclisten = mkOption {
+    rpcAddress = mkOption {
       type = types.str;
       default = "localhost";
-      description = ''
-        Bind to given address to listen to RPC connections.
-      '';
-    };
-    restlisten = mkOption {
-      type = types.str;
-      default = "localhost";
-      description = ''
-        Bind to given address to listen to REST connections.
-      '';
+      description = "Address to listen for RPC connections.";
     };
     rpcPort = mkOption {
       type = types.port;
       default = 10009;
-      description = "Port on which to listen for gRPC connections.";
+      description = "Port to listen for gRPC connections.";
+    };
+    restAddress = mkOption {
+      type = types.str;
+      default = "localhost";
+      description = ''
+        Address to listen for REST connections.
+      '';
     };
     restPort = mkOption {
       type = types.port;
       default = 8080;
-      description = "Port on which to listen for REST connections.";
+      description = "Port to listen for REST connections.";
     };
     tor-socks = mkOption {
       type = types.nullOr types.str;
@@ -138,7 +136,7 @@ in {
       # Switch user because lnd makes datadir contents readable by user only
       ''
         sudo -u lnd ${cfg.package}/bin/lncli \
-          --rpcserver ${cfg.rpclisten}:${toString cfg.rpcPort} \
+          --rpcserver ${cfg.rpcAddress}:${toString cfg.rpcPort} \
           --tlscertpath '${secretsDir}/lnd-cert' \
           --macaroonpath '${networkDir}/admin.macaroon' "$@"
       '';
@@ -187,12 +185,12 @@ in {
         RestartSec = "10s";
         ReadWritePaths = "${cfg.dataDir}";
         ExecStartPost = let
-          restUrl = "https://${cfg.restlisten}:${toString cfg.restPort}/v1";
+          restUrl = "https://${cfg.restAddress}:${toString cfg.restPort}/v1";
         in [
           # Run fully privileged for secrets dir write access
           "+${nix-bitcoin-services.script ''
             attempts=250
-            while ! { exec 3>/dev/tcp/${cfg.restlisten}/${toString cfg.restPort} && exec 3>&-; } &>/dev/null; do
+            while ! { exec 3>/dev/tcp/${cfg.restAddress}/${toString cfg.restPort} && exec 3>&-; } &>/dev/null; do
                   ((attempts-- == 0)) && { echo "lnd REST service unreachable"; exit 1; }
                   sleep 0.1
             done
@@ -234,7 +232,7 @@ in {
             fi
 
             # Wait until the RPC port is open
-            while ! { exec 3>/dev/tcp/${cfg.rpclisten}/${toString cfg.rpcPort}; } &>/dev/null; do
+            while ! { exec 3>/dev/tcp/${cfg.rpcAddress}/${toString cfg.rpcPort}; } &>/dev/null; do
               sleep 0.1
             done
 
