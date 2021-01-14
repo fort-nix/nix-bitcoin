@@ -68,10 +68,6 @@ in {
   };
 
   config = mkIf cfg.enable {
-    systemd.tmpfiles.rules = [
-      "d '${dataDir}' 0755 root root - -"
-    ];
-
     systemd.services.onion-addresses = {
       description = "Run onion-addresses";
       wantedBy = [ "tor.service" ];
@@ -81,9 +77,9 @@ in {
         ExecStart = "${pkgs.bash}/bin/bash ${onion-addresses-script}";
         Type = "oneshot";
         RemainAfterExit = true;
+        StateDirectory = "onion-addresses";
         PrivateNetwork = "true"; # This service needs no network access
         PrivateUsers = "false";
-        ReadWritePaths = "${dataDir}";
         CapabilityBoundingSet = "CAP_CHOWN CAP_FSETID CAP_SETFCAP CAP_DAC_OVERRIDE CAP_DAC_READ_SEARCH CAP_FOWNER CAP_IPC_OWNER";
       };
     };
