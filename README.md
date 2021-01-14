@@ -49,7 +49,6 @@ Features
 ---
 A [configuration preset](modules/presets/secure-node.nix) for setting up a secure node
 * All applications use Tor for outbound connections and support accepting inbound connections via onion services.
-* Includes a [nodeinfo](modules/nodeinfo.nix) script which prints basic info about the node.
 
 NixOS modules
 * Application services
@@ -74,6 +73,7 @@ NixOS modules
   * [bitcoin-core-hwi](https://github.com/bitcoin-core/HWI)
 * Helper
   * [netns-isolation](modules/netns-isolation.nix): isolates applications on the network-level via network namespaces
+  * [nodeinfo](modules/nodeinfo.nix): script which prints info about the node's services
   * [backups](modules/backups.nix): daily duplicity backups of all your node's important files
   * [operator](modules/operator.nix): adds non-root user `operator` who has access to client tools (e.g. `bitcoin-cli`, `lightning-cli`)
 

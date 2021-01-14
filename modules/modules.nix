@@ -27,6 +27,7 @@ with lib;
     ./onion-addresses.nix
     ./onion-services.nix
     ./netns-isolation.nix
+    ./nodeinfo.nix
     ./backups.nix
   ];
 

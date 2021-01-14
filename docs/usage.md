@@ -8,7 +8,7 @@ fetch-release > nix-bitcoin-release.nix
 
 Nodeinfo
 ---
-Run `nodeinfo` to see the onion addresses for enabled services.
+Run `nodeinfo` to see onion addresses and local addresses for enabled services.
 
 Connect to spark-wallet
 ---
@@ -86,10 +86,10 @@ Connect to electrs
     nixops deploy -d bitcoin-node
     ```
 
-3. Get electrs onion address
+3. Get electrs onion address with format `<onion-address>:<port>`
 
     ```
-    nodeinfo | grep 'ELECTRS_ONION'
+    nodeinfo | jq -r .electrs.onion_address
     ```
 
 4. Connect to electrs
@@ -98,7 +98,7 @@ Connect to electrs
 
     On Desktop
     ```
-    electrum --oneserver -1 -s "<ELECTRS_ONION>:50001:t" -p socks5:localhost:9050
+    electrum --oneserver -1 -s "<electrs onion address>:t" -p socks5:localhost:9050
     ```
 
     On Android
@@ -107,16 +107,16 @@ Connect to electrs
     Network > Proxy mode: socks5, Host: 127.0.0.1, Port: 9050
     Network > Auto-connect: OFF
     Network > One-server mode: ON
-    Network > Server: <ELECTRS_ONION>:50001:t
+    Network > Server: <electrs onion address>:t
     ```
 
-Connect to nix-bitcoin node through ssh Tor Hidden Service
+Connect to nix-bitcoin node through the SSH onion service
 ---
-1. Run `nodeinfo` on your nix-bitcoin node and note the `SSHD_ONION`
+1. Get the SSH onion address (excluding the port suffix)
 
     ```
     nixops ssh operator@bitcoin-node
-    nodeinfo | grep 'SSHD_ONION'
+    nodeinfo | jq -r .sshd.onion_address | sed 's/:.*//'
     ```
 
 2. Create a SSH key
@@ -131,14 +131,14 @@ Connect to nix-bitcoin node through ssh Tor Hidden Service
     # FIXME: Add your SSH pubkey
     services.openssh.enable = true;
     users.users.root = {
-      openssh.authorizedKeys.keys = [ "[contents of ~/.ssh/id_ed25519.pub]" ];
+      openssh.authorizedKeys.keys = [ "<contents of ~/.ssh/id_ed25519.pub>" ];
     };
     ```
 
-4. Connect to your nix-bitcoin node's ssh Tor Hidden Service, forwarding a local port to the nix-bitcoin node's ssh server
+4. Connect to your nix-bitcoin node's SSH onion service, forwarding a local port to the nix-bitcoin node's SSH server
 
     ```
-    ssh -i ~/.ssh/id_ed25519 -L [random port of your choosing]:localhost:22 root@[your SSHD_ONION]
+    ssh -i ~/.ssh/id_ed25519 -L <random port of your choosing>:localhost:22 root@<SSH onion address>
     ```
 
 5. Edit your `network-nixos.nix` to look like this
@@ -148,12 +148,12 @@ Connect to nix-bitcoin node through ssh Tor Hidden Service
       bitcoin-node =
         { config, pkgs, ... }:
         { deployment.targetHost = "127.0.0.1";
-        deployment.targetPort = [random port of your choosing];
+        deployment.targetPort = <random port of your choosing>;
         };
     }
     ```
 
-6. Now you can run `nixops deploy -d bitcoin-node` and it will connect through the ssh tunnel you established in step iv. This also allows you to do more complex ssh setups that `nixops ssh` doesn't support. An example would be authenticating with [Trezor's ssh agent](https://github.com/romanz/trezor-agent), which provides extra security.
+6. Now you can run `nixops deploy -d bitcoin-node` and it will connect through the SSH tunnel you established in step iv. This also allows you to do more complex SSH setups that `nixops ssh` doesn't support. An example would be authenticating with [Trezor's SSH agent](https://github.com/romanz/trezor-agent), which provides extra security.
 
 Initialize a Trezor for Bitcoin Core's Hardware Wallet Interface
 ---
@@ -263,7 +263,7 @@ you. If however, you want to manually initialize your wallet, follow these steps
 ## Run the tumbler
 
 The tumbler needs to be able to run in the background for a long time, use screen
-to run it accross ssh sessions. You can also use tmux in the same fashion.
+to run it accross SSH sessions. You can also use tmux in the same fashion.
 
 1. Add screen to your `environment.systemPackages`, for example
 

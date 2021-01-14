@@ -68,6 +68,8 @@ let testEnv = rec {
         '';
       };
 
+      tests.nodeinfo = config.nix-bitcoin.nodeinfo.enable;
+
       tests.backups = cfg.backups.enable;
 
       # To test that unused secrets are made inaccessible by 'setup-secrets'
@@ -118,6 +120,8 @@ let testEnv = rec {
       services.btcpayserver.enable = true;
       services.joinmarket.enable = true;
       services.backups.enable = true;
+
+      nix-bitcoin.nodeinfo.enable = true;
 
       services.hardware-wallets = {
         trezor = true;

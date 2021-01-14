@@ -14,7 +14,6 @@ let
 in {
   imports = [
     ../modules.nix
-    ../nodeinfo.nix
     ./enable-tor.nix
   ];
 
@@ -75,5 +74,7 @@ in {
           cp "${config.users.users.root.home}/.vbox-nixops-client-key" "${config.users.users.${operatorName}.home}"
         '';
       };
+
+    nix-bitcoin.nodeinfo.enable = true;
   };
 }
