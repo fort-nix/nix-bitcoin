@@ -110,11 +110,6 @@
   # tool run as user operator.
   # services.liquidd.enable = true;
 
-  ### WEBINDEX
-  # Enable this module to use the nix-bitcoin-webindex, a simple website
-  # displaying your node information. Only available if clightning is enabled.
-  # services.nix-bitcoin-webindex.enable = true;
-
   ### RECURRING-DONATIONS
   # Enable this module to send recurring donations. This is EXPERIMENTAL; it's
   # not guaranteed that payments are succeeding or that you will notice payment

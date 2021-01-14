@@ -220,14 +220,6 @@ def _():
 def _():
     assert_running("onion-addresses")
 
-    # FIXME: use 'wait_for_unit' because 'create-web-index' always fails during startup due
-    # to incomplete unit dependencies.
-    # 'create-web-index' implicitly tests 'nodeinfo'.
-    machine.wait_for_unit("create-web-index")
-    assert_running("nginx")
-    wait_for_open_port(ip("nginx"), 80)
-    assert_matches(f"curl {ip('nginx')}", "nix-bitcoin")
-
 
 # Run this test before the following tests that shut down services
 # (and their corresponding network namespaces).

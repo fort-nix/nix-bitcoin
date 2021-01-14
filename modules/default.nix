@@ -6,7 +6,6 @@
   electrs = ./electrs.nix;
   liquid = ./liquid.nix;
   presets.secure-node = ./presets/secure-node.nix;
-  nix-bitcoin-webindex = ./nix-bitcoin-webindex.nix;
   spark-wallet = ./spark-wallet.nix;
   recurring-donations = ./recurring-donations.nix;
   lnd = ./lnd.nix;

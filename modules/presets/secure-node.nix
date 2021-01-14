@@ -15,7 +15,6 @@ in {
   imports = [
     ../modules.nix
     ../nodeinfo.nix
-    ../nix-bitcoin-webindex.nix
     ./enable-tor.nix
   ];
 

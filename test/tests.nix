@@ -130,7 +130,6 @@ let testEnv = rec {
         scenarios.full
         ../modules/presets/secure-node.nix
       ];
-      services.nix-bitcoin-webindex.enable = true;
       tests.secure-node = true;
       tests.banlist-and-restart = true;
 

@@ -20,7 +20,6 @@ in {
     nbxplorer.enforceTor = true;
     spark-wallet.enforceTor = true;
     recurring-donations.enforceTor = true;
-    nix-bitcoin-webindex.enforceTor = true;
   };
 
   # Add onion services for incoming connections
