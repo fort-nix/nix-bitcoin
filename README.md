@@ -48,7 +48,7 @@ See the [examples directory](examples/README.md).
 Features
 ---
 A [configuration preset](modules/presets/secure-node.nix) for setting up a secure node
-* All applications use Tor for outbound connections and accept inbound connections via onion services.
+* All applications use Tor for outbound connections and support accepting inbound connections via onion services.
 * Includes a [nodeinfo](modules/nodeinfo.nix) script which prints basic info about the node.
 
 NixOS modules

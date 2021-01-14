@@ -96,6 +96,12 @@
   # The lightning backend service automatically enabled.
   # Afterwards you need to go into Store > General Settings > Lightning Nodes
   # and click to use "the internal lightning node of this BTCPay Server".
+  #
+  # Set this to create an onion service to make the btcpayserver web interface
+  # accessible via Tor.
+  # Security WARNING: Create a btcpayserver administrator account before allowing
+  # public access to the web interface.
+  # nix-bitcoin.onionServices.btcpayserver.enable = true;
 
   ### LIQUIDD
   # Enable this module to use Liquid, a sidechain for an inter-exchange
@@ -206,5 +212,5 @@
   # The nix-bitcoin release version that your config is compatible with.
   # When upgrading to a backwards-incompatible release, nix-bitcoin will display an
   # an error and provide hints for migrating your config to the new release.
-  nix-bitcoin.configVersion = "0.0.26";
+  nix-bitcoin.configVersion = "0.0.30";
 }

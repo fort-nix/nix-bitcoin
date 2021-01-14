@@ -26,11 +26,8 @@ in {
   # Add onion services for incoming connections
   nix-bitcoin.onionServices = {
     bitcoind.enable = defaultTrue;
-    clightning.enable = defaultTrue;
-    lnd.enable = defaultTrue;
     liquidd.enable = defaultTrue;
     electrs.enable = defaultTrue;
-    btcpayserver.enable = defaultTrue;
     spark-wallet.enable = defaultTrue;
   };
 }
