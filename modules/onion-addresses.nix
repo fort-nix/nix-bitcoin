@@ -44,32 +44,27 @@ in {
         CapabilityBoundingSet = "CAP_CHOWN CAP_FSETID CAP_SETFCAP CAP_DAC_OVERRIDE CAP_DAC_READ_SEARCH CAP_FOWNER CAP_IPC_OWNER";
       };
       script = ''
-        # wait until tor is up
-        until ls -l /var/lib/tor/state; do sleep 1; done
+        # Wait until tor is up
+        until [[ -e /var/lib/tor/state ]]; do sleep 0.1; done
 
         cd ${dataDir}
+        rm -rf *
 
-        # Create directory for every user and set permissions
-        ${ builtins.foldl'
-          (x: user: x +
-            ''
+        ${concatMapStrings
+          (user: ''
             mkdir -p -m 0700 ${user}
             chown ${user} ${user}
-              # Copy onion hostnames into the user's directory
-              ${ builtins.foldl'
-                (x: onion: x +
-                  ''
-                  ONION_FILE=/var/lib/tor/onion/${onion}/hostname
-                  if [ -e "$ONION_FILE" ]; then
-                    cp $ONION_FILE ${user}/${onion}
-                    chown ${user} ${user}/${onion}
-                  fi
-                  '')
-                ""
-                (builtins.getAttr user cfg.access)
-              }
-            '')
-          ""
+            ${concatMapStrings
+              (service: ''
+                onionFile=/var/lib/tor/onion/${service}/hostname
+                if [[ -e $onionFile ]]; then
+                  cp $onionFile ${user}/${service}
+                  chown ${user} ${user}/${service}
+                fi
+              '')
+              cfg.access.${user}
+            }
+          '')
           (builtins.attrNames cfg.access)
         }
       '';
