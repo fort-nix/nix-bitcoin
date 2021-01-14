@@ -49,7 +49,7 @@
   ### LND
   # Uncomment the following line in order to enable lnd, a lightning
   # implementation written in Go. In order to avoid collisions with clightning
-  # you must disable clightning or change the services.clightning.bindport or
+  # you must disable clightning or change the services.clightning.port or
   # services.lnd.port to a port other than 9735.
   # services.lnd.enable = true;
   # Enable this option to announce our Tor Hidden Service. By default lnd

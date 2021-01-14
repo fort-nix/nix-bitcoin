@@ -13,7 +13,7 @@ let
     bitcoin-datadir=${config.services.bitcoind.dataDir}
     ${optionalString (cfg.proxy != null) "proxy=${cfg.proxy}"}
     always-use-proxy=${if cfg.always-use-proxy then "true" else "false"}
-    bind-addr=${cfg.bind-addr}:${toString cfg.bindport}
+    bind-addr=${cfg.address}:${toString cfg.port}
     bitcoin-rpcconnect=${config.services.bitcoind.rpc.address}
     bitcoin-rpcport=${toString config.services.bitcoind.rpc.port}
     bitcoin-rpcuser=${config.services.bitcoind.rpc.users.public.name}
@@ -29,13 +29,15 @@ in {
         If enabled, the clightning service will be installed.
       '';
     };
-    autolisten = mkOption {
-      type = types.bool;
-      default = false;
-      description = ''
-        Bind (and maybe announce) on IPv4 and IPv6 interfaces if no addr,
-        bind-addr or  announce-addr  options  are specified.
-      '';
+    address = mkOption {
+      type = types.str;
+      default = "127.0.0.1";
+      description = "IP address or UNIX domain socket to listen for peer connections.";
+    };
+    port = mkOption {
+      type = types.port;
+      default = 9735;
+      description = "Port to listen for peer connections.";
     };
     proxy = mkOption {
       type = types.nullOr types.str;
@@ -48,16 +50,6 @@ in {
       description = ''
         Always use the *proxy*, even to connect to normal IP addresses (you can still connect to Unix domain sockets manually). This also disables all DNS lookups, to avoid leaking information.
       '';
-    };
-    bind-addr = mkOption {
-      type = nbPkgs.lib.ipv4Address;
-      default = "127.0.0.1";
-      description = "Set an IP address or UNIX domain socket to listen to";
-    };
-    bindport = mkOption {
-      type = types.port;
-      default = 9735;
-      description = "Set a Port to listen to locally";
     };
     announce-tor = mkOption {
       type = types.bool;

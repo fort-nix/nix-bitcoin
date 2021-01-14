@@ -254,7 +254,7 @@ in {
     };
     systemd.services.bitcoind-import-banlist.serviceConfig.NetworkNamespacePath = "/var/run/netns/nb-bitcoind";
 
-    services.clightning.bind-addr = netns.clightning.address;
+    services.clightning.address = netns.clightning.address;
 
     services.lnd = {
       address = netns.lnd.address;

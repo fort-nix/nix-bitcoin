@@ -68,8 +68,8 @@ in {
     services.clightning.enforceTor = true;
     services.tor.hiddenServices.clightning = mkIf cfg.clightning.enable (mkHiddenService {
       port = cfg.clightning.onionport;
-      toHost = cfg.clightning.bind-addr;
-      toPort = cfg.clightning.bindport;
+      toHost = cfg.clightning.address;
+      toPort = cfg.clightning.port;
     });
 
     # lnd
