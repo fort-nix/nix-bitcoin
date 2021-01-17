@@ -13,7 +13,7 @@ let
           info["id"] = f"{info['nodeid']}@{info['onion_address']}"
     '';
     lnd = mkInfo ''
-      info["nodeid"] = shell("lightning-cli getinfo | jq -r '.id'")
+      info["nodeid"] = shell("lncli getinfo | jq -r '.identity_pubkey'")
     '';
     electrs = mkInfo "";
     spark-wallet = mkInfo "";
