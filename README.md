@@ -69,6 +69,7 @@ NixOS modules
   * [liquid](https://github.com/elementsproject/elements)
   * [Lightning Loop](https://github.com/lightninglabs/loop)
   * [JoinMarket](https://github.com/joinmarket-org/joinmarket-clientserver)
+    * [JoinMarket Orderbook Watcher](https://github.com/JoinMarket-Org/joinmarket-clientserver/blob/master/docs/orderbook.md)
   * [recurring-donations](modules/recurring-donations.nix): for periodic lightning payments
   * [bitcoin-core-hwi](https://github.com/bitcoin-core/HWI)
 * Helper

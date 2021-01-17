@@ -1,10 +1,10 @@
 { stdenv, lib, fetchurl, python3, nbPython3Packages, pkgs }:
 
 let
-  version = "0.8.0-bcfa7eb";
+  version = "0.8.0-a5e8879";
   src = fetchurl {
-    url = "https://github.com/JoinMarket-Org/joinmarket-clientserver/archive/bcfa7eb4ea3ca51b7ecae9aebe65c634a4ab8b0e.tar.gz";
-    sha256 = "05akzaxi2vqh3hln6qkr6frfas9xd0d95xa3wd56pj8bzknd410m";
+    url = "https://github.com/JoinMarket-Org/joinmarket-clientserver/archive/a5e8879d119c8702476da32957d2cfecc3584c89.tar.gz";
+    sha256 = "1l98mjk5rc5kji4yads6iicvyps0blsddwzclsiv0ha1az6dzpci";
   };
 
   runtimePackages = with nbPython3Packages; [
@@ -12,6 +12,7 @@ let
     joinmarketclient
     joinmarketbitcoin
     joinmarketdaemon
+    matplotlib # for ob-watcher
   ];
 
   pythonEnv = python3.withPackages (_: runtimePackages);
@@ -22,15 +23,16 @@ stdenv.mkDerivation {
 
   buildInputs = [ pythonEnv ];
 
-  buildCommand = ''
-    mkdir -p $src-unpacked $out/bin
-    tar xzf $src --strip 1 -C $src-unpacked
+  installPhase = ''
+    mkdir -p $out/bin
 
     # add-utxo.py -> bin/jm-add-utxo
     cpBin() {
-      cp $src-unpacked/scripts/$1 $out/bin/jm-''${1%.py}
+      cp scripts/$1 $out/bin/jm-''${1%.py}
     }
-    cp $src-unpacked/scripts/joinmarketd.py $out/bin/joinmarketd
+
+    cp scripts/joinmarketd.py $out/bin/joinmarketd
+    cp scripts/obwatch/ob-watcher.py $out/bin/ob-watcher
     cpBin add-utxo.py
     cpBin convert_old_wallet.py
     cpBin receive-payjoin.py
@@ -43,5 +45,8 @@ stdenv.mkDerivation {
 
     chmod +x -R $out/bin
     patchShebangs $out/bin
+
+    # This file must be placed in the same dir as ob-watcher
+    cp scripts/obwatch/orderbook.html $out/bin/orderbook.html
   '';
 }
