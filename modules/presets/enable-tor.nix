@@ -28,5 +28,6 @@ in {
     liquidd.enable = defaultTrue;
     electrs.enable = defaultTrue;
     spark-wallet.enable = defaultTrue;
+    joinmarket-ob-watcher.enable = defaultTrue;
   };
 }

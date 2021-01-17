@@ -179,6 +179,8 @@
   # earn sats by providing CoinJoin liquidity. This makes it impossible to use other
   # scripts that access your wallet.
   # services.joinmarket.yieldgenerator.enable = true;
+  # Enable this option to enable the JoinMarket order book watcher.
+  # services.joinmarket-ob-watcher.enable = true;
 
   # FIXME: Define your hostname.
   networking.hostName = "nix-bitcoin";

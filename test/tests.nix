@@ -60,6 +60,7 @@ let testEnv = rec {
 
       tests.joinmarket = cfg.joinmarket.enable;
       tests.joinmarket-yieldgenerator = cfg.joinmarket.yieldgenerator.enable;
+      tests.joinmarket-ob-watcher = cfg.joinmarket-ob-watcher.enable;
       services.joinmarket.yieldgenerator = {
         enable = config.services.joinmarket.enable;
         customParameters = ''
@@ -119,6 +120,7 @@ let testEnv = rec {
       services.liquidd.enable = true;
       services.btcpayserver.enable = true;
       services.joinmarket.enable = true;
+      services.joinmarket-ob-watcher.enable = true;
       services.backups.enable = true;
 
       nix-bitcoin.nodeinfo.enable = true;

@@ -12,6 +12,7 @@ let
     joinmarketclient
     joinmarketbitcoin
     joinmarketdaemon
+    matplotlib # for ob-watcher
   ];
 
   pythonEnv = python3.withPackages (_: runtimePackages);
@@ -31,6 +32,7 @@ stdenv.mkDerivation {
     }
 
     cp scripts/joinmarketd.py $out/bin/joinmarketd
+    cp scripts/obwatch/ob-watcher.py $out/bin/ob-watcher
     cpBin add-utxo.py
     cpBin convert_old_wallet.py
     cpBin receive-payjoin.py
@@ -43,5 +45,8 @@ stdenv.mkDerivation {
 
     chmod +x -R $out/bin
     patchShebangs $out/bin
+
+    # This file must be placed in the same dir as ob-watcher
+    cp scripts/obwatch/orderbook.html $out/bin/orderbook.html
   '';
 }
