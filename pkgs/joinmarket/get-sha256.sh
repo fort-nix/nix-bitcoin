@@ -9,7 +9,7 @@ cd $TMPDIR
 echo "Fetching latest release"
 git clone https://github.com/joinmarket-org/joinmarket-clientserver 2> /dev/null
 cd joinmarket-clientserver
-latest=bcfa7eb4ea3ca51b7ecae9aebe65c634a4ab8b0e
+latest=a5e8879d119c8702476da32957d2cfecc3584c89
 echo "Latest release is ${latest}"
 
 # GPG verification
