@@ -67,6 +67,14 @@ in {
         default = 8333;
         description = "Port to listen for peer connections.";
       };
+      getPublicAddressCmd = mkOption {
+        type = types.str;
+        default = "";
+        description = ''
+          Bash expression which outputs the public service address to announce to peers.
+          If left empty, no address is announced.
+        '';
+      };
       package = mkOption {
         type = types.package;
         default = config.nix-bitcoin.pkgs.bitcoind;
@@ -328,6 +336,10 @@ in {
           ${extraRpcauth}
           ${/* Enable bitcoin-cli for group 'bitcoin' */ ""}
           printf "rpcuser=${cfg.rpc.users.privileged.name}\nrpcpassword="; cat "${secretsDir}/bitcoin-rpcpassword-privileged";
+          echo
+          ${optionalString (cfg.getPublicAddressCmd != "") ''
+            echo "externalip=$(${cfg.getPublicAddressCmd})"
+          ''}
         )
         confFile='${cfg.dataDir}/bitcoin.conf'
         if [[ ! -e $confFile || $cfg != $(cat $confFile) ]]; then
