@@ -89,4 +89,45 @@
     # in combination with the kernel.printk
     "quiet loglevel=0"
   ];
+
+  boot.blacklistedKernelModules = [
+    # Obscure networking protocols
+    "dccp"
+    "sctp"
+    "rds"
+    "tipc"
+    "n-hdlc"
+    "x25"
+    "decnet"
+    "econet"
+    "af_802154"
+    "ipx"
+    "appletalk"
+    "psnap"
+    "p8023"
+    "p8022"
+    "can"
+    "atm"
+    # Various rare filesystems
+    "jffs2"
+    "hfsplus"
+    "squashfs"
+    "udf"
+    "cifs"
+    "nfs"
+    "nfsv3"
+    "nfsv4"
+    "gfs2"
+    # vivid driver is only useful for testing purposes and has been the cause
+    # of privilege escalation vulnerabilities
+    "vivid"
+    # Disable Bluetooth
+    "bluetooth"
+    "btusb"
+    # Disable webcam
+    "uvcvideo"
+    # Disable Thunderbolt and FireWire to prevent DMA attacks
+    "thunderbolt"
+    "firewire-core"
+  ];
 }
