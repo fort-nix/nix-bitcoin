@@ -286,6 +286,9 @@ def _():
 # Impure: stops bitcoind (and dependent services)
 @test("backups")
 def _():
+    # For testing that bitcoind wallets are backed up
+    succeed("bitcoin-cli -named createwallet wallet_name=test blank=true >/dev/null")
+
     succeed("systemctl stop bitcoind")
     succeed("systemctl start duplicity")
     machine.wait_until_succeeds(log_has_string("duplicity", "duplicity.service: Succeeded."))
@@ -297,7 +300,7 @@ def _():
     )
     # Backup should include important files
     files = {
-        "bitcoind": "var/lib/bitcoind/wallet.dat",
+        "bitcoind": "var/lib/bitcoind/test/wallet.dat",
         "clightning": "var/lib/clightning/bitcoin/hsm_secret",
         "lnd": "secrets/lnd-seed-mnemonic",
         "joinmarket": "secrets/jm-wallet-seed",
