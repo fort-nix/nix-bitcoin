@@ -27,13 +27,22 @@ in {
         /var/lib/onion-addresses/myuser.
       '';
     };
+    services = mkOption {
+      type = with types; listOf str;
+      default = [];
+      description = ''
+        Services that can access their onion address via file
+        /var/lib/onion-addresses/<service>
+        The file is readable only by the service user.
+      '';
+    };
     dataDir = mkOption {
       readOnly = true;
       default = "/var/lib/onion-addresses";
     };
   };
 
-  config = mkIf (cfg.access != {}) {
+  config = mkIf (cfg.access != {} || cfg.services != []) {
     systemd.services.onion-addresses = {
       wantedBy = [ "tor.service" ];
       bindsTo = [ "tor.service" ];
@@ -42,6 +51,7 @@ in {
         Type = "oneshot";
         RemainAfterExit = true;
         StateDirectory = "onion-addresses";
+        StateDirectoryMode = "771";
         PrivateNetwork = "true"; # This service needs no network access
         PrivateUsers = "false";
         CapabilityBoundingSet = "CAP_CHOWN CAP_FSETID CAP_SETFCAP CAP_DAC_OVERRIDE CAP_DAC_READ_SEARCH CAP_FOWNER CAP_IPC_OWNER";
@@ -70,6 +80,13 @@ in {
           '')
           (builtins.attrNames cfg.access)
         }
+
+        ${concatMapStrings (service: ''
+          onionFile=/var/lib/tor/onion/${service}/hostname
+          if [[ -e $onionFile ]]; then
+            install -o ${config.systemd.services.${service}.serviceConfig.User} -m 400 $onionFile ${service}
+          fi
+        '') cfg.services}
       '';
     };
   };

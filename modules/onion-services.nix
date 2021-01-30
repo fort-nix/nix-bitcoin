@@ -71,12 +71,12 @@ in {
         );
       };
 
-      # Enable public services to access their own onion addresses
-      nix-bitcoin.onionAddresses.access = (
-        genAttrs publicServices singleton
-      ) // {
+      nix-bitcoin.onionAddresses = {
+        # Enable public services to access their own onion addresses
+        services = publicServices;
+
         # Allow the operator user to access onion addresses for all active services
-        ${config.nix-bitcoin.operator.name} = mkIf config.nix-bitcoin.operator.enable activeServices;
+        access.${config.nix-bitcoin.operator.name} = mkIf config.nix-bitcoin.operator.enable activeServices;
       };
       systemd.services = let
         onionAddresses = [ "onion-addresses.service" ];
@@ -96,7 +96,7 @@ in {
           in srv.public && srv.enable
         ) services;
       in genAttrs publicServices' (service: {
-        getPublicAddressCmd = "cat ${config.nix-bitcoin.onionAddresses.dataDir}/${service}/${service}";
+        getPublicAddressCmd = "cat ${config.nix-bitcoin.onionAddresses.dataDir}/${service}";
       });
     }
 
