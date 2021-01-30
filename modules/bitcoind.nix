@@ -11,6 +11,8 @@ let
     # We're already logging via journald
     nodebuglogfile=1
 
+    startupnotify=/run/current-system/systemd/bin/systemd-notify --ready
+
     ${optionalString cfg.regtest ''
       regtest=1
       [regtest]
@@ -346,15 +348,12 @@ in {
           install -o '${cfg.user}' -g '${cfg.group}' -m 640 <(echo "$cfg") $confFile
         fi
       '';
-      postStart = ''
-        # Poll until bitcoind accepts commands. This can take a long time.
-        while ! ${cfg.cli}/bin/bitcoin-cli getnetworkinfo &> /dev/null; do
-          sleep 1
-        done
-      '';
       serviceConfig = nix-bitcoin-services.defaultHardening // {
+        Type = "notify";
+        NotifyAccess = "all";
         User = "${cfg.user}";
         Group = "${cfg.group}";
+        TimeoutStartSec = 300;
         ExecStart = "${cfg.package}/bin/bitcoind -datadir='${cfg.dataDir}'";
         Restart = "on-failure";
         UMask = mkIf cfg.dataDirReadableByGroup "0027";
