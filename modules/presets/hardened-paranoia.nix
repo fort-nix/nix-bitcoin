@@ -53,4 +53,40 @@
     # Only swap when absolutely necessary
     "vm.swappiness" = "1";
   };
+
+  boot.kernelParams = [
+    # Disable slab merging which significantly increases the difficulty of heap
+    # exploitation by preventing overwriting objects from merged caches and by
+    # making it harder to influence slab cache layout
+    "slab_nomerge"
+
+    # Disable vsyscalls as they are obsolete and have been replaced with vDSO.
+    # vsyscalls are also at fixed addresses in memory, making them a potential
+    # target for ROP attacks
+    "vsyscall=none"
+
+    # Disable debugfs which exposes a lot of sensitive information about the
+    # kernel
+    "debugfs=off"
+
+    # Sometimes certain kernel exploits will cause what is known as an "oops".
+    # This parameter will cause the kernel to panic on such oopses, thereby
+    # preventing those exploits
+    "oops=panic"
+
+    # Only allow kernel modules that have been signed with a valid key to be
+    # loaded, which increases security by making it much harder to load a
+    # malicious kernel module
+    "module.sig_enforce=1"
+
+    # The kernel lockdown LSM can eliminate many methods that user space code
+    # could abuse to escalate to kernel privileges and extract sensitive
+    # information. This LSM is necessary to implement a clear security boundary
+    # between user space and the kernel
+    "lockdown=confidentiality"
+
+    # These parameters prevent information leaks during boot and must be used
+    # in combination with the kernel.printk
+    "quiet loglevel=0"
+  ];
 }
