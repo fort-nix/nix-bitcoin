@@ -13,10 +13,16 @@ trap 'echo Error at line $LINENO' ERR
 
 atExit() {
     rm -rf $tmpDir
-    if [[ -v cachixPid ]]; then kill $cachixPid; fi
+    if [[ -v cachixPid ]]; then stopCachix; fi
 }
 tmpDir=$(mktemp -d -p /tmp)
 trap atExit EXIT
+
+stopCachix() {
+    kill $cachixPid 2>/dev/null || true
+    # Wait for process to finish
+    tail --pid=$cachixPid -f /dev/null
+}
 
 ## Instantiate
 
@@ -44,6 +50,7 @@ fi
 nix-build --out-link $tmpDir/result $tmpDir/drv >/dev/null
 
 if [[ $CACHIX_SIGNING_KEY ]]; then
+    stopCachix
     cachix push $cachixCache $outPath
 fi
 
