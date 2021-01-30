@@ -55,5 +55,11 @@ c systemctl status bitcoind
 
 # Explore a single feature
 ./run-tests.sh --scenario electrs container
+
+# Run a command in a container
+./run-tests.sh --scenario '{
+  services.clightning.enable = true;
+  nix-bitcoin.nodeinfo.enable = true;
+}' container --run c nodeinfo
 ```
 See [`run-tests.sh`](../test/run-tests.sh) for a complete documentation.
