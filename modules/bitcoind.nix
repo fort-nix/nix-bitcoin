@@ -22,7 +22,7 @@ let
     ${optionalString (cfg.assumevalid != null) "assumevalid=${cfg.assumevalid}"}
 
     # Connection options
-    ${optionalString cfg.listen "bind=${cfg.address}"}
+    ${optionalString cfg.listen "bind=${cfg.address}${optionalString cfg.enforceTor "=onion"}"}
     port=${toString cfg.port}
     ${optionalString (cfg.proxy != null) "proxy=${cfg.proxy}"}
     listen=${if cfg.listen then "1" else "0"}
