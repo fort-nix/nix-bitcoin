@@ -6,11 +6,12 @@ let
   cfg = config.services.lnd.restOnionService;
   nbLib = config.nix-bitcoin.lib;
   secretsDir = config.nix-bitcoin.secretsDir;
+  runAsUser = config.nix-bitcoin.runAsUserCmd;
 
   lnd = config.services.lnd;
 
   bin = pkgs.writeScriptBin "lndconnect-rest-onion" ''
-    #!/usr/bin/env -S sudo -u lnd ${pkgs.bash}/bin/bash
+    #!/usr/bin/env -S ${runAsUser} lnd ${pkgs.bash}/bin/bash
 
     exec ${cfg.package}/bin/lndconnect \
      --host=$(cat ${config.nix-bitcoin.onionAddresses.dataDir}/lnd/lnd-rest) \

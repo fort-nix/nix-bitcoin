@@ -20,6 +20,10 @@ in {
 
     nix-bitcoin.security.hideProcessInformation = true;
 
+    # Use doas instead of sudo
+    security.doas.enable = true;
+    security.sudo.enable = false;
+
     environment.systemPackages = with pkgs; [
       jq
     ];

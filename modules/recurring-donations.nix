@@ -78,7 +78,7 @@ in {
     systemd.services.recurring-donations = {
       requires = [ "clightning.service" ];
       after = [ "clightning.service" ];
-      path = with pkgs; [ nix-bitcoin.clightning curl sudo jq ];
+      path = with pkgs; [ nix-bitcoin.clightning curl jq ];
       serviceConfig = nbLib.defaultHardening // {
         ExecStart = "${pkgs.bash}/bin/bash ${recurring-donations-script}";
         User = "recurring-donations";
