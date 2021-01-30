@@ -317,7 +317,7 @@ def _():
     succeed("systemctl restart bitcoind clightning lnd lightning-loop spark-wallet liquidd")
 
     # Now that the bitcoind restart triggered a banlist import restart, check that
-    # re-importing already banned addresses works
+    # re-importing already banned addresses works tests
     machine.wait_until_succeeds(
         log_has_string(f"bitcoind-import-banlist --since=@{pre_restart}", "Importing node banlist")
     )
