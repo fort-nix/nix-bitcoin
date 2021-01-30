@@ -210,7 +210,7 @@
   # services.joinmarket-ob-watcher.enable = true;
 
   # FIXME: Define your hostname.
-  networking.hostName = "nix-bitcoin";
+  networking.hostName = "host";
   time.timeZone = "UTC";
 
   # FIXME: Add your SSH pubkey
