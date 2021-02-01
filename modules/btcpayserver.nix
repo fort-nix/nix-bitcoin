@@ -168,7 +168,7 @@ in {
         "certthumbprint=";
     in let self = {
       wantedBy = [ "multi-user.target" ];
-      requires = [ "nbxplorer.service" ]
+      requires = [ "nbxplorer.service" "postgresql.service" ]
                  ++ optional (cfg.btcpayserver.lightningBackend != null) "${cfg.btcpayserver.lightningBackend}.service";
       after = self.requires;
       preStart = ''
