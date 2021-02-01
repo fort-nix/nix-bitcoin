@@ -105,7 +105,7 @@ in {
       source = config.nix-bitcoin.pkgs.netns-exec;
       capabilities = "cap_sys_admin=ep";
       owner = cfg.allowedUser;
-      permissions = "u+rx,g+rx,o-rwx";
+      permissions = "550";
     };
 
     systemd.services = {
