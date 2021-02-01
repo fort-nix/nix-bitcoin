@@ -172,7 +172,7 @@ doBuild() {
 
 # Run the test by building the test derivation
 buildTest() {
-    vmTestNixExpr | doBuild $scenario $outLinkArg "$@" -
+    vmTestNixExpr | doBuild $scenario "$@" -
 }
 
 vmTestNixExpr() {

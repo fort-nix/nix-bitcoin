@@ -11,7 +11,7 @@ let
     network=${network}
     bitcoin-datadir=${config.services.bitcoind.dataDir}
     ${optionalString (cfg.proxy != null) "proxy=${cfg.proxy}"}
-    always-use-proxy=${if cfg.always-use-proxy then "true" else "false"}
+    always-use-proxy=${boolToString cfg.always-use-proxy}
     bind-addr=${cfg.address}:${toString cfg.port}
     bitcoin-rpcconnect=${config.services.bitcoind.rpc.address}
     bitcoin-rpcport=${toString config.services.bitcoind.rpc.port}

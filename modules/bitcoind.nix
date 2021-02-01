@@ -7,7 +7,7 @@ let
   nbLib = config.nix-bitcoin.lib;
   secretsDir = config.nix-bitcoin.secretsDir;
 
-  configFile = pkgs.writeText "bitcoin.conf" ''
+  configFile = builtins.toFile "bitcoin.conf" ''
     # We're already logging via journald
     nodebuglogfile=1
 
