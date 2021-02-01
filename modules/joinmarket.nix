@@ -185,18 +185,19 @@ in {
         # Generating wallets (jmclient/wallet.py) is only supported for mainnet or testnet
         ExecStartPost = mkIf (bitcoind.network == "mainnet") (nbLib.privileged ''
           walletname=wallet.jmdat
-          pw=$(cat "${secretsDir}"/jm-wallet-password)
-          mnemonic=${secretsDir}/jm-wallet-seed
-          if [[ ! -f ${cfg.dataDir}/wallets/$walletname ]]; then
-            echo Create joinmarket wallet
-            # Use bash variables so commands don't proceed on previous failures
-            # (like with pipes)
-            cd ${cfg.dataDir} && \
-              out=$(sudo -u ${cfg.user} \
-              ${nbPkgs.joinmarket}/bin/jm-genwallet \
-              --datadir=${cfg.dataDir} $walletname $pw)
-            recoveryseed=$(echo "$out" | grep 'recovery_seed')
-            echo "$recoveryseed" | cut -d ':' -f2 > $mnemonic
+          wallet=${cfg.dataDir}/wallets/$walletname
+          if [[ ! -f $wallet ]]; then
+            echo "Create wallet"
+            pw=$(cat "${secretsDir}"/jm-wallet-password)
+            cd ${cfg.dataDir}
+            if ! sudo -u ${cfg.user} ${nbPkgs.joinmarket}/bin/jm-genwallet --datadir=${cfg.dataDir} $walletname $pw \
+                   | grep 'recovery_seed' \
+                   | cut -d ':' -f2 \
+                   | (umask u=r,go=; cat > "${secretsDir}/jm-wallet-seed"); then
+              echo "wallet creation failed"
+              rm -f "$wallet" "${secretsDir}/jm-wallet-seed"
+              exit 1
+            fi
           fi
         '');
         ExecStart = "${nbPkgs.joinmarket}/bin/joinmarketd";
