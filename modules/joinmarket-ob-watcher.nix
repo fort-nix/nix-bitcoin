@@ -46,16 +46,6 @@ in {
       default = "/var/lib/joinmarket-ob-watcher";
       description = "The data directory for JoinMarket orderbook watcher.";
     };
-    user = mkOption {
-      type = types.str;
-      default = "joinmarket-ob-watcher";
-      description = "The user as which to run JoinMarket orderbook watcher.";
-    };
-    group = mkOption {
-      type = types.str;
-      default = cfg.user;
-      description = "The group as which to run JoinMarket orderbook watcher.";
-    };
     # This option is only used by netns-isolation
     enforceTor = mkOption {
       readOnly = true;
@@ -73,10 +63,13 @@ in {
       wantedBy = [ "multi-user.target" ];
       requires = [ "tor.service" ];
       after = [ "tor.service" ];
+      # The service writes to HOME/.config/matplotlib
+      environment.HOME = cfg.dataDir;
       preStart = ''
         ln -snf ${configFile} ${cfg.dataDir}/joinmarket.cfg
       '';
       serviceConfig = nbLib.defaultHardening // rec {
+        DynamicUser = true;
         StateDirectory = "joinmarket-ob-watcher";
         StateDirectoryMode = "0770";
         WorkingDirectory = cfg.dataDir; # The service creates dir 'logs' in the working dir
@@ -84,16 +77,9 @@ in {
           ${nbPkgs.joinmarket}/bin/ob-watcher --datadir=${cfg.dataDir} \
             --host=${cfg.address} --port=${toString cfg.port}
         '';
-        User = cfg.user;
         Restart = "on-failure";
         RestartSec = "10s";
       } // nbLib.allowTor;
     };
-
-    users.users.${cfg.user} = {
-      group = cfg.group;
-      home = cfg.dataDir; # The service writes to HOME/.config/matplotlib
-    };
-    users.groups.${cfg.group} = {};
   };
 }
