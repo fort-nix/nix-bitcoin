@@ -13,9 +13,6 @@ in
     lnd
     nbxplorer
     btcpayserver;
-  inherit (nixBitcoinPkgsUnstable)
-    electrs
-    lightning-loop;
 
   stable = nixBitcoinPkgsStable;
   unstable = nixBitcoinPkgsUnstable;

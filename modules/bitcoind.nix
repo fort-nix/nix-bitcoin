@@ -11,6 +11,8 @@ let
     # We're already logging via journald
     nodebuglogfile=1
 
+    startupnotify=/run/current-system/systemd/bin/systemd-notify --ready
+
     ${optionalString cfg.regtest ''
       regtest=1
       [regtest]
@@ -22,7 +24,7 @@ let
     ${optionalString (cfg.assumevalid != null) "assumevalid=${cfg.assumevalid}"}
 
     # Connection options
-    ${optionalString cfg.listen "bind=${cfg.address}"}
+    ${optionalString cfg.listen "bind=${cfg.address}${optionalString cfg.enforceTor "=onion"}"}
     port=${toString cfg.port}
     ${optionalString (cfg.proxy != null) "proxy=${cfg.proxy}"}
     listen=${if cfg.listen then "1" else "0"}
@@ -66,6 +68,14 @@ in {
         type = types.port;
         default = 8333;
         description = "Port to listen for peer connections.";
+      };
+      getPublicAddressCmd = mkOption {
+        type = types.str;
+        default = "";
+        description = ''
+          Bash expression which outputs the public service address to announce to peers.
+          If left empty, no address is announced.
+        '';
       };
       package = mkOption {
         type = types.package;
@@ -328,21 +338,22 @@ in {
           ${extraRpcauth}
           ${/* Enable bitcoin-cli for group 'bitcoin' */ ""}
           printf "rpcuser=${cfg.rpc.users.privileged.name}\nrpcpassword="; cat "${secretsDir}/bitcoin-rpcpassword-privileged";
+          echo
+          ${optionalString (cfg.getPublicAddressCmd != "") ''
+            echo "externalip=$(${cfg.getPublicAddressCmd})"
+          ''}
         )
         confFile='${cfg.dataDir}/bitcoin.conf'
         if [[ ! -e $confFile || $cfg != $(cat $confFile) ]]; then
           install -o '${cfg.user}' -g '${cfg.group}' -m 640 <(echo "$cfg") $confFile
         fi
       '';
-      postStart = ''
-        # Poll until bitcoind accepts commands. This can take a long time.
-        while ! ${cfg.cli}/bin/bitcoin-cli getnetworkinfo &> /dev/null; do
-          sleep 1
-        done
-      '';
       serviceConfig = nix-bitcoin-services.defaultHardening // {
+        Type = "notify";
+        NotifyAccess = "all";
         User = "${cfg.user}";
         Group = "${cfg.group}";
+        TimeoutStartSec = 300;
         ExecStart = "${cfg.package}/bin/bitcoind -datadir='${cfg.dataDir}'";
         Restart = "on-failure";
         UMask = mkIf cfg.dataDirReadableByGroup "0027";

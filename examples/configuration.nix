@@ -28,6 +28,10 @@
   # LND and electrs are not compatible with pruning.
   # services.bitcoind.prune = 100000;
   #
+  # Set this to accounce the onion service address to peers.
+  # The onion service allows accepting incoming connections via Tor.
+  # nix-bitcoin.onionServices.bitcoind.public = true;
+  #
   # You can add options that are not defined in modules/bitcoind.nix as follows
   # services.bitcoind.extraConfig = ''
   #   maxorphantx=110

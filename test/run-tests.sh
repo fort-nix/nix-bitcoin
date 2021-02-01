@@ -10,7 +10,13 @@
 #   Test specific scenario
 #   ./run-tests.sh --scenario|-s <scenario>
 #
-#     When <scenario> is undefined, the test is run with an adhoc scenario
+#   - When <scenario> contains a space, <scenario> is treated as nix code defining
+#     a scenario. It is evaluated in the same context as other scenarios in ./tests.nix
+#
+#     Example:
+#     ./run-tests.sh -s "{ nix-bitcoin.nodeinfo.enable = true; }" container --run c nodeinfo
+#
+#   - When <scenario> does not name a scenario, the test is run with an adhoc scenario
 #     where services.<scenario> is enabled.
 #
 #     Example:
@@ -80,13 +86,24 @@ numCPUs=${numCPUs:-$(nproc)}
 # Min. 800 MiB needed to avoid 'out of memory' errors
 memoryMiB=${memoryMiB:-2048}
 
-export NIX_PATH=nixpkgs=$(nix eval --raw -f "$scriptDir/../pkgs/nixpkgs-pinned.nix" nixpkgs)
+export NIX_PATH=nixpkgs=$(nix eval --raw -f "$scriptDir/../pkgs/nixpkgs-pinned.nix" nixpkgs):nix-bitcoin=$(realpath "$scriptDir/..")
+
+runAtExit=
+trap 'eval "$runAtExit"' EXIT
+
+# Support explicit scenario definitions
+if [[ $scenario = *' '* ]]; then
+    export scenarioOverridesFile=$(mktemp ${XDG_RUNTIME_DIR:-/tmp}/nb-scenario.XXX)
+    runAtExit+='rm -f "$scenarioOverridesFile";'
+    echo "{ testEnv, config, pkgs, lib }: with testEnv; with lib; { tmp = $scenario; }" > "$scenarioOverridesFile"
+    scenario=tmp
+fi
 
 # Run the test. No temporary files are left on the host system.
 run() {
     # TMPDIR is also used by the test driver for VM tmp files
     export TMPDIR=$(mktemp -d /tmp/nix-bitcoin-test.XXX)
-    trap "rm -rf $TMPDIR" EXIT
+    runAtExit+="rm -rf $TMPDIR;"
 
     nix-build --out-link $TMPDIR/driver -E "(import \"$scriptDir/tests.nix\" { scenario = \"$scenario\"; }).vm" -A driver
 
@@ -134,7 +151,8 @@ instantiate() {
 }
 
 container() {
-  . "$scriptDir/lib/make-container.sh" "$@"
+    export scriptDir scenario
+    "$scriptDir/lib/make-container.sh" "$@"
 }
 
 doBuild() {

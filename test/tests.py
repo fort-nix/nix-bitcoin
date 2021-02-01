@@ -286,6 +286,9 @@ def _():
 # Impure: stops bitcoind (and dependent services)
 @test("backups")
 def _():
+    # For testing that bitcoind wallets are backed up
+    succeed("bitcoin-cli -named createwallet wallet_name=test blank=true >/dev/null")
+
     succeed("systemctl stop bitcoind")
     succeed("systemctl start duplicity")
     machine.wait_until_succeeds(log_has_string("duplicity", "duplicity.service: Succeeded."))
@@ -296,12 +299,18 @@ def _():
         "0 differences found",
     )
     # Backup should include important files
-    files = succeed(f"{run_duplicity} list-current-files file:///var/lib/localBackups")
-    assert "var/lib/clightning/bitcoin/hsm_secret" in files
-    assert "secrets/lnd-seed-mnemonic" in files
-    assert "secrets/jm-wallet-seed" in files
-    assert "var/lib/bitcoind/wallet.dat" in files
-    assert "var/backup/postgresql/btcpaydb.sql.gz" in files
+    files = {
+        "bitcoind": "var/lib/bitcoind/test/wallet.dat",
+        "clightning": "var/lib/clightning/bitcoin/hsm_secret",
+        "lnd": "secrets/lnd-seed-mnemonic",
+        "joinmarket": "secrets/jm-wallet-seed",
+        "btcpayserver": "var/backup/postgresql/btcpaydb.sql.gz",
+    }
+    actual_files = succeed(f"{run_duplicity} list-current-files file:///var/lib/localBackups")
+
+    for test, file in files.items():
+        if test in enabled_tests and file not in actual_files:
+            raise Exception(f"Backup file '{file}' is missing.")
 
 
 # Impure: restarts services
