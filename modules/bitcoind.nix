@@ -326,10 +326,10 @@ in {
       in ''
         ${optionalString cfg.dataDirReadableByGroup "chmod -R g+rX '${cfg.dataDir}/blocks'"}
         cfg=$(
-          cat ${configFile};
+          cat ${configFile}
           ${extraRpcauth}
           ${/* Enable bitcoin-cli for group 'bitcoin' */ ""}
-          printf "rpcuser=${cfg.rpc.users.privileged.name}\nrpcpassword="; cat "${secretsDir}/bitcoin-rpcpassword-privileged";
+          printf "rpcuser=${cfg.rpc.users.privileged.name}\nrpcpassword="; cat "${secretsDir}/bitcoin-rpcpassword-privileged"
           echo
           ${optionalString (cfg.getPublicAddressCmd != "") ''
             echo "externalip=$(${cfg.getPublicAddressCmd})"

@@ -81,8 +81,7 @@ in {
     };
     cli = mkOption {
       readOnly = true;
-      default = pkgs.writeScriptBin "lightning-cli"
-      ''
+      default = pkgs.writeScriptBin "lightning-cli" ''
         ${nbPkgs.clightning}/bin/lightning-cli --lightning-dir='${cfg.dataDir}' "$@"
       '';
       description = "Binary to connect with the clightning instance.";
