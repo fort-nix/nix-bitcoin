@@ -149,6 +149,7 @@ in {
     users.users.${cfg.user} = {
         group = cfg.group;
         home = cfg.dataDir;
+        # Allow access to the tor control socket, needed for payjoin onion service creation
         extraGroups = [ "tor" ];
     };
     users.groups.${cfg.group} = {};
@@ -167,6 +168,7 @@ in {
     services.tor = {
       enable = true;
       client.enable = true;
+      # Needed for payjoin onion service creation
       controlSocket.enable = true;
     };
 
