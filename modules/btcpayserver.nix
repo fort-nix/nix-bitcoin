@@ -127,7 +127,7 @@ in {
       requires = [ "bitcoind.service" ];
       after = [ "bitcoind.service" ];
       preStart = ''
-        install -m 600 ${configFile} ${cfg.nbxplorer.dataDir}/settings.config
+        install -m 600 ${configFile} '${cfg.nbxplorer.dataDir}/settings.config'
         echo "btcrpcpassword=$(cat ${config.nix-bitcoin.secretsDir}/bitcoin-rpcpassword-btcpayserver)" \
           >> '${cfg.nbxplorer.dataDir}/settings.config'
       '';
@@ -171,13 +171,13 @@ in {
                  ++ optional (cfg.btcpayserver.lightningBackend != null) "${cfg.btcpayserver.lightningBackend}.service";
       after = self.requires;
       preStart = ''
-        install -m 600 ${configFile} ${cfg.btcpayserver.dataDir}/settings.config
+        install -m 600 ${configFile} '${cfg.btcpayserver.dataDir}/settings.config'
         ${optionalString (cfg.btcpayserver.lightningBackend == "lnd") ''
           {
             echo -n "${lndConfig}";
             ${pkgs.openssl}/bin/openssl x509 -noout -fingerprint -sha256 -in ${config.nix-bitcoin.secretsDir}/lnd-cert \
               | sed -e 's/.*=//;s/://g';
-          } >> ${cfg.btcpayserver.dataDir}/settings.config
+          } >> '${cfg.btcpayserver.dataDir}/settings.config'
         ''}
       '';
       serviceConfig = nbLib.defaultHardening // {

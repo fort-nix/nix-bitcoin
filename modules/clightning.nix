@@ -117,19 +117,17 @@ in {
       requires = [ "bitcoind.service" ];
       after = [ "bitcoind.service" ];
       preStart = ''
-        cp ${configFile} ${cfg.dataDir}/config
         chown -R '${cfg.user}:${cfg.group}' '${cfg.dataDir}'
         # The RPC socket has to be removed otherwise we might have stale sockets
         rm -f ${cfg.networkDir}/lightning-rpc
-        chmod 640 ${cfg.dataDir}/config
+        install -m 640 ${configFile} '${cfg.dataDir}/config'
         {
           echo "bitcoin-rpcpassword=$(cat ${config.nix-bitcoin.secretsDir}/bitcoin-rpcpassword-public)"
           ${optionalString (cfg.getPublicAddressCmd != "") ''
             echo "announce-addr=$(${cfg.getPublicAddressCmd})"
           ''}
         } >> '${cfg.dataDir}/config'
-
-        '';
+      '';
       serviceConfig = nbLib.defaultHardening // {
         ExecStart = "${nbPkgs.clightning}/bin/lightningd --lightning-dir=${cfg.dataDir}";
         User = cfg.user;

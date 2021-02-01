@@ -224,11 +224,12 @@ in {
       after = [ "bitcoind.service" ];
       wantedBy = [ "multi-user.target" ];
       preStart = ''
-        cp '${configFile}' '${cfg.dataDir}/elements.conf'
-        chmod 640  '${cfg.dataDir}/elements.conf'
         chown -R '${cfg.user}:${cfg.group}' '${cfg.dataDir}'
-        echo "rpcpassword=$(cat ${secretsDir}/liquid-rpcpassword)" >> '${cfg.dataDir}/elements.conf'
-        echo "mainchainrpcpassword=$(cat ${secretsDir}/bitcoin-rpcpassword-public)" >> '${cfg.dataDir}/elements.conf'
+        install -m 640 ${configFile} '${cfg.dataDir}/elements.conf'
+        {
+          echo "rpcpassword=$(cat ${secretsDir}/liquid-rpcpassword)"
+          echo "mainchainrpcpassword=$(cat ${secretsDir}/bitcoin-rpcpassword-public)"
+        } >> '${cfg.dataDir}/elements.conf'
       '';
       serviceConfig = nbLib.defaultHardening // {
         Type = "simple";
