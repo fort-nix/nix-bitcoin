@@ -244,6 +244,10 @@ in {
         RuntimeDirectoryMode = "700";
         WorkingDirectory = cfg.dataDir; # The service creates dir 'logs' in the working dir
         ExecStart = "${pkgs.bash}/bin/bash /run/${RuntimeDirectory}/start";
+        # Show "joinmarket-yieldgenerator" instead of "bash" in the journal.
+        # The parent bash start process has to run alongside the main process
+        # because it provides the wallet password via stdin to the main process
+        SyslogIdentifier = "joinmarket-yieldgenerator";
         User = cfg.user;
         ReadWritePaths = cfg.dataDir;
       } // nbLib.allowTor;
