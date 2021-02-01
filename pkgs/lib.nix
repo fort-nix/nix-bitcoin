@@ -52,13 +52,13 @@ let self = {
     '';
   };
 
-  script = src: pkgs.writers.writeBash "script" ''
+  script = name: src: pkgs.writers.writeBash name ''
     set -eo pipefail
     ${src}
   '';
 
   # Used for ExecStart*
-  privileged = src: "+${self.script src}";
+  privileged = name: src: "+${self.script name src}";
 
   cliExec = mkOption {
     # Used by netns-isolation to execute the cli in the service's private netns

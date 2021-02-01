@@ -190,7 +190,7 @@ in {
           restUrl = "https://${cfg.restAddress}:${toString cfg.restPort}/v1";
         in [
           # Run fully privileged for secrets dir write access
-          "+${nbLib.script ''
+          (nbLib.privileged "lnd-create-mnemonic" ''
             attempts=250
             while ! { exec 3>/dev/tcp/${cfg.restAddress}/${toString cfg.restPort} && exec 3>&-; } &>/dev/null; do
                   ((attempts-- == 0)) && { echo "lnd REST service unreachable"; exit 1; }
@@ -206,8 +206,8 @@ in {
                 -X GET ${restUrl}/genseed | ${pkgs.jq}/bin/jq -c '.cipher_seed_mnemonic' > "$mnemonic"
             fi
             chown lnd: "$mnemonic"
-          ''}"
-          "${nbLib.script ''
+          '')
+          (nbLib.script "lnd-create-wallet" ''
             if [[ ! -f ${networkDir}/wallet.db ]]; then
               echo Create lnd wallet
 
@@ -240,7 +240,7 @@ in {
 
           '')
           # Run fully privileged for chown
-          "+${nbLib.script ''
+          (nbLib.privileged "lnd-create-macaroons" ''
             umask ug=r,o=
             ${lib.concatMapStrings (macaroon: ''
               echo "Create custom macaroon ${macaroon}"
@@ -254,7 +254,7 @@ in {
                 ${pkgs.jq}/bin/jq -c '.macaroon' | ${pkgs.xxd}/bin/xxd -p -r > "$macaroonPath"
               chown ${cfg.macaroons.${macaroon}.user}: "$macaroonPath"
             '') (attrNames cfg.macaroons)}
-          ''}"
+          '')
         ];
       } // (if cfg.enforceTor
           then nbLib.allowTor
