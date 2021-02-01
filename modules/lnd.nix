@@ -118,7 +118,7 @@ in {
       example = ''
         autopilot.active=1
       '';
-      description = "Additional configurations to be appended to <filename>lnd.conf</filename>.";
+      description = "Extra lines appended to <filename>lnd.conf</filename>.";
     };
     package = mkOption {
       type = types.package;

@@ -67,7 +67,7 @@ in {
     extraConfig = mkOption {
       type = types.lines;
       default = "";
-      description = "Additional lines appended to the config file.";
+      description = "Extra lines appended to the configuration file.";
     };
     user = mkOption {
       type = types.str;

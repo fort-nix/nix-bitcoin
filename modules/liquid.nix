@@ -87,9 +87,8 @@ in {
           par=16
           rpcthreads=16
           logips=1
-
         '';
-        description = "Additional configurations to be appended to <filename>elements.conf</filename>.";
+        description = "Extra lines appended to <filename>elements.conf</filename>.";
       };
       dataDir = mkOption {
         type = types.path;
