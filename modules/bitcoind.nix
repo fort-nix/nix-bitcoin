@@ -197,9 +197,7 @@ in {
       listen = mkOption {
         type = types.bool;
         default = false;
-        description = ''
-          If enabled, the bitcoin service will listen.
-        '';
+        description = "Accept incoming connections.";
       };
       dataDirReadableByGroup = mkOption {
         type = types.bool;
@@ -228,21 +226,15 @@ in {
         type = types.nullOr (types.ints.between 4 16384);
         default = null;
         example = 4000;
-        description = "Override the default database cache size in megabytes.";
+        description = "Override the default database cache size in MiB.";
       };
       prune = mkOption {
         type = types.ints.unsigned;
         default = 0;
         example = 10000;
         description = ''
-          Reduce storage requirements by enabling pruning (deleting) of old
-          blocks. This allows the pruneblockchain RPC to be called to delete
-          specific blocks, and enables automatic pruning of old blocks if a
-          target size in MiB is provided. This mode is incompatible with -txindex
-          and -rescan. Warning: Reverting this setting requires re-downloading
-          the entire blockchain. ("disable" = disable pruning blocks, "manual"
-          = allow manual pruning via RPC, >=550 = automatically prune block files
-          to stay under the specified target size in MiB)
+          Automatically prune block files to stay under the specified target size in MiB.
+          Value 0 disables pruning.
         '';
       };
       zmqpubrawblock = mkOption {
@@ -281,7 +273,7 @@ in {
         type = types.nullOr types.str;
         default = null;
         example = "bech32";
-        description = "What type of addresses to use";
+        description = "The type of addresses to use";
       };
       cli = mkOption {
         readOnly = true;

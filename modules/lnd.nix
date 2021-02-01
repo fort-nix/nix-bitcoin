@@ -89,7 +89,7 @@ in {
     tor-socks = mkOption {
       type = types.nullOr types.str;
       default = if cfg.enforceTor then config.services.tor.client.socksListenAddress else null;
-      description = "Set a socks proxy to use to connect to Tor nodes";
+      description = "Socks proxy for connecting to Tor nodes";
     };
     macaroons = mkOption {
       default = {};
