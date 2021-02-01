@@ -151,13 +151,13 @@ in {
     systemd.services.btcpayserver = let
       configFile = builtins.toFile "config" (''
         network=${config.services.bitcoind.network}
-        postgres=User ID=${cfg.btcpayserver.user};Host=/run/postgresql;Database=btcpaydb
+        bind=${cfg.btcpayserver.address}
+        port=${toString cfg.btcpayserver.port}
         socksendpoint=${cfg.tor.client.socksListenAddress}
         btcexplorerurl=http://${cfg.nbxplorer.address}:${toString cfg.nbxplorer.port}/
         btcexplorercookiefile=${cfg.nbxplorer.dataDir}/${config.services.bitcoind.makeNetworkName "Main" "RegTest"}/.cookie
-        bind=${cfg.btcpayserver.address}
+        postgres=User ID=${cfg.btcpayserver.user};Host=/run/postgresql;Database=btcpaydb
         ${optionalString (cfg.btcpayserver.rootpath != null) "rootpath=${cfg.btcpayserver.rootpath}"}
-        port=${toString cfg.btcpayserver.port}
       '' + optionalString (cfg.btcpayserver.lightningBackend == "clightning") ''
         btclightning=type=clightning;server=unix:///${cfg.clightning.dataDir}/bitcoin/lightning-rpc
       '');
