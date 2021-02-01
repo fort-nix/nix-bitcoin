@@ -119,7 +119,7 @@ in {
         after = [ "network-pre.target" ];
         serviceConfig = {
           Type = "oneshot";
-          RemainAfterExit = "yes";
+          RemainAfterExit = true;
         };
         script = ''
           ${ip} link add name nb-br type bridge
@@ -182,7 +182,7 @@ in {
           '';
           serviceConfig = {
             Type = "oneshot";
-            RemainAfterExit = "yes";
+            RemainAfterExit = true;
           };
         };
       };
