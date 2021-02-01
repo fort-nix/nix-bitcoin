@@ -82,7 +82,6 @@ in {
     services.clightning.enable = true;
 
     users.users.recurring-donations = {
-        description = "recurring-donations User";
         group = "recurring-donations";
         extraGroups = [ "clightning" ];
     };

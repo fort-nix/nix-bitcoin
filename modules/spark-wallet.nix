@@ -61,7 +61,6 @@ in {
     services.clightning.enable = true;
 
     users.users.spark-wallet = {
-      description = "spark-wallet User";
       group = "spark-wallet";
       extraGroups = [ "clightning" ];
     };

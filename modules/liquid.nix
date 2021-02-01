@@ -248,7 +248,6 @@ in {
     users.users.${cfg.user} = {
       group = cfg.group;
       extraGroups = [ "bitcoinrpc" ];
-      description = "Liquid sidechain user";
     };
     users.groups.${cfg.group} = {};
     nix-bitcoin.operator.groups = [ cfg.group ];

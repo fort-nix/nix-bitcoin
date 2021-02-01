@@ -107,7 +107,6 @@ in {
 
     environment.systemPackages = [ nbPkgs.clightning (hiPrio cfg.cli) ];
     users.users.${cfg.user} = {
-        description = "clightning User";
         group = cfg.group;
         extraGroups = [ "bitcoinrpc" ];
     };

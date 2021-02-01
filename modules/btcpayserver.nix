@@ -203,14 +203,12 @@ in {
     };
 
     users.users.${cfg.nbxplorer.user} = {
-      description = "nbxplorer user";
       group = cfg.nbxplorer.group;
       extraGroups = [ "bitcoinrpc" ];
       home = cfg.nbxplorer.dataDir;
     };
     users.groups.${cfg.nbxplorer.group} = {};
     users.users.${cfg.btcpayserver.user} = {
-      description = "btcpayserver user";
       group = cfg.btcpayserver.group;
       extraGroups = [ "nbxplorer" ]
                     ++ optional (cfg.btcpayserver.lightningBackend == "clightning") cfg.clightning.user;

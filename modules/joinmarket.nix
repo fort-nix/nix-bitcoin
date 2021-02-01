@@ -147,7 +147,6 @@ in {
       (hiPrio cfg.cli)
     ];
     users.users.${cfg.user} = {
-        description = "joinmarket User";
         group = cfg.group;
         home = cfg.dataDir;
         extraGroups = [ "tor" ];
