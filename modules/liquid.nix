@@ -220,7 +220,6 @@ in {
     ];
 
     systemd.services.liquidd = {
-      description = "Elements daemon providing access to the Liquid sidechain";
       requires = [ "bitcoind.service" ];
       after = [ "bitcoind.service" ];
       wantedBy = [ "multi-user.target" ];

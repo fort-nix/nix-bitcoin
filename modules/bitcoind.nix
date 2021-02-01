@@ -312,7 +312,6 @@ in {
     ];
 
     systemd.services.bitcoind = {
-      description = "Bitcoin daemon";
       requires = [ "nix-bitcoin-secrets.target" ];
       after = [ "network.target" "nix-bitcoin-secrets.target" ];
       wantedBy = [ "multi-user.target" ];

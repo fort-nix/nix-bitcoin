@@ -171,7 +171,6 @@ in {
     };
 
     systemd.services.joinmarket = {
-      description = "JoinMarket Daemon";
       wantedBy = [ "multi-user.target" ];
       requires = [ "bitcoind.service" ];
       after = [ "bitcoind.service" ];
@@ -226,7 +225,6 @@ in {
           chmod +x $out
         '';
     in {
-      description = "CoinJoin maker bot to gain privacy and passively generate income";
       wantedBy = [ "joinmarket.service" ];
       requires = [ "joinmarket.service" ];
       after = [ "joinmarket.service" ];

@@ -88,7 +88,6 @@ in {
     users.groups.recurring-donations = {};
 
     systemd.services.recurring-donations = {
-      description = "Run recurring-donations";
       requires = [ "clightning.service" ];
       after = [ "clightning.service" ];
       path = with pkgs; [ nix-bitcoin.clightning curl sudo jq ];

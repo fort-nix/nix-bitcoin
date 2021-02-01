@@ -68,7 +68,6 @@ in {
     ];
 
     systemd.services.electrs = {
-      description = "Electrs Electrum Server";
       wantedBy = [ "multi-user.target" ];
       requires = [ "bitcoind.service" ];
       after = [ "bitcoind.service" ];

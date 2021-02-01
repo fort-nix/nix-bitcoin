@@ -67,7 +67,6 @@ in {
     users.groups.spark-wallet = {};
 
     systemd.services.spark-wallet = {
-      description = "Run spark-wallet";
       wantedBy = [ "multi-user.target" ];
       requires = [ "clightning.service" ];
       after = [ "clightning.service" ];

@@ -123,7 +123,6 @@ in {
         port=${toString cfg.nbxplorer.port}
       '';
     in {
-      description = "Run nbxplorer";
       wantedBy = [ "multi-user.target" ];
       requires = [ "bitcoind.service" ];
       after = [ "bitcoind.service" ];

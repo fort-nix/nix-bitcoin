@@ -173,7 +173,6 @@ in {
     };
 
     systemd.services.lnd = {
-      description = "Run LND";
       wantedBy = [ "multi-user.target" ];
       requires = [ "bitcoind.service" ];
       after = [ "bitcoind.service" ];
