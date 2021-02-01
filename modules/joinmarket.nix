@@ -148,7 +148,7 @@ in {
     ];
     users.users.${cfg.user} = {
         description = "joinmarket User";
-        group = "${cfg.group}";
+        group = cfg.group;
         home = cfg.dataDir;
         extraGroups = [ "tor" ];
     };
@@ -202,11 +202,11 @@ in {
           fi
         '');
         ExecStart = "${nbPkgs.joinmarket}/bin/joinmarketd";
-        WorkingDirectory = "${cfg.dataDir}"; # The service creates 'commitmentlist' in the working dir
-        User = "${cfg.user}";
+        WorkingDirectory = cfg.dataDir; # The service creates 'commitmentlist' in the working dir
+        User = cfg.user;
         Restart = "on-failure";
         RestartSec = "10s";
-        ReadWritePaths = "${cfg.dataDir}";
+        ReadWritePaths = cfg.dataDir;
       } // nbLib.allowTor;
     };
 
@@ -242,10 +242,10 @@ in {
       serviceConfig = nbLib.defaultHardening // rec {
         RuntimeDirectory = "joinmarket-yieldgenerator"; # Only used to create start script
         RuntimeDirectoryMode = "700";
-        WorkingDirectory = "${cfg.dataDir}"; # The service creates dir 'logs' in the working dir
+        WorkingDirectory = cfg.dataDir; # The service creates dir 'logs' in the working dir
         ExecStart = "${pkgs.bash}/bin/bash /run/${RuntimeDirectory}/start";
-        User = "${cfg.user}";
-        ReadWritePaths = "${cfg.dataDir}";
+        User = cfg.user;
+        ReadWritePaths = cfg.dataDir;
       } // nbLib.allowTor;
     };
   })

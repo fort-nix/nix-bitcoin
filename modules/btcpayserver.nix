@@ -108,7 +108,7 @@ in {
       enable = true;
       ensureDatabases = [ "btcpaydb" ];
       ensureUsers = [{
-        name = "${cfg.btcpayserver.user}";
+        name = cfg.btcpayserver.user;
         ensurePermissions."DATABASE btcpaydb" = "ALL PRIVILEGES";
       }];
     };

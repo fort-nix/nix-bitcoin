@@ -47,7 +47,7 @@ in {
         # Provides lsusb for debugging
         pkgs.usbutils
       ];
-      users.groups."${cfg.group}" = {};
+      users.groups.${cfg.group} = {};
       nix-bitcoin.operator.groups = [ cfg.group ];
     })
     (mkIf cfg.ledger {

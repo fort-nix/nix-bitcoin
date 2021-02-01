@@ -72,7 +72,7 @@ in {
           "--include-filelist" "${filelist}"
           "--full-if-older-than" "1M"
         ];
-        targetUrl = "${cfg.destination}";
+        targetUrl = cfg.destination;
         frequency = cfg.frequency;
         secretFile = "${config.nix-bitcoin.secretsDir}/backup-encryption-env";
       };

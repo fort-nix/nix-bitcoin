@@ -6,7 +6,7 @@ buildPythonPackage rec {
   src = fetchFromGitHub {
     owner = "freelan-developers";
     repo = "chromalog";
-    rev = "${version}";
+    rev = version;
     sha256 = "0pj4s52rgwlvwkzrj85y92c5r9c84pz8gga45jl5spysrv41y9p0";
   };
 

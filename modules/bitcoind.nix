@@ -343,13 +343,13 @@ in {
       serviceConfig = nbLib.defaultHardening // {
         Type = "notify";
         NotifyAccess = "all";
-        User = "${cfg.user}";
-        Group = "${cfg.group}";
+        User = cfg.user;
+        Group = cfg.group;
         TimeoutStartSec = 300;
         ExecStart = "${cfg.package}/bin/bitcoind -datadir='${cfg.dataDir}'";
         Restart = "on-failure";
         UMask = mkIf cfg.dataDirReadableByGroup "0027";
-        ReadWritePaths = "${cfg.dataDir}";
+        ReadWritePaths = cfg.dataDir;
       } // (if cfg.enforceTor
             then nbLib.allowTor
             else nbLib.allowAnyIP)
@@ -375,9 +375,9 @@ in {
         done
       '';
       serviceConfig = nbLib.defaultHardening // {
-        User = "${cfg.user}";
-        Group = "${cfg.group}";
-        ReadWritePaths = "${cfg.dataDir}";
+        User = cfg.user;
+        Group = cfg.group;
+        ReadWritePaths = cfg.dataDir;
       } // nbLib.allowTor;
     };
 
