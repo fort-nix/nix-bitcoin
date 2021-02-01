@@ -23,13 +23,7 @@ let
   '';
 in {
   options.services.spark-wallet = {
-    enable = mkOption {
-      type = types.bool;
-      default = false;
-      description = ''
-        If enabled, the spark-wallet service will be installed.
-      '';
-    };
+    enable = mkEnableOption "spark-wallet";
     address = mkOption {
       type = types.str;
       default = "localhost";

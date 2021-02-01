@@ -37,13 +37,7 @@ let
 in {
 
   options.services.lnd = {
-    enable = mkOption {
-      type = types.bool;
-      default = false;
-      description = ''
-        If enabled, the LND service will be installed.
-      '';
-    };
+    enable = mkEnableOption "Lightning Network Daemon";
     dataDir = mkOption {
       type = types.path;
       default = "/var/lib/lnd";

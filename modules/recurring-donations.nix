@@ -41,13 +41,7 @@ let
   '';
 in {
   options.services.recurring-donations = {
-    enable = mkOption {
-      type = types.bool;
-      default = false;
-      description = ''
-        If enabled, the recurring-donations service will be installed.
-      '';
-    };
+    enable = mkEnableOption "recurring-donations";
     tallycoin = mkOption {
       type = types.attrs;
       default = {};
