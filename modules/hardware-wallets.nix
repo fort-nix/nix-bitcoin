@@ -47,9 +47,11 @@ in {
         # Provides lsusb for debugging
         pkgs.usbutils
       ];
+
       users.groups.${cfg.group} = {};
       nix-bitcoin.operator.groups = [ cfg.group ];
     })
+
     (mkIf cfg.ledger {
       # Ledger Nano S according to https://github.com/LedgerHQ/udev-rules/blob/master/add_udev_rules.sh
       # Don't use rules from nixpkgs because we want to use our own group.

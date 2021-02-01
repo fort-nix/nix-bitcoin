@@ -100,12 +100,6 @@ in {
     };
 
     environment.systemPackages = [ nbPkgs.clightning (hiPrio cfg.cli) ];
-    users.users.${cfg.user} = {
-        group = cfg.group;
-        extraGroups = [ "bitcoinrpc" ];
-    };
-    users.groups.${cfg.group} = {};
-    nix-bitcoin.operator.groups = [ cfg.group ];
 
     systemd.tmpfiles.rules = [
       "d '${cfg.dataDir}' 0770 ${cfg.user} ${cfg.group} - -"
@@ -147,5 +141,12 @@ in {
         chmod g+x ${cfg.networkDir}
       '';
     };
+
+    users.users.${cfg.user} = {
+      group = cfg.group;
+      extraGroups = [ "bitcoinrpc" ];
+    };
+    users.groups.${cfg.group} = {};
+    nix-bitcoin.operator.groups = [ cfg.group ];
   };
 }

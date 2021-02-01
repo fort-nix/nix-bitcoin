@@ -150,9 +150,13 @@ in {
 
     services.bitcoind = {
       enable = true;
+
       # Increase rpc thread count due to reports that lightning implementations fail
       # under high bitcoind rpc load
       rpc.threads = 16;
+
+      zmqpubrawblock = "tcp://${bitcoindRpcAddress}:28332";
+      zmqpubrawtx = "tcp://${bitcoindRpcAddress}:28333";
     };
 
     environment.systemPackages = [ cfg.package (hiPrio cfg.cli) ];
@@ -160,11 +164,6 @@ in {
     systemd.tmpfiles.rules = [
       "d '${cfg.dataDir}' 0770 lnd lnd - -"
     ];
-
-    services.bitcoind = {
-      zmqpubrawblock = "tcp://${bitcoindRpcAddress}:28332";
-      zmqpubrawtx = "tcp://${bitcoindRpcAddress}:28333";
-    };
 
     systemd.services.lnd = {
       wantedBy = [ "multi-user.target" ];

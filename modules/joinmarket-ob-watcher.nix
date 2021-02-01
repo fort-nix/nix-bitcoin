@@ -54,6 +54,7 @@ in {
   };
 
   config = mkIf cfg.enable {
+    # Joinmarket is Tor-only
     services.tor = {
       enable = true;
       client.enable = true;

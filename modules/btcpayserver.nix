@@ -99,10 +99,19 @@ in {
     services.clightning.enable = mkIf (cfg.btcpayserver.lightningBackend == "clightning") true;
     services.lnd.enable = mkIf (cfg.btcpayserver.lightningBackend == "lnd") true;
 
-    systemd.tmpfiles.rules = [
-      "d '${cfg.nbxplorer.dataDir}' 0770 ${cfg.nbxplorer.user} ${cfg.nbxplorer.group} - -"
-      "d '${cfg.btcpayserver.dataDir}' 0770 ${cfg.btcpayserver.user} ${cfg.btcpayserver.group} - -"
-    ];
+    services.bitcoind.rpc.users.btcpayserver = {
+      passwordHMACFromFile = true;
+      rpcwhitelist = cfg.bitcoind.rpc.users.public.rpcwhitelist ++ [
+        "setban"
+        "generatetoaddress"
+        "getpeerinfo"
+      ];
+    };
+
+    services.lnd.macaroons.btcpayserver = mkIf (cfg.btcpayserver.lightningBackend == "lnd") {
+      inherit (cfg.btcpayserver) user;
+      permissions = ''{"entity":"info","action":"read"},{"entity":"onchain","action":"read"},{"entity":"offchain","action":"read"},{"entity":"address","action":"read"},{"entity":"message","action":"read"},{"entity":"peers","action":"read"},{"entity":"signer","action":"read"},{"entity":"invoices","action":"read"},{"entity":"invoices","action":"write"},{"entity":"address","action":"write"}'';
+    };
 
     services.postgresql = {
       enable = true;
@@ -112,6 +121,11 @@ in {
         ensurePermissions."DATABASE btcpaydb" = "ALL PRIVILEGES";
       }];
     };
+
+    systemd.tmpfiles.rules = [
+      "d '${cfg.nbxplorer.dataDir}' 0770 ${cfg.nbxplorer.user} ${cfg.nbxplorer.group} - -"
+      "d '${cfg.btcpayserver.dataDir}' 0770 ${cfg.btcpayserver.user} ${cfg.btcpayserver.group} - -"
+    ];
 
     systemd.services.nbxplorer = let
       configFile = builtins.toFile "config" ''
@@ -196,11 +210,6 @@ in {
       );
     }; in self;
 
-    services.lnd.macaroons.btcpayserver = mkIf (cfg.btcpayserver.lightningBackend == "lnd") {
-      inherit (cfg.btcpayserver) user;
-      permissions = ''{"entity":"info","action":"read"},{"entity":"onchain","action":"read"},{"entity":"offchain","action":"read"},{"entity":"address","action":"read"},{"entity":"message","action":"read"},{"entity":"peers","action":"read"},{"entity":"signer","action":"read"},{"entity":"invoices","action":"read"},{"entity":"invoices","action":"write"},{"entity":"address","action":"write"}'';
-    };
-
     users.users.${cfg.nbxplorer.user} = {
       group = cfg.nbxplorer.group;
       extraGroups = [ "bitcoinrpc" ];
@@ -215,18 +224,12 @@ in {
     };
     users.groups.${cfg.btcpayserver.group} = {};
 
-    services.bitcoind.rpc.users.btcpayserver = {
-      passwordHMACFromFile = true;
-      rpcwhitelist = cfg.bitcoind.rpc.users.public.rpcwhitelist ++ [
-        "setban"
-        "generatetoaddress"
-        "getpeerinfo"
-      ];
+    nix-bitcoin.secrets = {
+      bitcoin-rpcpassword-btcpayserver = {
+        user = "bitcoin";
+        group = "nbxplorer";
+      };
+      bitcoin-HMAC-btcpayserver.user = "bitcoin";
     };
-    nix-bitcoin.secrets.bitcoin-rpcpassword-btcpayserver = {
-      user = "bitcoin";
-      group = "nbxplorer";
-    };
-    nix-bitcoin.secrets.bitcoin-HMAC-btcpayserver.user = "bitcoin";
   };
 }

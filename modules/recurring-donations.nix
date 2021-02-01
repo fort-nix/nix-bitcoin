@@ -75,12 +75,6 @@ in {
   config = mkIf cfg.enable {
     services.clightning.enable = true;
 
-    users.users.recurring-donations = {
-        group = "recurring-donations";
-        extraGroups = [ "clightning" ];
-    };
-    users.groups.recurring-donations = {};
-
     systemd.services.recurring-donations = {
       requires = [ "clightning.service" ];
       after = [ "clightning.service" ];
@@ -103,5 +97,11 @@ in {
       };
       wantedBy = [ "multi-user.target" ];
     };
+
+    users.users.recurring-donations = {
+      group = "recurring-donations";
+      extraGroups = [ "clightning" ];
+    };
+    users.groups.recurring-donations = {};
   };
 }

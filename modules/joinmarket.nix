@@ -141,36 +141,26 @@ in {
   };
 
   config = mkIf cfg.enable (mkMerge [{
-    services.bitcoind.enable = true;
-
-    environment.systemPackages = [
-      (hiPrio cfg.cli)
-    ];
-    users.users.${cfg.user} = {
-        group = cfg.group;
-        home = cfg.dataDir;
-        # Allow access to the tor control socket, needed for payjoin onion service creation
-        extraGroups = [ "tor" ];
-    };
-    users.groups.${cfg.group} = {};
-    nix-bitcoin.operator = {
-      groups = [ cfg.group ];
-      sudoUsers = [ cfg.group ];
+    services.bitcoind = {
+      enable = true;
+      disablewallet = false;
     };
 
-    systemd.tmpfiles.rules = [
-      "d '${cfg.dataDir}' 0770 ${cfg.user} ${cfg.group} - -"
-    ];
-
-    services.bitcoind.disablewallet = false;
-
-    # Joinmarket is TOR-only
+    # Joinmarket is Tor-only
     services.tor = {
       enable = true;
       client.enable = true;
       # Needed for payjoin onion service creation
       controlSocket.enable = true;
     };
+
+    environment.systemPackages = [
+      (hiPrio cfg.cli)
+    ];
+
+    systemd.tmpfiles.rules = [
+      "d '${cfg.dataDir}' 0770 ${cfg.user} ${cfg.group} - -"
+    ];
 
     systemd.services.joinmarket = {
       wantedBy = [ "multi-user.target" ];
@@ -209,6 +199,18 @@ in {
         RestartSec = "10s";
         ReadWritePaths = cfg.dataDir;
       } // nbLib.allowTor;
+    };
+
+    users.users.${cfg.user} = {
+      group = cfg.group;
+      home = cfg.dataDir;
+      # Allow access to the tor control socket, needed for payjoin onion service creation
+      extraGroups = [ "tor" ];
+    };
+    users.groups.${cfg.group} = {};
+    nix-bitcoin.operator = {
+      groups = [ cfg.group ];
+      sudoUsers = [ cfg.group ];
     };
 
     nix-bitcoin.secrets.jm-wallet-password.user = cfg.user;
