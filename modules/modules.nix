@@ -14,6 +14,7 @@ with lib;
     ./spark-wallet.nix
     ./lnd.nix
     ./lightning-loop.nix
+    ./faraday.nix
     ./btcpayserver.nix
     ./electrs.nix
     ./liquid.nix

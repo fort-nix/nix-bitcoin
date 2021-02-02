@@ -10,6 +10,7 @@ let self = {
   nixops19_09 = pkgs.callPackage ./nixops { };
   netns-exec = pkgs.callPackage ./netns-exec { };
   lightning-loop = pkgs.callPackage ./lightning-loop { };
+  faraday = pkgs.callPackage ./faraday { };
   extra-container = pkgs.callPackage ./extra-container { };
   clightning-plugins = import ./clightning-plugins pkgs self.nbPython3Packages;
   clboss = pkgs.callPackage ./clboss { };
