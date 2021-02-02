@@ -48,6 +48,8 @@ let testEnv = rec {
 
       tests.lightning-loop = cfg.lightning-loop.enable;
 
+      tests.faraday = cfg.faraday.enable;
+
       tests.electrs = cfg.electrs.enable;
 
       tests.liquidd = cfg.liquidd.enable;
@@ -116,6 +118,7 @@ let testEnv = rec {
       services.spark-wallet.enable = true;
       services.lnd.enable = true;
       services.lightning-loop.enable = true;
+      services.faraday.enable = true;
       services.electrs.enable = true;
       services.liquidd.enable = true;
       services.btcpayserver.enable = true;
