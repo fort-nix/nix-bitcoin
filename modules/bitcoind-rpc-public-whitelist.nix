@@ -2,6 +2,7 @@
 [
   "echo"
   "getinfo"
+  "uptime"
   # Blockchain
   "getbestblockhash"
   "getblock"
