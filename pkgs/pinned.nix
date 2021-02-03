@@ -11,6 +11,7 @@ in
     bitcoind
     clightning
     lnd
+    lndconnect
     nbxplorer
     btcpayserver;
 

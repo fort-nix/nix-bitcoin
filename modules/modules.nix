@@ -13,6 +13,7 @@ with lib;
     ./clightning-plugins
     ./spark-wallet.nix
     ./lnd.nix
+    ./lnd-rest-onion-service.nix
     ./lightning-loop.nix
     ./btcpayserver.nix
     ./electrs.nix

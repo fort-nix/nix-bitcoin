@@ -46,6 +46,8 @@ let testEnv = rec {
       tests.lnd = cfg.lnd.enable;
       services.lnd.port = 9736;
 
+      tests.lnd-rest-onion-service = cfg.lnd.restOnionService.enable;
+
       tests.lightning-loop = cfg.lightning-loop.enable;
 
       tests.electrs = cfg.electrs.enable;
@@ -115,6 +117,7 @@ let testEnv = rec {
       test.features.clightningPlugins = true;
       services.spark-wallet.enable = true;
       services.lnd.enable = true;
+      services.lnd.restOnionService.enable = true;
       services.lightning-loop.enable = true;
       services.electrs.enable = true;
       services.liquidd.enable = true;

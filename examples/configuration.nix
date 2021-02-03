@@ -63,6 +63,12 @@
   # The onion service is automatically announced to peers.
   # nix-bitcoin.onionServices.lnd.public = true;
   #
+  # Set this to create an lnd REST onion service.
+  # Adds binary `lndconnect-rest-onion` to the system environment.
+  # This binary generates QR codes or URIs for connecting applications to lnd via the
+  # REST onion service.
+  # services.lnd.restOnionService.enable = true;
+  #
   ## WARNING
   # If you use lnd, you should manually backup your wallet mnemonic
   # seed. This will allow you to recover on-chain funds. You can run the

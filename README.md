@@ -63,6 +63,7 @@ NixOS modules
     * [summary](https://github.com/lightningd/plugins/tree/master/summary): print a nice summary of the node status
     * [zmq](https://github.com/lightningd/plugins/tree/master/zmq): publishes notifications via ZeroMQ to configured endpoints
   * [lnd](https://github.com/lightningnetwork/lnd) with support for announcing an onion service
+    * [lndconnect](https://github.com/LN-Zap/lndconnect) via a REST onion service
   * [spark-wallet](https://github.com/shesek/spark-wallet)
   * [electrs](https://github.com/romanz/electrs)
   * [btcpayserver](https://github.com/btcpayserver/btcpayserver)
