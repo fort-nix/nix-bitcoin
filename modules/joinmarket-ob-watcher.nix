@@ -3,7 +3,7 @@
 with lib;
 let
   cfg = config.services.joinmarket-ob-watcher;
-  inherit (config) nix-bitcoin-services;
+  nbLib = config.nix-bitcoin.lib;
   nbPkgs = config.nix-bitcoin.pkgs;
   torAddress = builtins.head (builtins.split ":" config.services.tor.client.socksListenAddress);
   configFile = builtins.toFile "config" ''
@@ -76,7 +76,7 @@ in {
       preStart = ''
         ln -snf ${configFile} ${cfg.dataDir}/joinmarket.cfg
       '';
-      serviceConfig = nix-bitcoin-services.defaultHardening // rec {
+      serviceConfig = nbLib.defaultHardening // rec {
         StateDirectory = "joinmarket-ob-watcher";
         StateDirectoryMode = "0770";
         WorkingDirectory = "${cfg.dataDir}"; # The service creates dir 'logs' in the working dir
@@ -87,7 +87,7 @@ in {
         User = cfg.user;
         Restart = "on-failure";
         RestartSec = "10s";
-      } // nix-bitcoin-services.allowTor;
+      } // nbLib.allowTor;
     };
 
     users.users.${cfg.user} = {

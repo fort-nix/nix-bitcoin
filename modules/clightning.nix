@@ -4,7 +4,7 @@ with lib;
 
 let
   cfg = config.services.clightning;
-  inherit (config) nix-bitcoin-services;
+  nbLib = config.nix-bitcoin.lib;
   nbPkgs = config.nix-bitcoin.pkgs;
   network = config.services.bitcoind.makeNetworkName "bitcoin" "regtest";
   configFile = pkgs.writeText "config" ''
@@ -91,7 +91,7 @@ in {
         If left empty, no address is announced.
       '';
     };
-    inherit (nix-bitcoin-services) enforceTor;
+    inherit (nbLib) enforceTor;
   };
 
   config = mkIf cfg.enable {
@@ -135,15 +135,15 @@ in {
         } >> '${cfg.dataDir}/config'
 
         '';
-      serviceConfig = nix-bitcoin-services.defaultHardening // {
+      serviceConfig = nbLib.defaultHardening // {
         ExecStart = "${nbPkgs.clightning}/bin/lightningd --lightning-dir=${cfg.dataDir}";
         User = "${cfg.user}";
         Restart = "on-failure";
         RestartSec = "10s";
         ReadWritePaths = "${cfg.dataDir}";
       } // (if cfg.enforceTor
-          then nix-bitcoin-services.allowTor
-          else nix-bitcoin-services.allowAnyIP
+          then nbLib.allowTor
+          else nbLib.allowAnyIP
         );
       # Wait until the rpc socket appears
       postStart = ''

@@ -4,7 +4,7 @@ with lib;
 
 let
   cfg = config.services.lnd;
-  inherit (config) nix-bitcoin-services;
+  nbLib = config.nix-bitcoin.lib;
   secretsDir = config.nix-bitcoin.secretsDir;
 
   bitcoind = config.services.bitcoind;
@@ -144,7 +144,7 @@ in {
         If left empty, no address is announced.
       '';
     };
-    inherit (nix-bitcoin-services) enforceTor;
+    inherit (nbLib) enforceTor;
   };
 
   config = mkIf cfg.enable {
@@ -186,7 +186,7 @@ in {
           ''}
         } >> '${cfg.dataDir}/lnd.conf'
       '';
-      serviceConfig = nix-bitcoin-services.defaultHardening // {
+      serviceConfig = nbLib.defaultHardening // {
         RuntimeDirectory = "lnd"; # Only used to store custom macaroons
         RuntimeDirectoryMode = "711";
         ExecStart = "${cfg.package}/bin/lnd --configfile=${cfg.dataDir}/lnd.conf";
@@ -198,7 +198,7 @@ in {
           restUrl = "https://${cfg.restAddress}:${toString cfg.restPort}/v1";
         in [
           # Run fully privileged for secrets dir write access
-          "+${nix-bitcoin-services.script ''
+          "+${nbLib.script ''
             attempts=250
             while ! { exec 3>/dev/tcp/${cfg.restAddress}/${toString cfg.restPort} && exec 3>&-; } &>/dev/null; do
                   ((attempts-- == 0)) && { echo "lnd REST service unreachable"; exit 1; }
@@ -215,7 +215,7 @@ in {
             fi
             chown lnd: "$mnemonic"
           ''}"
-          "${nix-bitcoin-services.script ''
+          "${nbLib.script ''
             if [[ ! -f ${networkDir}/wallet.db ]]; then
               echo Create lnd wallet
 
@@ -248,7 +248,7 @@ in {
 
           ''}"
           # Run fully privileged for chown
-          "+${nix-bitcoin-services.script ''
+          "+${nbLib.script ''
             umask ug=r,o=
             ${lib.concatMapStrings (macaroon: ''
               echo "Create custom macaroon ${macaroon}"
@@ -265,9 +265,9 @@ in {
           ''}"
         ];
       } // (if cfg.enforceTor
-          then nix-bitcoin-services.allowTor
-          else nix-bitcoin-services.allowAnyIP
-        ) // nix-bitcoin-services.allowAnyProtocol;  # For ZMQ
+          then nbLib.allowTor
+          else nbLib.allowAnyIP
+        ) // nbLib.allowAnyProtocol;  # For ZMQ
     };
 
     users.users.lnd = {

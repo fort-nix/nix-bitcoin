@@ -3,7 +3,7 @@
 with lib;
 let
   cfg = config.services.electrs;
-  inherit (config) nix-bitcoin-services;
+  nbLib = config.nix-bitcoin.lib;
   secretsDir = config.nix-bitcoin.secretsDir;
   bitcoind = config.services.bitcoind;
 in {
@@ -51,7 +51,7 @@ in {
       default = "";
       description = "Extra command line arguments passed to electrs.";
     };
-    enforceTor = nix-bitcoin-services.enforceTor;
+    enforceTor = nbLib.enforceTor;
   };
 
   config = mkIf cfg.enable {
@@ -76,7 +76,7 @@ in {
         echo "cookie = \"${bitcoind.rpc.users.public.name}:$(cat ${secretsDir}/bitcoin-rpcpassword-public)\"" \
           > electrs.toml
         '';
-      serviceConfig = nix-bitcoin-services.defaultHardening // {
+      serviceConfig = nbLib.defaultHardening // {
         RuntimeDirectory = "electrs";
         RuntimeDirectoryMode = "700";
         WorkingDirectory = "/run/electrs";
@@ -104,8 +104,8 @@ in {
         RestartSec = "10s";
         ReadWritePaths = "${cfg.dataDir} ${if cfg.high-memory then "${bitcoind.dataDir}" else ""}";
       } // (if cfg.enforceTor
-          then nix-bitcoin-services.allowTor
-          else nix-bitcoin-services.allowAnyIP
+          then nbLib.allowTor
+          else nbLib.allowAnyIP
         );
     };
 

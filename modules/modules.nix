@@ -35,15 +35,15 @@ with lib;
   disabledModules = [ "services/networking/bitcoind.nix" ];
 
   options = {
-    nix-bitcoin-services = mkOption {
-      readOnly = true;
-      default = import ./nix-bitcoin-services.nix lib pkgs;
-    };
-
     nix-bitcoin = {
       pkgs = mkOption {
         type = types.attrs;
         default = (import ../pkgs { inherit pkgs; }).modulesPkgs;
+      };
+
+      lib = mkOption {
+        readOnly = true;
+        default = import ../pkgs/lib.nix lib pkgs;
       };
 
       # Torify binary that works with custom Tor SOCKS addresses

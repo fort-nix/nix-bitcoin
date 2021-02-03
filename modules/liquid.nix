@@ -4,7 +4,7 @@ with lib;
 
 let
   cfg = config.services.liquidd;
-  inherit (config) nix-bitcoin-services;
+  nbLib = config.nix-bitcoin.lib;
   nbPkgs = config.nix-bitcoin.pkgs;
   secretsDir = config.nix-bitcoin.secretsDir;
   pidFile = "${cfg.dataDir}/liquidd.pid";
@@ -203,7 +203,7 @@ in {
         '';
         description = "Binary for managing liquid swaps.";
       };
-      enforceTor =  nix-bitcoin-services.enforceTor;
+      enforceTor = nbLib.enforceTor;
     };
   };
 
@@ -232,7 +232,7 @@ in {
         echo "rpcpassword=$(cat ${secretsDir}/liquid-rpcpassword)" >> '${cfg.dataDir}/elements.conf'
         echo "mainchainrpcpassword=$(cat ${secretsDir}/bitcoin-rpcpassword-public)" >> '${cfg.dataDir}/elements.conf'
       '';
-      serviceConfig = nix-bitcoin-services.defaultHardening // {
+      serviceConfig = nbLib.defaultHardening // {
         Type = "simple";
         User = "${cfg.user}";
         Group = "${cfg.group}";
@@ -241,8 +241,8 @@ in {
         Restart = "on-failure";
         ReadWritePaths = "${cfg.dataDir}";
       } // (if cfg.enforceTor
-          then nix-bitcoin-services.allowTor
-          else nix-bitcoin-services.allowAnyIP
+          then nbLib.allowTor
+          else nbLib.allowAnyIP
         );
     };
 

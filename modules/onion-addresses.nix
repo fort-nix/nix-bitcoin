@@ -10,7 +10,7 @@ with lib;
 
 let
   cfg = config.nix-bitcoin.onionAddresses;
-  inherit (config) nix-bitcoin-services;
+  nbLib = config.nix-bitcoin.lib;
 in {
   options.nix-bitcoin.onionAddresses = {
     access = mkOption {
@@ -47,7 +47,7 @@ in {
       wantedBy = [ "tor.service" ];
       bindsTo = [ "tor.service" ];
       after = [ "tor.service" ];
-      serviceConfig = nix-bitcoin-services.defaultHardening // {
+      serviceConfig = nbLib.defaultHardening // {
         Type = "oneshot";
         RemainAfterExit = true;
         StateDirectory = "onion-addresses";

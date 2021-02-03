@@ -4,7 +4,7 @@ with lib;
 
 let
   cfg = config.services.spark-wallet;
-  inherit (config) nix-bitcoin-services;
+  nbLib = config.nix-bitcoin.lib;
 
   # Use wasabi rate provider because the default (bitstamp) doesn't accept
   # connections through Tor
@@ -54,7 +54,7 @@ in {
         encodes an URL for accessing the web interface.
       '';
     };
-    inherit (nix-bitcoin-services) enforceTor;
+    inherit (nbLib) enforceTor;
   };
 
   config = mkIf cfg.enable {
@@ -73,14 +73,14 @@ in {
       requires = [ "clightning.service" ];
       after = [ "clightning.service" ];
       script = startScript;
-      serviceConfig = nix-bitcoin-services.defaultHardening // {
+      serviceConfig = nbLib.defaultHardening // {
         User = "spark-wallet";
         Restart = "on-failure";
         RestartSec = "10s";
       } // (if cfg.enforceTor
-            then nix-bitcoin-services.allowTor
-            else nix-bitcoin-services.allowAnyIP)
-        // nix-bitcoin-services.nodejs;
+            then nbLib.allowTor
+            else nbLib.allowAnyIP)
+        // nbLib.nodejs;
     };
     nix-bitcoin.secrets.spark-wallet-login.user = "spark-wallet";
   };

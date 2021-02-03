@@ -4,7 +4,7 @@ with lib;
 
 let
   cfg = config.services.joinmarket;
-  inherit (config) nix-bitcoin-services;
+  nbLib = config.nix-bitcoin.lib;
   nbPkgs = config.nix-bitcoin.pkgs;
   secretsDir = config.nix-bitcoin.secretsDir;
 
@@ -137,7 +137,7 @@ in {
       readOnly = true;
       default = true;
     };
-    inherit (nix-bitcoin-services) cliExec;
+    inherit (nbLib) cliExec;
   };
 
   config = mkIf cfg.enable (mkMerge [{
@@ -177,15 +177,15 @@ in {
       requires = [ "bitcoind.service" ];
       after = [ "bitcoind.service" ];
       path = [ pkgs.sudo ];
-      serviceConfig = nix-bitcoin-services.defaultHardening // {
-        ExecStartPre = nix-bitcoin-services.privileged ''
+      serviceConfig = nbLib.defaultHardening // {
+        ExecStartPre = nbLib.privileged ''
           install -o '${cfg.user}' -g '${cfg.group}' -m 640 ${configFile} ${cfg.dataDir}/joinmarket.cfg
           sed -i \
              "s|@@RPC_PASSWORD@@|rpc_password = $(cat ${secretsDir}/bitcoin-rpcpassword-privileged)|" \
              '${cfg.dataDir}/joinmarket.cfg'
         '';
         # Generating wallets (jmclient/wallet.py) is only supported for mainnet or testnet
-        ExecStartPost = mkIf (bitcoind.network == "mainnet") (nix-bitcoin-services.privileged ''
+        ExecStartPost = mkIf (bitcoind.network == "mainnet") (nbLib.privileged ''
           walletname=wallet.jmdat
           pw=$(cat "${secretsDir}"/jm-wallet-password)
           mnemonic=${secretsDir}/jm-wallet-seed
@@ -207,7 +207,7 @@ in {
         Restart = "on-failure";
         RestartSec = "10s";
         ReadWritePaths = "${cfg.dataDir}";
-      } // nix-bitcoin-services.allowTor;
+      } // nbLib.allowTor;
     };
 
     nix-bitcoin.secrets.jm-wallet-password.user = cfg.user;
@@ -239,14 +239,14 @@ in {
         pw=$(cat "${secretsDir}"/jm-wallet-password)
         echo "echo -n $pw | ${start}" > $RUNTIME_DIRECTORY/start
       '';
-      serviceConfig = nix-bitcoin-services.defaultHardening // rec {
+      serviceConfig = nbLib.defaultHardening // rec {
         RuntimeDirectory = "joinmarket-yieldgenerator"; # Only used to create start script
         RuntimeDirectoryMode = "700";
         WorkingDirectory = "${cfg.dataDir}"; # The service creates dir 'logs' in the working dir
         ExecStart = "${pkgs.bash}/bin/bash /run/${RuntimeDirectory}/start";
         User = "${cfg.user}";
         ReadWritePaths = "${cfg.dataDir}";
-      } // nix-bitcoin-services.allowTor;
+      } // nbLib.allowTor;
     };
   })
   ]);

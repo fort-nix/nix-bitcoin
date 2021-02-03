@@ -4,7 +4,7 @@ with lib;
 
 let
   cfg = config.services.recurring-donations;
-  inherit (config) nix-bitcoin-services;
+  nbLib = config.nix-bitcoin.lib;
   recurring-donations-script = pkgs.writeScript "recurring-donations.sh" ''
     LNCLI="${config.nix-bitcoin.pkgs.clightning}/bin/lightning-cli --lightning-dir=${config.services.clightning.dataDir}"
     pay_tallycoin() {
@@ -75,7 +75,7 @@ in {
         Random delay to add to scheduled time for donation. Default is one day.
       '';
     };
-    enforceTor =  nix-bitcoin-services.enforceTor;
+    enforceTor = nbLib.enforceTor;
   };
 
   config = mkIf cfg.enable {
@@ -93,13 +93,13 @@ in {
       requires = [ "clightning.service" ];
       after = [ "clightning.service" ];
       path = with pkgs; [ nix-bitcoin.clightning curl sudo jq ];
-      serviceConfig = nix-bitcoin-services.defaultHardening // {
+      serviceConfig = nbLib.defaultHardening // {
         ExecStart = "${pkgs.bash}/bin/bash ${recurring-donations-script}";
         User = "recurring-donations";
         Type = "oneshot";
       } // (if cfg.enforceTor
-            then nix-bitcoin-services.allowTor
-            else nix-bitcoin-services.allowAnyIP);
+            then nbLib.allowTor
+            else nbLib.allowAnyIP);
     };
     systemd.timers.recurring-donations = {
       requires = [ "clightning.service" ];
