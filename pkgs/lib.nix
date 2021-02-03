@@ -65,4 +65,9 @@ let self = {
     type = types.str;
     default = "exec";
   };
+
+  mkHiddenService = map: {
+    map = [ map ];
+    version = 3;
+  };
 }; in self
