@@ -8,8 +8,7 @@ let
 in {
   bencoderpyx = callPackage ./bencoderpyx {};
   coincurve = callPackage ./coincurve {};
-  python-bitcointx = callPackage ./python-bitcointx {};
-  secp256k1 = callPackage ./secp256k1 {};
+  python-bitcointx = callPackage ./python-bitcointx { inherit (nbPkgs) secp256k1; };
   urldecode = callPackage ./urldecode {};
   chromalog = callPackage ./chromalog {};
   txzmq = callPackage ./txzmq {};
