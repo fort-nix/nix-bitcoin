@@ -10,6 +10,7 @@ with lib;
 
 let
   cfg = config.nix-bitcoin.onionServices;
+  nbLib = config.nix-bitcoin.lib;
 
   services = builtins.attrNames cfg;
 
@@ -60,13 +61,10 @@ in {
           let
             service = config.services.${name};
             inherit (cfg.${name}) externalPort;
-          in {
-            map = [{
-              port = if externalPort != null then externalPort else service.port;
-              toPort = service.port;
-              toHost = if service.address == "0.0.0.0" then "127.0.0.1" else service.address;
-            }];
-            version = 3;
+          in nbLib.mkHiddenService {
+            port = if externalPort != null then externalPort else service.port;
+            toPort = service.port;
+            toHost = if service.address == "0.0.0.0" then "127.0.0.1" else service.address;
           }
         );
       };

@@ -4,7 +4,7 @@ with lib;
 
 let
   cfg = config.services.lightning-loop;
-  inherit (config) nix-bitcoin-services;
+  nbLib = config.nix-bitcoin.lib;
   secretsDir = config.nix-bitcoin.secretsDir;
   network = config.services.bitcoind.network;
   rpclisten = "${cfg.rpcAddress}:${toString cfg.rpcPort}";
@@ -80,7 +80,7 @@ in {
       '';
       description = "Binary to connect with the lightning-loop instance.";
     };
-    enforceTor = nix-bitcoin-services.enforceTor;
+    enforceTor = nbLib.enforceTor;
   };
 
   config = mkIf cfg.enable {
@@ -96,15 +96,15 @@ in {
       wantedBy = [ "multi-user.target" ];
       requires = [ "lnd.service" ];
       after = [ "lnd.service" ];
-      serviceConfig = nix-bitcoin-services.defaultHardening // {
+      serviceConfig = nbLib.defaultHardening // {
         ExecStart = "${cfg.package}/bin/loopd --configfile=${configFile}";
         User = "lnd";
         Restart = "on-failure";
         RestartSec = "10s";
         ReadWritePaths = "${cfg.dataDir}";
       } // (if cfg.enforceTor
-            then nix-bitcoin-services.allowTor
-            else nix-bitcoin-services.allowAnyIP);
+            then nbLib.allowTor
+            else nbLib.allowAnyIP);
     };
 
      nix-bitcoin.secrets = {

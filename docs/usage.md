@@ -58,6 +58,47 @@ Connect to spark-wallet
     Done
     ```
 
+Connect to LND with Zeus
+---
+### Requirements
+* Android phone
+* [Orbot](https://guardianproject.info/apps/orbot/) installed from
+  [F-Droid](https://guardianproject.info/fdroid) (recommended) or
+  [Google Play](https://play.google.com/store/apps/details?id=org.torproject.android&hl=en)
+* [Zeus](https://zeusln.app/) installed from
+  [F-Droid](https://f-droid.org/en/packages/app.zeusln.zeus/) (recommended) or
+  [Google Play](https://play.google.com/store/apps/details?id=app.zeusln.zeus)
+
+1. Enable `restOnionService` in `configuration.nix`
+
+    Change
+    ```
+    # services.lnd.restOnionService.enable = true;
+    ```
+    to
+    ```
+    services.lnd.restOnionService.enable = true;
+    ```
+
+2. Deploy new `configuration.nix`
+
+    ```
+    nixops deploy -d bitcoin-node
+    ```
+
+3. Run command `lndconnect-rest-onion` (under `operator` user) to create a QR code for
+   connecting to LND via the REST onion service.
+
+4. Enable Orbot VPN for Zeus
+    ```
+    Open Orbot app
+    Turn on "VPN Mode"
+    Select Gear icon under "Tor-Enabled Apps"
+    Toggle checkbox under Zeus icon
+    ```
+
+5. Scan the QR code with your Zeus wallet and start sending Satoshis privately
+
 Connect to electrs
 ---
 ### Requirements Android

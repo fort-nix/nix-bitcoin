@@ -4,7 +4,7 @@ with lib;
 
 let
   cfg = config.services.bitcoind;
-  inherit (config) nix-bitcoin-services;
+  nbLib = config.nix-bitcoin.lib;
   secretsDir = config.nix-bitcoin.secretsDir;
 
   configFile = pkgs.writeText "bitcoin.conf" ''
@@ -291,7 +291,7 @@ in {
         '';
         description = "Binary to connect with the bitcoind instance.";
       };
-      enforceTor =  nix-bitcoin-services.enforceTor;
+      enforceTor = nbLib.enforceTor;
     };
   };
 
@@ -348,7 +348,7 @@ in {
           install -o '${cfg.user}' -g '${cfg.group}' -m 640 <(echo "$cfg") $confFile
         fi
       '';
-      serviceConfig = nix-bitcoin-services.defaultHardening // {
+      serviceConfig = nbLib.defaultHardening // {
         Type = "notify";
         NotifyAccess = "all";
         User = "${cfg.user}";
@@ -359,9 +359,9 @@ in {
         UMask = mkIf cfg.dataDirReadableByGroup "0027";
         ReadWritePaths = "${cfg.dataDir}";
       } // (if cfg.enforceTor
-            then nix-bitcoin-services.allowTor
-            else nix-bitcoin-services.allowAnyIP)
-        // optionalAttrs (cfg.zmqpubrawblock != null || cfg.zmqpubrawtx != null) nix-bitcoin-services.allowAnyProtocol;
+            then nbLib.allowTor
+            else nbLib.allowAnyIP)
+        // optionalAttrs (cfg.zmqpubrawblock != null || cfg.zmqpubrawtx != null) nbLib.allowAnyProtocol;
     };
 
     # Use this to update the banlist:
@@ -382,11 +382,11 @@ in {
             fi
         done
       '';
-      serviceConfig = nix-bitcoin-services.defaultHardening // {
+      serviceConfig = nbLib.defaultHardening // {
         User = "${cfg.user}";
         Group = "${cfg.group}";
         ReadWritePaths = "${cfg.dataDir}";
-      } // nix-bitcoin-services.allowTor;
+      } // nbLib.allowTor;
     };
 
     users.users.${cfg.user} = {

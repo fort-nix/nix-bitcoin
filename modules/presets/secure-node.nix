@@ -4,13 +4,8 @@ with lib;
 
 let
   cfg = config.services;
-
+  nbLib = config.nix-bitcoin.lib;
   operatorName = config.nix-bitcoin.operator.name;
-
-  mkHiddenService = map: {
-    map = [ map ];
-    version = 3;
-  };
 in {
   imports = [
     ../modules.nix
@@ -30,7 +25,7 @@ in {
     ];
 
     # sshd
-    services.tor.hiddenServices.sshd = mkHiddenService { port = 22; };
+    services.tor.hiddenServices.sshd = nbLib.mkHiddenService { port = 22; };
     nix-bitcoin.onionAddresses.access.${operatorName} = [ "sshd" ];
 
     services.bitcoind = {

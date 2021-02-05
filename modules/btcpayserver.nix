@@ -4,7 +4,7 @@ with lib;
 
 let
   cfg = config.services;
-  inherit (config) nix-bitcoin-services;
+  nbLib = config.nix-bitcoin.lib;
   nbPkgs = config.nix-bitcoin.pkgs;
 in {
   options.services = {
@@ -44,7 +44,7 @@ in {
         internal = true;
         default = cfg.btcpayserver.enable;
       };
-      enforceTor = nix-bitcoin-services.enforceTor;
+      enforceTor = nbLib.enforceTor;
     };
 
     btcpayserver = {
@@ -90,7 +90,7 @@ in {
         example = "btcpayserver";
         description = "The prefix for root-relative btcpayserver URLs.";
       };
-      enforceTor = nix-bitcoin-services.enforceTor;
+      enforceTor = nbLib.enforceTor;
     };
   };
 
@@ -132,7 +132,7 @@ in {
         echo "btcrpcpassword=$(cat ${config.nix-bitcoin.secretsDir}/bitcoin-rpcpassword-btcpayserver)" \
           >> '${cfg.nbxplorer.dataDir}/settings.config'
       '';
-      serviceConfig = nix-bitcoin-services.defaultHardening // {
+      serviceConfig = nbLib.defaultHardening // {
         ExecStart = ''
           ${cfg.nbxplorer.package}/bin/nbxplorer --conf=${cfg.nbxplorer.dataDir}/settings.config \
             --datadir=${cfg.nbxplorer.dataDir}
@@ -143,8 +143,8 @@ in {
         ReadWritePaths = cfg.nbxplorer.dataDir;
         MemoryDenyWriteExecute = "false";
       } // (if cfg.nbxplorer.enforceTor
-        then nix-bitcoin-services.allowTor
-        else nix-bitcoin-services.allowAnyIP
+        then nbLib.allowTor
+        else nbLib.allowAnyIP
       );
     };
 
@@ -181,7 +181,7 @@ in {
           } >> ${cfg.btcpayserver.dataDir}/settings.config
         ''}
       '';
-      serviceConfig = nix-bitcoin-services.defaultHardening // {
+      serviceConfig = nbLib.defaultHardening // {
         ExecStart = ''
           ${cfg.btcpayserver.package}/bin/btcpayserver --conf=${cfg.btcpayserver.dataDir}/settings.config \
             --datadir=${cfg.btcpayserver.dataDir}
@@ -192,8 +192,8 @@ in {
         ReadWritePaths = cfg.btcpayserver.dataDir;
         MemoryDenyWriteExecute = "false";
       } // (if cfg.btcpayserver.enforceTor
-        then nix-bitcoin-services.allowTor
-        else nix-bitcoin-services.allowAnyIP
+        then nbLib.allowTor
+        else nbLib.allowAnyIP
       );
     }; in self;
 

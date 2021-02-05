@@ -162,6 +162,11 @@ def _():
     assert_no_failure("lnd")
 
 
+@test("lnd-rest-onion-service")
+def _():
+    assert_matches("runuser -u operator -- lndconnect-rest-onion -j", ".onion")
+
+
 @test("lightning-loop")
 def _():
     assert_running("lightning-loop")

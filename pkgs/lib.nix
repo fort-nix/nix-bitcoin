@@ -1,9 +1,9 @@
-# See `man systemd.exec` and `man systemd.resource-control` for an explanation
-# of the various systemd options available through this module.
-
 lib: pkgs:
 
 with lib;
+
+# See `man systemd.exec` and `man systemd.resource-control` for an explanation
+# of the systemd-related options available through this module.
 let self = {
   # These settings roughly follow systemd's "strict" security profile
   defaultHardening = {
@@ -46,8 +46,8 @@ let self = {
     type = types.bool;
     default = false;
     description = ''
-      "Whether to force Tor on a service by only allowing connections from and
-      to 127.0.0.1;";
+      Whether to force Tor on a service by only allowing connections from and
+      to 127.0.0.1;
     '';
   };
 
@@ -64,5 +64,10 @@ let self = {
     internal = true;
     type = types.str;
     default = "exec";
+  };
+
+  mkHiddenService = map: {
+    map = [ map ];
+    version = 3;
   };
 }; in self
