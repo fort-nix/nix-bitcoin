@@ -67,7 +67,7 @@ else
 fi
 
 if [[ $interactive ]]; then
-    runCmd=
+    runCmd=()
 else
     runCmd=(--run bash -c "$demoCmds")
 fi
