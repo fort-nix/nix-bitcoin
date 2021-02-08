@@ -43,7 +43,7 @@ running nix-bitcoin does not require any previous experience with the Nix ecosys
 
 Examples
 ---
-See the [examples directory](examples/README.md).
+See [here for examples](examples/README.md).
 
 Features
 ---
@@ -76,7 +76,7 @@ NixOS modules
 * Helper
   * [netns-isolation](modules/netns-isolation.nix): isolates applications on the network-level via network namespaces
   * [nodeinfo](modules/nodeinfo.nix): script which prints info about the node's services
-  * [backups](modules/backups.nix): daily duplicity backups of all your node's important files
+  * [backups](modules/backups.nix): duplicity backups of all your node's important files
   * [operator](modules/operator.nix): adds non-root user `operator` who has access to client tools (e.g. `bitcoin-cli`, `lightning-cli`)
 
 Security

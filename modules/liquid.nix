@@ -87,9 +87,8 @@ in {
           par=16
           rpcthreads=16
           logips=1
-
         '';
-        description = "Additional configurations to be appended to <filename>elements.conf</filename>.";
+        description = "Extra lines appended to <filename>elements.conf</filename>.";
       };
       dataDir = mkOption {
         type = types.path;
@@ -123,7 +122,7 @@ in {
             alice.passwordHMAC = "f7efda5c189b999524f151318c0c86$d5b51b3beffbc02b724e5d095828e0bc8b2456e9ac8757ae3211a5d9b16a22ae";
             bob.passwordHMAC = "b2dd077cb54591a2f3139e69a897ac$4e71f08d48b4347cf8eff3815c0e25ae2e9a4340474079f55705f40574f4ec99";
           };
-          type = with types; loaOf (submodule rpcUserOpts);
+          type = with types; attrsOf (submodule rpcUserOpts);
           description = ''
             RPC user information for JSON-RPC connections.
           '';
@@ -221,25 +220,25 @@ in {
     ];
 
     systemd.services.liquidd = {
-      description = "Elements daemon providing access to the Liquid sidechain";
       requires = [ "bitcoind.service" ];
       after = [ "bitcoind.service" ];
       wantedBy = [ "multi-user.target" ];
       preStart = ''
-        cp '${configFile}' '${cfg.dataDir}/elements.conf'
-        chmod 640  '${cfg.dataDir}/elements.conf'
         chown -R '${cfg.user}:${cfg.group}' '${cfg.dataDir}'
-        echo "rpcpassword=$(cat ${secretsDir}/liquid-rpcpassword)" >> '${cfg.dataDir}/elements.conf'
-        echo "mainchainrpcpassword=$(cat ${secretsDir}/bitcoin-rpcpassword-public)" >> '${cfg.dataDir}/elements.conf'
+        install -m 640 ${configFile} '${cfg.dataDir}/elements.conf'
+        {
+          echo "rpcpassword=$(cat ${secretsDir}/liquid-rpcpassword)"
+          echo "mainchainrpcpassword=$(cat ${secretsDir}/bitcoin-rpcpassword-public)"
+        } >> '${cfg.dataDir}/elements.conf'
       '';
       serviceConfig = nbLib.defaultHardening // {
         Type = "simple";
-        User = "${cfg.user}";
-        Group = "${cfg.group}";
+        User = cfg.user;
+        Group = cfg.group;
         ExecStart = "${nbPkgs.elementsd}/bin/elementsd ${cmdlineOptions}";
-        PIDFile = "${pidFile}";
+        PIDFile = pidFile;
         Restart = "on-failure";
-        ReadWritePaths = "${cfg.dataDir}";
+        ReadWritePaths = cfg.dataDir;
       } // (if cfg.enforceTor
           then nbLib.allowTor
           else nbLib.allowAnyIP
@@ -249,7 +248,6 @@ in {
     users.users.${cfg.user} = {
       group = cfg.group;
       extraGroups = [ "bitcoinrpc" ];
-      description = "Liquid sidechain user";
     };
     users.groups.${cfg.group} = {};
     nix-bitcoin.operator.groups = [ cfg.group ];

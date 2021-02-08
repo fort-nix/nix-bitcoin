@@ -37,13 +37,7 @@ let
 in {
 
   options.services.lnd = {
-    enable = mkOption {
-      type = types.bool;
-      default = false;
-      description = ''
-        If enabled, the LND service will be installed.
-      '';
-    };
+    enable = mkEnableOption "Lightning Network Daemon";
     dataDir = mkOption {
       type = types.path;
       default = "/var/lib/lnd";
@@ -89,7 +83,7 @@ in {
     tor-socks = mkOption {
       type = types.nullOr types.str;
       default = if cfg.enforceTor then config.services.tor.client.socksListenAddress else null;
-      description = "Set a socks proxy to use to connect to Tor nodes";
+      description = "Socks proxy for connecting to Tor nodes";
     };
     macaroons = mkOption {
       default = {};
@@ -118,7 +112,7 @@ in {
       example = ''
         autopilot.active=1
       '';
-      description = "Additional configurations to be appended to <filename>lnd.conf</filename>.";
+      description = "Extra lines appended to <filename>lnd.conf</filename>.";
     };
     package = mkOption {
       type = types.package;
@@ -156,9 +150,13 @@ in {
 
     services.bitcoind = {
       enable = true;
+
       # Increase rpc thread count due to reports that lightning implementations fail
       # under high bitcoind rpc load
       rpc.threads = 16;
+
+      zmqpubrawblock = "tcp://${bitcoindRpcAddress}:28332";
+      zmqpubrawtx = "tcp://${bitcoindRpcAddress}:28333";
     };
 
     environment.systemPackages = [ cfg.package (hiPrio cfg.cli) ];
@@ -167,13 +165,7 @@ in {
       "d '${cfg.dataDir}' 0770 lnd lnd - -"
     ];
 
-    services.bitcoind = {
-      zmqpubrawblock = "tcp://${bitcoindRpcAddress}:28332";
-      zmqpubrawtx = "tcp://${bitcoindRpcAddress}:28333";
-    };
-
     systemd.services.lnd = {
-      description = "Run LND";
       wantedBy = [ "multi-user.target" ];
       requires = [ "bitcoind.service" ];
       after = [ "bitcoind.service" ];
@@ -193,12 +185,12 @@ in {
         User = "lnd";
         Restart = "on-failure";
         RestartSec = "10s";
-        ReadWritePaths = "${cfg.dataDir}";
+        ReadWritePaths = cfg.dataDir;
         ExecStartPost = let
           restUrl = "https://${cfg.restAddress}:${toString cfg.restPort}/v1";
         in [
           # Run fully privileged for secrets dir write access
-          "+${nbLib.script ''
+          (nbLib.privileged "lnd-create-mnemonic" ''
             attempts=250
             while ! { exec 3>/dev/tcp/${cfg.restAddress}/${toString cfg.restPort} && exec 3>&-; } &>/dev/null; do
                   ((attempts-- == 0)) && { echo "lnd REST service unreachable"; exit 1; }
@@ -214,8 +206,8 @@ in {
                 -X GET ${restUrl}/genseed | ${pkgs.jq}/bin/jq -c '.cipher_seed_mnemonic' > "$mnemonic"
             fi
             chown lnd: "$mnemonic"
-          ''}"
-          "${nbLib.script ''
+          '')
+          (nbLib.script "lnd-create-wallet" ''
             if [[ ! -f ${networkDir}/wallet.db ]]; then
               echo Create lnd wallet
 
@@ -246,9 +238,9 @@ in {
               sleep 0.1
             done
 
-          ''}"
+          '')
           # Run fully privileged for chown
-          "+${nbLib.script ''
+          (nbLib.privileged "lnd-create-macaroons" ''
             umask ug=r,o=
             ${lib.concatMapStrings (macaroon: ''
               echo "Create custom macaroon ${macaroon}"
@@ -262,7 +254,7 @@ in {
                 ${pkgs.jq}/bin/jq -c '.macaroon' | ${pkgs.xxd}/bin/xxd -p -r > "$macaroonPath"
               chown ${cfg.macaroons.${macaroon}.user}: "$macaroonPath"
             '') (attrNames cfg.macaroons)}
-          ''}"
+          '')
         ];
       } // (if cfg.enforceTor
           then nbLib.allowTor
@@ -271,7 +263,6 @@ in {
     };
 
     users.users.lnd = {
-      description = "LND User";
       group = "lnd";
       extraGroups = [ "bitcoinrpc" ];
       home = cfg.dataDir; # lnd creates .lnd dir in HOME

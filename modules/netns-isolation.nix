@@ -105,7 +105,7 @@ in {
       source = config.nix-bitcoin.pkgs.netns-exec;
       capabilities = "cap_sys_admin=ep";
       owner = cfg.allowedUser;
-      permissions = "u+rx,g+rx,o-rwx";
+      permissions = "550";
     };
 
     systemd.services = {
@@ -119,7 +119,7 @@ in {
         after = [ "network-pre.target" ];
         serviceConfig = {
           Type = "oneshot";
-          RemainAfterExit = "yes";
+          RemainAfterExit = true;
         };
         script = ''
           ${ip} link add name nb-br type bridge
@@ -182,7 +182,7 @@ in {
           '';
           serviceConfig = {
             Type = "oneshot";
-            RemainAfterExit = "yes";
+            RemainAfterExit = true;
           };
         };
       };

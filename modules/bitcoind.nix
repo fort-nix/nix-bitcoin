@@ -7,7 +7,7 @@ let
   nbLib = config.nix-bitcoin.lib;
   secretsDir = config.nix-bitcoin.secretsDir;
 
-  configFile = pkgs.writeText "bitcoin.conf" ''
+  configFile = builtins.toFile "bitcoin.conf" ''
     # We're already logging via journald
     nodebuglogfile=1
 
@@ -90,7 +90,7 @@ in {
           par=16
           logips=1
         '';
-        description = "Additional configurations to be appended to <filename>bitcoin.conf</filename>.";
+        description = "Extra lines appended to <filename>bitcoin.conf</filename>.";
       };
       dataDir = mkOption {
         type = types.path;
@@ -138,7 +138,7 @@ in {
             alice.passwordHMAC = "f7efda5c189b999524f151318c0c86$d5b51b3beffbc02b724e5d095828e0bc8b2456e9ac8757ae3211a5d9b16a22ae";
             bob.passwordHMAC = "b2dd077cb54591a2f3139e69a897ac$4e71f08d48b4347cf8eff3815c0e25ae2e9a4340474079f55705f40574f4ec99";
           };
-          type = with types; loaOf (submodule ({ name, ... }: {
+          type = with types; attrsOf (submodule ({ name, ... }: {
             options = {
               name = mkOption {
                 type = types.str;
@@ -197,9 +197,7 @@ in {
       listen = mkOption {
         type = types.bool;
         default = false;
-        description = ''
-          If enabled, the bitcoin service will listen.
-        '';
+        description = "Accept incoming connections.";
       };
       dataDirReadableByGroup = mkOption {
         type = types.bool;
@@ -228,21 +226,15 @@ in {
         type = types.nullOr (types.ints.between 4 16384);
         default = null;
         example = 4000;
-        description = "Override the default database cache size in megabytes.";
+        description = "Override the default database cache size in MiB.";
       };
       prune = mkOption {
         type = types.ints.unsigned;
         default = 0;
         example = 10000;
         description = ''
-          Reduce storage requirements by enabling pruning (deleting) of old
-          blocks. This allows the pruneblockchain RPC to be called to delete
-          specific blocks, and enables automatic pruning of old blocks if a
-          target size in MiB is provided. This mode is incompatible with -txindex
-          and -rescan. Warning: Reverting this setting requires re-downloading
-          the entire blockchain. ("disable" = disable pruning blocks, "manual"
-          = allow manual pruning via RPC, >=550 = automatically prune block files
-          to stay under the specified target size in MiB)
+          Automatically prune block files to stay under the specified target size in MiB.
+          Value 0 disables pruning.
         '';
       };
       zmqpubrawblock = mkOption {
@@ -281,7 +273,7 @@ in {
         type = types.nullOr types.str;
         default = null;
         example = "bech32";
-        description = "What type of addresses to use";
+        description = "The type of addresses to use";
       };
       cli = mkOption {
         readOnly = true;
@@ -320,7 +312,6 @@ in {
     ];
 
     systemd.services.bitcoind = {
-      description = "Bitcoin daemon";
       requires = [ "nix-bitcoin-secrets.target" ];
       after = [ "network.target" "nix-bitcoin-secrets.target" ];
       wantedBy = [ "multi-user.target" ];
@@ -334,10 +325,10 @@ in {
       in ''
         ${optionalString cfg.dataDirReadableByGroup "chmod -R g+rX '${cfg.dataDir}/blocks'"}
         cfg=$(
-          cat ${configFile};
+          cat ${configFile}
           ${extraRpcauth}
           ${/* Enable bitcoin-cli for group 'bitcoin' */ ""}
-          printf "rpcuser=${cfg.rpc.users.privileged.name}\nrpcpassword="; cat "${secretsDir}/bitcoin-rpcpassword-privileged";
+          printf "rpcuser=${cfg.rpc.users.privileged.name}\nrpcpassword="; cat "${secretsDir}/bitcoin-rpcpassword-privileged"
           echo
           ${optionalString (cfg.getPublicAddressCmd != "") ''
             echo "externalip=$(${cfg.getPublicAddressCmd})"
@@ -351,13 +342,13 @@ in {
       serviceConfig = nbLib.defaultHardening // {
         Type = "notify";
         NotifyAccess = "all";
-        User = "${cfg.user}";
-        Group = "${cfg.group}";
+        User = cfg.user;
+        Group = cfg.group;
         TimeoutStartSec = 300;
         ExecStart = "${cfg.package}/bin/bitcoind -datadir='${cfg.dataDir}'";
         Restart = "on-failure";
         UMask = mkIf cfg.dataDirReadableByGroup "0027";
-        ReadWritePaths = "${cfg.dataDir}";
+        ReadWritePaths = cfg.dataDir;
       } // (if cfg.enforceTor
             then nbLib.allowTor
             else nbLib.allowAnyIP)
@@ -383,16 +374,13 @@ in {
         done
       '';
       serviceConfig = nbLib.defaultHardening // {
-        User = "${cfg.user}";
-        Group = "${cfg.group}";
-        ReadWritePaths = "${cfg.dataDir}";
+        User = cfg.user;
+        Group = cfg.group;
+        ReadWritePaths = cfg.dataDir;
       } // nbLib.allowTor;
     };
 
-    users.users.${cfg.user} = {
-      group = cfg.group;
-      description = "Bitcoin daemon user";
-    };
+    users.users.${cfg.user}.group = cfg.group;
     users.groups.${cfg.group} = {};
     users.groups.bitcoinrpc = {};
     nix-bitcoin.operator.groups = [ cfg.group ];

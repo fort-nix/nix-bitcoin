@@ -99,19 +99,33 @@ in {
     services.clightning.enable = mkIf (cfg.btcpayserver.lightningBackend == "clightning") true;
     services.lnd.enable = mkIf (cfg.btcpayserver.lightningBackend == "lnd") true;
 
-    systemd.tmpfiles.rules = [
-      "d '${cfg.nbxplorer.dataDir}' 0770 ${cfg.nbxplorer.user} ${cfg.nbxplorer.group} - -"
-      "d '${cfg.btcpayserver.dataDir}' 0770 ${cfg.btcpayserver.user} ${cfg.btcpayserver.group} - -"
-    ];
+    services.bitcoind.rpc.users.btcpayserver = {
+      passwordHMACFromFile = true;
+      rpcwhitelist = cfg.bitcoind.rpc.users.public.rpcwhitelist ++ [
+        "setban"
+        "generatetoaddress"
+        "getpeerinfo"
+      ];
+    };
+
+    services.lnd.macaroons.btcpayserver = mkIf (cfg.btcpayserver.lightningBackend == "lnd") {
+      inherit (cfg.btcpayserver) user;
+      permissions = ''{"entity":"info","action":"read"},{"entity":"onchain","action":"read"},{"entity":"offchain","action":"read"},{"entity":"address","action":"read"},{"entity":"message","action":"read"},{"entity":"peers","action":"read"},{"entity":"signer","action":"read"},{"entity":"invoices","action":"read"},{"entity":"invoices","action":"write"},{"entity":"address","action":"write"}'';
+    };
 
     services.postgresql = {
       enable = true;
       ensureDatabases = [ "btcpaydb" ];
       ensureUsers = [{
-        name = "${cfg.btcpayserver.user}";
+        name = cfg.btcpayserver.user;
         ensurePermissions."DATABASE btcpaydb" = "ALL PRIVILEGES";
       }];
     };
+
+    systemd.tmpfiles.rules = [
+      "d '${cfg.nbxplorer.dataDir}' 0770 ${cfg.nbxplorer.user} ${cfg.nbxplorer.group} - -"
+      "d '${cfg.btcpayserver.dataDir}' 0770 ${cfg.btcpayserver.user} ${cfg.btcpayserver.group} - -"
+    ];
 
     systemd.services.nbxplorer = let
       configFile = builtins.toFile "config" ''
@@ -123,12 +137,11 @@ in {
         port=${toString cfg.nbxplorer.port}
       '';
     in {
-      description = "Run nbxplorer";
       wantedBy = [ "multi-user.target" ];
       requires = [ "bitcoind.service" ];
       after = [ "bitcoind.service" ];
       preStart = ''
-        install -m 600 ${configFile} ${cfg.nbxplorer.dataDir}/settings.config
+        install -m 600 ${configFile} '${cfg.nbxplorer.dataDir}/settings.config'
         echo "btcrpcpassword=$(cat ${config.nix-bitcoin.secretsDir}/bitcoin-rpcpassword-btcpayserver)" \
           >> '${cfg.nbxplorer.dataDir}/settings.config'
       '';
@@ -151,13 +164,13 @@ in {
     systemd.services.btcpayserver = let
       configFile = builtins.toFile "config" (''
         network=${config.services.bitcoind.network}
-        postgres=User ID=${cfg.btcpayserver.user};Host=/run/postgresql;Database=btcpaydb
+        bind=${cfg.btcpayserver.address}
+        port=${toString cfg.btcpayserver.port}
         socksendpoint=${cfg.tor.client.socksListenAddress}
         btcexplorerurl=http://${cfg.nbxplorer.address}:${toString cfg.nbxplorer.port}/
         btcexplorercookiefile=${cfg.nbxplorer.dataDir}/${config.services.bitcoind.makeNetworkName "Main" "RegTest"}/.cookie
-        bind=${cfg.btcpayserver.address}
+        postgres=User ID=${cfg.btcpayserver.user};Host=/run/postgresql;Database=btcpaydb
         ${optionalString (cfg.btcpayserver.rootpath != null) "rootpath=${cfg.btcpayserver.rootpath}"}
-        port=${toString cfg.btcpayserver.port}
       '' + optionalString (cfg.btcpayserver.lightningBackend == "clightning") ''
         btclightning=type=clightning;server=unix:///${cfg.clightning.dataDir}/bitcoin/lightning-rpc
       '');
@@ -168,17 +181,17 @@ in {
         "certthumbprint=";
     in let self = {
       wantedBy = [ "multi-user.target" ];
-      requires = [ "nbxplorer.service" ]
+      requires = [ "nbxplorer.service" "postgresql.service" ]
                  ++ optional (cfg.btcpayserver.lightningBackend != null) "${cfg.btcpayserver.lightningBackend}.service";
       after = self.requires;
       preStart = ''
-        install -m 600 ${configFile} ${cfg.btcpayserver.dataDir}/settings.config
+        install -m 600 ${configFile} '${cfg.btcpayserver.dataDir}/settings.config'
         ${optionalString (cfg.btcpayserver.lightningBackend == "lnd") ''
           {
             echo -n "${lndConfig}";
             ${pkgs.openssl}/bin/openssl x509 -noout -fingerprint -sha256 -in ${config.nix-bitcoin.secretsDir}/lnd-cert \
               | sed -e 's/.*=//;s/://g';
-          } >> ${cfg.btcpayserver.dataDir}/settings.config
+          } >> '${cfg.btcpayserver.dataDir}/settings.config'
         ''}
       '';
       serviceConfig = nbLib.defaultHardening // {
@@ -197,20 +210,13 @@ in {
       );
     }; in self;
 
-    services.lnd.macaroons.btcpayserver = mkIf (cfg.btcpayserver.lightningBackend == "lnd") {
-      inherit (cfg.btcpayserver) user;
-      permissions = ''{"entity":"info","action":"read"},{"entity":"onchain","action":"read"},{"entity":"offchain","action":"read"},{"entity":"address","action":"read"},{"entity":"message","action":"read"},{"entity":"peers","action":"read"},{"entity":"signer","action":"read"},{"entity":"invoices","action":"read"},{"entity":"invoices","action":"write"},{"entity":"address","action":"write"}'';
-    };
-
     users.users.${cfg.nbxplorer.user} = {
-      description = "nbxplorer user";
       group = cfg.nbxplorer.group;
       extraGroups = [ "bitcoinrpc" ];
       home = cfg.nbxplorer.dataDir;
     };
     users.groups.${cfg.nbxplorer.group} = {};
     users.users.${cfg.btcpayserver.user} = {
-      description = "btcpayserver user";
       group = cfg.btcpayserver.group;
       extraGroups = [ "nbxplorer" ]
                     ++ optional (cfg.btcpayserver.lightningBackend == "clightning") cfg.clightning.user;
@@ -218,18 +224,12 @@ in {
     };
     users.groups.${cfg.btcpayserver.group} = {};
 
-    services.bitcoind.rpc.users.btcpayserver = {
-      passwordHMACFromFile = true;
-      rpcwhitelist = cfg.bitcoind.rpc.users.public.rpcwhitelist ++ [
-        "setban"
-        "generatetoaddress"
-        "getpeerinfo"
-      ];
+    nix-bitcoin.secrets = {
+      bitcoin-rpcpassword-btcpayserver = {
+        user = "bitcoin";
+        group = "nbxplorer";
+      };
+      bitcoin-HMAC-btcpayserver.user = "bitcoin";
     };
-    nix-bitcoin.secrets.bitcoin-rpcpassword-btcpayserver = {
-      user = "bitcoin";
-      group = "nbxplorer";
-    };
-    nix-bitcoin.secrets.bitcoin-HMAC-btcpayserver.user = "bitcoin";
   };
 }

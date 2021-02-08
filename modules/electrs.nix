@@ -68,7 +68,6 @@ in {
     ];
 
     systemd.services.electrs = {
-      description = "Electrs Electrum Server";
       wantedBy = [ "multi-user.target" ];
       requires = [ "bitcoind.service" ];
       after = [ "bitcoind.service" ];
@@ -110,7 +109,6 @@ in {
     };
 
     users.users.${cfg.user} = {
-      description = "electrs User";
       group = cfg.group;
       extraGroups = [ "bitcoinrpc" ] ++ optionals cfg.high-memory [ "bitcoin" ];
     };

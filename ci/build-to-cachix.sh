@@ -11,18 +11,8 @@ cachixCache=nix-bitcoin
 
 trap 'echo Error at line $LINENO' ERR
 
-atExit() {
-    rm -rf $tmpDir
-    if [[ -v cachixPid ]]; then stopCachix; fi
-}
 tmpDir=$(mktemp -d -p /tmp)
-trap atExit EXIT
-
-stopCachix() {
-    kill $cachixPid 2>/dev/null || true
-    # Wait for cachix to finish
-    tail --pid=$cachixPid -f /dev/null
-}
+trap "rm -rf $tmpDir" EXIT
 
 ## Instantiate
 
@@ -43,14 +33,14 @@ fi
 
 if [[ $CACHIX_SIGNING_KEY ]]; then
     # Speed up task by uploading store paths as soon as they are created
-    cachix push $cachixCache --watch-store &
-    cachixPid=$!
+    buildCmd="cachix watch-exec $cachixCache nix-build --"
+else
+    buildCmd=nix-build
 fi
 
-nix-build --out-link $tmpDir/result $tmpDir/drv >/dev/null
+$buildCmd --out-link $tmpDir/result $tmpDir/drv >/dev/null
 
 if [[ $CACHIX_SIGNING_KEY ]]; then
-    stopCachix
     cachix push $cachixCache $outPath
 fi
 

@@ -23,13 +23,7 @@ let
   '';
 in {
   options.services.spark-wallet = {
-    enable = mkOption {
-      type = types.bool;
-      default = false;
-      description = ''
-        If enabled, the spark-wallet service will be installed.
-      '';
-    };
+    enable = mkEnableOption "spark-wallet";
     address = mkOption {
       type = types.str;
       default = "localhost";
@@ -61,14 +55,12 @@ in {
     services.clightning.enable = true;
 
     users.users.spark-wallet = {
-      description = "spark-wallet User";
       group = "spark-wallet";
       extraGroups = [ "clightning" ];
     };
     users.groups.spark-wallet = {};
 
     systemd.services.spark-wallet = {
-      description = "Run spark-wallet";
       wantedBy = [ "multi-user.target" ];
       requires = [ "clightning.service" ];
       after = [ "clightning.service" ];

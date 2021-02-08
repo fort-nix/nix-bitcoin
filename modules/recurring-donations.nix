@@ -41,13 +41,7 @@ let
   '';
 in {
   options.services.recurring-donations = {
-    enable = mkOption {
-      type = types.bool;
-      default = false;
-      description = ''
-        If enabled, the recurring-donations service will be installed.
-      '';
-    };
+    enable = mkEnableOption "recurring-donations";
     tallycoin = mkOption {
       type = types.attrs;
       default = {};
@@ -81,15 +75,7 @@ in {
   config = mkIf cfg.enable {
     services.clightning.enable = true;
 
-    users.users.recurring-donations = {
-        description = "recurring-donations User";
-        group = "recurring-donations";
-        extraGroups = [ "clightning" ];
-    };
-    users.groups.recurring-donations = {};
-
     systemd.services.recurring-donations = {
-      description = "Run recurring-donations";
       requires = [ "clightning.service" ];
       after = [ "clightning.service" ];
       path = with pkgs; [ nix-bitcoin.clightning curl sudo jq ];
@@ -111,5 +97,11 @@ in {
       };
       wantedBy = [ "multi-user.target" ];
     };
+
+    users.users.recurring-donations = {
+      group = "recurring-donations";
+      extraGroups = [ "clightning" ];
+    };
+    users.groups.recurring-donations = {};
   };
 }

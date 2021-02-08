@@ -5,8 +5,8 @@ set -euo pipefail
 # Running this script leaves no traces on your host system.
 
 # This demo is a template for your own experiments.
-# Feel free to modify or to run nix-shell and execute individual statements of this
-# script in the interactive shell.
+# Run with option `--interactive` or `-i` to start a shell for interacting with
+# the node.
 
 # MAKE SURE TO REPLACE the SSH identity file if you use this script for
 # anything serious.

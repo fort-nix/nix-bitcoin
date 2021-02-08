@@ -42,12 +42,20 @@
 #     For now, creating NixOS containers requires root permissions.
 #     See ./lib/make-container.sh for a complete documentation.
 #
+#   Run tests from a snapshot copy of the source files
+#   ./run-tests.sh --copy-src|-c ...
+#
+#     This allows you to continue editing the nix-bitcoin sources while tests are running
+#     and reading source files.
+#     Files are copied to /tmp, a caching scheme helps minimizing copies.
+#
 #   To add custom scenarios, set the environment variable `scenarioOverridesFile`.
 
 set -eo pipefail
 
 scriptDir=$(cd "${BASH_SOURCE[0]%/*}" && pwd)
 
+args=("$@")
 scenario=
 outLinkPrefix=
 ciBuild=
@@ -76,6 +84,13 @@ while :; do
         --ci)
             shift
             ciBuild=1
+            ;;
+        --copy-src|-c)
+            shift
+            if [[ ! $_nixBitcoinInCopySrc ]]; then
+                . "$scriptDir/lib/copy-src.sh"
+                exit
+            fi
             ;;
         *)
             break
@@ -172,7 +187,7 @@ doBuild() {
 
 # Run the test by building the test derivation
 buildTest() {
-    vmTestNixExpr | doBuild $scenario $outLinkArg "$@" -
+    vmTestNixExpr | doBuild $scenario "$@" -
 }
 
 vmTestNixExpr() {

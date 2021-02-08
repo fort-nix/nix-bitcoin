@@ -141,73 +141,77 @@ in {
   };
 
   config = mkIf cfg.enable (mkMerge [{
-    services.bitcoind.enable = true;
+    services.bitcoind = {
+      enable = true;
+      disablewallet = false;
+    };
+
+    # Joinmarket is Tor-only
+    services.tor = {
+      enable = true;
+      client.enable = true;
+      # Needed for payjoin onion service creation
+      controlSocket.enable = true;
+    };
 
     environment.systemPackages = [
       (hiPrio cfg.cli)
     ];
-    users.users.${cfg.user} = {
-        description = "joinmarket User";
-        group = "${cfg.group}";
-        home = cfg.dataDir;
-        extraGroups = [ "tor" ];
-    };
-    users.groups.${cfg.group} = {};
-    nix-bitcoin.operator = {
-      groups = [ cfg.group ];
-      sudoUsers = [ cfg.group ];
-    };
 
     systemd.tmpfiles.rules = [
       "d '${cfg.dataDir}' 0770 ${cfg.user} ${cfg.group} - -"
     ];
 
-    services.bitcoind.disablewallet = false;
-
-    # Joinmarket is TOR-only
-    services.tor = {
-      enable = true;
-      client.enable = true;
-      controlSocket.enable = true;
-    };
-
     systemd.services.joinmarket = {
-      description = "JoinMarket Daemon";
       wantedBy = [ "multi-user.target" ];
       requires = [ "bitcoind.service" ];
       after = [ "bitcoind.service" ];
       path = [ pkgs.sudo ];
       serviceConfig = nbLib.defaultHardening // {
-        ExecStartPre = nbLib.privileged ''
+        ExecStartPre = nbLib.privileged "joinmarket-create-config" ''
           install -o '${cfg.user}' -g '${cfg.group}' -m 640 ${configFile} ${cfg.dataDir}/joinmarket.cfg
           sed -i \
              "s|@@RPC_PASSWORD@@|rpc_password = $(cat ${secretsDir}/bitcoin-rpcpassword-privileged)|" \
              '${cfg.dataDir}/joinmarket.cfg'
         '';
         # Generating wallets (jmclient/wallet.py) is only supported for mainnet or testnet
-        ExecStartPost = mkIf (bitcoind.network == "mainnet") (nbLib.privileged ''
-          walletname=wallet.jmdat
-          pw=$(cat "${secretsDir}"/jm-wallet-password)
-          mnemonic=${secretsDir}/jm-wallet-seed
-          if [[ ! -f ${cfg.dataDir}/wallets/$walletname ]]; then
-            echo Create joinmarket wallet
-            # Use bash variables so commands don't proceed on previous failures
-            # (like with pipes)
-            cd ${cfg.dataDir} && \
-              out=$(sudo -u ${cfg.user} \
-              ${nbPkgs.joinmarket}/bin/jm-genwallet \
-              --datadir=${cfg.dataDir} $walletname $pw)
-            recoveryseed=$(echo "$out" | grep 'recovery_seed')
-            echo "$recoveryseed" | cut -d ':' -f2 > $mnemonic
-          fi
-        '');
+        ExecStartPost = mkIf (bitcoind.network == "mainnet")
+          (nbLib.privileged "joinmarket-create-wallet" ''
+            walletname=wallet.jmdat
+            wallet=${cfg.dataDir}/wallets/$walletname
+            if [[ ! -f $wallet ]]; then
+              echo "Create wallet"
+              pw=$(cat "${secretsDir}"/jm-wallet-password)
+              cd ${cfg.dataDir}
+              if ! sudo -u ${cfg.user} ${nbPkgs.joinmarket}/bin/jm-genwallet --datadir=${cfg.dataDir} $walletname $pw \
+                     | grep 'recovery_seed' \
+                     | cut -d ':' -f2 \
+                     | (umask u=r,go=; cat > "${secretsDir}/jm-wallet-seed"); then
+                echo "wallet creation failed"
+                rm -f "$wallet" "${secretsDir}/jm-wallet-seed"
+                exit 1
+              fi
+            fi
+          '');
         ExecStart = "${nbPkgs.joinmarket}/bin/joinmarketd";
-        WorkingDirectory = "${cfg.dataDir}"; # The service creates 'commitmentlist' in the working dir
-        User = "${cfg.user}";
+        WorkingDirectory = cfg.dataDir; # The service creates 'commitmentlist' in the working dir
+        User = cfg.user;
         Restart = "on-failure";
         RestartSec = "10s";
-        ReadWritePaths = "${cfg.dataDir}";
+        ReadWritePaths = cfg.dataDir;
       } // nbLib.allowTor;
+    };
+
+    users.users.${cfg.user} = {
+      group = cfg.group;
+      home = cfg.dataDir;
+      # Allow access to the tor control socket, needed for payjoin onion service creation
+      extraGroups = [ "tor" ];
+    };
+    users.groups.${cfg.group} = {};
+    nix-bitcoin.operator = {
+      groups = [ cfg.group ];
+      sudoUsers = [ cfg.group ];
     };
 
     nix-bitcoin.secrets.jm-wallet-password.user = cfg.user;
@@ -227,7 +231,6 @@ in {
           chmod +x $out
         '';
     in {
-      description = "CoinJoin maker bot to gain privacy and passively generate income";
       wantedBy = [ "joinmarket.service" ];
       requires = [ "joinmarket.service" ];
       after = [ "joinmarket.service" ];
@@ -242,10 +245,14 @@ in {
       serviceConfig = nbLib.defaultHardening // rec {
         RuntimeDirectory = "joinmarket-yieldgenerator"; # Only used to create start script
         RuntimeDirectoryMode = "700";
-        WorkingDirectory = "${cfg.dataDir}"; # The service creates dir 'logs' in the working dir
+        WorkingDirectory = cfg.dataDir; # The service creates dir 'logs' in the working dir
         ExecStart = "${pkgs.bash}/bin/bash /run/${RuntimeDirectory}/start";
-        User = "${cfg.user}";
-        ReadWritePaths = "${cfg.dataDir}";
+        # Show "joinmarket-yieldgenerator" instead of "bash" in the journal.
+        # The parent bash start process has to run alongside the main process
+        # because it provides the wallet password via stdin to the main process
+        SyslogIdentifier = "joinmarket-yieldgenerator";
+        User = cfg.user;
+        ReadWritePaths = cfg.dataDir;
       } // nbLib.allowTor;
     };
   })

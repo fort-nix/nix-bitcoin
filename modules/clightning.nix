@@ -11,7 +11,7 @@ let
     network=${network}
     bitcoin-datadir=${config.services.bitcoind.dataDir}
     ${optionalString (cfg.proxy != null) "proxy=${cfg.proxy}"}
-    always-use-proxy=${if cfg.always-use-proxy then "true" else "false"}
+    always-use-proxy=${boolToString cfg.always-use-proxy}
     bind-addr=${cfg.address}:${toString cfg.port}
     bitcoin-rpcconnect=${config.services.bitcoind.rpc.address}
     bitcoin-rpcport=${toString config.services.bitcoind.rpc.port}
@@ -21,13 +21,7 @@ let
   '';
 in {
   options.services.clightning = {
-    enable = mkOption {
-      type = types.bool;
-      default = false;
-      description = ''
-        If enabled, the clightning service will be installed.
-      '';
-    };
+    enable = mkEnableOption "clightning";
     address = mkOption {
       type = types.str;
       default = "127.0.0.1";
@@ -41,13 +35,17 @@ in {
     proxy = mkOption {
       type = types.nullOr types.str;
       default = if cfg.enforceTor then config.services.tor.client.socksListenAddress else null;
-      description = "Set a socks proxy to use to connect to Tor nodes (or for all connections if *always-use-proxy* is set)";
+      description = ''
+        Socks proxy for connecting to Tor nodes (or for all connections if option always-use-proxy is set).
+      '';
     };
     always-use-proxy = mkOption {
       type = types.bool;
       default = cfg.enforceTor;
       description = ''
-        Always use the *proxy*, even to connect to normal IP addresses (you can still connect to Unix domain sockets manually). This also disables all DNS lookups, to avoid leaking information.
+        Always use the proxy, even to connect to normal IP addresses.
+        You can still connect to Unix domain sockets manually.
+        This also disables all DNS lookups, to avoid leaking address information.
       '';
     };
     dataDir = mkOption {
@@ -63,7 +61,7 @@ in {
     extraConfig = mkOption {
       type = types.lines;
       default = "";
-      description = "Additional lines appended to the config file.";
+      description = "Extra lines appended to the configuration file.";
     };
     user = mkOption {
       type = types.str;
@@ -77,8 +75,7 @@ in {
     };
     cli = mkOption {
       readOnly = true;
-      default = pkgs.writeScriptBin "lightning-cli"
-      ''
+      default = pkgs.writeScriptBin "lightning-cli" ''
         ${nbPkgs.clightning}/bin/lightning-cli --lightning-dir='${cfg.dataDir}' "$@"
       '';
       description = "Binary to connect with the clightning instance.";
@@ -103,44 +100,34 @@ in {
     };
 
     environment.systemPackages = [ nbPkgs.clightning (hiPrio cfg.cli) ];
-    users.users.${cfg.user} = {
-        description = "clightning User";
-        group = cfg.group;
-        extraGroups = [ "bitcoinrpc" ];
-    };
-    users.groups.${cfg.group} = {};
-    nix-bitcoin.operator.groups = [ cfg.group ];
 
     systemd.tmpfiles.rules = [
       "d '${cfg.dataDir}' 0770 ${cfg.user} ${cfg.group} - -"
     ];
 
     systemd.services.clightning = {
-      description = "Run clightningd";
       path  = [ nbPkgs.bitcoind ];
       wantedBy = [ "multi-user.target" ];
       requires = [ "bitcoind.service" ];
       after = [ "bitcoind.service" ];
       preStart = ''
-        cp ${configFile} ${cfg.dataDir}/config
         chown -R '${cfg.user}:${cfg.group}' '${cfg.dataDir}'
         # The RPC socket has to be removed otherwise we might have stale sockets
         rm -f ${cfg.networkDir}/lightning-rpc
-        chmod 640 ${cfg.dataDir}/config
+        install -m 640 ${configFile} '${cfg.dataDir}/config'
         {
           echo "bitcoin-rpcpassword=$(cat ${config.nix-bitcoin.secretsDir}/bitcoin-rpcpassword-public)"
           ${optionalString (cfg.getPublicAddressCmd != "") ''
             echo "announce-addr=$(${cfg.getPublicAddressCmd})"
           ''}
         } >> '${cfg.dataDir}/config'
-
-        '';
+      '';
       serviceConfig = nbLib.defaultHardening // {
         ExecStart = "${nbPkgs.clightning}/bin/lightningd --lightning-dir=${cfg.dataDir}";
-        User = "${cfg.user}";
+        User = cfg.user;
         Restart = "on-failure";
         RestartSec = "10s";
-        ReadWritePaths = "${cfg.dataDir}";
+        ReadWritePaths = cfg.dataDir;
       } // (if cfg.enforceTor
           then nbLib.allowTor
           else nbLib.allowAnyIP
@@ -154,5 +141,12 @@ in {
         chmod g+x ${cfg.networkDir}
       '';
     };
+
+    users.users.${cfg.user} = {
+      group = cfg.group;
+      extraGroups = [ "bitcoinrpc" ];
+    };
+    users.groups.${cfg.group} = {};
+    nix-bitcoin.operator.groups = [ cfg.group ];
   };
 }

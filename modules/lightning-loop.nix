@@ -101,7 +101,7 @@ in {
         User = "lnd";
         Restart = "on-failure";
         RestartSec = "10s";
-        ReadWritePaths = "${cfg.dataDir}";
+        ReadWritePaths = cfg.dataDir;
       } // (if cfg.enforceTor
             then nbLib.allowTor
             else nbLib.allowAnyIP);

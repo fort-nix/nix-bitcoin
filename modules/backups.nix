@@ -4,13 +4,15 @@ with lib;
 
 let
   cfg = config.services.backups;
+  secretsDir = config.nix-bitcoin.secretsDir;
+
   filelist = pkgs.writeText "filelist.txt" ''
     ${optionalString (!cfg.with-bulk-data) "- ${config.services.bitcoind.dataDir}/blocks"}
     ${optionalString (!cfg.with-bulk-data) "- ${config.services.bitcoind.dataDir}/chainstate"}
     ${config.services.bitcoind.dataDir}
     ${config.services.clightning.dataDir}
     ${config.services.lnd.dataDir}
-    /secrets/lnd-seed-mnemonic
+    ${secretsDir}/lnd-seed-mnemonic
     ${optionalString (!cfg.with-bulk-data) "- ${config.services.liquidd.dataDir}/*/blocks"}
     ${optionalString (!cfg.with-bulk-data) "- ${config.services.liquidd.dataDir}/*/chainstate"}
     ${config.services.liquidd.dataDir}
@@ -18,7 +20,7 @@ let
     ${config.services.nbxplorer.dataDir}
     ${config.services.btcpayserver.dataDir}
     ${config.services.joinmarket.dataDir}
-    /secrets/jm-wallet-seed
+    ${secretsDir}/jm-wallet-seed
     ${config.services.postgresqlBackup.location}/btcpaydb.sql.gz
     /var/lib/tor
     # Extra files
@@ -27,7 +29,6 @@ let
     # Exclude all unspecified files and directories
     - /
   '';
-
 in {
   options.services.backups = {
     enable = mkEnableOption "Backups service";
@@ -72,7 +73,7 @@ in {
           "--include-filelist" "${filelist}"
           "--full-if-older-than" "1M"
         ];
-        targetUrl = "${cfg.destination}";
+        targetUrl = cfg.destination;
         frequency = cfg.frequency;
         secretFile = "${config.nix-bitcoin.secretsDir}/backup-encryption-env";
       };
