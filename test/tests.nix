@@ -65,10 +65,11 @@ let testEnv = rec {
       tests.joinmarket-ob-watcher = cfg.joinmarket-ob-watcher.enable;
       services.joinmarket.yieldgenerator = {
         enable = config.services.joinmarket.enable;
-        customParameters = ''
-          txfee = 200
-          cjfee_a = 300
-        '';
+        # Test a smattering of custom parameters
+        ordertype = "absoffer";
+        cjfee_a = 300;
+        cjfee_r = 0.00003;
+        txfee = 200;
       };
 
       tests.nodeinfo = config.nix-bitcoin.nodeinfo.enable;

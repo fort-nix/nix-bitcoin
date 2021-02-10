@@ -363,12 +363,12 @@ See [here](https://github.com/JoinMarket-Org/joinmarket-clientserver/blob/master
 1. Enable yield generator bot in your node configuration
 
     ```
-    services.joinmarket.yieldgenerator.enable = true;
-
-    # Optional: Add custom parameters
-    services.joinmarket.yieldgenerator.customParameters = ''
-      txfee = 200
-      cjfee_a = 300
+    services.joinmarket.yieldgenerator = {
+      enable = true;
+      # Optional: Add custom parameters
+      txfee = 200;
+      cjfee_a = 300;
+    };
     '';
     ```
 
