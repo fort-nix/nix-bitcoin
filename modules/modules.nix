@@ -57,6 +57,14 @@ with lib;
             "$@"
         '';
       };
+
+      # A helper for using doas instead of sudo when doas is enabled
+      runAsUserCmd = mkOption {
+        readOnly = true;
+        default = if config.security.doas.enable
+                  then "doas -u"
+                  else "sudo -u";
+      };
     };
   };
 

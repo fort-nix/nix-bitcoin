@@ -147,6 +147,8 @@ You can also build Nix from source by following the instructions at https://nixo
     nixops ssh operator@bitcoin-node
     ```
 
+For security reasons, all normal system management tasks can and should be performed with the `operator` user. Logging in as `root` should be done as rarely as possible.
+
 See [usage.md](usage.md) for usage instructions, such as how to update.
 
 To resize the VM disk image, you can use this helper script from within nix-shell:
@@ -425,5 +427,7 @@ Follow the [Setup deployment directory](#3-setup-deployment-directory) instructi
     ```
     nixops ssh operator@bitcoin-node
     ```
+
+For security reasons, all normal system management tasks can and should be performed with the `operator` user. Logging in as `root` should be done as rarely as possible.
 
 See [usage.md](usage.md) for usage instructions, such as how to update.

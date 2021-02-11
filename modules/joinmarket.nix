@@ -7,6 +7,7 @@ let
   nbLib = config.nix-bitcoin.lib;
   nbPkgs = config.nix-bitcoin.pkgs;
   secretsDir = config.nix-bitcoin.secretsDir;
+  runAsUser = config.nix-bitcoin.runAsUserCmd;
 
   inherit (config.services) bitcoind;
   torAddress = builtins.head (builtins.split ":" config.services.tor.client.socksListenAddress);
@@ -84,7 +85,7 @@ let
      for bin in jm-*; do
        {
          echo "#!${pkgs.bash}/bin/bash";
-         echo "cd '${cfg.dataDir}' && ${cfg.cliExec} sudo -u ${cfg.user} $jm/$bin --datadir='${cfg.dataDir}' \"\$@\"";
+         echo "cd '${cfg.dataDir}' && ${cfg.cliExec} ${runAsUser} ${cfg.user} $jm/$bin --datadir='${cfg.dataDir}' \"\$@\"";
        } > $out/bin/$bin
      done
      chmod -R +x $out/bin
@@ -166,7 +167,6 @@ in {
       wantedBy = [ "multi-user.target" ];
       requires = [ "bitcoind.service" ];
       after = [ "bitcoind.service" ];
-      path = [ pkgs.sudo ];
       serviceConfig = nbLib.defaultHardening // {
         ExecStartPre = nbLib.privileged "joinmarket-create-config" ''
           install -o '${cfg.user}' -g '${cfg.group}' -m 640 ${configFile} ${cfg.dataDir}/joinmarket.cfg
@@ -183,7 +183,8 @@ in {
               echo "Create wallet"
               pw=$(cat "${secretsDir}"/jm-wallet-password)
               cd ${cfg.dataDir}
-              if ! sudo -u ${cfg.user} ${nbPkgs.joinmarket}/bin/jm-genwallet --datadir=${cfg.dataDir} $walletname $pw \
+              if ! ${pkgs.utillinux}/bin/runuser -u ${cfg.user} -- \
+                     ${nbPkgs.joinmarket}/bin/jm-genwallet --datadir=${cfg.dataDir} $walletname $pw \
                      | grep 'recovery_seed' \
                      | cut -d ':' -f2 \
                      | (umask u=r,go=; cat > "${secretsDir}/jm-wallet-seed"); then
@@ -211,7 +212,7 @@ in {
     users.groups.${cfg.group} = {};
     nix-bitcoin.operator = {
       groups = [ cfg.group ];
-      sudoUsers = [ cfg.group ];
+      allowRunAsUsers = [ cfg.group ];
     };
 
     nix-bitcoin.secrets.jm-wallet-password.user = cfg.user;

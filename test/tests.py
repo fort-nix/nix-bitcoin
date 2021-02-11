@@ -91,18 +91,18 @@ def _():
         machine.wait_for_unit("bitcoind")
         # `systemctl status` run by unprivileged users shouldn't leak cgroup info
         assert_matches(
-            "sudo -u electrs systemctl status bitcoind 2>&1 >/dev/null",
+            "runuser -u electrs -- systemctl status bitcoind 2>&1 >/dev/null",
             "Failed to dump process list for 'bitcoind.service', ignoring: Access denied",
         )
         # The 'operator' with group 'proc' has full access
-        assert_full_match("sudo -u operator systemctl status bitcoind 2>&1 >/dev/null", "")
+        assert_full_match("runuser -u operator -- systemctl status bitcoind 2>&1 >/dev/null", "")
 
 
 @test("bitcoind")
 def _():
     assert_running("bitcoind")
     machine.wait_until_succeeds("bitcoin-cli getnetworkinfo")
-    assert_matches("su operator -c 'bitcoin-cli getnetworkinfo' | jq", '"version"')
+    assert_matches("runuser -u operator -- bitcoin-cli getnetworkinfo | jq", '"version"')
     # RPC access for user 'public' should be restricted
     machine.fail(
         "bitcoin-cli -rpcuser=public -rpcpassword=$(cat /secrets/bitcoin-rpcpassword-public) stop"
@@ -131,14 +131,14 @@ def _():
 def _():
     assert_running("liquidd")
     machine.wait_until_succeeds("elements-cli getnetworkinfo")
-    assert_matches("su operator -c 'elements-cli getnetworkinfo' | jq", '"version"')
-    succeed("su operator -c 'liquidswap-cli --help'")
+    assert_matches("runuser -u operator -- elements-cli getnetworkinfo | jq", '"version"')
+    succeed("runuser -u operator -- liquidswap-cli --help")
 
 
 @test("clightning")
 def _():
     assert_running("clightning")
-    assert_matches("su operator -c 'lightning-cli getinfo' | jq", '"id"')
+    assert_matches("runuser -u operator -- lightning-cli getinfo | jq", '"id"')
     if test_data["clightning-plugins"]:
         plugin_list = succeed("lightning-cli plugin list")
         plugins = json.loads(plugin_list)["plugins"]
@@ -158,7 +158,7 @@ def _():
 @test("lnd")
 def _():
     assert_running("lnd")
-    assert_matches("su operator -c 'lncli getinfo' | jq", '"version"')
+    assert_matches("runuser -u operator -- lncli getinfo | jq", '"version"')
     assert_no_failure("lnd")
 
 
@@ -170,7 +170,7 @@ def _():
 @test("lightning-loop")
 def _():
     assert_running("lightning-loop")
-    assert_matches("su operator -c 'loop --version'", "version")
+    assert_matches("runuser -u operator -- loop --version", "version")
     # Check that lightning-loop fails with the right error, making sure
     # lightning-loop can connect to lnd
     machine.wait_until_succeeds(
@@ -191,7 +191,7 @@ def _():
     wait_for_open_port(ip("btcpayserver"), 23000)
     # test lnd custom macaroon
     assert_matches(
-        "sudo -u btcpayserver curl -s --cacert /secrets/lnd-cert "
+        "runuser -u btcpayserver -- curl -s --cacert /secrets/lnd-cert "
         '--header "Grpc-Metadata-macaroon: $(xxd -ps -u -c 1000 /run/lnd/btcpayserver.macaroon)" '
         f"-X GET https://{ip('lnd')}:8080/v1/getinfo | jq",
         '"version"',
@@ -232,7 +232,7 @@ def _():
     status, _ = machine.execute("systemctl is-enabled --quiet onion-addresses 2> /dev/null")
     if status == 0:
         machine.wait_for_unit("onion-addresses")
-    json_info = succeed("sudo -u operator nodeinfo")
+    json_info = succeed("runuser -u operator -- nodeinfo")
     info = json.loads(json_info)
     assert info["bitcoind"]["local_address"]
 
@@ -277,7 +277,8 @@ def _():
     if "joinmarket" in enabled_tests:
         # netns-exec should drop capabilities
         assert_full_match(
-            "su operator -c 'netns-exec nb-joinmarket capsh --print | grep Current'", "Current: =\n"
+            "runuser -u operator -- netns-exec nb-joinmarket capsh --print | grep Current",
+            "Current: =\n",
         )
 
     if "clightning" in enabled_tests:
@@ -285,7 +286,7 @@ def _():
         machine.fail("netns-exec nb-clightning ip a")
 
         # netns-exec should only be executable by the operator user
-        machine.fail("sudo -u clightning netns-exec nb-bitcoind ip a")
+        machine.fail("runuser -u clightning -- netns-exec nb-bitcoind ip a")
 
 
 # Impure: stops bitcoind (and dependent services)
@@ -349,17 +350,17 @@ def _():
         assert_full_match(get_block_height_cmd, "10\n")
     if "clightning" in enabled_tests:
         machine.wait_until_succeeds(
-            "[[ $(sudo -u operator lightning-cli getinfo | jq -M .blockheight) == 10 ]]"
+            "[[ $(runuser -u operator -- lightning-cli getinfo | jq -M .blockheight) == 10 ]]"
         )
     if "lnd" in enabled_tests:
         machine.wait_until_succeeds(
-            "[[ $(sudo -u operator lncli getinfo | jq -M .block_height) == 10 ]]"
+            "[[ $(runuser -u operator -- lncli getinfo | jq -M .block_height) == 10 ]]"
         )
     if "lightning-loop" in enabled_tests:
         machine.wait_until_succeeds(
             log_has_string("lightning-loop", "Starting event loop at height 10")
         )
-        succeed("sudo -u operator loop getparams")
+        succeed("runuser -u operator -- loop getparams")
 
 
 if "netns-isolation" in enabled_tests:

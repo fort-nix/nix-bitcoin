@@ -6,6 +6,7 @@ let
   cfg = config.services.lnd;
   nbLib = config.nix-bitcoin.lib;
   secretsDir = config.nix-bitcoin.secretsDir;
+  runAsUser = config.nix-bitcoin.runAsUserCmd;
 
   bitcoind = config.services.bitcoind;
   bitcoindRpcAddress = bitcoind.rpc.address;
@@ -123,7 +124,7 @@ in {
       default = pkgs.writeScriptBin "lncli"
       # Switch user because lnd makes datadir contents readable by user only
       ''
-        sudo -u lnd ${cfg.package}/bin/lncli \
+        ${runAsUser} lnd ${cfg.package}/bin/lncli \
           --rpcserver ${cfg.rpcAddress}:${toString cfg.rpcPort} \
           --tlscertpath '${secretsDir}/lnd-cert' \
           --macaroonpath '${networkDir}/admin.macaroon' "$@"
@@ -270,7 +271,7 @@ in {
     users.groups.lnd = {};
     nix-bitcoin.operator = {
       groups = [ "lnd" ];
-      sudoUsers = [ "lnd" ];
+      allowRunAsUsers = [ "lnd" ];
     };
 
     nix-bitcoin.secrets = {
