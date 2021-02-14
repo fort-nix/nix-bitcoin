@@ -12,6 +12,7 @@ let
   inherit (config.services) bitcoind;
   torAddress = builtins.head (builtins.split ":" config.services.tor.client.socksListenAddress);
   # Based on https://github.com/JoinMarket-Org/joinmarket-clientserver/blob/master/jmclient/jmclient/configure.py
+  yg = cfg.yieldgenerator;
   configFile = builtins.toFile "config" ''
     [DAEMON]
     no_daemon = 0
@@ -56,6 +57,7 @@ let
     merge_algorithm = default
     tx_fees = 3
     absurd_fee_per_kb = 350000
+    max_sweep_fee_change = 0.8
     tx_broadcast = self
     minimum_makers = 4
     max_sats_freeze_reuse = -1
@@ -74,6 +76,17 @@ let
     onion_socks5_port = 9050
     tor_control_host = unix:/run/tor/control
     hidden_service_ssl = false
+
+    [YIELDGENERATOR]
+    ordertype = ${yg.ordertype}
+    cjfee_a = ${toString yg.cjfee_a}
+    cjfee_r = ${toString yg.cjfee_r}
+    cjfee_factor = ${toString yg.cjfee_factor}
+    txfee = ${toString yg.txfee}
+    txfee_factor = ${toString yg.txfee_factor}
+    minsize = ${toString yg.minsize}
+    size_factor = ${toString yg.size_factor}
+    gaplimit = 6
   '';
 
    # The jm scripts create a 'logs' dir in the working dir,
@@ -93,21 +106,6 @@ let
 in {
   options.services.joinmarket = {
     enable = mkEnableOption "JoinMarket";
-    yieldgenerator = {
-      enable = mkEnableOption "yield generator bot";
-      customParameters = mkOption {
-        type = types.str;
-        default = "";
-        example = ''
-          txfee = 200
-          cjfee_a = 300
-        '';
-        description = ''
-          Python code to define custom yield generator parameters, as described in
-          https://github.com/JoinMarket-Org/joinmarket-clientserver/blob/master/docs/YIELDGENERATOR.md
-        '';
-      };
-    };
     dataDir = mkOption {
       type = types.path;
       default = "/var/lib/joinmarket";
@@ -139,6 +137,66 @@ in {
       default = true;
     };
     inherit (nbLib) cliExec;
+
+    yieldgenerator = {
+      enable = mkEnableOption "yield generator bot";
+      ordertype = mkOption {
+        type = types.enum [ "reloffer" "absoffer" ];
+        default = "reloffer";
+        description = ''
+          Which fee type to actually use
+        '';
+      };
+      cjfee_a = mkOption {
+        type = types.ints.unsigned;
+        default = 500;
+        description = ''
+          Absolute offer fee you wish to receive for coinjoins (cj) in Satoshis
+        '';
+      };
+      cjfee_r = mkOption {
+        type = types.float;
+        default = 0.00002;
+        description = ''
+          Relative offer fee you wish to receive based on a cj's amount
+        '';
+      };
+      cjfee_factor = mkOption {
+        type = types.float;
+        default = 0.1;
+        description = ''
+          Variance around the average cj fee
+        '';
+      };
+      txfee = mkOption {
+        type = types.ints.unsigned;
+        default = 100;
+        description = ''
+          The average transaction fee you're adding to coinjoin transactions
+        '';
+      };
+      txfee_factor = mkOption {
+        type = types.float;
+        default = 0.3;
+        description = ''
+          Variance around the average tx fee
+        '';
+      };
+      minsize = mkOption {
+        type = types.ints.unsigned;
+        default = 100000;
+        description = ''
+          Minimum size of your cj offer in Satoshis. Lower cj amounts will be disregarded.
+        '';
+      };
+      size_factor = mkOption {
+        type = types.float;
+        default = 0.1;
+        description = ''
+          Variance around all offer sizes
+        '';
+      };
+    };
   };
 
   config = mkIf cfg.enable (mkMerge [{
@@ -219,25 +277,13 @@ in {
   }
 
   (mkIf cfg.yieldgenerator.enable {
-    systemd.services.joinmarket-yieldgenerator = let
-      ygDefault = "${nbPkgs.joinmarket}/bin/jm-yg-privacyenhanced";
-      ygBinary = if cfg.yieldgenerator.customParameters == "" then
-        ygDefault
-      else
-        pkgs.runCommand "jm-yieldgenerator-custom" {
-          inherit (cfg.yieldgenerator) customParameters;
-        } ''
-          substitute ${ygDefault} $out \
-            --replace "# end of settings customization" "$customParameters"
-          chmod +x $out
-        '';
-    in {
+    systemd.services.joinmarket-yieldgenerator = {
       wantedBy = [ "joinmarket.service" ];
       requires = [ "joinmarket.service" ];
       after = [ "joinmarket.service" ];
       preStart = let
         start = ''
-          exec ${ygBinary} --datadir='${cfg.dataDir}' --wallet-password-stdin wallet.jmdat
+          exec ${nbPkgs.joinmarket}/bin/jm-yg-privacyenhanced --datadir='${cfg.dataDir}' --wallet-password-stdin wallet.jmdat
         '';
       in ''
         pw=$(cat "${secretsDir}"/jm-wallet-password)
