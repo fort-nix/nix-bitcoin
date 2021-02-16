@@ -48,17 +48,27 @@ in {
         encodes an URL for accessing the web interface.
       '';
     };
+    user = mkOption {
+      type = types.str;
+      default = "spark-wallet";
+      description = "The user as which to run spark-wallet.";
+    };
+    group = mkOption {
+      type = types.str;
+      default = cfg.user;
+      description = "The group as which to run spark-wallet.";
+    };
     inherit (nbLib) enforceTor;
   };
 
   config = mkIf cfg.enable {
     services.clightning.enable = true;
 
-    users.users.spark-wallet = {
-      group = "spark-wallet";
-      extraGroups = [ "clightning" ];
+    users.users.${cfg.user} = {
+      group = cfg.group;
+      extraGroups = [ config.services.clightning.group ];
     };
-    users.groups.spark-wallet = {};
+    users.groups.${cfg.group} = {};
 
     systemd.services.spark-wallet = {
       wantedBy = [ "multi-user.target" ];
@@ -66,7 +76,7 @@ in {
       after = [ "clightning.service" ];
       script = startScript;
       serviceConfig = nbLib.defaultHardening // {
-        User = "spark-wallet";
+        User = cfg.user;
         Restart = "on-failure";
         RestartSec = "10s";
       } // (if cfg.enforceTor
@@ -74,6 +84,6 @@ in {
             else nbLib.allowAnyIP)
         // nbLib.nodejs;
     };
-    nix-bitcoin.secrets.spark-wallet-login.user = "spark-wallet";
+    nix-bitcoin.secrets.spark-wallet-login.user = cfg.user;
   };
 }
