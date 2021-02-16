@@ -1,25 +1,41 @@
-{ pkgs ? import <nixpkgs> {} }:
-let self = {
-  spark-wallet = pkgs.callPackage ./spark-wallet { };
-  electrs = pkgs.callPackage ./electrs { };
-  elementsd = pkgs.callPackage ./elementsd { withGui = false; };
-  hwi = pkgs.callPackage ./hwi { };
-  liquid-swap = pkgs.python3Packages.callPackage ./liquid-swap { };
-  joinmarket = pkgs.callPackage ./joinmarket { inherit (self) nbPython3Packages; };
-  generate-secrets = pkgs.callPackage ./generate-secrets { };
-  nixops19_09 = pkgs.callPackage ./nixops { };
-  netns-exec = pkgs.callPackage ./netns-exec { };
-  lightning-loop = pkgs.callPackage ./lightning-loop { };
-  extra-container = pkgs.callPackage ./extra-container { };
-  clightning-plugins = import ./clightning-plugins pkgs self.nbPython3Packages;
-  clboss = pkgs.callPackage ./clboss { };
-  secp256k1 = pkgs.callPackage ./secp256k1 { };
+{ pkgs }:
 
-  nbPython3Packages = (pkgs.python3.override {
-    packageOverrides = pySelf: super: import ./python-packages self pySelf;
-  }).pkgs;
+let
+  getPkgs = p: let self = {
+    spark-wallet = p.callPackage ./spark-wallet { };
+    electrs = p.callPackage ./electrs { };
+    elementsd = p.callPackage ./elementsd { withGui = false; };
+    hwi = p.callPackage ./hwi { };
+    liquid-swap = p.python3Packages.callPackage ./liquid-swap { };
+    joinmarket = p.callPackage ./joinmarket { inherit (self) nbPython3Packages; };
+    generate-secrets = p.callPackage ./generate-secrets { };
+    # nixops19_09 = p.callPackage ./nixops { };
+    netns-exec = p.callPackage ./netns-exec { };
+    lightning-loop = p.callPackage ./lightning-loop { };
+    extra-container = p.callPackage ./extra-container { };
+    clightning-plugins = import ./clightning-plugins p self.nbPython3Packages;
+    clboss = p.callPackage ./clboss { };
+    secp256k1 = p.callPackage ./secp256k1 { };
 
-  pinned = import ./pinned.nix;
+    nbPython3Packages = (p.python3.override {
+      packageOverrides = pySelf: super: import ./python-packages self pySelf;
+    }).pkgs;
 
-  modulesPkgs = self // self.pinned;
-}; in self
+    pinned =
+      {
+        inherit (pkgs.unstable)
+          bitcoin
+          bitcoind
+          clightning
+          lnd
+          lndconnect
+          nbxplorer
+          btcpayserver;
+
+        stable = getPkgs pkgs;
+        unstable = getPkgs pkgs.unstable;
+      };
+
+    modulesPkgs = self // self.pinned;
+  }; in self;
+in (getPkgs pkgs)
