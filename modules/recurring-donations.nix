@@ -100,7 +100,7 @@ in {
 
     users.users.recurring-donations = {
       group = "recurring-donations";
-      extraGroups = [ "clightning" ];
+      extraGroups = [ config.services.clightning.group ];
     };
     users.groups.recurring-donations = {};
   };

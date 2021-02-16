@@ -89,7 +89,7 @@ in {
     environment.systemPackages = [ cfg.package (hiPrio cfg.cli) ];
 
     systemd.tmpfiles.rules = [
-      "d '${cfg.dataDir}' 0770 lnd lnd - -"
+      "d '${cfg.dataDir}' 0770 ${config.services.lnd.user} ${config.services.lnd.group} - -"
     ];
 
     systemd.services.lightning-loop = {
@@ -98,7 +98,7 @@ in {
       after = [ "lnd.service" ];
       serviceConfig = nbLib.defaultHardening // {
         ExecStart = "${cfg.package}/bin/loopd --configfile=${configFile}";
-        User = "lnd";
+        User = config.services.lnd.user;
         Restart = "on-failure";
         RestartSec = "10s";
         ReadWritePaths = cfg.dataDir;
@@ -108,8 +108,8 @@ in {
     };
 
      nix-bitcoin.secrets = {
-       loop-key.user = "lnd";
-       loop-cert.user = "lnd";
+       loop-key.user = config.services.lnd.user;
+       loop-cert.user = config.services.lnd.user;
      };
   };
 }

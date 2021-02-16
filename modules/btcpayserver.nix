@@ -218,7 +218,7 @@ in {
     users.groups.${cfg.nbxplorer.group} = {};
     users.users.${cfg.btcpayserver.user} = {
       group = cfg.btcpayserver.group;
-      extraGroups = [ "nbxplorer" ]
+      extraGroups = [ cfg.nbxplorer.group ]
                     ++ optional (cfg.btcpayserver.lightningBackend == "clightning") cfg.clightning.user;
       home = cfg.btcpayserver.dataDir;
     };
@@ -226,10 +226,10 @@ in {
 
     nix-bitcoin.secrets = {
       bitcoin-rpcpassword-btcpayserver = {
-        user = "bitcoin";
-        group = "nbxplorer";
+        user = cfg.bitcoind.user;
+        group = cfg.nbxplorer.group;
       };
-      bitcoin-HMAC-btcpayserver.user = "bitcoin";
+      bitcoin-HMAC-btcpayserver.user = cfg.bitcoind.user;
     };
   };
 }

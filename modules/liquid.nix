@@ -252,6 +252,6 @@ in {
     users.groups.${cfg.group} = {};
     nix-bitcoin.operator.groups = [ cfg.group ];
 
-    nix-bitcoin.secrets.liquid-rpcpassword.user = "liquid";
+    nix-bitcoin.secrets.liquid-rpcpassword.user = cfg.user;
   };
 }
