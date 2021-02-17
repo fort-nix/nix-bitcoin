@@ -385,13 +385,13 @@ in {
     users.groups.bitcoinrpc = {};
     nix-bitcoin.operator.groups = [ cfg.group ];
 
-    nix-bitcoin.secrets.bitcoin-rpcpassword-privileged.user = "bitcoin";
+    nix-bitcoin.secrets.bitcoin-rpcpassword-privileged.user = cfg.user;
     nix-bitcoin.secrets.bitcoin-rpcpassword-public = {
-      user = "bitcoin";
+      user = cfg.user;
       group = "bitcoinrpc";
     };
 
-    nix-bitcoin.secrets.bitcoin-HMAC-privileged.user = "bitcoin";
-    nix-bitcoin.secrets.bitcoin-HMAC-public.user = "bitcoin";
+    nix-bitcoin.secrets.bitcoin-HMAC-privileged.user = cfg.user;
+    nix-bitcoin.secrets.bitcoin-HMAC-public.user = cfg.user;
   };
 }

@@ -94,7 +94,7 @@ in {
           in srv.public && srv.enable
         ) services;
       in genAttrs publicServices' (service: {
-        getPublicAddressCmd = "cat ${config.nix-bitcoin.onionAddresses.dataDir}/${service}";
+        getPublicAddressCmd = "cat ${config.nix-bitcoin.onionAddresses.dataDir}/services/${service}";
       });
     }
 

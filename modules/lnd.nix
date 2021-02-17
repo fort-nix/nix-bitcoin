@@ -124,7 +124,7 @@ in {
       default = pkgs.writeScriptBin "lncli"
       # Switch user because lnd makes datadir contents readable by user only
       ''
-        ${runAsUser} lnd ${cfg.package}/bin/lncli \
+        ${runAsUser} ${cfg.user} ${cfg.package}/bin/lncli \
           --rpcserver ${cfg.rpcAddress}:${toString cfg.rpcPort} \
           --tlscertpath '${secretsDir}/lnd-cert' \
           --macaroonpath '${networkDir}/admin.macaroon' "$@"
@@ -138,6 +138,16 @@ in {
         Bash expression which outputs the public service address to announce to peers.
         If left empty, no address is announced.
       '';
+    };
+    user = mkOption {
+      type = types.str;
+      default = "lnd";
+      description = "The user as which to run LND.";
+    };
+    group = mkOption {
+      type = types.str;
+      default = cfg.user;
+      description = "The group as which to run LND.";
     };
     inherit (nbLib) enforceTor;
   };
@@ -163,7 +173,7 @@ in {
     environment.systemPackages = [ cfg.package (hiPrio cfg.cli) ];
 
     systemd.tmpfiles.rules = [
-      "d '${cfg.dataDir}' 0770 lnd lnd - -"
+      "d '${cfg.dataDir}' 0770 ${cfg.user} ${cfg.group} - -"
     ];
 
     systemd.services.lnd = {
@@ -183,7 +193,7 @@ in {
         RuntimeDirectory = "lnd"; # Only used to store custom macaroons
         RuntimeDirectoryMode = "711";
         ExecStart = "${cfg.package}/bin/lnd --configfile=${cfg.dataDir}/lnd.conf";
-        User = "lnd";
+        User = cfg.user;
         Restart = "on-failure";
         RestartSec = "10s";
         ReadWritePaths = cfg.dataDir;
@@ -206,7 +216,7 @@ in {
                 --cacert ${secretsDir}/lnd-cert \
                 -X GET ${restUrl}/genseed | ${pkgs.jq}/bin/jq -c '.cipher_seed_mnemonic' > "$mnemonic"
             fi
-            chown lnd: "$mnemonic"
+            chown ${cfg.user}: "$mnemonic"
           '')
           (nbLib.script "lnd-create-wallet" ''
             if [[ ! -f ${networkDir}/wallet.db ]]; then
@@ -263,21 +273,21 @@ in {
         ) // nbLib.allowAnyProtocol;  # For ZMQ
     };
 
-    users.users.lnd = {
-      group = "lnd";
+    users.users.${cfg.user} = {
+      group = cfg.group;
       extraGroups = [ "bitcoinrpc" ];
       home = cfg.dataDir; # lnd creates .lnd dir in HOME
     };
-    users.groups.lnd = {};
+    users.groups.${cfg.group} = {};
     nix-bitcoin.operator = {
-      groups = [ "lnd" ];
-      allowRunAsUsers = [ "lnd" ];
+      groups = [ cfg.group ];
+      allowRunAsUsers = [ cfg.user ];
     };
 
     nix-bitcoin.secrets = {
-      lnd-wallet-password.user = "lnd";
-      lnd-key.user = "lnd";
-      lnd-cert.user = "lnd";
+      lnd-wallet-password.user = cfg.user;
+      lnd-key.user = cfg.user;
+      lnd-cert.user = cfg.user;
       lnd-cert.permissions = "0444"; # world readable
     };
   };
