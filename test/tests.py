@@ -103,6 +103,10 @@ def _():
     assert_running("bitcoind")
     machine.wait_until_succeeds("bitcoin-cli getnetworkinfo")
     assert_matches("runuser -u operator -- bitcoin-cli getnetworkinfo | jq", '"version"')
+
+    regtest = "regtest/" if "regtest" in enabled_tests else ""
+    assert_full_match(f"stat  -c '%a' /var/lib/bitcoind/{regtest}.cookie", "640\n")
+
     # RPC access for user 'public' should be restricted
     machine.fail(
         "bitcoin-cli -rpcuser=public -rpcpassword=$(cat /secrets/bitcoin-rpcpassword-public) stop"

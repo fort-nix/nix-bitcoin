@@ -327,8 +327,6 @@ in {
         cfg=$(
           cat ${configFile}
           ${extraRpcauth}
-          ${/* Enable bitcoin-cli for group 'bitcoin' */ ""}
-          printf "rpcuser=${cfg.rpc.users.privileged.name}\nrpcpassword="; cat "${secretsDir}/bitcoin-rpcpassword-privileged"
           echo
           ${optionalString (cfg.getPublicAddressCmd != "") ''
             echo "externalip=$(${cfg.getPublicAddressCmd})"
@@ -338,6 +336,10 @@ in {
         if [[ ! -e $confFile || $cfg != $(cat $confFile) ]]; then
           install -o '${cfg.user}' -g '${cfg.group}' -m 640 <(echo "$cfg") $confFile
         fi
+      '';
+      # Enable RPC access for group
+      postStart = ''
+        chmod g=r '${cfg.dataDir}/${optionalString cfg.regtest "regtest/"}.cookie'
       '';
       serviceConfig = nbLib.defaultHardening // {
         Type = "notify";
