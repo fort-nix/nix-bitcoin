@@ -212,7 +212,7 @@ in {
 
     users.users.${cfg.nbxplorer.user} = {
       group = cfg.nbxplorer.group;
-      extraGroups = [ "bitcoinrpc" ];
+      extraGroups = [ "bitcoinrpc-public" ];
       home = cfg.nbxplorer.dataDir;
     };
     users.groups.${cfg.nbxplorer.group} = {};

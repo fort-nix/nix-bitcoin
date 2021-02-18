@@ -144,7 +144,7 @@ in {
 
     users.users.${cfg.user} = {
       group = cfg.group;
-      extraGroups = [ "bitcoinrpc" ];
+      extraGroups = [ "bitcoinrpc-public" ];
     };
     users.groups.${cfg.group} = {};
     nix-bitcoin.operator.groups = [ cfg.group ];
