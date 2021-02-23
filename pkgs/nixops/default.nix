@@ -24,12 +24,6 @@ let
       rev = "bff6054ce9e7f5f9aa830617577f1a511a461063";
       sha256 = "0j0lbi8rqmw17ji367zh94lvlb062iiyavl4l7m851v40wqr8a5i";
     };
-    libvirtd = {
-      owner = "nix-community";
-      repo = "nixops-libvirtd";
-      rev = "v1.0.0";
-      sha256 = "0g2ag4mhgrxws3h4q8cvfh4ks1chgpjm018ayqd48lagyvi32l8m";
-    };
   };
 
   origSrc = fetchFromGitHub {
@@ -48,7 +42,7 @@ let
   nixopsRelease = import "${src}/release.nix" {
     nixpkgs = pkgs.path;
     inherit pluginData;
-    p = (p: with p; [ aws hetzner vbox libvirtd ]);
+    p = (p: with p; [ aws hetzner vbox ]);
   };
 in
 nixopsRelease.build.${builtins.currentSystem}
