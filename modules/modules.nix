@@ -15,6 +15,7 @@ with lib;
     ./lnd.nix
     ./lnd-rest-onion-service.nix
     ./lightning-loop.nix
+    ./lightning-pool.nix
     ./btcpayserver.nix
     ./electrs.nix
     ./liquid.nix

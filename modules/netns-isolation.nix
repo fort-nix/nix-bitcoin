@@ -245,6 +245,10 @@ in {
       joinmarket-ob-watcher = {
         id = 26;
       };
+      lightning-pool = {
+        id = 27;
+        connections = [ "lnd" ];
+      };
     };
 
     services.bitcoind = {
@@ -290,6 +294,8 @@ in {
     systemd.services.joinmarket-yieldgenerator.serviceConfig.NetworkNamespacePath = "/var/run/netns/nb-joinmarket";
 
     services.joinmarket-ob-watcher.address = netns.joinmarket-ob-watcher.address;
+
+    services.lightning-pool.rpcAddress = netns.lightning-pool.address;
   }
   ]);
 }
