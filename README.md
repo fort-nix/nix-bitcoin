@@ -69,6 +69,7 @@ NixOS modules
   * [btcpayserver](https://github.com/btcpayserver/btcpayserver)
   * [liquid](https://github.com/elementsproject/elements)
   * [Lightning Loop](https://github.com/lightninglabs/loop)
+  * [Lightning Pool](https://github.com/lightninglabs/pool)
   * [JoinMarket](https://github.com/joinmarket-org/joinmarket-clientserver)
     * [JoinMarket Orderbook Watcher](https://github.com/JoinMarket-Org/joinmarket-clientserver/blob/master/docs/orderbook.md)
   * [recurring-donations](modules/recurring-donations.nix): for periodic lightning payments
