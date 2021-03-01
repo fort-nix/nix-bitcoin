@@ -14,6 +14,10 @@ in
     lndconnect
     nbxplorer
     btcpayserver;
+  inherit (nixBitcoinPkgsUnstable)
+    electrs
+    lightning-loop
+    faraday;
 
   stable = nixBitcoinPkgsStable;
   unstable = nixBitcoinPkgsUnstable;

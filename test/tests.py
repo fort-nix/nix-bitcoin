@@ -185,6 +185,15 @@ def _():
     )
 
 
+@test("faraday")
+def _():
+    assert_running("faraday")
+    assert_matches("su operator -c 'frcli --version'", "version")
+    # Check that lightning-loop fails with the right error, making sure
+    # lightning-loop can connect to lnd
+    machine.wait_until_succeeds(log_has_string("faraday", "gRPC",))
+
+
 @test("btcpayserver")
 def _():
     assert_running("nbxplorer")

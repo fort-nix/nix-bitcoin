@@ -159,6 +159,11 @@
   # Automatically enables lnd.
   # services.lightning-loop.enable = true;
 
+  ### faraday
+  # Enable this module to use lightninglab's Channel Management & Optimization Tool.
+  # faraday (faraday daemon) will be started automatically. Users can
+  # interact with the daemon using `frcli`.
+  # services.faraday.enable = true;
   ### Backups
   # Enable this module to use nix-bitcoin's own backups module. By default, it
   # uses duplicity to incrementally back up all important files in /var/lib to

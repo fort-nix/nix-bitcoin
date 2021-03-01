@@ -245,6 +245,10 @@ in {
       joinmarket-ob-watcher = {
         id = 26;
       };
+      faraday = {
+        id = 28;
+        connections = [ "lnd" ];
+      };
     };
 
     services.bitcoind = {
