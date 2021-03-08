@@ -1,21 +1,15 @@
-Preliminary steps
----
-Get a machine to deploy nix-bitcoin on (see [hardware.md](hardware.md)).
+# Tutorial: Install and configure NixOS for nix-bitcoin on a dedicated machine
 
-# Tutorials
-
-1. [Install and configure NixOS for nix-bitcoin on your own hardware](#tutorial-install-and-configure-nixos-for-nix-bitcoin-on-your-own-hardware)
-
-----
-
-Tutorial: install and configure NixOS for nix-bitcoin on your own hardware
----
+This tutorial describes how to manage your Bitcoin node comfortably from your personal computer with the deployment tool [krops](https://github.com/krebs/krops).
+However, nix-bitcoin is agnostic to the deployment method and can be used with different or without such tools (see [examples](../examples/README.md)).
 
 ## 0. Preparation
 
-1. Optional: Make sure you have the latest firmware for your system (BIOS, microcode updates).
+1. Find a machine to deploy nix-bitcoin on (see [hardware.md](hardware.md)).
 
-2. Optional: Disable Simultaneous Multi-Threading (SMT) in the BIOS
+2. Optional: Make sure you have the latest firmware for your system (BIOS, microcode updates).
+
+3. Optional: Disable Simultaneous Multi-Threading (SMT) in the BIOS
 
     Researchers recommend disabling (SMT), also known as Hyper-Threading Technology in the Intel® world to significantly reduce the impact of speculative execution-based attacks (https://mdsattacks.com/).
 
@@ -241,29 +235,55 @@ You can also build Nix from source by following the instructions at https://nixo
     cd ../../
     mkdir nix-bitcoin-node
     cd nix-bitcoin-node
-    # TODO
-    cp -r ../nix-bitcoin/examples/{configuration.nix,shell.nix,nix-bitcoin-release.nix,.gitignore} .
+    cp -r ../nix-bitcoin/examples/{nix-bitcoin-release.nix,configuration.nix,shell.nix,krops,krops-configuration.nix,.gitignore} .
     ```
 
-## 4. Deploy with TODO
-1. TODO
-2. Edit `configuration.nix`
+## 4. Deploy with krops
+
+1. Edit your ssh config
+
+    ```
+    nano ~/.ssh/config
+    ```
+
+    and add the node with an entry similar to the following (make sure to fix `Hostname` and `IdentityFile`):
+
+    ```
+    Host bitcoin-node
+        # FIXME
+        Hostname NODE_IP_ADDRESS_OR_HOST_NAME_HERE
+        User root
+        PubkeyAuthentication yes
+        # FIXME
+        IdentityFile ~/.ssh/id_...
+        AddKeysToAgent yes
+    ```
+
+2. Make sure you are in the deployment directory and edit `krops/deploy.nix`
+
+    ```
+    nano krops/deploy.nix
+    ```
+
+    Locate the `FIXME` and set the target to the name of the ssh config entry created earlier, i.e. `bitcoin-node`.
+
+3. Copy `hardware-configuration.nix` from your node to the deployment directory.
+
+    ```
+    scp root@bitcoin-node:/etc/nixos/hardware-configuration.nix .
+    ```
+
+4. Adjust configuration by opening the `configuration.nix` file and enable/disable the modules you want by editing this file.
 
     ```
     nano configuration.nix
     ```
 
-    Uncomment `./hardware-configuration.nix` line by removing #.
+    Pay attention to lines that are preceded by `FIXME` comments. In particular:
+    1. Make sure to set your SSH pubkey. Otherwise, you loose remote access because the config does not enable `permitRootLogin` (unless you add that manually).
+    2. Uncomment the line `./hardware-configuration.nix` by removing `#`.
 
-3. Create `hardware-configuration.nix`.
-
-    ```
-    nano hardware-configuration.nix
-    ```
-
-    Copy contents of your NixOS machine's `/etc/nixos/hardware-configuration.nix` to this file.
-
-4. Enter environment
+5. Enter the deployment environment
 
     ```
     nix-shell
@@ -271,10 +291,21 @@ You can also build Nix from source by following the instructions at https://nixo
 
     NOTE that a new directory `secrets/` appeared which contains the secrets for your node.
 
-5. TODO
-6. Adjust configuration by opening the `configuration.nix` file and enable/disable the modules you want by editing this file. Pay particular attention to lines that are preceded by `FIXME` comments. Make sure to set your SSH pubkey. Otherwise, you loose remote access because the config does not enable `permitRootLogin` (unless you add that manually).
+6. Deploy with krops in nix-shell
 
-7. TODO
+    ```
+    krops-deploy
+    ```
+
+    This will now create a nix-bitcoin node on the target machine.
+
+7. You can now access `bitcoin-node` via ssh
+
+    ```
+    ssh operator@bitcoin-node
+    ```
+
+    Note that you're able to log in as the unprivileged `operator` user because nix-bitcoin automatically authorizes the ssh key added to `root`.
 
 For security reasons, all normal system management tasks can and should be performed with the `operator` user. Logging in as `root` should be done as rarely as possible.
 
