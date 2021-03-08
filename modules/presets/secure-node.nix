@@ -57,12 +57,5 @@ in {
     users.users.${operatorName} = {
       openssh.authorizedKeys.keys = config.users.users.root.openssh.authorizedKeys.keys;
     };
-    # Enable nixops ssh for operator (`nixops ssh operator@mynode`) on nixops-vbox deployments
-    systemd.services.get-vbox-nixops-client-key =
-      mkIf (builtins.elem ".vbox-nixops-client-key" config.services.openssh.authorizedKeysFiles) {
-        postStart = ''
-          cp "${config.users.users.root.home}/.vbox-nixops-client-key" "${config.users.users.${operatorName}.home}"
-        '';
-      };
   };
 }
