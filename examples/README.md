@@ -20,6 +20,10 @@ By default, [`configuration.nix`](configuration.nix) enables `bitcoind` and `cli
 - [`./deploy-qemu-vm.sh`](deploy-qemu-vm.sh) creates a QEMU VM.\
   Requires: [Nix](https://nixos.org/nix/)
 
+- [`./deploy-krops.sh`](deploy-krops.sh) creates a QEMU VM and deploys a
+  nix-bitcoin configuration to it using [krops](https://github.com/krebs/krops).\
+  Requires: [Nix](https://nixos.org/nix/)
+
 - [`./deploy-container-minimal.sh`](deploy-container-minimal.sh) creates a
   container defined by [minimal-configuration.nix](minimal-configuration.nix) that
   doesn't use the [secure-node.nix](../modules/presets/secure-node.nix) preset.
