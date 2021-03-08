@@ -38,14 +38,13 @@ sshPort=60734
 runVM $tmpDir/vm $vmNumCPUs $vmMemoryMiB $sshPort
 
 vmWaitForSSH
-echo "Waiting until services are ready..."
-c '
-attempts=300
-while ! systemctl is-active clightning &> /dev/null; do
-    ((attempts-- == 0)) && { echo "timeout"; exit 1; }
-    sleep 0.2
-done
-'
+printf "Waiting until services are ready"
+c "
+$(cat qemu-vm/wait-until.sh)
+waitUntil 'systemctl is-active clightning &> /dev/null' 100
+"
+echo
+
 echo
 echo "Bitcoind service:"
 c systemctl status bitcoind
