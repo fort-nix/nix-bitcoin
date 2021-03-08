@@ -18,7 +18,7 @@ let
     tlskeypath=${secretsDir}/loop-key
 
     lnd.host=${config.services.lnd.rpcAddress}:${toString config.services.lnd.rpcPort}
-    lnd.macaroondir=${config.services.lnd.networkDir}
+    lnd.macaroonpath=${config.services.lnd.networkDir}/admin.macaroon
     lnd.tlspath=${secretsDir}/lnd-cert
 
     ${optionalString (cfg.proxy != null) "server.proxy=${cfg.proxy}"}
