@@ -20,10 +20,6 @@ By default, [`configuration.nix`](configuration.nix) enables `bitcoind` and `cli
 - [`./deploy-qemu-vm.sh`](deploy-qemu-vm.sh) creates a QEMU VM.\
   Requires: [Nix](https://nixos.org/nix/)
 
-- [`./deploy-nixops.sh`](deploy-nixops.sh) creates a VirtualBox VM via [NixOps](https://github.com/NixOS/nixops).\
-  NixOps can be used to deploy to various other backends like cloud providers.\
-  Requires: [Nix](https://nixos.org/nix/), [VirtualBox](https://www.virtualbox.org)
-
 - [`./deploy-container-minimal.sh`](deploy-container-minimal.sh) creates a
   container defined by [minimal-configuration.nix](minimal-configuration.nix) that
   doesn't use the [secure-node.nix](../modules/presets/secure-node.nix) preset.

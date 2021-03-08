@@ -20,19 +20,13 @@ with nixpkgs;
 stdenv.mkDerivation rec {
   name = "nix-bitcoin-environment";
 
-  path = lib.makeBinPath [ nix-bitcoin.nixops19_09 nix-bitcoin.extra-container figlet ];
+  path = lib.makeBinPath [ nix-bitcoin.extra-container figlet ];
 
   shellHook = ''
     export NIX_PATH="nixpkgs=${nixpkgs-path}:nix-bitcoin=${toString nix-bitcoin-path}:."
     export PATH="${path}''${PATH:+:}$PATH"
 
     alias fetch-release="${toString nix-bitcoin-path}/helper/fetch-release"
-
-    # ssh-agent and nixops don't play well together (see
-    # https://github.com/NixOS/nixops/issues/256). I'm getting `Received disconnect
-    # from 10.1.1.200 port 22:2: Too many authentication failures` if I have a few
-    # keys already added to my ssh-agent.
-    export SSH_AUTH_SOCK=""
 
     figlet "nix-bitcoin"
     (mkdir -p secrets; cd secrets; env -i ${nix-bitcoin.generate-secrets})
