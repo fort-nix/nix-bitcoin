@@ -28,6 +28,13 @@ stdenv.mkDerivation rec {
 
     alias fetch-release="${toString nix-bitcoin-path}/helper/fetch-release"
 
+    krops-deploy() {
+      # Ensure strict permissions on secrets/ directory before rsyncing it to
+      # the target machine
+      chmod 700 secrets/
+      $(nix-build --no-out-link ${toString ./krops/deploy.nix})
+    }
+
     figlet "nix-bitcoin"
     (mkdir -p secrets; cd secrets; env -i ${nix-bitcoin.generate-secrets})
 
