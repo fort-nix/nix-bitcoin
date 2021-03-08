@@ -1,5 +1,7 @@
 qemuDir=$(cd "${BASH_SOURCE[0]%/*}" && pwd)
 
+source "$qemuDir/wait-until.sh"
+
 tmpDir=/tmp/nix-bitcoin-qemu-vm
 mkdir -p $tmpDir
 
@@ -31,7 +33,7 @@ runVM() {
 vmWaitForSSH() {
     echo
     printf "Waiting for SSH connection..."
-    while ! c : 2>/dev/null; do :; done
+    waitUntil "c : 2>/dev/null" 500
     echo
 }
 
