@@ -87,6 +87,12 @@ let
     minsize = ${toString yg.minsize}
     size_factor = ${toString yg.size_factor}
     gaplimit = 6
+
+    [SNICKER]
+    enabled = false
+    lowest_net_gain = 0
+    servers = cn5lfwvrswicuxn3gjsxoved6l2gu5hdvwy5l3ev7kg6j7lbji2k7hqd.onion,
+    polling_interval_minutes = 60
   '';
 
    # The jm scripts create a 'logs' dir in the working dir,
