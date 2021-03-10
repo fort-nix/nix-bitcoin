@@ -83,8 +83,8 @@ read -d '' src <<EOF || true
     config = { pkgs, config, lib, ... }: {
       imports = [
         <${configuration}>
-        <nix-bitcoin/modules/secrets/generate-secrets.nix>
       ];
+      nix-bitcoin.generateSecrets = true;
     };
   };
 }
