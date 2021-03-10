@@ -58,11 +58,24 @@ in
         }
       ));
     };
+    secretsSetupMethod = mkOption {
+      type = types.str;
+      default = throw  ''
+        Error: No secrets setup method has been defined.
+        To fix this, choose one of the following:
+
+         - Use one of the deployment methods in ${toString ./../deployment}
+
+         - Set `nix-bitcoin.generateSecrets = true` to automatically generate secrets
+
+         - Set `nix-bitcoin.secretsSetupMethod = "manual"` if you want to manually setup secrets
+      '';
+    };
   };
 
   config = {
     # This target is active when secrets have been setup successfully.
-    systemd.targets.nix-bitcoin-secrets = {
+    systemd.targets.nix-bitcoin-secrets = mkIf (cfg.secretsSetupMethod != "manual") {
       # This ensures that the secrets target is always activated when switching
       # configurations.
       # In this way `switch-to-configuration` is guaranteed to show an error
@@ -71,6 +84,8 @@ in
     };
 
     nix-bitcoin.setupSecrets = mkIf cfg.generateSecrets true;
+
+    nix-bitcoin.secretsSetupMethod = mkIf cfg.setupSecrets "setup-secrets";
 
     # Operation of this service:
     #  - Set owner and permissions for all used secrets

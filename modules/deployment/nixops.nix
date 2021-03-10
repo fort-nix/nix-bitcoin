@@ -1,5 +1,7 @@
 { config, ... }:
 {
+  nix-bitcoin.secretsSetupMethod = "nixops";
+
   deployment.keys = builtins.mapAttrs (n: v: {
     keyFile = "${config.nix-bitcoin.deployment.secretsDir}/${n}";
     destDir = config.nix-bitcoin.secretsDir;
