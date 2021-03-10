@@ -58,6 +58,7 @@ in
         }
       ));
     };
+
     secretsSetupMethod = mkOption {
       type = types.str;
       default = throw  ''
