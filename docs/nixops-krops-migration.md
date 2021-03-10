@@ -69,15 +69,16 @@
 
     Locate the `FIXME` and set the target to the name of the ssh config entry created earlier, i.e. `bitcoin-node`.
 
-7. If your `configuration.nix` does not set the config option `nix-bitcoin.configVersion`, add
-   the following to your `configuration.nix`:
+7. If `lnd` or `joinmarket` is enabled on your node, run the commmand
    ```
-   nix-bitcoin.configVersion = "0.0.31";
-   ```
-
-   If `lnd` or `joinmarket` is enabled on your node, run the commmand
-   ```
-   nix-shell --run 'nix-instantiate -I nixos-config=krops-configuration.nix --eval "<nixpkgs/nixos>" -A vm.outPath'
+   nix-shell --run 'nix-instantiate --eval -E "
+     (import <nixpkgs/nixos> {
+       configuration = { lib, ... }: {
+         imports = [ ./krops-configuration.nix ];
+         nix-bitcoin.configVersion = lib.mkDefault \"0.0.31\";
+       };
+     }).vm.outPath
+   "'
    ```
    and follow the migration instructions from the error message.
 
