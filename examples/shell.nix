@@ -31,7 +31,7 @@ stdenv.mkDerivation rec {
     krops-deploy() {
       # Ensure strict permissions on secrets/ directory before rsyncing it to
       # the target machine
-      chmod 700 secrets/
+      chmod 700 ${toString ./secrets}
       $(nix-build --no-out-link ${toString ./krops/deploy.nix})
     }
 
