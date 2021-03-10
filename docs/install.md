@@ -1,6 +1,6 @@
 Preliminary steps
 ---
-Get a machine to deploy nix-bitcoin on.
+Get a machine to deploy nix-bitcoin on (see [hardware.md](hardware.md)).
 
 # Tutorials
 
@@ -26,23 +26,34 @@ This is borrowed from the [NixOS manual](https://nixos.org/nixos/manual/index.ht
 1. Obtain latest [NixOS](https://nixos.org/nixos/download.html). For example:
 
     ```
-    wget https://releases.nixos.org/nixos/19.09/nixos-19.09.2284.bf7c0f0461e/nixos-minimal-19.09.2284.bf7c0f0461e-x86_64-linux.iso
-    sha256sum nixos-minimal-19.09.2284.bf7c0f0461e-x86_64-linux.iso
-    # output: 9768eb945bef410fccfb82cb3d2e7ce7c02c3430aed0f2f1527273cb080fff3e
+    wget https://releases.nixos.org/nixos/20.09/nixos-20.09.2405.e065200fc90/nixos-minimal-20.09.2405.e065200fc90-i686-linux.iso
+    sha256sum nixos-minimal-20.09.2405.e065200fc90-x86_64-linux.iso
+    # output: 5fc182e27a71a297b041b5c287558b21bdabde7068d4fc049752dad3025df867
     ```
     Alternatively you can build NixOS from source by following the instructions at https://nixos.org/nixos/manual/index.html#sec-building-cd.
 
 2. Write NixOS iso to install media (USB/CD). For example:
 
     ```
-    cp nixos-minimal-19.09.2284.bf7c0f0461e-x86_64-linux.iso /dev/sdX
+    cp nixos-minimal-20.09.2405.e065200fc90-x86_64-linux.iso /dev/sdX
     ```
 
     Replace /dev/sdX with the correct device name. You can find this using `sudo fdisk -l`
 
-3. Boot the system
+3. Boot the system and become root
 
-    You will have to find out if your hardware uses UEFI or Legacy Boot for the next step.
+    ```
+    sudo -i
+    ```
+
+    You will have to find out if your hardware uses UEFI or Legacy Boot for the next step. You can do that, for example, by executing
+
+    ```
+    ls /sys/firmware/efi
+    ```
+
+    If the file exists exists, you should continue the installation for UEFI otherwise for Legacy Boot.
+
 
 4. Option 1: Partition and format for UEFI
 
@@ -84,52 +95,64 @@ This is borrowed from the [NixOS manual](https://nixos.org/nixos/manual/index.ht
     nano /mnt/etc/nixos/configuration.nix
     ```
 
-    Option 1: Edit NixOS configuration for UEFI
+    We now need to adjust the configuration to make sure that we can ssh into the system and that it boots correctly. We add some lines to set `services.openssh` such that the configuration looks as follows:
 
     ```
-    { config, pkgs, ... }: {
+    { config, pkgs, ... }:
+
+    {
       imports = [
-        # Include the results of the hardware scan.
-        ./hardware-configuration.nix
+        ...
       ];
 
+      # Enable the OpenSSH server.
+      services.openssh = {
+        enable = true;
+        permitRootLogin = "yes";
+      };
+
+      # The rest of the file are default options and hints.
+    }
+    ```
+
+    Now we open `hardware-configuration.nix`
+
+    ```
+    nano /mnt/etc/nixos/hardware-configuration.nix
+    ```
+
+    which will look similar to
+
+    ```
+    { config, pkgs, ... }:
+
+    {
+      imports = [ ];
+
+      # Add line here as explained below
+
+      # The rest of the file are generated options.
+    }
+    ```
+
+    Now add one of the following lines to the location mentioned in above example hardware config.
+
+    **Option 1**: UEFI
+
+    ```
       boot.loader.systemd-boot.enable = true;
-
-      # Note: setting fileSystems is generally not
-      # necessary, since nixos-generate-config figures them out
-      # automatically in hardware-configuration.nix.
-      #fileSystems."/".device = "/dev/disk/by-label/nixos";
-
-      # Enable the OpenSSH server.
-      services.openssh = {
-        enable = true;
-        permitRootLogin = "yes";
-      };
-    }
     ```
 
-    Option 2: Edit NixOS configuration for Legacy Boot (MBR)
+    **Option 2**: Legacy Boot (MBR)
 
     ```
-    { config, pkgs, ... }: {
-      imports = [
-        # Include the results of the hardware scan.
-        ./hardware-configuration.nix
-      ];
-
       boot.loader.grub.device = "/dev/sda";
+    ```
 
-      # Note: setting fileSystems is generally not
-      # necessary, since nixos-generate-config figures them out
-      # automatically in hardware-configuration.nix.
-      #fileSystems."/".device = "/dev/disk/by-label/nixos";
+    Lastly, in rare circumstances the hardware configuration does not have a `fileSystems` option. In that case you need to add it with the folllowing line:
 
-      # Enable the OpenSSH server.
-      services.openssh = {
-        enable = true;
-        permitRootLogin = "yes";
-      };
-    }
+    ```
+      fileSystems."/".device = "/dev/disk/by-label/nixos";
     ```
 
 6. Do the installation
@@ -137,7 +160,9 @@ This is borrowed from the [NixOS manual](https://nixos.org/nixos/manual/index.ht
     ```
     nixos-install
     ```
+
     Set root password
+
     ```
     setting root password...
     Enter new UNIX password:
@@ -154,7 +179,7 @@ This is borrowed from the [NixOS manual](https://nixos.org/nixos/manual/index.ht
 The following steps are meant to be run on the machine you deploy from, not the machine you deploy to.
 You can also build Nix from source by following the instructions at https://nixos.org/nix/manual/#ch-installing-source.
 
-1. Install Dependencies (Debian 9 stretch)
+1. Install Dependencies (Debian 10 Buster)
 
     ```
     sudo apt-get install curl git gnupg2 dirmngr
@@ -163,11 +188,11 @@ You can also build Nix from source by following the instructions at https://nixo
 2. Install latest Nix in "multi-user mode" with GPG Verification according to https://nixos.org/nix/download.html
 
     ```
-    curl -o install-nix-2.3.3 https://releases.nixos.org/nix/nix-2.3.3/install
-    curl -o install-nix-2.3.3.asc https://releases.nixos.org/nix/nix-2.3.3/install.asc
+    curl -o install-nix-2.3.10 https://releases.nixos.org/nix/nix-2.3.10/install
+    curl -o install-nix-2.3.10.asc https://releases.nixos.org/nix/nix-2.3.10/install.asc
     gpg2 --recv-keys B541D55301270E0BCF15CA5D8170B4726D7198DE
-    gpg2 --verify ./install-nix-2.3.3.asc
-    sh ./install-nix-2.3.3 --daemon
+    gpg2 --verify ./install-nix-2.3.10.asc
+    sh ./install-nix-2.3.10 --daemon
     ```
 
     Then follow the instructions. Open a new terminal window when you're done.
@@ -217,7 +242,7 @@ You can also build Nix from source by following the instructions at https://nixo
     mkdir nix-bitcoin-node
     cd nix-bitcoin-node
     # TODO
-    cp -r ../nix-bitcoin/examples/{configuration.nix,shell.nix,nix-bitcoin-release.nix} .
+    cp -r ../nix-bitcoin/examples/{configuration.nix,shell.nix,nix-bitcoin-release.nix,.gitignore} .
     ```
 
 ## 4. Deploy with TODO
@@ -238,21 +263,7 @@ You can also build Nix from source by following the instructions at https://nixo
 
     Copy contents of your NixOS machine's `/etc/nixos/hardware-configuration.nix` to this file.
 
-4. Add boot option to `hardware-configuration.nix`
-
-    Option 1: Enable systemd boot for UEFI
-
-    ```
-    boot.loader.systemd-boot.enable = true;
-    ```
-
-    Option 2: Set grub device for Legacy Boot (MBR)
-
-    ```
-    boot.loader.grub.device = "/dev/sda";
-    ```
-
-5. Enter environment
+4. Enter environment
 
     ```
     nix-shell
@@ -260,10 +271,10 @@ You can also build Nix from source by following the instructions at https://nixo
 
     NOTE that a new directory `secrets/` appeared which contains the secrets for your node.
 
-6. TODO
-7. Adjust configuration by opening the `configuration.nix` file and enable/disable the modules you want by editing this file. Pay particular attention to lines that are preceded by `FIXME` comments.
+5. TODO
+6. Adjust configuration by opening the `configuration.nix` file and enable/disable the modules you want by editing this file. Pay particular attention to lines that are preceded by `FIXME` comments. Make sure to set your SSH pubkey. Otherwise, you loose remote access because the config does not enable `permitRootLogin` (unless you add that manually).
 
-8. TODO
+7. TODO
 
 For security reasons, all normal system management tasks can and should be performed with the `operator` user. Logging in as `root` should be done as rarely as possible.
 
