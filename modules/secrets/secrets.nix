@@ -60,8 +60,15 @@ in
     };
   };
 
-  config =  {
-    systemd.targets.nix-bitcoin-secrets = {};
+  config = {
+    # This target is active when secrets have been setup successfully.
+    systemd.targets.nix-bitcoin-secrets = {
+      # This ensures that the secrets target is always activated when switching
+      # configurations.
+      # In this way `switch-to-configuration` is guaranteed to show an error
+      # when activating the secrets target fails on deployment.
+      wantedBy = [ "multi-user.target" ];
+    };
 
     nix-bitcoin.setupSecrets = mkIf cfg.generateSecrets true;
 
