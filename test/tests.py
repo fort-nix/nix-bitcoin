@@ -318,9 +318,15 @@ def _():
     }
     actual_files = succeed(f"{run_duplicity} list-current-files file:///var/lib/localBackups")
 
-    for test, file in files.items():
-        if test in enabled_tests and file not in actual_files:
+    def assert_file_exists(file):
+        if file not in actual_files:
             raise Exception(f"Backup file '{file}' is missing.")
+
+    for test, file in files.items():
+        if test in enabled_tests:
+            assert_file_exists(file)
+
+    assert_file_exists("secrets/lnd-wallet-password")
 
 
 # Impure: restarts services
