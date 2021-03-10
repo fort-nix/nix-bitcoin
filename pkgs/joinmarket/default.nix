@@ -1,10 +1,10 @@
 { stdenv, lib, fetchurl, python3, nbPython3Packages, pkgs }:
 
 let
-  version = "0.8.1";
+  version = "0.8.2";
   src = fetchurl {
     url = "https://github.com/JoinMarket-Org/joinmarket-clientserver/archive/v${version}.tar.gz";
-    sha256 = "1q3x1x0a78v6apwvbyhl7yh4dgr7xpikd8j07gi3by004ns3789d";
+    sha256 = "0bi1d49kn57b0775cd8gzsc13dbiivvnhrc61d1xb4z1cr3ih8q2";
   };
 
   runtimePackages = with nbPython3Packages; [
@@ -46,7 +46,8 @@ stdenv.mkDerivation {
     chmod +x -R $out/bin
     patchShebangs $out/bin
 
-    # This file must be placed in the same dir as ob-watcher
+    # These files must be placed in the same dir as ob-watcher
     cp scripts/obwatch/orderbook.html $out/bin/orderbook.html
+    cp -r scripts/obwatch/vendor $out/bin/vendor
   '';
 }
