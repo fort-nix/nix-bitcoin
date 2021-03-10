@@ -69,7 +69,19 @@
 
     Locate the `FIXME` and set the target to the name of the ssh config entry created earlier, i.e. `bitcoin-node`.
 
-7. Deploy with krops
+7. If your `configuration.nix` does not set the config option `nix-bitcoin.configVersion`, add
+   the following to your `configuration.nix`:
+   ```
+   nix-bitcoin.configVersion = "0.0.31";
+   ```
+
+   If `lnd` or `joinmarket` is enabled on your node, run the commmand
+   ```
+   nix-shell --run 'nix-instantiate -I nixos-config=krops-configuration.nix --eval "<nixpkgs/nixos>" -A vm.outPath'
+   ```
+   and follow the migration instructions from the error message.
+
+8. Deploy with krops
 
     ```
     nix-shell --run krops-deploy
@@ -80,7 +92,7 @@
     ssh bitcoin-node 'rm -rf /secrets'
     ```
 
-8. You can now access `bitcoin-node` via ssh
+9. You can now access `bitcoin-node` via ssh
 
     ```
     ssh operator@bitcoin-node

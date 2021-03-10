@@ -200,32 +200,29 @@ in {
         ExecStartPost = let
           restUrl = "https://${cfg.restAddress}:${toString cfg.restPort}/v1";
         in [
-          # Run fully privileged for secrets dir write access
-          (nbLib.privileged "lnd-create-mnemonic" ''
+          (nbLib.script "lnd-create-wallet" ''
             attempts=250
             while ! { exec 3>/dev/tcp/${cfg.restAddress}/${toString cfg.restPort} && exec 3>&-; } &>/dev/null; do
                   ((attempts-- == 0)) && { echo "lnd REST service unreachable"; exit 1; }
                   sleep 0.1
             done
 
-            mnemonic=${secretsDir}/lnd-seed-mnemonic
-            if [[ ! -f $mnemonic ]]; then
+            mnemonic="${cfg.dataDir}/lnd-seed-mnemonic"
+            if [[ ! -f "$mnemonic" ]]; then
               echo Create lnd seed
               umask u=r,go=
               ${pkgs.curl}/bin/curl -s \
                 --cacert ${secretsDir}/lnd-cert \
                 -X GET ${restUrl}/genseed | ${pkgs.jq}/bin/jq -c '.cipher_seed_mnemonic' > "$mnemonic"
             fi
-            chown ${cfg.user}: "$mnemonic"
-          '')
-          (nbLib.script "lnd-create-wallet" ''
+
             if [[ ! -f ${networkDir}/wallet.db ]]; then
               echo Create lnd wallet
 
               ${pkgs.curl}/bin/curl -s --output /dev/null --show-error \
                 --cacert ${secretsDir}/lnd-cert \
                 -X POST -d "{\"wallet_password\": \"$(cat ${secretsDir}/lnd-wallet-password | tr -d '\n' | base64 -w0)\", \
-                \"cipher_seed_mnemonic\": $(cat ${secretsDir}/lnd-seed-mnemonic | tr -d '\n')}" \
+                \"cipher_seed_mnemonic\": $(cat "$mnemonic" | tr -d '\n')}" \
                 ${restUrl}/initwallet
 
               # Guarantees that RPC calls with cfg.cli succeed after the service is started
@@ -248,9 +245,8 @@ in {
             while ! { exec 3>/dev/tcp/${cfg.rpcAddress}/${toString cfg.rpcPort}; } &>/dev/null; do
               sleep 0.1
             done
-
           '')
-          # Run fully privileged for chown
+          # Setting macaroon permission for other users needs root permissions
           (nbLib.privileged "lnd-create-macaroons" ''
             umask ug=r,o=
             ${lib.concatMapStrings (macaroon: ''

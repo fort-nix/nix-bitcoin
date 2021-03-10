@@ -312,8 +312,8 @@ def _():
     files = {
         "bitcoind": "var/lib/bitcoind/test/wallet.dat",
         "clightning": "var/lib/clightning/bitcoin/hsm_secret",
-        "lnd": "secrets/lnd-seed-mnemonic",
-        "joinmarket": "secrets/jm-wallet-seed",
+        "lnd": "var/lib/lnd/lnd-seed-mnemonic",
+        "joinmarket": "var/lib/joinmarket/jm-wallet-seed",
         "btcpayserver": "var/backup/postgresql/btcpaydb.sql.gz",
     }
     actual_files = succeed(f"{run_duplicity} list-current-files file:///var/lib/localBackups")

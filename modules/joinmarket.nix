@@ -245,9 +245,9 @@ in {
                      ${nbPkgs.joinmarket}/bin/jm-genwallet --datadir=${cfg.dataDir} $walletname $pw \
                      | grep 'recovery_seed' \
                      | cut -d ':' -f2 \
-                     | (umask u=r,go=; cat > "${secretsDir}/jm-wallet-seed"); then
+                     | (umask u=r,go=; cat > jm-wallet-seed); then
                 echo "wallet creation failed"
-                rm -f "$wallet" "${secretsDir}/jm-wallet-seed"
+                rm -f "$wallet" jm-wallet-seed
                 exit 1
               fi
             fi
