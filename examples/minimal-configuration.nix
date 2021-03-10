@@ -1,8 +1,9 @@
 { config, pkgs, lib, ... }: {
   imports = [
     <nix-bitcoin/modules/nix-bitcoin.nix>
-    <nix-bitcoin/modules/secrets/generate-secrets.nix>
   ];
+
+  nix-bitcoin.generateSecrets = true;
 
   services.bitcoind.enable = true;
   services.clightning.enable = true;

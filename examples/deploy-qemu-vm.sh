@@ -26,8 +26,8 @@ nix-build --out-link $tmpDir/vm - <<'EOF'
     imports = [
       <configuration.nix>
       <qemu-vm/vm-config.nix>
-      <nix-bitcoin/modules/secrets/generate-secrets.nix>
     ];
+    nix-bitcoin.generateSecrets = true;
   };
 }).vm
 EOF

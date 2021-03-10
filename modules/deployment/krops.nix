@@ -2,7 +2,7 @@
 {
   nix-bitcoin = {
     secretsDir = "/var/src/secrets";
-    setup-secrets = true;
+    setupSecrets = true;
   };
   environment.variables.NIX_PATH = lib.mkForce "/var/src";
 }
