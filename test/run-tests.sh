@@ -249,6 +249,7 @@ examples() {
       set -e
       ./deploy-container.sh
       ./deploy-qemu-vm.sh
+      ./deploy-krops.sh
     "
     (cd $scriptDir/../examples && nix-shell --run "$script")
 }
