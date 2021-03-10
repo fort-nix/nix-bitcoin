@@ -74,8 +74,9 @@
    nix-shell --run 'nix-instantiate --eval -E "
      (import <nixpkgs/nixos> {
        configuration = { lib, ... }: {
-         imports = [ ./krops-configuration.nix ];
+         imports = [ ./configuration.nix ];
          nix-bitcoin.configVersion = lib.mkDefault \"0.0.31\";
+         nix-bitcoin.secretsSetupMethod = lib.mkForce \"manual\";
        };
      }).vm.outPath
    "'
