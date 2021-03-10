@@ -312,9 +312,14 @@ in {
     ];
 
     systemd.services.bitcoind = {
-      requires = [ "nix-bitcoin-secrets.target" ];
+      # Use `wants` instead of `requires` so that bitcoind and all dependent services
+      # are not restarted when the secrets target restarts.
+      # The secrets target always restarts when deploying with one of the methods
+      # in ./deployment.
+      wants = [ "nix-bitcoin-secrets.target" ];
       after = [ "network.target" "nix-bitcoin-secrets.target" ];
       wantedBy = [ "multi-user.target" ];
+
       preStart = let
         extraRpcauth = concatMapStrings (name: let
           user = cfg.rpc.users.${name};
