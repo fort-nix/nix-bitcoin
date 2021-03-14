@@ -26,7 +26,7 @@
    nixops deploy -d bitcoin-node
    ```
 
-2. Update your nix-bitcoin, depending on your setup either with `fetch-release` or `git`. Make sure you are at least on `v0.0.40`.
+2. Update your nix-bitcoin, depending on your setup either with `fetch-release` or `git`. Make sure you are at least on `v0.0.41`.
 
 3. Pull the latest nix-bitcoin source
 
