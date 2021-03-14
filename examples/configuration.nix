@@ -71,11 +71,13 @@
   ## WARNING
   # If you use lnd, you should manually backup your wallet mnemonic
   # seed. This will allow you to recover on-chain funds. You can run the
-  # following command after the lnd service starts:
-  # scp bitcoin-node:/secrets/lnd-seed-mnemonic ./secrets/lnd-seed-mnemonic
+  # following commands after the lnd service starts:
+  #   mkdir -p ./backups/lnd/
+  #   scp bitcoin-node:/var/lib/lnd/lnd-seed-mnemonic ./backups/lnd/
+  #
   # You should also backup your channel state after opening new channels.
   # This will allow you to recover off-chain funds, by force-closing channels.
-  # scp bitcoin-node:/var/lib/lnd/chain/bitcoin/mainnet/channel.backup /my-backup-path/channel.backup
+  #   scp bitcoin-node:/var/lib/lnd/chain/bitcoin/mainnet/channel.backup ./backups/lnd/
 
   ### SPARK WALLET
   # Enable this module to use spark-wallet, a minimalistic wallet GUI for
