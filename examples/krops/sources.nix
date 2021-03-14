@@ -1,7 +1,14 @@
 { extraSources, krops }:
 
 krops.lib.evalSource [({
-  nixos-config.file = toString ../krops-configuration.nix;
+  nixos-config.file = builtins.toFile "nixos-config" ''
+    {
+      imports = [
+        ./configuration.nix
+        <nix-bitcoin/modules/deployment/krops.nix>
+      ];
+    }
+  '';
 
   "configuration.nix".file = toString ../configuration.nix;
 
