@@ -12,10 +12,10 @@ let testEnv = rec {
     imports = [
       ./lib/test-lib.nix
       ../modules/modules.nix
-      ../modules/secrets/generate-secrets.nix
       {
         # Features required by the Python test suite
         nix-bitcoin.secretsDir = "/secrets";
+        nix-bitcoin.generateSecrets = true;
         nix-bitcoin.operator.enable = true;
         environment.systemPackages = with pkgs; [ jq ];
       }
@@ -80,8 +80,8 @@ let testEnv = rec {
       tests.backups = cfg.backups.enable;
 
       # To test that unused secrets are made inaccessible by 'setup-secrets'
-      systemd.services.generate-secrets.postStart = mkIfTest "security" ''
-        install -o nobody -g nogroup -m777 <(:) /secrets/dummy
+      systemd.services.setup-secrets.preStart = mkIfTest "security" ''
+        install -D -o nobody -g nogroup -m777 <(:) /secrets/dummy
       '';
     }
     (mkIf config.test.features.clightningPlugins {

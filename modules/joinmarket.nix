@@ -240,20 +240,19 @@ in {
         '';
         # Generating wallets (jmclient/wallet.py) is only supported for mainnet or testnet
         ExecStartPost = mkIf (bitcoind.network == "mainnet")
-          (nbLib.privileged "joinmarket-create-wallet" ''
+          (nbLib.script "joinmarket-create-wallet" ''
             walletname=wallet.jmdat
             wallet=${cfg.dataDir}/wallets/$walletname
             if [[ ! -f $wallet ]]; then
               echo "Create wallet"
               pw=$(cat "${secretsDir}"/jm-wallet-password)
               cd ${cfg.dataDir}
-              if ! ${pkgs.utillinux}/bin/runuser -u ${cfg.user} -- \
-                     ${nbPkgs.joinmarket}/bin/jm-genwallet --datadir=${cfg.dataDir} $walletname $pw \
+              if ! ${nbPkgs.joinmarket}/bin/jm-genwallet --datadir=${cfg.dataDir} $walletname $pw \
                      | grep 'recovery_seed' \
                      | cut -d ':' -f2 \
-                     | (umask u=r,go=; cat > "${secretsDir}/jm-wallet-seed"); then
+                     | (umask u=r,go=; cat > jm-wallet-seed); then
                 echo "wallet creation failed"
-                rm -f "$wallet" "${secretsDir}/jm-wallet-seed"
+                rm -f "$wallet" jm-wallet-seed
                 exit 1
               fi
             fi

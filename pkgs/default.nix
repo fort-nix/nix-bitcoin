@@ -8,6 +8,7 @@ let self = {
   joinmarket = pkgs.callPackage ./joinmarket { inherit (self) nbPython3Packages; };
   generate-secrets = pkgs.callPackage ./generate-secrets { };
   nixops19_09 = pkgs.callPackage ./nixops { };
+  krops = import ./krops { };
   netns-exec = pkgs.callPackage ./netns-exec { };
   lightning-loop = pkgs.callPackage ./lightning-loop { };
   lightning-pool = pkgs.callPackage ./lightning-pool { };

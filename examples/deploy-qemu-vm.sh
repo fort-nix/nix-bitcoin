@@ -17,69 +17,34 @@ if [[ ! -v IN_NIX_SHELL ]]; then
     exec nix-shell --run "./${BASH_SOURCE[0]##*/} $*"
 fi
 
-cd "${BASH_SOURCE[0]%/*}"
-
-tmpDir=/tmp/nix-bitcoin-qemu-vm
-mkdir -p $tmpDir
-
-# Cleanup on exit
-cleanup() {
-    set +eu
-    kill -9 $qemuPID
-    rm -rf $tmpDir
-}
-trap "cleanup" EXIT
-
-identityFile=qemu-vm/id-vm
-chmod 0600 $identityFile
+source qemu-vm/run-vm.sh
 
 echo "Building VM"
-nix-build --out-link $tmpDir/vm - <<EOF
+nix-build --out-link $tmpDir/vm - <<'EOF'
 (import <nixpkgs/nixos> {
   configuration = {
     imports = [
-      <nix-bitcoin/examples/configuration.nix>
-      <nix-bitcoin/modules/secrets/generate-secrets.nix>
+      <configuration.nix>
+      <qemu-vm/vm-config.nix>
     ];
-    virtualisation.graphics = false;
-    services.mingetty.autologinUser = "root";
-    users.users.root = {
-      openssh.authorizedKeys.keys = [ "$(cat $identityFile.pub)" ];
-    };
+    nix-bitcoin.generateSecrets = true;
   };
 }).vm
 EOF
 
-vmMemoryMiB=2048
 vmNumCPUs=4
+vmMemoryMiB=2048
 sshPort=60734
+runVM $tmpDir/vm $vmNumCPUs $vmMemoryMiB $sshPort
 
-export NIX_DISK_IMAGE=$tmpDir/img
-export QEMU_NET_OPTS=hostfwd=tcp::$sshPort-:22
-</dev/null $tmpDir/vm/bin/run-*-vm -m $vmMemoryMiB -smp $vmNumCPUs &>/dev/null &
-qemuPID=$!
-
-# Run command in VM
-c() {
-    ssh -p $sshPort -i $identityFile -o ConnectTimeout=1 \
-        -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR \
-        -o ControlMaster=auto -o ControlPath=$tmpDir/ssh-connection -o ControlPersist=60 \
-        root@127.0.0.1 "$@"
-}
-
+vmWaitForSSH
+printf "Waiting until services are ready"
+c "
+$(cat qemu-vm/wait-until.sh)
+waitUntil 'systemctl is-active clightning &> /dev/null' 100
+"
 echo
-echo "Waiting for SSH connection..."
-while ! c : 2>/dev/null; do :; done
 
-echo
-echo "Waiting until services are ready..."
-c '
-attempts=300
-while ! systemctl is-active clightning &> /dev/null; do
-    ((attempts-- == 0)) && { echo "timeout"; exit 1; }
-    sleep 0.2
-done
-'
 echo
 echo "Bitcoind service:"
 c systemctl status bitcoind
@@ -99,4 +64,4 @@ case ${1:-} in
         ;;
 esac
 
-# Cleanup happens at exit (see above)
+# Cleanup happens at exit (defined in qemu-vm/run-vm.sh)

@@ -30,10 +30,6 @@ Connect to spark-wallet
 
 2. Deploy new `configuration.nix`
 
-    ```
-    nixops deploy -d bitcoin-node
-    ```
-
 3. Enable Orbot VPN for spark-wallet
 
     ```
@@ -123,10 +119,6 @@ Connect to electrs
 
 2. Deploy new `configuration.nix`
 
-    ```
-    nixops deploy -d bitcoin-node
-    ```
-
 3. Get electrs onion address with format `<onion-address>:<port>`
 
     ```
@@ -156,7 +148,7 @@ Connect to nix-bitcoin node through the SSH onion service
 1. Get the SSH onion address (excluding the port suffix)
 
     ```
-    nixops ssh operator@bitcoin-node
+    ssh operator@bitcoin-node
     nodeinfo | jq -r .sshd.onion_address | sed 's/:.*//'
     ```
 
@@ -182,19 +174,11 @@ Connect to nix-bitcoin node through the SSH onion service
     ssh -i ~/.ssh/id_ed25519 -L <random port of your choosing>:localhost:22 root@<SSH onion address>
     ```
 
-5. Edit your `network-nixos.nix` to look like this
+5. Edit your deployment tool's configuration and change the node's address to `localhost` and the ssh port to `<random port of your choosing>`.
+   If you use krops as described in the [installation tutorial](./install.md), set `target = "localhost:<random port of your choosing>";` in `krops/deploy.nix`.
 
-    ```
-    {
-      bitcoin-node =
-        { config, pkgs, ... }:
-        { deployment.targetHost = "127.0.0.1";
-        deployment.targetPort = <random port of your choosing>;
-        };
-    }
-    ```
 
-6. Now you can run `nixops deploy -d bitcoin-node` and it will connect through the SSH tunnel you established in step iv. This also allows you to do more complex SSH setups that `nixops ssh` doesn't support. An example would be authenticating with [Trezor's SSH agent](https://github.com/romanz/trezor-agent), which provides extra security.
+6. After deploying the new configuration, it will connect through the SSH tunnel you established in step iv. This also allows you to do more complex SSH setups that some deployment tools don't support. An example would be authenticating with [Trezor's SSH agent](https://github.com/romanz/trezor-agent), which provides extra security.
 
 Initialize a Trezor for Bitcoin Core's Hardware Wallet Interface
 ---
@@ -212,14 +196,10 @@ Initialize a Trezor for Bitcoin Core's Hardware Wallet Interface
 
 2. Deploy new `configuration.nix`
 
-    ```
-    nixops deploy -d bitcoin-node
-    ```
-
 3. Check that your nix-bitcoin node recognizes your Trezor
 
     ```
-    nixops ssh operator@bitcoin-node
+    ssh operator@bitcoin-node
     lsusb
     ```
     Should show something relating to your Trezor

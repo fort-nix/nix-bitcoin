@@ -4,7 +4,6 @@ with lib;
 
 let
   cfg = config.services.backups;
-  secretsDir = config.nix-bitcoin.secretsDir;
 
   filelist = pkgs.writeText "filelist.txt" ''
     ${optionalString (!cfg.with-bulk-data) "- ${config.services.bitcoind.dataDir}/blocks"}
@@ -12,7 +11,6 @@ let
     ${config.services.bitcoind.dataDir}
     ${config.services.clightning.dataDir}
     ${config.services.lnd.dataDir}
-    ${secretsDir}/lnd-seed-mnemonic
     ${optionalString (!cfg.with-bulk-data) "- ${config.services.liquidd.dataDir}/*/blocks"}
     ${optionalString (!cfg.with-bulk-data) "- ${config.services.liquidd.dataDir}/*/chainstate"}
     ${config.services.liquidd.dataDir}
@@ -20,8 +18,8 @@ let
     ${config.services.nbxplorer.dataDir}
     ${config.services.btcpayserver.dataDir}
     ${config.services.joinmarket.dataDir}
-    ${secretsDir}/jm-wallet-seed
     ${config.services.postgresqlBackup.location}/btcpaydb.sql.gz
+    ${optionalString config.nix-bitcoin.generateSecrets "${config.nix-bitcoin.secretsDir}"}
     /var/lib/tor
     # Extra files
     ${cfg.extraFiles}

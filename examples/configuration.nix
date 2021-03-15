@@ -13,7 +13,6 @@
 
     # FIXME: Uncomment next line to import your hardware configuration. If so,
     # add the hardware configuration file to the same directory as this file.
-    # This is not needed when deploying to a virtual box.
     #./hardware-configuration.nix
   ];
   # FIXME: Enable modules by uncommenting their respective line. Disable
@@ -72,11 +71,13 @@
   ## WARNING
   # If you use lnd, you should manually backup your wallet mnemonic
   # seed. This will allow you to recover on-chain funds. You can run the
-  # following command after the lnd service starts:
-  # nixops scp --from bitcoin-node /secrets/lnd-seed-mnemonic ./secrets/lnd-seed-mnemonic
+  # following commands after the lnd service starts:
+  #   mkdir -p ./backups/lnd/
+  #   scp bitcoin-node:/var/lib/lnd/lnd-seed-mnemonic ./backups/lnd/
+  #
   # You should also backup your channel state after opening new channels.
   # This will allow you to recover off-chain funds, by force-closing channels.
-  # nixops scp --from bitcoin-node /var/lib/lnd/chain/bitcoin/mainnet/channel.backup /my-backup-path/channel.backup
+  #   scp bitcoin-node:/var/lib/lnd/chain/bitcoin/mainnet/channel.backup ./backups/lnd/
 
   ### SPARK WALLET
   # Enable this module to use spark-wallet, a minimalistic wallet GUI for
@@ -176,7 +177,7 @@
   # /var/lib/localBackups once a day.
   # services.backups.enable = true;
   # You can pull the localBackups folder with
-  # `nixops scp --from bitcoin-node /var/lib/localBackups /my-backup-path/`
+  # `scp bitcoin-node:/var/lib/localBackups /my-backup-path/`
   # Alternatively, you can also set a remote target url, for example
   # services.backups.destination = "sftp://user@host[:port]/[relative|/absolute]_path";
   # Supply the sftp password by appending the FTP_PASSWORD environment variable
@@ -230,5 +231,6 @@
   # The nix-bitcoin release version that your config is compatible with.
   # When upgrading to a backwards-incompatible release, nix-bitcoin will display an
   # an error and provide hints for migrating your config to the new release.
-  nix-bitcoin.configVersion = "0.0.30";
+  nix-bitcoin.configVersion = "0.0.41";
+
 }

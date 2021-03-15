@@ -82,9 +82,9 @@ read -d '' src <<EOF || true
     extra.enableWAN = true;
     config = { pkgs, config, lib, ... }: {
       imports = [
-        <nix-bitcoin/examples/${configuration}>
-        <nix-bitcoin/modules/secrets/generate-secrets.nix>
+        <${configuration}>
       ];
+      nix-bitcoin.generateSecrets = true;
     };
   };
 }

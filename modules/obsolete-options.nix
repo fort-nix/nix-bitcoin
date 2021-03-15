@@ -22,6 +22,8 @@ in {
     (mkRenamedOptionModule [ "services" "liquidd" "bind" ] [ "services" "liquidd" "address" ])
     (mkRenamedOptionModule [ "services" "liquidd" "rpcbind" ] [ "services" "liquidd" "rpc" "address" ])
 
+    (mkRenamedOptionModule [ "nix-bitcoin" "setup-secrets" ] [ "nix-bitcoin" "setupSecrets" ])
+
     (mkRenamedAnnounceTorOption "clightning")
     (mkRenamedAnnounceTorOption "lnd")
   ];
