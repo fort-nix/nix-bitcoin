@@ -20,7 +20,7 @@ jq '.dependencies["qrcode-terminal"] = .optionalDependencies["qrcode-terminal"]'
 
 # Run node2nix
 cp pkg.json $TMPDIR/pkg.json
-node2nix --nodejs-10 -i $TMPDIR/pkg.json -c composition.nix --no-copy-node-env --supplement-input supplement.json
+node2nix --nodejs-10 -i $TMPDIR/pkg.json -c composition.nix --no-copy-node-env
 
 # Use verified source in node-packages.nix
 url="https://github.com/shesek/spark-wallet/releases/download/v$version/spark-wallet-$version-npm.tgz"
