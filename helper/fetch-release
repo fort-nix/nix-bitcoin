@@ -1,36 +1,40 @@
-#! /usr/bin/env nix-shell
-#! nix-shell -i bash -p bash coreutils curl jq gnugrep gnupg
+#!/usr/bin/env nix-shell
+#!nix-shell -i bash -p bash coreutils curl jq gnupg
 set -euo pipefail
 
 scriptDir=$(cd "${BASH_SOURCE[0]%/*}" && pwd)
 
-REPO=fort-nix/nix-bitcoin
-if [[ ! -v VERSION ]]; then
-    VERSION=$(curl --silent "https://api.github.com/repos/$REPO/releases/latest" | jq -r '.tag_name' | tail -c +2)
+repo=fort-nix/nix-bitcoin
+if [[ ! -v version ]]; then
+    version=$(curl --silent "https://api.github.com/repos/$repo/releases/latest" | jq -r '.tag_name' | tail -c +2)
 fi
 
 TMPDIR=$(mktemp -d)
-GPG_HOME=$(mktemp -d)
-trap "rm -rf $TMPDIR $GPG_HOME" EXIT
+trap "rm -rf $TMPDIR" EXIT
+
+GPG_HOME=$TMPDIR/gpg-home
+mkdir -p -m 700 "$GPG_HOME"
 
 cd $TMPDIR
-BASEURL=https://github.com/$REPO/releases/download/v$VERSION
-curl --silent -L -O $BASEURL/SHA256SUMS.txt
-curl --silent -L -O $BASEURL/SHA256SUMS.txt.asc
+baseUrl=https://github.com/$repo/releases/download/v$version
+curl --silent -L -O $baseUrl/SHA256SUMS.txt
+curl --silent -L -O $baseUrl/SHA256SUMS.txt.asc
 
-# Import key and verify fingerprint
+# Import key
 gpg --homedir $GPG_HOME --import "$scriptDir/key-jonasnick.bin" &> /dev/null
+# Verify key fingerprint
 gpg --homedir $GPG_HOME --list-keys 36C71A37C9D988BDE82508D9B1A70E4F8DCD0366 > /dev/null
 
+# Verify signature for SHA256SUMS.txt
 gpg --homedir $GPG_HOME --verify SHA256SUMS.txt.asc &> /dev/null || {
-    echo "ERROR: Signature verification failed. Please open an issue in the project repository."
+    echo "Error: Signature verification failed. Please open an issue in the project repository."
     exit 1
 }
 
-SHA256=$(cat SHA256SUMS.txt | grep -Eo '^[^ ]+')
+sha256=$(cat SHA256SUMS.txt | cut -d\  -f1)
 cat <<EOF
 {
-  url = "$BASEURL/nix-bitcoin-$VERSION.tar.gz";
-  sha256 = "$SHA256";
+  url = "$baseUrl/nix-bitcoin-$version.tar.gz";
+  sha256 = "$sha256";
 }
 EOF
