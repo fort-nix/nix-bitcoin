@@ -26,6 +26,8 @@ stdenv.mkDerivation rec {
     export NIX_PATH="nixpkgs=${nixpkgs-path}:nix-bitcoin=${toString nix-bitcoin-path}:."
     export PATH="${path}''${PATH:+:}$PATH"
 
+    export NIX_BITCOIN_EXAMPLES_DIR="${toString ./.}"
+
     alias fetch-release="${toString nix-bitcoin-path}/helper/fetch-release"
 
     krops-deploy() {
