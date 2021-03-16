@@ -22,6 +22,13 @@ jq '.dependencies["qrcode-terminal"] = .optionalDependencies["qrcode-terminal"]'
 cp pkg.json $TMPDIR/pkg.json
 node2nix --nodejs-10 -i $TMPDIR/pkg.json -c composition.nix --no-copy-node-env
 
+# Set node env import.
+# The reason for not providing a custom node-env.nix file is the following:
+# To be flakes-compatible, we have to locate the nixpgs source via `pkgs.path` instead of `<nixpkgs>`.
+# This requires the `pkgs` variable which is available only in composition.nix, not in node-env.nix.
+nodeEnvImport='import "${toString pkgs.path}/pkgs/development/node-packages/node-env.nix"'
+sed -i "s|import ./node-env.nix|$nodeEnvImport|" composition.nix
+
 # Use verified source in node-packages.nix
 url="https://github.com/shesek/spark-wallet/releases/download/v$version/spark-wallet-$version-npm.tgz"
 sed -i '/packageName = "spark-wallet";/!b;n;n;c\    src = fetchurl {\n      url = "'$url'";\n      sha256 = "'$shasum'";\n    };' node-packages.nix
