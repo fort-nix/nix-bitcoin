@@ -26,7 +26,6 @@ with lib;
 
     # Support features
     ./versioning.nix
-    ./security.nix
     ./onion-addresses.nix
     ./onion-services.nix
     ./netns-isolation.nix
