@@ -6,6 +6,11 @@ buildPythonPackage rec {
 
   postUnpack = "sourceRoot=$sourceRoot/jmdaemon";
 
+  postPatch = ''
+     substituteInPlace setup.py \
+       --replace cryptography==3.3.2 cryptography>=3.3.2
+  '';
+
   propagatedBuildInputs = [ future txtorcon cryptography pyopenssl libnacl joinmarketbase ];
 
   meta = with lib; {
