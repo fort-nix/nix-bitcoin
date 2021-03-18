@@ -75,7 +75,7 @@ let self = {
     default = "exec";
   };
 
-  mkHiddenService = map: {
+  mkOnionService = map: {
     map = [ map ];
     version = 3;
   };

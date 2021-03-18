@@ -48,13 +48,19 @@ with lib;
         default = import ../pkgs/lib.nix lib pkgs;
       };
 
+      torClientAddressWithPort = mkOption {
+        readOnly = true;
+        default =  with config.services.tor.client.socksListenAddress;
+          "${addr}:${toString port}";
+      };
+
       # Torify binary that works with custom Tor SOCKS addresses
       # Related issue: https://github.com/NixOS/nixpkgs/issues/94236
       torify = mkOption {
         readOnly = true;
         default = pkgs.writeScriptBin "torify" ''
           ${pkgs.tor}/bin/torify \
-            --address ${head (splitString ":" config.services.tor.client.socksListenAddress)} \
+            --address ${config.services.tor.client.socksListenAddress.addr} \
             "$@"
         '';
       };

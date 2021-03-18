@@ -8,7 +8,7 @@ let
 
   # Use wasabi rate provider because the default (bitstamp) doesn't accept
   # connections through Tor
-  torRateProvider = "--rate-provider wasabi --proxy socks5h://${config.services.tor.client.socksListenAddress}";
+  torRateProvider = "--rate-provider wasabi --proxy socks5h://${config.nix-bitcoin.torClientAddressWithPort}";
   startScript = ''
     ${optionalString (cfg.getPublicAddressCmd != "") ''
       publicURL="--public-url http://$(${cfg.getPublicAddressCmd})"
