@@ -110,7 +110,7 @@ trap 'eval "$runAtExit"' EXIT
 if [[ $scenario = *' '* ]]; then
     export scenarioOverridesFile=$(mktemp ${XDG_RUNTIME_DIR:-/tmp}/nb-scenario.XXX)
     runAtExit+='rm -f "$scenarioOverridesFile";'
-    echo "{ testEnv, config, pkgs, lib }: with testEnv; with lib; { tmp = $scenario; }" > "$scenarioOverridesFile"
+    echo "{ scenarios, pkgs, lib }: with lib; { tmp = $scenario; }" > "$scenarioOverridesFile"
     scenario=tmp
 fi
 
@@ -120,7 +120,7 @@ run() {
     export TMPDIR=$(mktemp -d /tmp/nix-bitcoin-test.XXX)
     runAtExit+="rm -rf $TMPDIR;"
 
-    nix-build --out-link $TMPDIR/driver -E "(import \"$scriptDir/tests.nix\" { scenario = \"$scenario\"; }).vm" -A driver
+    nix-build --out-link $TMPDIR/driver -E "((import \"$scriptDir/tests.nix\" {}).getTest \"$scenario\").vm" -A driver
 
     # Variable 'tests' contains the Python code that is executed by the driver on startup
     if [[ $1 == --interactive ]]; then
@@ -212,7 +212,7 @@ vmTestNixExpr() {
     fi
 
     cat <<EOF
-    (import "$scriptDir/tests.nix" { scenario = "$scenario"; }).vm.overrideAttrs (old: rec {
+    ((import "$scriptDir/tests.nix" {}).getTest "$scenario").vm.overrideAttrs (old: rec {
       buildCommand = ''
         export QEMU_OPTS="-smp $numCPUs -m $memoryMiB $extraQEMUOpts"
         echo "VM stats: CPUs: $numCPUs, memory: $memoryMiB MiB"

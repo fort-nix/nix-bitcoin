@@ -84,6 +84,6 @@ if [[ ! ($containerBin && $(realpath $containerBin) == *extra-container-0.6*) ]]
 fi
 
 read -d '' src <<EOF || true
-(import "$scriptDir/tests.nix" { scenario = "$scenario"; }).container
+((import "$scriptDir/tests.nix" {}).getTest "$scenario").container
 EOF
 exec extra-container $containerCommand -E "$src" "$@"

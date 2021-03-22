@@ -1,7 +1,9 @@
+pkgs:
 let
-  pkgs =  import <nixpkgs> { config = {}; overlays = []; };
   makeVM = import ./make-test-vm.nix pkgs;
+  inherit (pkgs) lib;
 in
+
 name: testConfig:
 {
   vm = makeVM {
@@ -9,8 +11,15 @@ name: testConfig:
 
     machine = {
       imports = [ testConfig ];
-      # Needed because duplicity requires 270 MB of free temp space, regardless of backup size
-      virtualisation.diskSize = 1024;
+      virtualisation = {
+        # Needed because duplicity requires 270 MB of free temp space, regardless of backup size
+        diskSize = 1024;
+
+        # Min. 800 MiB needed to avoid 'out of memory' errors
+        memorySize = lib.mkDefault 2048;
+
+        cores = lib.mkDefault 2;
+      };
     };
 
     testScript = nodes: let
