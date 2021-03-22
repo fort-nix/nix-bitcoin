@@ -239,10 +239,7 @@ in {
         PIDFile = pidFile;
         Restart = "on-failure";
         ReadWritePaths = cfg.dataDir;
-      } // (if cfg.enforceTor
-          then nbLib.allowTor
-          else nbLib.allowAnyIP
-        );
+      } // nbLib.allowedIPAddresses cfg.enforceTor;
     };
 
     users.users.${cfg.user} = {

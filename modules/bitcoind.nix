@@ -357,9 +357,7 @@ in {
         Restart = "on-failure";
         UMask = mkIf cfg.dataDirReadableByGroup "0027";
         ReadWritePaths = cfg.dataDir;
-      } // (if cfg.enforceTor
-            then nbLib.allowTor
-            else nbLib.allowAnyIP)
+      } // nbLib.allowedIPAddresses cfg.enforceTor
         // optionalAttrs (cfg.zmqpubrawblock != null || cfg.zmqpubrawtx != null) nbLib.allowAnyProtocol;
     };
 
@@ -385,7 +383,7 @@ in {
         User = cfg.user;
         Group = cfg.group;
         ReadWritePaths = cfg.dataDir;
-      } // nbLib.allowTor;
+      } // nbLib.allowLocalIPAddresses;
     };
 
     users.users.${cfg.user}.group = cfg.group;

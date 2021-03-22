@@ -155,10 +155,7 @@ in {
         RestartSec = "10s";
         ReadWritePaths = cfg.nbxplorer.dataDir;
         MemoryDenyWriteExecute = "false";
-      } // (if cfg.nbxplorer.enforceTor
-        then nbLib.allowTor
-        else nbLib.allowAnyIP
-      );
+      } // nbLib.allowedIPAddresses cfg.nbxplorer.enforceTor;
     };
 
     systemd.services.btcpayserver = let
@@ -204,10 +201,7 @@ in {
         RestartSec = "10s";
         ReadWritePaths = cfg.btcpayserver.dataDir;
         MemoryDenyWriteExecute = "false";
-      } // (if cfg.btcpayserver.enforceTor
-        then nbLib.allowTor
-        else nbLib.allowAnyIP
-      );
+      } // nbLib.allowedIPAddresses cfg.btcpayserver.enforceTor;
     }; in self;
 
     users.users.${cfg.nbxplorer.user} = {

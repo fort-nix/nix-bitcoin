@@ -79,9 +79,7 @@ in {
         User = cfg.user;
         Restart = "on-failure";
         RestartSec = "10s";
-      } // (if cfg.enforceTor
-            then nbLib.allowTor
-            else nbLib.allowAnyIP)
+      } // nbLib.allowedIPAddresses cfg.enforceTor
         // nbLib.nodejs;
     };
     nix-bitcoin.secrets.spark-wallet-login.user = cfg.user;

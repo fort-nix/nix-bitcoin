@@ -102,9 +102,7 @@ in {
         Restart = "on-failure";
         RestartSec = "10s";
         ReadWritePaths = cfg.dataDir;
-      } // (if cfg.enforceTor
-            then nbLib.allowTor
-            else nbLib.allowAnyIP);
+      } // nbLib.allowedIPAddresses cfg.enforceTor;
     };
 
      nix-bitcoin.secrets = {
