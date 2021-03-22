@@ -33,6 +33,10 @@ let self = {
       SystemCallArchitectures = "native";
   };
 
+  allowNetlink = {
+    RestrictAddressFamilies = self.defaultHardening.RestrictAddressFamilies + " AF_NETLINK";
+  };
+
   # nodejs applications apparently rely on memory write execute
   nodejs = { MemoryDenyWriteExecute = "false"; };
 

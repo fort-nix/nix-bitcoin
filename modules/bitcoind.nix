@@ -55,6 +55,8 @@ let
     # Extra options
     ${cfg.extraConfig}
   '';
+
+  zmqServerEnabled = (cfg.zmqpubrawblock != null) || (cfg.zmqpubrawtx != null);
 in {
   options = {
     services.bitcoind = {
@@ -358,7 +360,7 @@ in {
         UMask = mkIf cfg.dataDirReadableByGroup "0027";
         ReadWritePaths = cfg.dataDir;
       } // nbLib.allowedIPAddresses cfg.enforceTor
-        // optionalAttrs (cfg.zmqpubrawblock != null || cfg.zmqpubrawtx != null) nbLib.allowAnyProtocol;
+        // optionalAttrs zmqServerEnabled nbLib.allowNetlink;
     };
 
     # Use this to update the banlist:

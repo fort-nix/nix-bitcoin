@@ -4,6 +4,8 @@ with lib;
 let
   cfg = config.services.clightning.plugins.zmq;
 
+  nbLib = config.nix-bitcoin.lib;
+
   endpoints = [
     "channel-opened"
     "connect"
@@ -38,5 +40,9 @@ in
       plugin=${config.nix-bitcoin.pkgs.clightning-plugins.zmq.path}
       ${concatStrings (map setEndpoint endpoints)}
     '';
+
+    # The zmq server requires AF_NETLINK
+    systemd.services.clightning.serviceConfig.RestrictAddressFamilies =
+      mkForce nbLib.allowNetlink.RestrictAddressFamilies;
   };
 }

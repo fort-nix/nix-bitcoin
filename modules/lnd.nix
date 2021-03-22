@@ -262,8 +262,7 @@ in {
             '') (attrNames cfg.macaroons)}
           '')
         ];
-      } // nbLib.allowedIPAddresses cfg.enforceTor
-        // nbLib.allowAnyProtocol;  # For ZMQ
+      } // nbLib.allowedIPAddresses cfg.enforceTor;
     };
 
     users.users.${cfg.user} = {

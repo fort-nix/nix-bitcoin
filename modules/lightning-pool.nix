@@ -100,7 +100,8 @@ in {
         Restart = "on-failure";
         RestartSec = "10s";
         ReadWritePaths = cfg.dataDir;
-      } // (nbLib.allowedIPAddresses cfg.enforceTor);
+      } // (nbLib.allowedIPAddresses cfg.enforceTor)
+        // nbLib.allowNetlink; # required by gRPC-Go
     };
   };
 }
