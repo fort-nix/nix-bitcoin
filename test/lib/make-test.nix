@@ -1,8 +1,11 @@
-scenario: testConfig:
-
+let
+  pkgs =  import <nixpkgs> { config = {}; overlays = []; };
+  makeVM = import ./make-test-vm.nix pkgs;
+in
+name: testConfig:
 {
-  vm = import ./make-test-vm.nix (pkgs: {
-    name = "nix-bitcoin-${scenario}";
+  vm = makeVM {
+    name = "nix-bitcoin-${name}";
 
     machine = {
       imports = [ testConfig ];
@@ -37,7 +40,7 @@ scenario: testConfig:
               run_tests()
         ''
       ];
-  });
+  };
 
   container = {
     # The container name has a 11 char length limit

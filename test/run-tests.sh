@@ -212,7 +212,7 @@ vmTestNixExpr() {
     fi
 
     cat <<EOF
-    ((import "$scriptDir/tests.nix" { scenario = "$scenario"; }).vm {}).overrideAttrs (old: rec {
+    (import "$scriptDir/tests.nix" { scenario = "$scenario"; }).vm.overrideAttrs (old: rec {
       buildCommand = ''
         export QEMU_OPTS="-smp $numCPUs -m $memoryMiB $extraQEMUOpts"
         echo "VM stats: CPUs: $numCPUs, memory: $memoryMiB MiB"

@@ -1,37 +1,45 @@
-testArgs:
-
+pkgs:
 let
-  pkgs = import <nixpkgs> { config = {}; overlays = []; };
+  pythonTesting = import "${toString pkgs.path}/nixos/lib/testing-python.nix" {
+    system = builtins.currentSystem;
+    inherit pkgs;
+  };
+in
 
-  test = (import "${pkgs.path}/nixos/tests/make-test-python.nix") (testArgs pkgs);
+args:
+let
+  test = pythonTesting.makeTest args;
 
-  fixedTest = { ... }@args:
-    let
-       pkgsFixed = pkgs // {
-         # Fix the black Python code formatter that's used in the test to allow the test
-         # script to have longer lines. The default width of 88 chars is too restrictive for
-         # our script.
-         python3Packages = pkgs.python3Packages // {
-           black = pkgs.writeScriptBin "black" ''
-             fileToCheck=''${@:$#}
-             [[ $fileToCheck = *test-script ]] && extraArgs='--line-length 100'
-             exec ${pkgs.python3Packages.black}/bin/black $extraArgs "$@"
-           '';
-         };
-       };
-       test' = test (args // { pkgs = pkgsFixed; });
-    in
-      # See nixpkgs/nixos/lib/testing-python.nix for the original definition
-      test'.overrideAttrs (_: {
-        # 1. Save test output
-        # 2. Add link to driver so that a gcroot to a test prevents the driver from
-        #    being garbage-collected
-        buildCommand = ''
-          mkdir $out
-          LOGFILE=$out/output.xml tests='exec(os.environ["testScript"])' ${test'.driver}/bin/nixos-test-driver
-          ln -s ${test'.driver} $out/driver
-        '';
-      }) // { inherit (test') nodes driver; } ;
+  fixedDriver = test.driver.overrideAttrs (old: let
+    # Allow the test script to have longer lines by fixing the call to the 'black'
+    # code formatter.
+    # The default width of 88 chars is too restrictive for our script.
+    parts = builtins.split ''/nix/store/[^ ]+/black '' old.buildCommand;
+    preMatch = builtins.elemAt parts 0;
+    postMatch = builtins.elemAt parts 2;
+  in {
+    # See `mkDriver` in nixpkgs/nixos/lib/testing-python.nix for the original definition of `buildCommand`
+    buildCommand = ''
+      ${preMatch}${pkgs.python3Packages.black}/bin/black --line-length 100 ${postMatch}
+    '';
+    # Keep reference to the `testDriver` derivation, required by `buildCommand`
+    testDriverReference = old.buildCommand;
+  });
 
+  # 1. Use fixed driver
+  # 2. Save test logging output
+  # 3. Add link to driver so that a gcroot to a test prevents the driver from
+  #    being garbage-collected
+  fixedTest = test.overrideAttrs (_: {
+    # See `runTests` in nixpkgs/nixos/lib/testing-python.nix for the original definition of `buildCommand`
+    buildCommand = ''
+      mkdir $out
+      LOGFILE=$out/output.xml tests='exec(os.environ["testScript"])' ${fixedDriver}/bin/nixos-test-driver
+      ln -s ${fixedDriver} $out/driver
+    '';
+  }) // {
+    driver = fixedDriver;
+    inherit (test) nodes;
+  };
 in
   fixedTest
