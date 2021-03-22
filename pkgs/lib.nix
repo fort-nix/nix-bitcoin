@@ -33,15 +33,23 @@ let self = {
       SystemCallArchitectures = "native";
   };
 
+  allowNetlink = {
+    RestrictAddressFamilies = self.defaultHardening.RestrictAddressFamilies + " AF_NETLINK";
+  };
+
   # nodejs applications apparently rely on memory write execute
   nodejs = { MemoryDenyWriteExecute = "false"; };
-  # Allow tor traffic. Allow takes precedence over Deny.
-  allowTor = {
+
+  # Allow takes precedence over Deny.
+  allowLocalIPAddresses = {
     IPAddressAllow = "127.0.0.1/32 ::1/128 169.254.0.0/16";
   };
-  # Allow any traffic
-  allowAnyIP = { IPAddressAllow = "any"; };
-  allowAnyProtocol = { RestrictAddressFamilies = "~"; };
+  allowAllIPAddresses = { IPAddressAllow = "any"; };
+  allowTor = self.allowLocalIPAddresses;
+  allowedIPAddresses = onlyLocal:
+    if onlyLocal
+    then self.allowLocalIPAddresses
+    else self.allowAllIPAddresses;
 
   enforceTor = mkOption {
     type = types.bool;

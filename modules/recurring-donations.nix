@@ -83,9 +83,7 @@ in {
         ExecStart = "${pkgs.bash}/bin/bash ${recurring-donations-script}";
         User = "recurring-donations";
         Type = "oneshot";
-      } // (if cfg.enforceTor
-            then nbLib.allowTor
-            else nbLib.allowAnyIP);
+      } // nbLib.allowedIPAddresses cfg.enforceTor;
     };
     systemd.timers.recurring-donations = {
       requires = [ "clightning.service" ];

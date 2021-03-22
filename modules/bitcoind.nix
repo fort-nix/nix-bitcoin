@@ -55,6 +55,8 @@ let
     # Extra options
     ${cfg.extraConfig}
   '';
+
+  zmqServerEnabled = (cfg.zmqpubrawblock != null) || (cfg.zmqpubrawtx != null);
 in {
   options = {
     services.bitcoind = {
@@ -351,15 +353,14 @@ in {
         NotifyAccess = "all";
         User = cfg.user;
         Group = cfg.group;
-        TimeoutStartSec = 300;
+        TimeoutStartSec = "5min";
+        TimeoutStopSec = "10min";
         ExecStart = "${cfg.package}/bin/bitcoind -datadir='${cfg.dataDir}'";
         Restart = "on-failure";
         UMask = mkIf cfg.dataDirReadableByGroup "0027";
         ReadWritePaths = cfg.dataDir;
-      } // (if cfg.enforceTor
-            then nbLib.allowTor
-            else nbLib.allowAnyIP)
-        // optionalAttrs (cfg.zmqpubrawblock != null || cfg.zmqpubrawtx != null) nbLib.allowAnyProtocol;
+      } // nbLib.allowedIPAddresses cfg.enforceTor
+        // optionalAttrs zmqServerEnabled nbLib.allowNetlink;
     };
 
     # Use this to update the banlist:
@@ -384,7 +385,7 @@ in {
         User = cfg.user;
         Group = cfg.group;
         ReadWritePaths = cfg.dataDir;
-      } // nbLib.allowTor;
+      } // nbLib.allowLocalIPAddresses;
     };
 
     users.users.${cfg.user}.group = cfg.group;

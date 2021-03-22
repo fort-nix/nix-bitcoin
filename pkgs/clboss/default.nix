@@ -1,4 +1,4 @@
-{ stdenv, fetchurl, pkgconfig, curl, libev, sqlite }:
+{ lib, stdenv, fetchurl, pkgconfig, curl, libev, sqlite }:
 
 let
   curlWithGnuTLS = curl.override { gnutlsSupport = true; sslSupport = false; };
@@ -16,7 +16,7 @@ stdenv.mkDerivation rec {
 
   enableParallelBuilding = true;
 
-  meta = with stdenv.lib; {
+  meta = with lib; {
     description = "Automated C-Lightning Node Manager";
     homepage = "https://github.com/ZmnSCPxj/clboss";
     maintainers = with maintainers; [ nixbitcoin ];

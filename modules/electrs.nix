@@ -102,10 +102,7 @@ in {
         Restart = "on-failure";
         RestartSec = "10s";
         ReadWritePaths = "${cfg.dataDir} ${if cfg.high-memory then "${bitcoind.dataDir}" else ""}";
-      } // (if cfg.enforceTor
-          then nbLib.allowTor
-          else nbLib.allowAnyIP
-        );
+      } // nbLib.allowedIPAddresses cfg.enforceTor;
     };
 
     users.users.${cfg.user} = {

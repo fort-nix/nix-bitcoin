@@ -198,6 +198,7 @@ in {
         RestartSec = "10s";
         ReadWritePaths = cfg.dataDir;
         ExecStartPost = let
+          curl = "${pkgs.curl}/bin/curl -s --show-error";
           restUrl = "https://${cfg.restAddress}:${toString cfg.restPort}/v1";
         in [
           (nbLib.script "lnd-create-wallet" ''
@@ -212,13 +213,13 @@ in {
               if [[ ! -f "$mnemonic" ]]; then
                 echo Create lnd seed
                 umask u=r,go=
-                ${pkgs.curl}/bin/curl -s \
+                ${curl} \
                   --cacert ${secretsDir}/lnd-cert \
                   -X GET ${restUrl}/genseed | ${pkgs.jq}/bin/jq -c '.cipher_seed_mnemonic' > "$mnemonic"
               fi
 
               echo Create lnd wallet
-              ${pkgs.curl}/bin/curl -s --output /dev/null --show-error \
+              ${curl} --output /dev/null \
                 --cacert ${secretsDir}/lnd-cert \
                 -X POST -d "{\"wallet_password\": \"$(cat ${secretsDir}/lnd-wallet-password | tr -d '\n' | base64 -w0)\", \
                 \"cipher_seed_mnemonic\": $(cat "$mnemonic" | tr -d '\n')}" \
@@ -231,8 +232,7 @@ in {
               done
             else
               echo Unlock lnd wallet
-
-              ${pkgs.curl}/bin/curl -s \
+              ${curl} \
                 -H "Grpc-Metadata-macaroon: $(${pkgs.xxd}/bin/xxd -ps -u -c 99999 '${networkDir}/admin.macaroon')" \
                 --cacert ${secretsDir}/lnd-cert \
                 -X POST \
@@ -251,7 +251,7 @@ in {
             ${lib.concatMapStrings (macaroon: ''
               echo "Create custom macaroon ${macaroon}"
               macaroonPath="$RUNTIME_DIRECTORY/${macaroon}.macaroon"
-              ${pkgs.curl}/bin/curl -s \
+              ${curl} \
                 -H "Grpc-Metadata-macaroon: $(${pkgs.xxd}/bin/xxd -ps -u -c 99999 '${networkDir}/admin.macaroon')" \
                 --cacert ${secretsDir}/lnd-cert \
                 -X POST \
@@ -262,10 +262,7 @@ in {
             '') (attrNames cfg.macaroons)}
           '')
         ];
-      } // (if cfg.enforceTor
-          then nbLib.allowTor
-          else nbLib.allowAnyIP
-        ) // nbLib.allowAnyProtocol;  # For ZMQ
+      } // nbLib.allowedIPAddresses cfg.enforceTor;
     };
 
     users.users.${cfg.user} = {

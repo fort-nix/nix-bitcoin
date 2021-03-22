@@ -1,6 +1,4 @@
-{ stdenv, fetchFromGitHub, autoreconfHook }:
-
-let inherit (stdenv.lib) optionals; in
+{ lib, stdenv, fetchFromGitHub, autoreconfHook }:
 
 stdenv.mkDerivation {
   pname = "secp256k1";
@@ -18,7 +16,7 @@ stdenv.mkDerivation {
 
   configureFlags = ["--enable-module-recovery" "--disable-jni" "--enable-experimental" "--enable-module-ecdh" "--enable-benchmark=no" ];
 
-  meta = with stdenv.lib; {
+  meta = with lib; {
     description = "Optimized C library for EC operations on curve secp256k1";
     homepage = "https://github.com/bitcoin-core/secp256k1";
     license = with licenses; [ mit ];

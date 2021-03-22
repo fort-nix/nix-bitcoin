@@ -1,14 +1,20 @@
 # Integration tests, can be run without internet access.
 
-{ scenario ? "default" }:
+let
+  nixpkgs = (import ../pkgs/nixpkgs-pinned.nix).nixpkgs;
+in
 
-import ./lib/make-test.nix scenario (
-{ config, pkgs, lib, ... }: with lib;
-let testEnv = rec {
-  cfg = config.services;
-  mkIfTest = test: mkIf (config.tests.${test} or false);
+{ extraScenarios ? { ... }: {}
+, pkgs ? import nixpkgs { config = {}; overlays = []; }
+}:
+with pkgs.lib;
+let
+  globalPkgs = pkgs;
 
-  baseConfig = {
+  baseConfig = { pkgs, config, ... }: let
+    cfg = config.services;
+    mkIfTest = test: mkIf (config.tests.${test} or false);
+  in {
     imports = [
       ./lib/test-lib.nix
       ../modules/modules.nix
@@ -26,6 +32,9 @@ let testEnv = rec {
     };
 
     config = mkMerge [{
+      # Share the same pkgs instance among tests
+      nixpkgs.pkgs = mkDefault globalPkgs;
+
       tests.bitcoind = cfg.bitcoind.enable;
       services.bitcoind = {
         enable = true;
@@ -183,14 +192,14 @@ let testEnv = rec {
       ];
     };
 
-    netnsBase = {
+    netnsBase = { config, pkgs, ... }: {
       nix-bitcoin.netns-isolation.enable = true;
       test.data.netns = config.nix-bitcoin.netns-isolation.netns;
       tests.netns-isolation = true;
       environment.systemPackages = [ pkgs.fping ];
     };
 
-    regtestBase = {
+    regtestBase = { config, ... }: {
       tests.regtest = true;
 
       services.bitcoind.regtest = true;
@@ -241,20 +250,29 @@ let testEnv = rec {
       # You can also set the env var `scenarioOverridesFile` (used below) to define custom scenarios.
     };
   };
-};
-in
-  let
-    overrides = builtins.getEnv "scenarioOverridesFile";
-    scenarios = testEnv.scenarios // (optionalAttrs (overrides != "") (import overrides {
-      inherit testEnv config pkgs lib;
-    }));
-    autoScenario = {
-      services.${scenario}.enable = true;
+
+  overrides = builtins.getEnv "scenarioOverridesFile";
+  extraScenarios' = (if (overrides != "") then import overrides else extraScenarios) {
+    inherit scenarios pkgs;
+    inherit (pkgs) lib;
+  };
+  allScenarios = scenarios // extraScenarios';
+
+  makeTest = name: config:
+    makeTest' name {
+      imports = [
+        allScenarios.base
+        config
+      ];
     };
-  in {
-    imports = [
-      scenarios.base
-      (scenarios.${scenario} or autoScenario)
-    ];
+  makeTest' = import ./lib/make-test.nix pkgs;
+
+  tests = builtins.mapAttrs makeTest allScenarios;
+
+  getTest = name: tests.${name} or (makeTest name {
+    services.${name}.enable = true;
+  });
+in
+  tests // {
+    inherit getTest;
   }
-)

@@ -1,6 +1,4 @@
-{ pkgs, stdenv, fetchurl, fetchFromGitHub, python3 }:
-
-with stdenv.lib;
+{ lib, pkgs, stdenv, fetchurl, fetchFromGitHub, python3 }:
 
 let
   python = python3.override {

@@ -8,10 +8,12 @@ set -euo pipefail
 # Run with option `--interactive` or `-i` to start a shell for interacting with
 # the node.
 
-if [[ ! -v IN_NIX_SHELL ]]; then
+if [[ ! -v NIX_BITCOIN_EXAMPLES_DIR ]]; then
     echo "Running script in nix shell env..."
     cd "${BASH_SOURCE[0]%/*}"
     exec nix-shell --run "./${BASH_SOURCE[0]##*/} $*"
+else
+    cd "$NIX_BITCOIN_EXAMPLES_DIR"
 fi
 
 if [[ $(sysctl -n net.ipv4.ip_forward || sudo sysctl -n net.ipv4.ip_forward) != 1 ]]; then
@@ -22,7 +24,7 @@ fi
 
 if [[ $EUID != 0 ]]; then
     # NixOS containers require root permissions
-    exec sudo "PATH=$PATH" "NIX_PATH=$NIX_PATH" "IN_NIX_SHELL=$IN_NIX_SHELL" "${BASH_SOURCE[0]}" "$@"
+    exec sudo "PATH=$PATH" "NIX_PATH=$NIX_PATH" "NIX_BITCOIN_EXAMPLES_DIR=$NIX_BITCOIN_EXAMPLES_DIR" "${BASH_SOURCE[0]}" "$@"
 fi
 
 interactive=
