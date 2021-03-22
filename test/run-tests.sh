@@ -230,8 +230,8 @@ pkgsUnstable() {
 # These are also run on the CI server.
 basic() {
     scenario=default buildTest "$@"
-    scenario=netns buildTest "$@"
-    scenario=netnsRegtest buildTest "$@"
+    # scenario=netns buildTest "$@"
+    # scenario=netnsRegtest buildTest "$@"
     pkgsUnstable
 }
 

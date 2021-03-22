@@ -114,6 +114,14 @@ let
         };
       };
     })
+    # nixpkgs unstable: Disable unsupported features
+    {
+      # The underlying packages are broken
+      services.clightning.plugins.prometheus.enable = mkForce false;
+      services.liquidd.enable = mkForce false;
+      # The service is broken
+      services.joinmarket-ob-watcher.enable = mkForce false;
+    }
     ];
   };
 
