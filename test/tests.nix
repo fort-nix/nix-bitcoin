@@ -192,6 +192,13 @@ let
       ];
     };
 
+    hardened-paranoia = {
+      imports = [
+        scenarios.secureNode
+        ../modules/presets/hardened-paranoia.nix
+      ];
+    };
+
     netnsBase = { config, pkgs, ... }: {
       nix-bitcoin.netns-isolation.enable = true;
       test.data.netns = config.nix-bitcoin.netns-isolation.netns;
