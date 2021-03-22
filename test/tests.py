@@ -352,10 +352,9 @@ def _():
     # Current time in µs
     pre_restart = succeed("date +%s.%6N").rstrip()
 
-    # Sanity-check system by restarting all services
-    succeed(
-        "systemctl restart bitcoind clightning lnd lightning-loop lightning-pool spark-wallet liquidd"
-    )
+    # Sanity-check system by restarting bitcoind.
+    # This also restarts all services depending on bitcoind.
+    succeed("systemctl restart bitcoind")
 
     # Now that the bitcoind restart triggered a banlist import restart, check that
     # re-importing already banned addresses works
@@ -367,27 +366,37 @@ def _():
 
 @test("regtest")
 def _():
-    if "electrs" in enabled_tests:
+    def enabled(unit):
+        if unit in enabled_tests:
+            # Wait because the unit might have been restarted in the preceding
+            # 'banlist-and-restart' test
+            machine.wait_for_unit(unit)
+            return True
+        else:
+            return False
+
+    if enabled("electrs"):
+        machine.wait_for_unit("onion-addresses")
         machine.wait_until_succeeds(log_has_string("electrs", "BlockchainInfo"))
         get_block_height_cmd = (
             """echo '{"method": "blockchain.headers.subscribe", "id": 0, "params": []}'"""
             f" | nc -N {ip('electrs')} 50001 | jq -M .result.height"
         )
         assert_full_match(get_block_height_cmd, "10\n")
-    if "clightning" in enabled_tests:
+    if enabled("clightning"):
         machine.wait_until_succeeds(
             "[[ $(runuser -u operator -- lightning-cli getinfo | jq -M .blockheight) == 10 ]]"
         )
-    if "lnd" in enabled_tests:
+    if enabled("lnd"):
         machine.wait_until_succeeds(
             "[[ $(runuser -u operator -- lncli getinfo | jq -M .block_height) == 10 ]]"
         )
-    if "lightning-loop" in enabled_tests:
+    if enabled("lightning-loop"):
         machine.wait_until_succeeds(
             log_has_string("lightning-loop", "Starting event loop at height 10")
         )
         succeed("runuser -u operator -- loop getparams")
-    if "lightning-pool" in enabled_tests:
+    if enabled("lightning-pool"):
         machine.wait_until_succeeds(
             log_has_string("lightning-pool", "lnd is now fully synced to its chain backend")
         )
