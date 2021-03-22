@@ -1,8 +1,8 @@
-{ stdenv, fetchurl, pkgconfig, autoreconfHook, openssl, db48, boost, zeromq, rapidcheck
+{ lib, stdenv, fetchurl, pkgconfig, autoreconfHook, openssl, db48, boost, zeromq, rapidcheck
 , zlib, miniupnpc, qtbase ? null, qttools ? null, wrapQtAppsHook ? null, utillinux, protobuf, python3, qrencode, libevent
 , withGui }:
 
-with stdenv.lib;
+with lib;
 stdenv.mkDerivation rec {
   pname = "elements${optionalString (!withGui) "d"}";
   version = "0.18.1.9";
