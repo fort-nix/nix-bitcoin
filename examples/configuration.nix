@@ -10,6 +10,13 @@
     # decreases performance by ~50%.
     # Turn it off when not needed.
     <nix-bitcoin/modules/presets/hardened.nix>
+    # Enable the hardened-paranoia kernel profile instead to restrict kernel
+    # functionality even further. Note, that many of the hardenings
+    # preemptively disable features to protect against hypothetical attacks and
+    # may likely incur performance penalities and break your system.
+    # The profile enables usbguard. Use `services.usbguard.rules` to whitelist
+    # select devices.
+    # <nix-bitcoin/modules/presets/hardened-paranoia.nix>
 
     # FIXME: Uncomment next line to import your hardware configuration. If so,
     # add the hardware configuration file to the same directory as this file.
