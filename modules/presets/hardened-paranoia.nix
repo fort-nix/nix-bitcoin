@@ -130,4 +130,6 @@
     "thunderbolt"
     "firewire-core"
   ];
+
+  services.usbguard.enable = true;
 }
