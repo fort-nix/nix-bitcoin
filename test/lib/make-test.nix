@@ -61,5 +61,23 @@ name: testConfig:
     };
   };
 
+  # This allows running a test scenario in a regular NixOS VM.
+  # No tests are executed.
+  vmWithoutTests = (pkgs.nixos {
+    imports = [
+      testConfig
+      "${toString pkgs.path}/nixos/modules/virtualisation/qemu-vm.nix"
+    ];
+    virtualisation.graphics = false;
+    services.mingetty.autologinUser = "root";
+
+    # Provide a shortcut for instant poweroff from within the machine
+    environment.systemPackages = with pkgs; [
+      (lowPrio (writeScriptBin "q" ''
+         echo o >/proc/sysrq-trigger
+       ''))
+    ];
+  }).vm;
+
   config = testConfig;
 }

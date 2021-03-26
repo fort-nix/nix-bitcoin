@@ -45,9 +45,14 @@ the host system.
 git clone https://github.com/fort-nix/nix-bitcoin
 cd nix-bitcoin/test
 
+# Run a node in a VM. No tests are executed.
+./run-tests.sh vm
+systemctl status bitcoind
+
 # Run a Python test shell inside a VM node
 ./run-tests.sh debug
 print(succeed("systemctl status bitcoind"))
+run_test("bitcoind")
 
 # Run a node in a container. Requires systemd and root privileges.
 ./run-tests.sh container
