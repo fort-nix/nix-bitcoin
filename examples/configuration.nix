@@ -10,6 +10,11 @@
     # decreases performance by ~50%.
     # Turn it off when not needed.
     <nix-bitcoin/modules/presets/hardened.nix>
+    #
+    # You can enable the hardened-extended preset instead to further improve security
+    # at the cost of functionality and performance.
+    # See the comments at the top of `hardened-extended.nix` for further details.
+    # <nix-bitcoin/modules/presets/hardened-extended.nix>
 
     # FIXME: Uncomment next line to import your hardware configuration. If so,
     # add the hardware configuration file to the same directory as this file.
@@ -205,7 +210,7 @@
   # services.joinmarket-ob-watcher.enable = true;
 
   # FIXME: Define your hostname.
-  networking.hostName = "nix-bitcoin";
+  networking.hostName = "host";
   time.timeZone = "UTC";
 
   # FIXME: Add your SSH pubkey

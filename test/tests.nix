@@ -188,7 +188,7 @@ let
     hardened = {
       imports = [
         scenarios.secureNode
-        ../modules/presets/hardened.nix
+        ../modules/presets/hardened-extended.nix
       ];
     };
 
