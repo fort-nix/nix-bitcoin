@@ -5,12 +5,12 @@
 with lib;
 stdenv.mkDerivation rec {
   pname = "elements${optionalString (!withGui) "d"}";
-  version = "0.18.1.9";
+  version = "0.18.1.11";
 
   src = fetchurl {
     url = "https://github.com/ElementsProject/elements/archive/elements-${version}.tar.gz";
     # Use ./get-sha256.sh to fetch latest (verified) sha256
-    sha256 = "c6f1b040a896a1aaa7340f5cd48e119c84fef88df5d4c17d5ad5c13783f5b6c7";
+    sha256 = "266e7257f678df2416243ba68dc42da465721ef5a3a986017d38afddbd2311cd";
   };
 
   nativeBuildInputs =
