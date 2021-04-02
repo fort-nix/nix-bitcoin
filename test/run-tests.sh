@@ -42,6 +42,14 @@
 #     For now, creating NixOS containers requires root permissions.
 #     See ./lib/make-container.sh for a complete documentation.
 #
+#   Run a test scenario in a regular NixOS VM.
+#   No tests are executed, the machine's serial console is attached to your terminal.
+#   ./run-tests.sh [--scenario <scenario>] vm
+#
+#     This is useful for directly exploring a test configuration without the
+#     intermediate Python REPL layer.
+#     Run command 'q' inside the machine for instant poweroff.
+#
 #   Run tests from a snapshot copy of the source files
 #   ./run-tests.sh --copy-src|-c ...
 #
@@ -168,6 +176,24 @@ instantiate() {
 container() {
     export scriptDir scenario
     "$scriptDir/lib/make-container.sh" "$@"
+}
+
+# Run a regular NixOS VM
+vm() {
+    export TMPDIR=$(mktemp -d /tmp/nix-bitcoin-vm.XXX)
+    runAtExit+="rm -rf $TMPDIR;"
+
+    nix-build --out-link $TMPDIR/vm -E "((import \"$scriptDir/tests.nix\" {}).getTest \"$scenario\").vmWithoutTests"
+
+    echo "VM stats: CPUs: $numCPUs, memory: $memoryMiB MiB"
+    extraNetOpts=
+    [[ $NB_TEST_ENABLE_NETWORK ]] || extraNetOpts='restrict=on'
+
+    USE_TMPDIR=1 \
+    NIX_DISK_IMAGE=$TMPDIR/img.qcow2 \
+    QEMU_OPTS="-smp $numCPUs -m $memoryMiB -nographic $QEMU_OPTS"  \
+    QEMU_NET_OPTS="$extraNetOpts $QEMU_NET_OPTS" \
+      $TMPDIR/vm/bin/run-*-vm
 }
 
 doBuild() {
