@@ -1,5 +1,4 @@
-nbPkgs:
-self:
+nbPkgs: self: super:
 let
   inherit (self) callPackage;
 
@@ -14,6 +13,7 @@ in {
   urldecode = callPackage ./urldecode {};
   chromalog = callPackage ./chromalog {};
   txzmq = callPackage ./txzmq {};
+  recommonmark = callPackage ./recommonmark { inherit (super) recommonmark; };
 
   # cryptography 3.3.2, required by joinmarketdaemon
   cryptography = callPackage ./cryptography {};

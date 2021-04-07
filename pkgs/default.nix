@@ -18,7 +18,7 @@ let self = {
   secp256k1 = pkgs.callPackage ./secp256k1 { };
 
   nbPython3Packages = (pkgs.python3.override {
-    packageOverrides = pySelf: super: import ./python-packages self pySelf;
+    packageOverrides = import ./python-packages self;
   }).pkgs;
 
   pinned = import ./pinned.nix;
