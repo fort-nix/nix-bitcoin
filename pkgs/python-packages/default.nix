@@ -16,8 +16,8 @@ in {
   txzmq = callPackage ./txzmq {};
 
   # cryptography 3.3.2, required by joinmarketdaemon
-  cryptography = callPackage "${unstable}/pkgs/development/python-modules/cryptography" {};
-  cryptography_vectors = callPackage "${unstable}/pkgs/development/python-modules/cryptography/vectors.nix" {};
+  cryptography = callPackage ./cryptography {};
+  cryptography_vectors = callPackage ./cryptography/vectors.nix {};
 
   joinmarketbase = joinmarketPkg ./jmbase;
   joinmarketclient = joinmarketPkg ./jmclient;
