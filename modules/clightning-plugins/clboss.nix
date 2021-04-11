@@ -12,11 +12,16 @@ let cfg = config.services.clightning.plugins.clboss; in
         Specify target amount (in satoshi) that CLBOSS will leave onchain.
       '';
     };
+    package = mkOption {
+      type = types.package;
+      default = config.nix-bitcoin.pkgs.clboss;
+      description = "The package providing clboss binaries.";
+    };
   };
 
   config = mkIf cfg.enable {
     services.clightning.extraConfig = ''
-      plugin=${config.nix-bitcoin.pkgs.clboss}/bin/clboss
+      plugin=${cfg.package}/bin/clboss
       clboss-min-onchain=${toString cfg.min-onchain}
     '';
     systemd.services.clightning.path = [
