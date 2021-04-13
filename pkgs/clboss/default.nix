@@ -5,11 +5,11 @@ let
 in
 stdenv.mkDerivation rec {
   pname = "clboss";
-  version = "0.10";
+  version = "0.11A";
 
   src = fetchurl {
-    url = "https://github.com/ZmnSCPxj/clboss/releases/download/v${version}/clboss-${version}.tar.gz";
-    sha256 = "1bmlpfhsjs046qx2ikln15rj4kal32752zs1s5yjklsq9xwnbciz";
+    url = "https://github.com/ZmnSCPxj/clboss/releases/download/${version}/clboss-${version}.tar.gz";
+    sha256 = "1vxa1f3jwlybdca2da73a1fnqy55c4ipwwysvkhy74sw5b4q905g";
   };
 
   nativeBuildInputs = [ pkgconfig libev curlWithGnuTLS sqlite ];

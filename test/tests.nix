@@ -47,7 +47,10 @@ let
       test.data.clightning-plugins = let
         plugins = config.services.clightning.plugins;
         enabled = builtins.filter (plugin: plugins.${plugin}.enable) (builtins.attrNames plugins);
-        pluginPkgs = config.nix-bitcoin.pkgs.clightning-plugins;
+        nbPkgs = config.nix-bitcoin.pkgs;
+        pluginPkgs = nbPkgs.clightning-plugins // {
+          clboss.path = "${nbPkgs.clboss}/bin/clboss";
+        };
       in map (plugin: pluginPkgs.${plugin}.path) enabled;
 
       tests.spark-wallet = cfg.spark-wallet.enable;
@@ -95,7 +98,7 @@ let
     }
     (mkIf config.test.features.clightningPlugins {
       services.clightning.plugins = {
-        # TODO: add clboss when https://github.com/ZmnSCPxj/clboss/issues/49 is closed
+        clboss.enable = true;
         helpme.enable = true;
         monitor.enable = true;
         prometheus.enable = true;
