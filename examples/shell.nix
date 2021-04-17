@@ -31,7 +31,16 @@ stdenv.mkDerivation rec {
       ${toString nix-bitcoin-path}/helper/fetch-release
     }
 
+    krops-eval() {
+      nix-instantiate -- --expr '
+        (import <nixpkgs/nixos> {
+          configuration = ./krops/krops-configuration.nix;
+        }).system
+      ' 2> >(grep -v "the result might be removed by the garbage collector") > /dev/null
+    }
+
     krops-deploy() {
+      krops-eval
       # Ensure strict permissions on secrets/ directory before rsyncing it to
       # the target machine
       chmod 700 ${toString ./secrets}
