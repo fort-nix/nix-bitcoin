@@ -4,7 +4,6 @@ let
   nbPkgs = import ../pkgs { inherit pkgs; };
   pkgsUnstable = with nbPkgs; [
     electrs
-    hwi
     joinmarket
     lightning-loop
     lightning-pool
