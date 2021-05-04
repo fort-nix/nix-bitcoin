@@ -14,6 +14,7 @@ in
     lndconnect
     nbxplorer
     btcpayserver
+    electrs
     hwi;
 
   stable = nixBitcoinPkgsStable;
