@@ -1,7 +1,6 @@
 { pkgs ? import <nixpkgs> {} }:
 let self = {
   spark-wallet = pkgs.callPackage ./spark-wallet { };
-  electrs = pkgs.callPackage ./electrs { };
   elementsd = pkgs.callPackage ./elementsd { withGui = false; };
   liquid-swap = pkgs.python3Packages.callPackage ./liquid-swap { };
   joinmarket = pkgs.callPackage ./joinmarket { inherit (self) nbPython3Packages; };

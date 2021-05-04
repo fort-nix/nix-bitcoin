@@ -3,7 +3,6 @@ let
   pkgs = import pinned.nixpkgs-unstable {};
   nbPkgs = import ../pkgs { inherit pkgs; };
   pkgsUnstable = with nbPkgs; [
-    electrs
     joinmarket
     lightning-loop
     lightning-pool
