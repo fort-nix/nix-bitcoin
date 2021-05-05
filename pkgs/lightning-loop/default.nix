@@ -2,17 +2,17 @@
 
 buildGoModule rec {
   pname = "lightning-loop";
-  version = "0.12.1-beta";
+  version = "0.12.2-beta";
 
   src = fetchurl {
     url = "https://github.com/lightninglabs/loop/archive/v${version}.tar.gz";
     # Use ./get-sha256.sh to fetch latest (verified) sha256
-    sha256 = "9e76e6951379a5f7403d27c7a1c98041449055479799b5708a9b6eb12750dcaf";
+    sha256 = "b2fbacdd8b2311b2f9873fa479e399ef7a09cc038b5c8449f9183b0038d81cc3";
   };
 
   subPackages = [ "cmd/loop" "cmd/loopd" ];
 
-  vendorSha256 = "0r0k6b3pml9silwdzvbvbhgcjk6nf9rp6incyqkwr9kdc2fl0dcw";
+  vendorSha256 = "03z0cmn9qgcmqm8llybfn1hz1m9hx3pn18m11s3fwnay8ib00r89";
 
   meta = with lib; {
     description = " Lightning Loop: A Non-Custodial Off/On Chain Bridge";
