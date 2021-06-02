@@ -63,13 +63,14 @@ NixOS modules
     * [summary](https://github.com/lightningd/plugins/tree/master/summary): print a nice summary of the node status
     * [zmq](https://github.com/lightningd/plugins/tree/master/zmq): publishes notifications via ZeroMQ to configured endpoints
   * [lnd](https://github.com/lightningnetwork/lnd) with support for announcing an onion service
+    * [Lightning Loop](https://github.com/lightninglabs/loop)
+    * [Lightning Pool](https://github.com/lightninglabs/pool)
+    * [charge-lnd](https://github.com/accumulator/charge-lnd): policy-based channel fee manager
     * [lndconnect](https://github.com/LN-Zap/lndconnect) via a REST onion service
   * [spark-wallet](https://github.com/shesek/spark-wallet)
   * [electrs](https://github.com/romanz/electrs)
   * [btcpayserver](https://github.com/btcpayserver/btcpayserver)
   * [liquid](https://github.com/elementsproject/elements)
-  * [Lightning Loop](https://github.com/lightninglabs/loop)
-  * [Lightning Pool](https://github.com/lightninglabs/pool)
   * [JoinMarket](https://github.com/joinmarket-org/joinmarket-clientserver)
     * [JoinMarket Orderbook Watcher](https://github.com/JoinMarket-Org/joinmarket-clientserver/blob/master/docs/orderbook.md)
   * [recurring-donations](modules/recurring-donations.nix): for periodic lightning payments

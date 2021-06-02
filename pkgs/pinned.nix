@@ -9,6 +9,7 @@ in
   inherit (nixpkgsUnstable)
     bitcoin
     bitcoind
+    charge-lnd
     clightning
     lnd
     lndconnect

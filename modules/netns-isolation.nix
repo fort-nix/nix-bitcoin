@@ -249,6 +249,10 @@ in {
         id = 27;
         connections = [ "lnd" ];
       };
+      charge-lnd = {
+        id = 28;
+        connections = [ "lnd" "electrs" ];
+      };
     };
 
     services.bitcoind = {

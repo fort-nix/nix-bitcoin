@@ -199,6 +199,13 @@ def _():
     )
 
 
+@test("charge-lnd")
+def _():
+    # charge-lnd is a oneshot service that is started by a timer under regular operation
+    succeed("systemctl start charge-lnd")
+    assert_no_failure("charge-lnd")
+
+
 @test("btcpayserver")
 def _():
     assert_running("nbxplorer")
