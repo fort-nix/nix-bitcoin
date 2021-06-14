@@ -99,5 +99,5 @@ Docs
 Troubleshooting
 ---
 If you are having problems with nix-bitcoin check the [FAQ](docs/faq.md) or submit an issue.
-There's also a `#nix-bitcoin` IRC channel on freenode.
+There's also a `#nix-bitcoin` IRC channel on [libera](https://libera.chat).
 We are always happy to help.
