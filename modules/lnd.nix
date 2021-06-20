@@ -198,7 +198,7 @@ in {
         RestartSec = "10s";
         ReadWritePaths = cfg.dataDir;
         ExecStartPost = let
-          curl = "${pkgs.curl}/bin/curl -s --show-error";
+          curl = "${pkgs.curl}/bin/curl -s --show-error --retry 10";
           restUrl = "https://${cfg.restAddress}:${toString cfg.restPort}/v1";
         in [
           (nbLib.script "lnd-create-wallet" ''
