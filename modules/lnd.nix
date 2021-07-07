@@ -239,6 +239,16 @@ in {
                 -d "{\"wallet_password\": \"$(cat ${secretsDir}/lnd-wallet-password | tr -d '\n' | base64 -w0)\"}" \
                 ${restUrl}/unlockwallet
             fi
+            state=""
+            while [ "$state" != "RPC_ACTIVE" ]; do
+              state=$(${curl} \
+                --cacert ${secretsDir}/lnd-cert \
+                -d '{}' \
+                -X POST \
+                ${restUrl}/state |\
+                ${pkgs.jq}/bin/jq -r '.state')
+              sleep 0.1
+            done
           '')
           # Setting macaroon permission for other users needs root permissions
           (nbLib.privileged "lnd-create-macaroons" ''
