@@ -15,7 +15,9 @@ in
     nbxplorer
     btcpayserver
     electrs
-    hwi;
+    hwi
+    lightning-loop
+    lightning-pool;
 
   stable = nixBitcoinPkgsStable;
   unstable = nixBitcoinPkgsUnstable;
