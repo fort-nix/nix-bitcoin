@@ -239,11 +239,6 @@ in {
                 -d "{\"wallet_password\": \"$(cat ${secretsDir}/lnd-wallet-password | tr -d '\n' | base64 -w0)\"}" \
                 ${restUrl}/unlockwallet
             fi
-
-            # Wait until the RPC port is open
-            while ! { exec 3>/dev/tcp/${cfg.rpcAddress}/${toString cfg.rpcPort}; } &>/dev/null; do
-              sleep 0.1
-            done
           '')
           # Setting macaroon permission for other users needs root permissions
           (nbLib.privileged "lnd-create-macaroons" ''
