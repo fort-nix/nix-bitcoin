@@ -198,7 +198,10 @@ in {
         RestartSec = "10s";
         ReadWritePaths = cfg.dataDir;
         ExecStartPost = let
-          curl = "${pkgs.curl}/bin/curl -s --show-error";
+          # Retrying is necessary because it can happen that the lnd socket is
+          # existing, but the RPC service isn't yet, which results in error
+          # "waiting to start, RPC services not available".
+          curl = "${pkgs.curl}/bin/curl -s --show-error --retry 10";
           restUrl = "https://${cfg.restAddress}:${toString cfg.restPort}/v1";
         in [
           (nbLib.script "lnd-create-wallet" ''
