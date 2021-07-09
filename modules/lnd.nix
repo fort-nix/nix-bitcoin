@@ -198,7 +198,10 @@ in {
         RestartSec = "10s";
         ReadWritePaths = cfg.dataDir;
         ExecStartPost = let
-          curl = "${pkgs.curl}/bin/curl -s --show-error";
+          # Retrying is necessary because it can happen that the lnd socket is
+          # existing, but the RPC service isn't yet, which results in error
+          # "waiting to start, RPC services not available".
+          curl = "${pkgs.curl}/bin/curl -s --show-error --retry 10";
           restUrl = "https://${cfg.restAddress}:${toString cfg.restPort}/v1";
         in [
           (nbLib.script "lnd-create-wallet" ''
@@ -239,9 +242,14 @@ in {
                 -d "{\"wallet_password\": \"$(cat ${secretsDir}/lnd-wallet-password | tr -d '\n' | base64 -w0)\"}" \
                 ${restUrl}/unlockwallet
             fi
-
-            # Wait until the RPC port is open
-            while ! { exec 3>/dev/tcp/${cfg.rpcAddress}/${toString cfg.rpcPort}; } &>/dev/null; do
+            state=""
+            while [ "$state" != "RPC_ACTIVE" ]; do
+              state=$(${curl} \
+                --cacert ${secretsDir}/lnd-cert \
+                -d '{}' \
+                -X POST \
+                ${restUrl}/state |\
+                ${pkgs.jq}/bin/jq -r '.state')
               sleep 0.1
             done
           '')
