@@ -4,8 +4,6 @@ let
   nbPkgs = import ../pkgs { inherit pkgs; };
   pkgsUnstable = with nbPkgs; [
     joinmarket
-    lightning-loop
-    lightning-pool
 
     ## elementsd fails with error
     # test/key_properties.cpp:16:10: fatal error: rapidcheck/boost_test.h: No such file or directory
