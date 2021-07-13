@@ -183,6 +183,7 @@ let
       imports = [ scenarios.regtestBase ];
       services.clightning.enable = true;
       test.features.clightningPlugins = true;
+      services.liquidd.enable = true;
       services.spark-wallet.enable = true;
       services.lnd.enable = true;
       services.lightning-loop.enable = true;
