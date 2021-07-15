@@ -176,6 +176,15 @@
   # Set this to create a public onion service for lnd.
   # nix-bitcoin.onionServices.lnd.public = true;
 
+  ### charge-lnd
+  # Enable this module to use charge-lnd, a simple policy based fee manager for
+  # LND. With this tool you can set fees to autobalance, recover channel open
+  # costs, use on-chain fees as reference, or just use static fees. You decide.
+  # services.charge-lnd.enable = true;
+  # Define policies as outlined in the project documentation.
+  # services.charge-lnd.policies = ''
+  # '';
+
   ### Backups
   # Enable this module to use nix-bitcoin's own backups module. By default, it
   # uses duplicity to incrementally back up all important files in /var/lib to

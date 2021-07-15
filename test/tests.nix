@@ -65,6 +65,8 @@ let
       tests.lightning-pool = cfg.lightning-pool.enable;
       nix-bitcoin.onionServices.lnd.public = true;
 
+      tests.charge-lnd = cfg.charge-lnd.enable;
+
       tests.electrs = cfg.electrs.enable;
 
       tests.liquidd = cfg.liquidd.enable;
@@ -136,6 +138,7 @@ let
       services.lnd.restOnionService.enable = true;
       services.lightning-loop.enable = true;
       services.lightning-pool.enable = true;
+      services.charge-lnd.enable = true;
       services.electrs.enable = true;
       services.liquidd.enable = true;
       services.btcpayserver.enable = true;
@@ -178,6 +181,7 @@ let
       services.lnd.enable = true;
       services.lightning-loop.enable = true;
       services.lightning-pool.enable = true;
+      services.charge-lnd.enable = true;
       services.electrs.enable = true;
       services.btcpayserver.enable = true;
       services.joinmarket.enable = true;
