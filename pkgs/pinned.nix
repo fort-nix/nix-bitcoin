@@ -16,6 +16,7 @@ in
     nbxplorer
     btcpayserver
     electrs
+    elementsd
     hwi
     lightning-loop
     lightning-pool;
