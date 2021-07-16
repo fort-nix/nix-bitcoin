@@ -17,6 +17,7 @@ in
     btcpayserver
     electrs
     hwi
+    secp256k1
     lightning-loop
     lightning-pool;
 

@@ -11,7 +11,6 @@ let self = {
   extra-container = pkgs.callPackage ./extra-container { };
   clightning-plugins = import ./clightning-plugins pkgs self.nbPython3Packages;
   clboss = pkgs.callPackage ./clboss { };
-  secp256k1 = pkgs.callPackage ./secp256k1 { };
 
   nbPython3Packages = (pkgs.python3.override {
     packageOverrides = import ./python-packages self;
