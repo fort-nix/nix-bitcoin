@@ -238,13 +238,8 @@ in {
                 -d "{\"wallet_password\": \"$(cat ${secretsDir}/lnd-wallet-password | tr -d '\n' | base64 -w0)\"}" \
                 ${restUrl}/unlockwallet
             fi
-            state=""
-            while [ "$state" != "RPC_ACTIVE" ]; do
-              state=$(${curl} \
-                -d '{}' \
-                -X POST \
-                ${restUrl}/state |\
-                ${pkgs.jq}/bin/jq -r '.state')
+            # Wait until the wallet has been unlocked and RPC is fully active
+            while [[ $(${curl} -d '{}' -X POST ${restUrl}/state | ${pkgs.jq}/bin/jq -r '.state') != RPC_ACTIVE ]]; do
               sleep 0.1
             done
           '')
