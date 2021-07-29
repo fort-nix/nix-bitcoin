@@ -201,7 +201,7 @@ in {
           # Retrying is necessary because it can happen that the lnd socket is
           # existing, but the RPC service isn't yet, which results in error
           # "waiting to start, RPC services not available".
-          curl = "${pkgs.curl}/bin/curl -s --show-error --retry 10";
+          curl = "${pkgs.curl}/bin/curl -s --show-error --retry 10 --cacert ${secretsDir}/lnd-cert";
           restUrl = "https://${cfg.restAddress}:${toString cfg.restPort}/v1";
         in [
           (nbLib.script "lnd-create-wallet" ''
@@ -216,14 +216,11 @@ in {
               if [[ ! -f "$mnemonic" ]]; then
                 echo Create lnd seed
                 umask u=r,go=
-                ${curl} \
-                  --cacert ${secretsDir}/lnd-cert \
-                  -X GET ${restUrl}/genseed | ${pkgs.jq}/bin/jq -c '.cipher_seed_mnemonic' > "$mnemonic"
+                ${curl} -X GET ${restUrl}/genseed | ${pkgs.jq}/bin/jq -c '.cipher_seed_mnemonic' > "$mnemonic"
               fi
 
               echo Create lnd wallet
               ${curl} --output /dev/null \
-                --cacert ${secretsDir}/lnd-cert \
                 -X POST -d "{\"wallet_password\": \"$(cat ${secretsDir}/lnd-wallet-password | tr -d '\n' | base64 -w0)\", \
                 \"cipher_seed_mnemonic\": $(cat "$mnemonic" | tr -d '\n')}" \
                 ${restUrl}/initwallet
@@ -237,7 +234,6 @@ in {
               echo Unlock lnd wallet
               ${curl} \
                 -H "Grpc-Metadata-macaroon: $(${pkgs.xxd}/bin/xxd -ps -u -c 99999 '${networkDir}/admin.macaroon')" \
-                --cacert ${secretsDir}/lnd-cert \
                 -X POST \
                 -d "{\"wallet_password\": \"$(cat ${secretsDir}/lnd-wallet-password | tr -d '\n' | base64 -w0)\"}" \
                 ${restUrl}/unlockwallet
@@ -245,7 +241,6 @@ in {
             state=""
             while [ "$state" != "RPC_ACTIVE" ]; do
               state=$(${curl} \
-                --cacert ${secretsDir}/lnd-cert \
                 -d '{}' \
                 -X POST \
                 ${restUrl}/state |\
@@ -261,7 +256,6 @@ in {
               macaroonPath="$RUNTIME_DIRECTORY/${macaroon}.macaroon"
               ${curl} \
                 -H "Grpc-Metadata-macaroon: $(${pkgs.xxd}/bin/xxd -ps -u -c 99999 '${networkDir}/admin.macaroon')" \
-                --cacert ${secretsDir}/lnd-cert \
                 -X POST \
                 -d '{"permissions":[${cfg.macaroons.${macaroon}.permissions}]}' \
                 ${restUrl}/macaroon |\
