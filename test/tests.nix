@@ -52,6 +52,12 @@ let
           clboss.path = "${nbPkgs.clboss}/bin/clboss";
         };
       in map (plugin: pluginPkgs.${plugin}.path) enabled;
+      # Torified 'dig' subprocesses of clboss don't respond to SIGTERM and keep
+      # running for a long time when WAN is disabled, which prevents clightning units
+      # from stopping quickly.
+      # Set TimeoutStopSec for faster stopping.
+      systemd.services.clightning.serviceConfig.TimeoutStopSec =
+        mkIf config.services.clightning.plugins.clboss.enable "500ms";
 
       tests.spark-wallet = cfg.spark-wallet.enable;
 
