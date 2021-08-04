@@ -21,6 +21,8 @@ in
     lightning-loop
     lightning-pool;
 
+  inherit nixpkgsStable nixpkgsUnstable;
+
   stable = nixBitcoinPkgsStable;
   unstable = nixBitcoinPkgsUnstable;
 }
