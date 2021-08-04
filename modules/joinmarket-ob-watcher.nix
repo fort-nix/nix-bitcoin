@@ -80,6 +80,7 @@ in {
           ${nbPkgs.joinmarket}/bin/ob-watcher --datadir=${cfg.dataDir} \
             --host=${cfg.address} --port=${toString cfg.port}
         '';
+        SystemCallFilter = nbLib.defaultHardening.SystemCallFilter ++ [ "mbind" ] ;
         Restart = "on-failure";
         RestartSec = "10s";
       } // nbLib.allowTor;
