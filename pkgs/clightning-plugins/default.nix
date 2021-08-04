@@ -17,7 +17,7 @@ let
     monitor = {};
     prometheus = {
       extraPkgs = [ prometheus_client ];
-      patchRequirements = "--replace prometheus-client==0.6.0 prometheus-client==0.8.0";
+      patchRequirements = "--replace prometheus-client==0.6.0 prometheus-client==0.9.0";
     };
     rebalance = {};
     summary = {
