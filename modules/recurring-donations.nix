@@ -97,6 +97,7 @@ in {
     };
 
     users.users.recurring-donations = {
+      isSystemUser = true;
       group = "recurring-donations";
       extraGroups = [ config.services.clightning.group ];
     };

@@ -230,6 +230,7 @@ in {
     }; in self;
 
     users.users.${cfg.nbxplorer.user} = {
+      isSystemUser = true;
       group = cfg.nbxplorer.group;
       extraGroups = [ "bitcoinrpc-public" ]
                     ++ optional cfg.btcpayserver.lbtc cfg.liquidd.group;
@@ -237,6 +238,7 @@ in {
     };
     users.groups.${cfg.nbxplorer.group} = {};
     users.users.${cfg.btcpayserver.user} = {
+      isSystemUser = true;
       group = cfg.btcpayserver.group;
       extraGroups = [ cfg.nbxplorer.group ]
                     ++ optional (cfg.btcpayserver.lightningBackend == "clightning") cfg.clightning.user;

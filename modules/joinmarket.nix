@@ -270,6 +270,7 @@ in {
     };
 
     users.users.${cfg.user} = {
+      isSystemUser = true;
       group = cfg.group;
       home = cfg.dataDir;
       # Allow access to the tor control socket, needed for payjoin onion service creation

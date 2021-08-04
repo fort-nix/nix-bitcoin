@@ -133,8 +133,8 @@ in
     };
 
     users.users.${user} = {
-      group = group;
       isSystemUser = true;
+      group = group;
     };
     users.groups.${group} = {};
   };

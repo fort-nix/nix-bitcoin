@@ -65,6 +65,7 @@ in {
     services.clightning.enable = true;
 
     users.users.${cfg.user} = {
+      isSystemUser = true;
       group = cfg.group;
       extraGroups = [ config.services.clightning.group ];
     };

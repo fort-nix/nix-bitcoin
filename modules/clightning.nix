@@ -140,6 +140,7 @@ in {
     };
 
     users.users.${cfg.user} = {
+      isSystemUser = true;
       group = cfg.group;
       extraGroups = [ "bitcoinrpc-public" ];
     };

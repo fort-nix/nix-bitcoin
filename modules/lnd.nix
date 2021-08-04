@@ -263,6 +263,7 @@ in {
     };
 
     users.users.${cfg.user} = {
+      isSystemUser = true;
       group = cfg.group;
       extraGroups = [ "bitcoinrpc-public" ];
       home = cfg.dataDir; # lnd creates .lnd dir in HOME

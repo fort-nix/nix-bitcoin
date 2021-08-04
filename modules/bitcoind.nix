@@ -388,7 +388,10 @@ in {
       } // nbLib.allowLocalIPAddresses;
     };
 
-    users.users.${cfg.user}.group = cfg.group;
+    users.users.${cfg.user} = {
+      isSystemUser = true;
+      group = cfg.group;
+    };
     users.groups.${cfg.group} = {};
     users.groups.bitcoinrpc-public = {};
     nix-bitcoin.operator.groups = [ cfg.group ];
