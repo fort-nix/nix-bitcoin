@@ -6,7 +6,8 @@
 
 let
   nodeEnv = import "${toString pkgs.path}/pkgs/development/node-packages/node-env.nix" {
-    inherit (pkgs) stdenv python2 utillinux runCommand writeTextFile;
+    inherit pkgs;
+    inherit (pkgs) lib stdenv python2 runCommand writeTextFile;
     inherit nodejs;
     libtool = if pkgs.stdenv.isDarwin then pkgs.darwin.cctools else null;
   };
