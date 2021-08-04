@@ -106,6 +106,9 @@ let
       systemd.services.setup-secrets.preStart = mkIfTest "security" ''
         install -D -o nobody -g nogroup -m777 <(:) /secrets/dummy
       '';
+
+      # Avoid timeout failures on slow CI nodes
+      systemd.services.postgresql.serviceConfig.TimeoutStartSec = "3min";
     }
     (mkIf config.test.features.clightningPlugins {
       services.clightning.plugins = {
