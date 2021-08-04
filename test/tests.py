@@ -239,7 +239,7 @@ def _():
 @test("joinmarket-yieldgenerator")
 def _():
     machine.wait_until_succeeds(
-        log_has_string("joinmarket-yieldgenerator", "Critical error updating blockheight.",)
+        log_has_string("joinmarket-yieldgenerator", "Critical error updating blockheight.")
     )
 
 
