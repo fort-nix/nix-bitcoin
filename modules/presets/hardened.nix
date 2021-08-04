@@ -9,6 +9,6 @@
   # Needed for sandboxed builds and services
   security.allowUserNamespaces = true;
 
-  # The "scudo" allocator is broken on NixOS 20.09
+  # The "scudo" allocator is broken on NixOS >= 20.09
   environment.memoryAllocator.provider = "libc";
 }
