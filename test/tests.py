@@ -1,6 +1,7 @@
 from collections import OrderedDict
 import json
 
+logger = machine.logger
 
 def succeed(*cmds):
     """Returns the concatenated output of all cmds"""
@@ -39,7 +40,7 @@ def wait_for_open_port(address, port):
         status, _ = machine.execute(f"nc -z {address} {port}")
         return status == 0
 
-    with log.nested(f"Waiting for TCP port {address}:{port}"):
+    with logger.nested(f"Waiting for TCP port {address}:{port}"):
         retry(is_port_open)
 
 
@@ -66,7 +67,7 @@ def run_tests():
         raise RuntimeError(f"The following tests are enabled but not defined: {enabled}")
     machine.connect()  # Visually separate boot output from the test output
     for test in to_run:
-        with log.nested(f"test: {test}"):
+        with logger.nested(f"test: {test}"):
             tests[test]()
 
 
@@ -150,9 +151,9 @@ def _():
                 f"Output of 'lightning-cli plugin list':\n{plugin_list}"
             )
         else:
-            log.log("Active clightning plugins:")
+            logger.log("Active clightning plugins:")
             for p in test_data["clightning-plugins"]:
-                log.log(os.path.basename(p))
+                logger.log(os.path.basename(p))
 
 
 @test("lnd")
