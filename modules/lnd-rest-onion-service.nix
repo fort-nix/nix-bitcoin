@@ -40,8 +40,9 @@ in {
   config = mkIf cfg.enable {
     services.tor = {
       enable = true;
-      hiddenServices.lnd-rest = nbLib.mkHiddenService {
-        toHost = lnd.restAddress;
+      relay.onionServices.lnd-rest = nbLib.mkOnionService {
+        target.addr = lnd.restAddress;
+        target.port = lnd.restPort;
         port = lnd.restPort;
       };
     };

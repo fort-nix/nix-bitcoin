@@ -97,8 +97,13 @@ in {
   # Base infrastructure
   {
     networking.dhcpcd.denyInterfaces = [ "nb-br" "nb-veth*" ];
-    services.tor.client.socksListenAddress = "${bridgeIp}:9050";
-    networking.firewall.interfaces.nb-br.allowedTCPPorts = [ 9050 ];
+    services.tor.client.socksListenAddress = {
+      addr = bridgeIp;
+      # Default NixOS values. These must be repeated when redefining this option.
+      port = 9050;
+      IsolateDestAddr = true;
+    };
+    networking.firewall.interfaces.nb-br.allowedTCPPorts = [ config.services.tor.client.socksListenAddress.port ];
     boot.kernel.sysctl."net.ipv4.ip_forward" = true;
 
     security.wrappers.netns-exec = {

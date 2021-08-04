@@ -184,7 +184,7 @@ in {
         network=${config.services.bitcoind.network}
         bind=${cfg.btcpayserver.address}
         port=${toString cfg.btcpayserver.port}
-        socksendpoint=${cfg.tor.client.socksListenAddress}
+        socksendpoint=${config.nix-bitcoin.torClientAddressWithPort}
         btcexplorerurl=${nbExplorerUrl}
         btcexplorercookiefile=${nbExplorerCookie}
         postgres=User ID=${cfg.btcpayserver.user};Host=/run/postgresql;Database=btcpaydb

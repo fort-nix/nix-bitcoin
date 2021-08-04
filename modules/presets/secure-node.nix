@@ -29,7 +29,7 @@ in {
     ];
 
     # sshd
-    services.tor.hiddenServices.sshd = nbLib.mkHiddenService { port = 22; };
+    services.tor.relay.onionServices.sshd = nbLib.mkOnionService { port = 22; };
     nix-bitcoin.onionAddresses.access.${operatorName} = [ "sshd" ];
 
     services.bitcoind = {

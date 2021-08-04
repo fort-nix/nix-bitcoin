@@ -10,7 +10,14 @@ let
   runAsUser = config.nix-bitcoin.runAsUserCmd;
 
   inherit (config.services) bitcoind;
-  torAddress = builtins.head (builtins.split ":" config.services.tor.client.socksListenAddress);
+
+  torAddress = config.services.tor.client.socksListenAddress;
+  socks5Settings = ''
+    socks5 = true
+    socks5_host = ${torAddress.addr}
+    socks5_port = ${toString torAddress.port}
+  '';
+
   # Based on https://github.com/JoinMarket-Org/joinmarket-clientserver/blob/master/jmclient/jmclient/configure.py
   yg = cfg.yieldgenerator;
   configFile = builtins.toFile "config" ''
@@ -34,18 +41,14 @@ let
     channel = joinmarket-pit
     port = 6697
     usessl = true
-    socks5 = true
-    socks5_host = ${torAddress}
-    socks5_port = 9050
+    ${socks5Settings}
 
     [MESSAGING:server2]
     host = ncwkrwxpq2ikcngxq3dy2xctuheniggtqeibvgofixpzvrwpa77tozqd.onion
     channel = joinmarket-pit
     port = 6667
     usessl = false
-    socks5 = true
-    socks5_host = ${torAddress}
-    socks5_port = 9050
+    ${socks5Settings}
 
     [LOGGING]
     console_log_level = INFO
@@ -72,8 +75,8 @@ let
     disable_output_substitution = 0
     max_additional_fee_contribution = default
     min_fee_rate = 1.1
-    onion_socks5_host = ${torAddress}
-    onion_socks5_port = 9050
+    onion_socks5_host = ${torAddress.addr}
+    onion_socks5_port = ${toString torAddress.port}
     tor_control_host = unix:/run/tor/control
     hidden_service_ssl = false
 
