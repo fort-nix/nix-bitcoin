@@ -271,9 +271,9 @@ def _():
 
     if "joinmarket" in enabled_tests:
         # netns-exec should drop capabilities
-        assert_full_match(
+        assert_matches(
             "runuser -u operator -- netns-exec nb-joinmarket capsh --print | grep Current",
-            "Current: =\n",
+            re.compile("^Current: =$", re.MULTILINE),
         )
 
     if "clightning" in enabled_tests:
