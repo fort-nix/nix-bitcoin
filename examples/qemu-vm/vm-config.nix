@@ -4,7 +4,7 @@
 
   config = {
     virtualisation.graphics = false;
-    services.mingetty.autologinUser = "root";
+    services.getty.autologinUser = "root";
     users.users.root = {
       openssh.authorizedKeys.keyFiles = [ ./id-vm.pub ];
     };

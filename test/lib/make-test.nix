@@ -69,7 +69,7 @@ name: testConfig:
       "${toString pkgs.path}/nixos/modules/virtualisation/qemu-vm.nix"
     ];
     virtualisation.graphics = false;
-    services.mingetty.autologinUser = "root";
+    services.getty.autologinUser = "root";
 
     # Provide a shortcut for instant poweroff from within the machine
     environment.systemPackages = with pkgs; [
