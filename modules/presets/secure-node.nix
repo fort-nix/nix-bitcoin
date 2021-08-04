@@ -18,7 +18,7 @@ in {
 
     networking.firewall.enable = true;
 
-    nix-bitcoin.security.hideProcessInformation = true;
+    nix-bitcoin.security.dbusHideProcessInformation = true;
 
     # Use doas instead of sudo
     security.doas.enable = true;

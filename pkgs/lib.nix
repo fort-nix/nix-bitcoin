@@ -17,9 +17,8 @@ let self = {
       ProtectKernelModules = "true";
       ProtectKernelLogs = "true";
       ProtectClock = "true";
-      # Test and enable these when systemd v247 is available
-      # ProtectProc = "invisible";
-      # ProcSubset = "pid";
+      ProtectProc = "invisible";
+      ProcSubset = "pid";
       ProtectControlGroups = "true";
       RestrictAddressFamilies = "AF_UNIX AF_INET AF_INET6";
       RestrictNamespaces = "true";

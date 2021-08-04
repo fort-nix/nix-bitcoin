@@ -85,9 +85,6 @@ def _():
     succeed('[[ $(stat -c "%U:%G %a" /secrets/dummy) = "root:root 440" ]]')
 
     if "secure-node" in enabled_tests:
-        # Access to '/proc' should be restricted
-        machine.succeed("grep -Fq hidepid=2 /proc/mounts")
-
         machine.wait_for_unit("bitcoind")
         # `systemctl status` run by unprivileged users shouldn't leak cgroup info
         assert_matches(
@@ -96,7 +93,6 @@ def _():
         )
         # The 'operator' with group 'proc' has full access
         assert_full_match("runuser -u operator -- systemctl status bitcoind 2>&1 >/dev/null", "")
-
 
 @test("bitcoind")
 def _():
