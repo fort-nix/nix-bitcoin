@@ -91,6 +91,22 @@ let
           rm -f "${secretsDir}"/{lnd-seed-mnemonic,jm-wallet-seed}
       '';
     }
+    {
+      version = "0.0.49";
+      condition = config.services.joinmarket.enable;
+      message = ''
+        Starting with 0.21.0, bitcoind no longer automatically creates and loads a
+        default wallet named `wallet.dat` [1].
+        The joinmarket service now automatically creates a watch-only bitcoind wallet
+        (named by option `services.joinmarket.rpcWalletFile`) when creating a joinmarket wallet.
+
+        If you've used JoinMarket before, add the following to your configuration to
+        continue using the default `wallet.dat` wallet:
+        services.joinmarket.rpcWalletFile = null;
+
+        [1] https://github.com/bitcoin/bitcoin/pull/15454
+      '';
+    }
   ];
 
   incompatibleChanges = optionals
