@@ -231,37 +231,35 @@ in {
       wantedBy = [ "multi-user.target" ];
       requires = [ "bitcoind.service" ];
       after = [ "bitcoind.service" ];
-      serviceConfig = nbLib.defaultHardening // {
-        ExecStartPre = nbLib.script "joinmarket-create-config" ''
-          install -o '${cfg.user}' -g '${cfg.group}' -m 640 ${configFile} ${cfg.dataDir}/joinmarket.cfg
+      preStart = ''
+        install -o '${cfg.user}' -g '${cfg.group}' -m 640 ${configFile} ${cfg.dataDir}/joinmarket.cfg
           sed -i \
-             "s|@@RPC_PASSWORD@@|rpc_password = $(cat ${secretsDir}/bitcoin-rpcpassword-privileged)|" \
-             '${cfg.dataDir}/joinmarket.cfg'
+            "s|@@RPC_PASSWORD@@|rpc_password = $(cat ${secretsDir}/bitcoin-rpcpassword-privileged)|" \
+            '${cfg.dataDir}/joinmarket.cfg'
         '';
-        # Generating wallets (jmclient/wallet.py) is only supported for mainnet or testnet
-        ExecStartPost = mkIf (bitcoind.network == "mainnet")
-          (nbLib.script "joinmarket-create-wallet" ''
-            walletname=wallet.jmdat
-            wallet=${cfg.dataDir}/wallets/$walletname
-            if [[ ! -f $wallet ]]; then
-              ${optionalString (cfg.rpcWalletFile != null) ''
-                echo "Create watch-only wallet ${cfg.rpcWalletFile}"
-                ${bitcoind.cli}/bin/bitcoin-cli -named createwallet \
-                  wallet_name="${cfg.rpcWalletFile}" \
-                  disable_private_keys=true
-              ''}
-              pw=$(cat "${secretsDir}"/jm-wallet-password)
-              cd ${cfg.dataDir}
-              if ! ${nbPkgs.joinmarket}/bin/jm-genwallet --datadir=${cfg.dataDir} $walletname $pw \
-                     | grep 'recovery_seed' \
-                     | cut -d ':' -f2 \
-                     | (umask u=r,go=; cat > jm-wallet-seed); then
-                echo "wallet creation failed"
-                rm -f "$wallet" jm-wallet-seed
-                exit 1
-              fi
-            fi
-          '');
+      # Generating wallets (jmclient/wallet.py) is only supported for mainnet or testnet
+      postStart = mkIf (bitcoind.network == "mainnet") ''
+        walletname=wallet.jmdat
+        wallet=${cfg.dataDir}/wallets/$walletname
+        if [[ ! -f $wallet ]]; then
+          ${optionalString (cfg.rpcWalletFile != null) ''
+            echo "Create watch-only wallet ${cfg.rpcWalletFile}"
+            ${bitcoind.cli}/bin/bitcoin-cli -named createwallet \
+              wallet_name="${cfg.rpcWalletFile}" disable_private_keys=true
+          ''}
+          pw=$(cat "${secretsDir}"/jm-wallet-password)
+          cd ${cfg.dataDir}
+          if ! ${nbPkgs.joinmarket}/bin/jm-genwallet --datadir=${cfg.dataDir} $walletname $pw \
+                 | grep 'recovery_seed' \
+                 | cut -d ':' -f2 \
+                 | (umask u=r,go=; cat > jm-wallet-seed); then
+            echo "wallet creation failed"
+            rm -f "$wallet" jm-wallet-seed
+            exit 1
+          fi
+        fi
+      '';
+      serviceConfig = nbLib.defaultHardening // {
         ExecStart = "${nbPkgs.joinmarket}/bin/joinmarketd";
         WorkingDirectory = cfg.dataDir; # The service creates 'commitmentlist' in the working dir
         User = cfg.user;
