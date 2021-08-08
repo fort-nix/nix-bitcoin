@@ -30,7 +30,7 @@ let
     ${optionalString (cfg.rpcWalletFile != null) "rpc_wallet_file=${cfg.rpcWalletFile}"}
 
     [MESSAGING:server1]
-    host = darksci3bfoka7tw.onion
+    host = darkirc6tqgpnwd3blln3yfv5ckl47eg7llfxkmtovrv7c7iwohhb6ad.onion
     channel = joinmarket-pit
     port = 6697
     usessl = true

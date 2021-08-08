@@ -1,10 +1,10 @@
 { stdenv, lib, fetchurl, python3, nbPython3Packages, pkgs }:
 
 let
-  version = "0.8.2";
+  version = "0.8.3";
   src = fetchurl {
     url = "https://github.com/JoinMarket-Org/joinmarket-clientserver/archive/v${version}.tar.gz";
-    sha256 = "0bi1d49kn57b0775cd8gzsc13dbiivvnhrc61d1xb4z1cr3ih8q2";
+    sha256 = "0kcgp8lsgnbaxfv13lrg6x7vcbdi5yj526lq9vmvbbidyw4km3r2";
   };
 
   runtimePackages = with nbPython3Packages; [
