@@ -232,7 +232,7 @@ in {
       requires = [ "bitcoind.service" ];
       after = [ "bitcoind.service" ];
       serviceConfig = nbLib.defaultHardening // {
-        ExecStartPre = nbLib.privileged "joinmarket-create-config" ''
+        ExecStartPre = nbLib.script "joinmarket-create-config" ''
           install -o '${cfg.user}' -g '${cfg.group}' -m 640 ${configFile} ${cfg.dataDir}/joinmarket.cfg
           sed -i \
              "s|@@RPC_PASSWORD@@|rpc_password = $(cat ${secretsDir}/bitcoin-rpcpassword-privileged)|" \
@@ -270,7 +270,7 @@ in {
       group = cfg.group;
       home = cfg.dataDir;
       # Allow access to the tor control socket, needed for payjoin onion service creation
-      extraGroups = [ "tor" ];
+      extraGroups = [ "tor" "bitcoin" ];
     };
     users.groups.${cfg.group} = {};
     nix-bitcoin.operator = {
