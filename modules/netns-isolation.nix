@@ -230,12 +230,14 @@ in {
       };
       nbxplorer = {
         id = 23;
-        connections = [ "bitcoind" ];
+        connections = [ "bitcoind" ]
+                      ++ optional config.services.btcpayserver.lbtc "liquidd";
       };
       btcpayserver = {
         id = 24;
         connections = [ "nbxplorer" ]
-                      ++ optional (config.services.btcpayserver.lightningBackend == "lnd") "lnd";
+                      ++ optional (config.services.btcpayserver.lightningBackend == "lnd") "lnd"
+                      ++ optional config.services.btcpayserver.lbtc "liquidd";
         # communicates with clightning over rpc socket
       };
       joinmarket = {

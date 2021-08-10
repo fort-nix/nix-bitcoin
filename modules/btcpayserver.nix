@@ -61,7 +61,10 @@ in {
       };
       package = mkOption {
         type = types.package;
-        default = nbPkgs.btcpayserver;
+        default = if cfg.btcpayserver.lbtc then
+                    nbPkgs.btcpayserver.override { altcoinSupport = true; }
+                  else
+                    nbPkgs.btcpayserver;
         description = "The package providing btcpayserver binaries.";
       };
       dataDir = mkOption {
@@ -84,6 +87,11 @@ in {
         default = null;
         description = "The lightning node implementation to use.";
       };
+      lbtc = mkOption {
+        type = types.bool;
+        default = false;
+        description = "Enable liquid support in btcpayserver.";
+      };
       rootpath = mkOption {
         type = types.nullOr types.str;
         default = null;
@@ -98,6 +106,7 @@ in {
     services.bitcoind.enable = true;
     services.clightning.enable = mkIf (cfg.btcpayserver.lightningBackend == "clightning") true;
     services.lnd.enable = mkIf (cfg.btcpayserver.lightningBackend == "lnd") true;
+    services.liquidd.enable = mkIf cfg.btcpayserver.lbtc true;
 
     services.bitcoind.rpc.users.btcpayserver = {
       passwordHMACFromFile = true;
@@ -135,6 +144,12 @@ in {
         btcnodeendpoint=${config.services.bitcoind.address}:${toString config.services.bitcoind.port}
         bind=${cfg.nbxplorer.address}
         port=${toString cfg.nbxplorer.port}
+        ${optionalString cfg.btcpayserver.lbtc ''
+          chains=btc,lbtc
+          lbtcrpcuser=${cfg.liquidd.rpcuser}
+          lbtcrpcurl=http://${cfg.liquidd.rpc.address}:${toString cfg.liquidd.rpc.port}
+          lbtcnodeendpoint=${cfg.liquidd.address}:${toString cfg.liquidd.port}
+        ''}
       '';
     in {
       wantedBy = [ "multi-user.target" ];
@@ -142,8 +157,12 @@ in {
       after = [ "bitcoind.service" ];
       preStart = ''
         install -m 600 ${configFile} '${cfg.nbxplorer.dataDir}/settings.config'
-        echo "btcrpcpassword=$(cat ${config.nix-bitcoin.secretsDir}/bitcoin-rpcpassword-btcpayserver)" \
-          >> '${cfg.nbxplorer.dataDir}/settings.config'
+        {
+          echo "btcrpcpassword=$(cat ${config.nix-bitcoin.secretsDir}/bitcoin-rpcpassword-btcpayserver)"
+          ${optionalString cfg.btcpayserver.lbtc ''
+            echo "lbtcrpcpassword=$(cat ${config.nix-bitcoin.secretsDir}/liquid-rpcpassword)"
+          ''}
+        } >> '${cfg.nbxplorer.dataDir}/settings.config'
       '';
       serviceConfig = nbLib.defaultHardening // {
         ExecStart = ''
@@ -159,17 +178,23 @@ in {
     };
 
     systemd.services.btcpayserver = let
+      nbExplorerUrl = "http://${cfg.nbxplorer.address}:${toString cfg.nbxplorer.port}/";
+      nbExplorerCookie = "${cfg.nbxplorer.dataDir}/${config.services.bitcoind.makeNetworkName "Main" "RegTest"}/.cookie";
       configFile = builtins.toFile "config" (''
         network=${config.services.bitcoind.network}
         bind=${cfg.btcpayserver.address}
         port=${toString cfg.btcpayserver.port}
         socksendpoint=${cfg.tor.client.socksListenAddress}
-        btcexplorerurl=http://${cfg.nbxplorer.address}:${toString cfg.nbxplorer.port}/
-        btcexplorercookiefile=${cfg.nbxplorer.dataDir}/${config.services.bitcoind.makeNetworkName "Main" "RegTest"}/.cookie
+        btcexplorerurl=${nbExplorerUrl}
+        btcexplorercookiefile=${nbExplorerCookie}
         postgres=User ID=${cfg.btcpayserver.user};Host=/run/postgresql;Database=btcpaydb
         ${optionalString (cfg.btcpayserver.rootpath != null) "rootpath=${cfg.btcpayserver.rootpath}"}
       '' + optionalString (cfg.btcpayserver.lightningBackend == "clightning") ''
         btclightning=type=clightning;server=unix:///${cfg.clightning.dataDir}/bitcoin/lightning-rpc
+      '' + optionalString cfg.btcpayserver.lbtc ''
+        chains=btc,lbtc
+        lbtcexplorerurl=${nbExplorerUrl}
+        lbtcexplorercookiefile=${nbExplorerCookie}
       '');
       lndConfig =
         "btclightning=type=lnd-rest;" +
@@ -206,7 +231,8 @@ in {
 
     users.users.${cfg.nbxplorer.user} = {
       group = cfg.nbxplorer.group;
-      extraGroups = [ "bitcoinrpc-public" ];
+      extraGroups = [ "bitcoinrpc-public" ]
+                    ++ optional cfg.btcpayserver.lbtc cfg.liquidd.group;
       home = cfg.nbxplorer.dataDir;
     };
     users.groups.${cfg.nbxplorer.group} = {};

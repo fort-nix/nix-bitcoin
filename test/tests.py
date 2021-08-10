@@ -210,6 +210,7 @@ def _():
 def _():
     assert_running("nbxplorer")
     machine.wait_until_succeeds(log_has_string("nbxplorer", "BTC: RPC connection successful"))
+    machine.wait_until_succeeds(log_has_string("nbxplorer", "LBTC: RPC connection successful"))
     wait_for_open_port(ip("nbxplorer"), 24444)
     assert_running("btcpayserver")
     machine.wait_until_succeeds(log_has_string("btcpayserver", "Listening on"))
@@ -291,7 +292,7 @@ def _():
     # These reachability tests are non-exhaustive
     assert_reachable("bitcoind", ["clightning", "lnd", "liquidd"])
     assert_unreachable("bitcoind", ["btcpayserver", "spark-wallet", "lightning-loop"])
-    assert_unreachable("btcpayserver", ["bitcoind", "lightning-loop", "liquidd"])
+    assert_unreachable("btcpayserver", ["bitcoind", "lightning-loop"])
 
     # netns addresses can not be bound to in the main netns.
     # This prevents processes in the main netns from impersonating nix-bitcoin services.

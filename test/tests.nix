@@ -79,7 +79,10 @@ let
       services.liquidd.extraConfig = mkIf config.test.noConnections "connect=0";
 
       tests.btcpayserver = cfg.btcpayserver.enable;
-      services.btcpayserver.lightningBackend = "lnd";
+      services.btcpayserver = {
+        lightningBackend = "lnd";
+        lbtc = true;
+      };
       # Needed to test macaroon creation
       environment.systemPackages = mkIfTest "btcpayserver" (with pkgs; [ openssl xxd ]);
 
@@ -183,6 +186,7 @@ let
       imports = [ scenarios.regtestBase ];
       services.clightning.enable = true;
       test.features.clightningPlugins = true;
+      services.liquidd.enable = true;
       services.spark-wallet.enable = true;
       services.lnd.enable = true;
       services.lightning-loop.enable = true;

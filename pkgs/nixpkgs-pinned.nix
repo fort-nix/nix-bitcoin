@@ -12,7 +12,7 @@ in
     sha256 = "05v28njaas9l26ibc6vy6imvy7grbkli32bmv0n32x6x9cf68gf9";
   };
   nixpkgs-unstable = fetch {
-    rev = "88e010dcb29ecf70a973c8d57ed175eadf7f42cf";
-    sha256 = "0v6g32yw3cx2qg76idkccayap6lvnhkgnw70isy4vbjd88injmpv";
+    rev = "16105403bdd843540cbef9c63fc0f16c1c6eaa70";
+    sha256 = "0sl6hsxlh14kcs38jcra908nvi5hd8p8hlim3lbra55lz0kd9rcl";
   };
 }
