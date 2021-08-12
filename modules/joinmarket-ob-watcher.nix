@@ -77,7 +77,7 @@ in {
         StateDirectoryMode = "770";
         WorkingDirectory = cfg.dataDir; # The service creates dir 'logs' in the working dir
         ExecStart = ''
-          ${nbPkgs.joinmarket}/bin/ob-watcher --datadir=${cfg.dataDir} \
+          ${nbPkgs.joinmarket}/bin/jm-ob-watcher --datadir=${cfg.dataDir} \
             --host=${cfg.address} --port=${toString cfg.port}
         '';
         SystemCallFilter = nbLib.defaultHardening.SystemCallFilter ++ [ "mbind" ] ;

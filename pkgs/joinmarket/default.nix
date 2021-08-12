@@ -32,7 +32,6 @@ stdenv.mkDerivation {
     }
 
     cp scripts/joinmarketd.py $out/bin/joinmarketd
-    cp scripts/obwatch/ob-watcher.py $out/bin/ob-watcher
     cpBin add-utxo.py
     cpBin convert_old_wallet.py
     cpBin receive-payjoin.py
@@ -46,8 +45,13 @@ stdenv.mkDerivation {
     chmod +x -R $out/bin
     patchShebangs $out/bin
 
+    ## ob-watcher
+    obw=$out/libexec/joinmarket-ob-watcher
+    install -D scripts/obwatch/ob-watcher.py $obw/ob-watcher
+    patchShebangs $obw/ob-watcher
+    ln -s $obw/ob-watcher $out/bin/jm-ob-watcher
+
     # These files must be placed in the same dir as ob-watcher
-    cp scripts/obwatch/{orderbook.html,sybil_attack_calculations.py} $out/bin/
-    cp -r scripts/obwatch/vendor $out/bin/vendor
+    cp -r scripts/obwatch/{orderbook.html,sybil_attack_calculations.py,vendor} $obw
   '';
 }
