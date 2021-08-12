@@ -64,6 +64,8 @@ let
     tx_broadcast = self
     minimum_makers = 4
     max_sats_freeze_reuse = -1
+    interest_rate = """ + _DEFAULT_INTEREST_RATE + """
+    bondless_makers_allowance = """ + _DEFAULT_BONDLESS_MAKERS_ALLOWANCE + """
     taker_utxo_retries = 3
     taker_utxo_age = 5
     taker_utxo_amtpercent = 20
