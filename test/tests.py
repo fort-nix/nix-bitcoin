@@ -1,45 +1,40 @@
 from collections import OrderedDict
 import json
 
+logger = machine.logger
 
 def succeed(*cmds):
     """Returns the concatenated output of all cmds"""
     return machine.succeed(*cmds)
-
 
 def assert_matches(cmd, regexp):
     out = succeed(cmd)
     if not re.search(regexp, out):
         raise Exception(f"Pattern '{regexp}' not found in '{out}'")
 
-
 def assert_full_match(cmd, regexp):
     out = succeed(cmd)
     if not re.fullmatch(regexp, out):
         raise Exception(f"Pattern '{regexp}' doesn't match '{out}'")
 
-
 def log_has_string(unit, str):
     return f"journalctl -b --output=cat -u {unit} --grep='{str}'"
-
 
 def assert_no_failure(unit):
     """Unit should not have failed since the system is running"""
     machine.fail(log_has_string(unit, "Failed with result"))
-
 
 def assert_running(unit):
     with machine.nested(f"waiting for unit: {unit}"):
         machine.wait_for_unit(unit)
     assert_no_failure(unit)
 
-
 def wait_for_open_port(address, port):
     def is_port_open(_):
         status, _ = machine.execute(f"nc -z {address} {port}")
         return status == 0
 
-    with log.nested(f"Waiting for TCP port {address}:{port}"):
+    with logger.nested(f"Waiting for TCP port {address}:{port}"):
         retry(is_port_open)
 
 
@@ -47,13 +42,10 @@ def wait_for_open_port(address, port):
 
 tests = OrderedDict()
 
-
 def test(name):
     def x(fn):
         tests[name] = fn
-
     return x
-
 
 def run_tests():
     enabled = enabled_tests.copy()
@@ -66,9 +58,8 @@ def run_tests():
         raise RuntimeError(f"The following tests are enabled but not defined: {enabled}")
     machine.connect()  # Visually separate boot output from the test output
     for test in to_run:
-        with log.nested(f"test: {test}"):
+        with logger.nested(f"test: {test}"):
             tests[test]()
-
 
 def run_test(test):
     tests[test]()
@@ -77,7 +68,6 @@ def run_test(test):
 ### Tests
 # All tests are executed in the order they are defined here
 
-
 @test("security")
 def _():
     assert_running("setup-secrets")
@@ -85,9 +75,6 @@ def _():
     succeed('[[ $(stat -c "%U:%G %a" /secrets/dummy) = "root:root 440" ]]')
 
     if "secure-node" in enabled_tests:
-        # Access to '/proc' should be restricted
-        machine.succeed("grep -Fq hidepid=2 /proc/mounts")
-
         machine.wait_for_unit("bitcoind")
         # `systemctl status` run by unprivileged users shouldn't leak cgroup info
         assert_matches(
@@ -96,7 +83,6 @@ def _():
         )
         # The 'operator' with group 'proc' has full access
         assert_full_match("runuser -u operator -- systemctl status bitcoind 2>&1 >/dev/null", "")
-
 
 @test("bitcoind")
 def _():
@@ -115,7 +101,6 @@ def _():
         log_has_string("bitcoind", "RPC User public not allowed to call method stop")
     )
 
-
 @test("electrs")
 def _():
     assert_running("electrs")
@@ -123,13 +108,11 @@ def _():
     # Check RPC connection to bitcoind
     machine.wait_until_succeeds(log_has_string("electrs", "NetworkInfo"))
 
-
 # Impure: Stops electrs
 # Stop electrs from spamming the test log with 'WARN - wait until IBD is over' messages
 @test("stop-electrs")
 def _():
     succeed("systemctl stop electrs")
-
 
 @test("liquidd")
 def _():
@@ -137,7 +120,6 @@ def _():
     machine.wait_until_succeeds("elements-cli getnetworkinfo")
     assert_matches("runuser -u operator -- elements-cli getnetworkinfo | jq", '"version"')
     succeed("runuser -u operator -- liquidswap-cli --help")
-
 
 @test("clightning")
 def _():
@@ -154,10 +136,9 @@ def _():
                 f"Output of 'lightning-cli plugin list':\n{plugin_list}"
             )
         else:
-            log.log("Active clightning plugins:")
+            logger.log("Active clightning plugins:")
             for p in test_data["clightning-plugins"]:
-                log.log(os.path.basename(p))
-
+                logger.log(os.path.basename(p))
 
 @test("lnd")
 def _():
@@ -165,11 +146,9 @@ def _():
     assert_matches("runuser -u operator -- lncli getinfo | jq", '"version"')
     assert_no_failure("lnd")
 
-
 @test("lnd-rest-onion-service")
 def _():
     assert_matches("runuser -u operator -- lndconnect-rest-onion -j", ".onion")
-
 
 @test("lightning-loop")
 def _():
@@ -184,7 +163,6 @@ def _():
         )
     )
 
-
 @test("lightning-pool")
 def _():
     assert_running("lightning-pool")
@@ -198,13 +176,11 @@ def _():
         )
     )
 
-
 @test("charge-lnd")
 def _():
     # charge-lnd is a oneshot service that is started by a timer under regular operation
     succeed("systemctl start charge-lnd")
     assert_no_failure("charge-lnd")
-
 
 @test("btcpayserver")
 def _():
@@ -223,14 +199,12 @@ def _():
         '"version"',
     )
 
-
 @test("spark-wallet")
 def _():
     assert_running("spark-wallet")
     wait_for_open_port(ip("spark-wallet"), 9737)
     spark_auth = re.search("login=(.*)", succeed("cat /secrets/spark-wallet-login"))[1]
     assert_matches(f"curl -s {spark_auth}@{ip('spark-wallet')}:9737", "Spark")
-
 
 @test("joinmarket")
 def _():
@@ -239,19 +213,16 @@ def _():
         log_has_string("joinmarket", "JMDaemonServerProtocolFactory starting on 27183")
     )
 
-
 @test("joinmarket-yieldgenerator")
 def _():
     machine.wait_until_succeeds(
-        log_has_string("joinmarket-yieldgenerator", "Critical error updating blockheight.",)
+        log_has_string("joinmarket-yieldgenerator", "Critical error updating blockheight.")
     )
-
 
 @test("joinmarket-ob-watcher")
 def _():
     assert_running("joinmarket-ob-watcher")
     machine.wait_until_succeeds(log_has_string("joinmarket-ob-watcher", "Starting ob-watcher"))
-
 
 @test("nodeinfo")
 def _():
@@ -262,11 +233,9 @@ def _():
     info = json.loads(json_info)
     assert info["bitcoind"]["local_address"]
 
-
 @test("secure-node")
 def _():
     assert_running("onion-addresses")
-
 
 # Run this test before the following tests that shut down services
 # (and their corresponding network namespaces).
@@ -302,9 +271,9 @@ def _():
 
     if "joinmarket" in enabled_tests:
         # netns-exec should drop capabilities
-        assert_full_match(
+        assert_matches(
             "runuser -u operator -- netns-exec nb-joinmarket capsh --print | grep Current",
-            "Current: =\n",
+            re.compile("^Current: =$", re.MULTILINE),
         )
 
     if "clightning" in enabled_tests:
@@ -350,7 +319,6 @@ def _():
 
     assert_file_exists("secrets/lnd-wallet-password")
 
-
 # Impure: restarts services
 @test("banlist-and-restart")
 def _():
@@ -370,7 +338,6 @@ def _():
         log_has_string(f"bitcoind-import-banlist --since=@{pre_restart}", "Importing node banlist")
     )
     assert_no_failure("bitcoind-import-banlist")
-
 
 @test("regtest")
 def _():
@@ -410,14 +377,9 @@ def _():
         )
         succeed("runuser -u operator -- pool orders list")
 
-
 if "netns-isolation" in enabled_tests:
-
     def ip(name):
         return test_data["netns"][name]["address"]
-
-
 else:
-
     def ip(_):
         return "127.0.0.1"

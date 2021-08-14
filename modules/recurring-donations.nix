@@ -11,7 +11,7 @@ let
       NAME=$1
       AMOUNT=$2
       echo Attempting to pay $AMOUNT sat to $NAME
-      INVOICE=$(curl --socks5-hostname ${config.services.tor.client.socksListenAddress} -d "satoshi_amount=$AMOUNT&payment_method=ln&id=$NAME&type=profile" -X POST https://api.tallyco.in/v1/payment/request/ | jq -r '.lightning_pay_request') 2> /dev/null
+      INVOICE=$(curl --socks5-hostname ${config.nix-bitcoin.torClientAddressWithPort} -d "satoshi_amount=$AMOUNT&payment_method=ln&id=$NAME&type=profile" -X POST https://api.tallyco.in/v1/payment/request/ | jq -r '.lightning_pay_request') 2> /dev/null
       if [ -z "$INVOICE" ] || [ "$INVOICE" = "null" ]; then
         echo "ERROR: did not get invoice from tallycoin"
         return
@@ -97,6 +97,7 @@ in {
     };
 
     users.users.recurring-donations = {
+      isSystemUser = true;
       group = "recurring-donations";
       extraGroups = [ config.services.clightning.group ];
     };

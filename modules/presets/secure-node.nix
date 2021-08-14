@@ -18,7 +18,7 @@ in {
 
     networking.firewall.enable = true;
 
-    nix-bitcoin.security.hideProcessInformation = true;
+    nix-bitcoin.security.dbusHideProcessInformation = true;
 
     # Use doas instead of sudo
     security.doas.enable = true;
@@ -29,7 +29,7 @@ in {
     ];
 
     # sshd
-    services.tor.hiddenServices.sshd = nbLib.mkHiddenService { port = 22; };
+    services.tor.relay.onionServices.sshd = nbLib.mkOnionService { port = 22; };
     nix-bitcoin.onionAddresses.access.${operatorName} = [ "sshd" ];
 
     services.bitcoind = {

@@ -1,20 +1,29 @@
-{ config, lib, pkgs, options, ... }:
+{ config, lib, pkgs, ... }:
 
+with lib;
 {
   options = {
-    nix-bitcoin.security.hideProcessInformation = options.security.hideProcessInformation;
+    nix-bitcoin.security.dbusHideProcessInformation = mkOption {
+      type = types.bool;
+      default = false;
+      description = ''
+        Only allow users with group 'proc' to retrieve systemd unit information like
+        cgroup paths (i.e. (sub)process command lines) via D-Bus.
+
+        This mitigates a systemd security issue where (sub)process command lines can
+        be retrieved by services even when their access to /proc is restricted
+        (via ProtectProc).
+
+        This option works by restricting the D-Bus method 'GetUnitProcesses', which
+        is also used internally by `systemctl status`.
+      '';
+    };
   };
 
-  config = lib.mkIf config.nix-bitcoin.security.hideProcessInformation {
-    # Only show the current user's processes in /proc.
-    # Users with group 'proc' can still access all processes.
-    security.hideProcessInformation = true;
+  config = mkIf config.nix-bitcoin.security.dbusHideProcessInformation {
+    users.groups.proc = {};
+    nix-bitcoin.operator.groups = [ "proc" ]; # Enable operator access to systemd-status
 
-    # This mitigates a systemd security issue leaking (sub)process
-    # command lines.
-    # Only allow users with group 'proc' to retrieve systemd unit information like
-    # cgroup paths (i.e. (sub)process command lines) via D-Bus.
-    # This D-Bus call is used by `systemctl status`.
     services.dbus.packages = lib.mkAfter [ # Apply at the end to override the default policy
       (pkgs.writeTextDir "etc/dbus-1/system.d/dbus.conf" ''
         <busconfig>

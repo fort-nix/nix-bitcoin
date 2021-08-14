@@ -106,6 +106,7 @@ in {
     };
 
     users.users.${cfg.user} = {
+      isSystemUser = true;
       group = cfg.group;
       extraGroups = [ "bitcoinrpc-public" ] ++ optionals cfg.high-memory [ bitcoind.user ];
     };

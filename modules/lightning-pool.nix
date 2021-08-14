@@ -54,7 +54,7 @@ in {
     };
     proxy = mkOption {
       type = types.nullOr types.str;
-      default = if cfg.enforceTor then config.services.tor.client.socksListenAddress else null;
+      default = if cfg.enforceTor then config.nix-bitcoin.torClientAddressWithPort else null;
       description = "host:port of SOCKS5 proxy for connnecting to the pool auction server.";
     };
     extraConfig = mkOption {

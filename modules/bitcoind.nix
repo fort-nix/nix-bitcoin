@@ -193,7 +193,7 @@ in {
       };
       proxy = mkOption {
         type = types.nullOr types.str;
-        default = if cfg.enforceTor then config.services.tor.client.socksListenAddress else null;
+        default = if cfg.enforceTor then config.nix-bitcoin.torClientAddressWithPort else null;
         description = "Connect through SOCKS5 proxy";
       };
       listen = mkOption {
@@ -388,7 +388,10 @@ in {
       } // nbLib.allowLocalIPAddresses;
     };
 
-    users.users.${cfg.user}.group = cfg.group;
+    users.users.${cfg.user} = {
+      isSystemUser = true;
+      group = cfg.group;
+    };
     users.groups.${cfg.group} = {};
     users.groups.bitcoinrpc-public = {};
     nix-bitcoin.operator.groups = [ cfg.group ];

@@ -34,7 +34,7 @@ in {
     };
     proxy = mkOption {
       type = types.nullOr types.str;
-      default = if cfg.enforceTor then config.services.tor.client.socksListenAddress else null;
+      default = if cfg.enforceTor then config.nix-bitcoin.torClientAddressWithPort else null;
       description = ''
         Socks proxy for connecting to Tor nodes (or for all connections if option always-use-proxy is set).
       '';
@@ -140,6 +140,7 @@ in {
     };
 
     users.users.${cfg.user} = {
+      isSystemUser = true;
       group = cfg.group;
       extraGroups = [ "bitcoinrpc-public" ];
     };

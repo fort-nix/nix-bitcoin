@@ -8,8 +8,9 @@ in
 {
   # To update, run ../helper/fetch-channel REV
   nixpkgs = fetch {
-    rev = "359e6542e1d41eb18df55c82bdb08bf738fae2cf";
-    sha256 = "05v28njaas9l26ibc6vy6imvy7grbkli32bmv0n32x6x9cf68gf9";
+    # nixos-21.05 (2021-08-03)
+    rev = "d4590d21006387dcb190c516724cb1e41c0f8fdf";
+    sha256 = "17q39hlx1x87xf2rdygyimj8whdbx33nzszf4rxkc6b85wz0l38n";
   };
   nixpkgs-unstable = fetch {
     rev = "16105403bdd843540cbef9c63fc0f16c1c6eaa70";

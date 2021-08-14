@@ -95,12 +95,12 @@ let
     '';
 
    mkIfOnionPort = name: fn:
-     if hiddenServices ? ${name} then
-       fn (toString (builtins.elemAt hiddenServices.${name}.map 0).port)
+     if onionServices ? ${name} then
+       fn (toString (builtins.elemAt onionServices.${name}.map 0).port)
      else
        "";
 
-  inherit (config.services.tor) hiddenServices;
+   inherit (config.services.tor.relay) onionServices;
 in {
   options = {
     nix-bitcoin.nodeinfo = {

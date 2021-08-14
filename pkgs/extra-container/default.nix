@@ -4,11 +4,11 @@
 
 stdenv.mkDerivation rec {
   pname = "extra-container";
-  version = "0.6";
+  version = "0.7";
 
   src = builtins.fetchTarball {
     url = "https://github.com/erikarvstedt/extra-container/archive/${version}.tar.gz";
-    sha256 = "0hm4xfjbqjrrq7n1pkbs33lpw9k5q3ms3psprqhfsxkkwzy78zlm";
+    sha256 = "1hcbi611vm0kn8rl7q974wcjkihpddan6m3p7hx8l8jnv18ydng8";
   };
 
   buildCommand = ''

@@ -82,7 +82,6 @@ in {
       services.postgresqlBackup = {
         enable = true;
         databases = [ "btcpaydb" ];
-        startAt = [];
       };
       systemd.services.duplicity = rec {
         wants = [ "postgresqlBackup-btcpaydb.service" ];

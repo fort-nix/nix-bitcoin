@@ -5,7 +5,13 @@ let
   cfg = config.services.joinmarket-ob-watcher;
   nbLib = config.nix-bitcoin.lib;
   nbPkgs = config.nix-bitcoin.pkgs;
-  torAddress = builtins.head (builtins.split ":" config.services.tor.client.socksListenAddress);
+
+  socks5Settings = with config.services.tor.client.socksListenAddress; ''
+    socks5 = true
+    socks5_host = ${addr}
+    socks5_port = ${toString port}
+  '';
+
   configFile = builtins.toFile "config" ''
     [BLOCKCHAIN]
     blockchain_source = no-blockchain
@@ -15,18 +21,14 @@ let
     channel = joinmarket-pit
     port = 6697
     usessl = true
-    socks5 = true
-    socks5_host = ${torAddress}
-    socks5_port = 9050
+    ${socks5Settings}
 
     [MESSAGING:server2]
     host = ncwkrwxpq2ikcngxq3dy2xctuheniggtqeibvgofixpzvrwpa77tozqd.onion
     channel = joinmarket-pit
     port = 6667
     usessl = false
-    socks5 = true
-    socks5_host = ${torAddress}
-    socks5_port = 9050
+    ${socks5Settings}
   '';
 in {
   options.services.joinmarket-ob-watcher = {
@@ -78,6 +80,7 @@ in {
           ${nbPkgs.joinmarket}/bin/ob-watcher --datadir=${cfg.dataDir} \
             --host=${cfg.address} --port=${toString cfg.port}
         '';
+        SystemCallFilter = nbLib.defaultHardening.SystemCallFilter ++ [ "mbind" ] ;
         Restart = "on-failure";
         RestartSec = "10s";
       } // nbLib.allowTor;
