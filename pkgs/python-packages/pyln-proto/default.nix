@@ -8,7 +8,7 @@
 
 buildPythonPackage rec {
   pname = "pyln-proto";
-  version = "0.9.3"; # defined in ${src}/contrib/pyln-proto/setup.py
+  version = "0.10.1"; # defined in ${src}/contrib/pyln-proto/setup.py
 
   inherit (clightning) src;
 
