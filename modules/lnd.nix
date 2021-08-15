@@ -214,24 +214,24 @@ in {
             if [[ ! -f ${networkDir}/wallet.db ]]; then
               mnemonic="${cfg.dataDir}/lnd-seed-mnemonic"
               if [[ ! -f "$mnemonic" ]]; then
-                echo Create lnd seed
+                echo "Create lnd seed"
                 umask u=r,go=
                 ${curl} -X GET ${restUrl}/genseed | ${pkgs.jq}/bin/jq -c '.cipher_seed_mnemonic' > "$mnemonic"
               fi
 
-              echo Create lnd wallet
+              echo "Create lnd wallet"
               ${curl} --output /dev/null \
                 -X POST -d "{\"wallet_password\": \"$(cat ${secretsDir}/lnd-wallet-password | tr -d '\n' | base64 -w0)\", \
                 \"cipher_seed_mnemonic\": $(cat "$mnemonic" | tr -d '\n')}" \
                 ${restUrl}/initwallet
 
               # Guarantees that RPC calls with cfg.cli succeed after the service is started
-              echo Wait until wallet is created
+              echo "Wait until wallet is created"
               while [[ ! -f ${networkDir}/admin.macaroon ]]; do
                 sleep 0.1
               done
             else
-              echo Unlock lnd wallet
+              echo "Unlock lnd wallet"
               ${curl} \
                 -H "Grpc-Metadata-macaroon: $(${pkgs.xxd}/bin/xxd -ps -u -c 99999 '${networkDir}/admin.macaroon')" \
                 -X POST \
