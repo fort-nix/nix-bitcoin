@@ -21,6 +21,8 @@ let
     ${config.services.postgresqlBackup.location}/btcpaydb.sql.gz
     ${optionalString config.nix-bitcoin.generateSecrets "${config.nix-bitcoin.secretsDir}"}
     /var/lib/tor
+    /var/lib/nixos
+
     # Extra files
     ${cfg.extraFiles}
 
