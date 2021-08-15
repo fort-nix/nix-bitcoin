@@ -274,6 +274,7 @@ examples() {
     script="
       set -e
       ./deploy-container.sh
+      ./deploy-container-minimal.sh
       ./deploy-qemu-vm.sh
       ./deploy-krops.sh
     "
