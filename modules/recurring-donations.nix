@@ -10,7 +10,7 @@ let
     pay_tallycoin() {
       NAME=$1
       AMOUNT=$2
-      echo Attempting to pay $AMOUNT sat to $NAME
+      echo "Attempting to pay $AMOUNT sat to $NAME"
       INVOICE=$(curl --socks5-hostname ${config.nix-bitcoin.torClientAddressWithPort} -d "satoshi_amount=$AMOUNT&payment_method=ln&id=$NAME&type=profile" -X POST https://api.tallyco.in/v1/payment/request/ | jq -r '.lightning_pay_request') 2> /dev/null
       if [ -z "$INVOICE" ] || [ "$INVOICE" = "null" ]; then
         echo "ERROR: did not get invoice from tallycoin"
@@ -23,10 +23,10 @@ let
         return
       fi
       if [ $DECODED_AMOUNT -eq $AMOUNT ]; then
-        echo Paying with invoice "$INVOICE"
+        echo "Paying with invoice $INVOICE"
         $LNCLI pay "$INVOICE"
       else
-        echo ERROR: requested amount and invoice amount do not match. $AMOUNT vs $DECODED_AMOUNT
+        echo "ERROR: requested amount and invoice amount do not match. $AMOUNT vs $DECODED_AMOUNT"
         return
       fi
     }

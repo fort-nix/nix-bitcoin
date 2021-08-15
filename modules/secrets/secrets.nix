@@ -60,6 +60,7 @@ in
     };
 
     secretsSetupMethod = mkOption {
+      internal = true;
       type = types.str;
       default = throw  ''
         Error: No secrets setup method has been defined.
@@ -110,17 +111,17 @@ in
         ''}
 
         setupSecret() {
-            file="$1"
-            user="$2"
-            group="$3"
-            permissions="$4"
-            if [[ ! -e $file ]]; then
-              echo "Error: Secret file '$file' is missing"
-              exit 1
-            fi
-            chown "$user:$group" "$file"
-            chmod "$permissions" "$file"
-            processedFiles+=("$file")
+           file="$1"
+           user="$2"
+           group="$3"
+           permissions="$4"
+           if [[ ! -e $file ]]; then
+             echo "Error: Secret file '$file' is missing"
+             exit 1
+           fi
+           chown "$user:$group" "$file"
+           chmod "$permissions" "$file"
+           processedFiles+=("$file")
         }
 
         dir="${cfg.secretsDir}"

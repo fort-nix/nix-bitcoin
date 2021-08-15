@@ -157,6 +157,16 @@ in {
       { assertion = bitcoind.prune == 0;
         message = "lnd does not support bitcoind pruning.";
       }
+      { assertion =
+          !(config.services ? clightning)
+          || !config.services.clightning.enable
+          || config.services.clightning.port != cfg.port;
+        message = ''
+          LND and clightning can't both bind to lightning port 9735. Either
+          disable LND/clightning or change services.clightning.port or
+          services.lnd.port to a port other than 9735.
+        '';
+      }
     ];
 
     services.bitcoind = {
@@ -207,31 +217,31 @@ in {
           (nbLib.script "lnd-create-wallet" ''
             attempts=250
             while ! { exec 3>/dev/tcp/${cfg.restAddress}/${toString cfg.restPort} && exec 3>&-; } &>/dev/null; do
-                  ((attempts-- == 0)) && { echo "lnd REST service unreachable"; exit 1; }
-                  sleep 0.1
+              ((attempts-- == 0)) && { echo "lnd REST service unreachable"; exit 1; }
+              sleep 0.1
             done
 
             if [[ ! -f ${networkDir}/wallet.db ]]; then
               mnemonic="${cfg.dataDir}/lnd-seed-mnemonic"
               if [[ ! -f "$mnemonic" ]]; then
-                echo Create lnd seed
+                echo "Create lnd seed"
                 umask u=r,go=
                 ${curl} -X GET ${restUrl}/genseed | ${pkgs.jq}/bin/jq -c '.cipher_seed_mnemonic' > "$mnemonic"
               fi
 
-              echo Create lnd wallet
+              echo "Create lnd wallet"
               ${curl} --output /dev/null \
                 -X POST -d "{\"wallet_password\": \"$(cat ${secretsDir}/lnd-wallet-password | tr -d '\n' | base64 -w0)\", \
                 \"cipher_seed_mnemonic\": $(cat "$mnemonic" | tr -d '\n')}" \
                 ${restUrl}/initwallet
 
               # Guarantees that RPC calls with cfg.cli succeed after the service is started
-              echo Wait until wallet is created
+              echo "Wait until wallet is created"
               while [[ ! -f ${networkDir}/admin.macaroon ]]; do
                 sleep 0.1
               done
             else
-              echo Unlock lnd wallet
+              echo "Unlock lnd wallet"
               ${curl} \
                 -H "Grpc-Metadata-macaroon: $(${pkgs.xxd}/bin/xxd -ps -u -c 99999 '${networkDir}/admin.macaroon')" \
                 -X POST \
@@ -244,7 +254,7 @@ in {
             done
           '')
           # Setting macaroon permission for other users needs root permissions
-          (nbLib.privileged "lnd-create-macaroons" ''
+          (nbLib.rootScript "lnd-create-macaroons" ''
             umask ug=r,o=
             ${lib.concatMapStrings (macaroon: ''
               echo "Create custom macaroon ${macaroon}"

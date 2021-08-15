@@ -221,7 +221,6 @@ in {
       after = [ "bitcoind.service" ];
       wantedBy = [ "multi-user.target" ];
       preStart = ''
-        chown -R '${cfg.user}:${cfg.group}' '${cfg.dataDir}'
         install -m 640 ${configFile} '${cfg.dataDir}/elements.conf'
         {
           echo "rpcpassword=$(cat ${secretsDir}/liquid-rpcpassword)"

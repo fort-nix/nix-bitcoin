@@ -94,13 +94,13 @@ let
       """)
     '';
 
-   mkIfOnionPort = name: fn:
-     if onionServices ? ${name} then
-       fn (toString (builtins.elemAt onionServices.${name}.map 0).port)
-     else
-       "";
+  mkIfOnionPort = name: fn:
+    if onionServices ? ${name} then
+      fn (toString (builtins.elemAt onionServices.${name}.map 0).port)
+    else
+      "";
 
-   inherit (config.services.tor.relay) onionServices;
+  inherit (config.services.tor.relay) onionServices;
 in {
   options = {
     nix-bitcoin.nodeinfo = {

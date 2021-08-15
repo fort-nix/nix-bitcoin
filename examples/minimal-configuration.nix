@@ -1,6 +1,6 @@
 { config, pkgs, lib, ... }: {
   imports = [
-    <nix-bitcoin/modules/nix-bitcoin.nix>
+    <nix-bitcoin/modules/modules.nix>
   ];
 
   nix-bitcoin.generateSecrets = true;
@@ -15,7 +15,8 @@
     name = "main"; # Set this to your system's main user
   };
 
-  # The system's main unprivileged user
+  # The system's main unprivileged user. This setting is usually part of your
+  # existing NixOS configuration.
   users.users.main = {
     isNormalUser = true;
     password = "a";

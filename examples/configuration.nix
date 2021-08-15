@@ -24,9 +24,9 @@
   # modules by commenting out their respective line.
 
   ### BITCOIND
-  # Bitcoind is enabled by default if nix-bitcoin is enabled
+  # Bitcoind is enabled by default.
   #
-  # Enable this option to set pruning to a specified MiB value.
+  # Set this option to enable pruning with a specified MiB value.
   # clightning is compatible with pruning. See
   # https://github.com/ElementsProject/lightning/#pruning for more information.
   # LND and electrs are not compatible with pruning.
@@ -42,8 +42,7 @@
   # '';
 
   ### CLIGHTNING
-  # Enable this module to use clightning, a Lightning Network implementation
-  # in C.
+  # Enable clightning, a Lightning Network implementation in C.
   services.clightning.enable = true;
   #
   # Set this to create an onion service by which clightning can accept incoming connections
@@ -56,11 +55,12 @@
   # services.clightning.plugins.prometheus.enable = true;
 
   ### LND
-  # Uncomment the following line in order to enable lnd, a lightning
-  # implementation written in Go. In order to avoid collisions with clightning
-  # you must disable clightning or change the services.clightning.port or
-  # services.lnd.port to a port other than 9735.
+  # Set this to enable lnd, a lightning implementation written in Go.
   # services.lnd.enable = true;
+  #
+  # NOTE: In order to avoid collisions with clightning you must disable clightning or
+  # change the services.clightning.port or services.lnd.port to a port other than
+  # 9735.
   #
   # Set this to create an onion service by which lnd can accept incoming connections
   # via Tor.
@@ -85,33 +85,37 @@
   #   scp bitcoin-node:/var/lib/lnd/chain/bitcoin/mainnet/channel.backup ./backups/lnd/
 
   ### SPARK WALLET
-  # Enable this module to use spark-wallet, a minimalistic wallet GUI for
+  # Set this to enable spark-wallet, a minimalistic wallet GUI for
   # c-lightning, accessible over the web or through mobile and desktop apps.
   # Automatically enables clightning.
   # services.spark-wallet.enable = true;
 
   ### ELECTRS
-  # Enable this module to use electrs, an efficient re-implementation of
-  # Electrum Server in Rust.
+  # Set this to enable electrs, an efficient Electrum server implemented in Rust.
   # services.electrs.enable = true;
+  #
   # If you have more than 8GB memory, enable this option so electrs will
   # sync faster. Only available if hardware wallets are disabled.
   # services.electrs.high-memory = true;
 
   ### BTCPayServer
-  # Enable this module to use BTCPayServer, a self-hosted, open-source
+  # Set this to enable BTCPayServer, a self-hosted, open-source
   # cryptocurrency payment processor.
+  # services.btcpayserver.enable = true;
+  #
   # Privacy Warning: BTCPayServer currently looks up price rates without
   # proxying them through Tor. This means an outside observer can correlate
   # your BTCPayServer usage, like invoice creation times, with your IP address.
-  # services.btcpayserver.enable = true;
+  #
   # Enable this option to connect BTCPayServer to clightning.
   # services.btcpayserver.lightningBackend = "clightning";
+  #
   # Enable this option to connect BTCPayServert to lnd.
   # services.btcpayserver.lightningBackend = "lnd";
-  # The lightning backend service automatically enabled.
+  #
+  # The lightning backend service is automatically enabled.
   # Afterwards you need to go into Store > General Settings > Lightning Nodes
-  # and click to use "the internal lightning node of this BTCPay Server".
+  # and select "the internal lightning node of this BTCPay Server".
   #
   # Set this to create an onion service to make the btcpayserver web interface
   # accessible via Tor.
@@ -122,16 +126,18 @@
   ### LIQUIDD
   # Enable this module to use Liquid, a sidechain for an inter-exchange
   # settlement network linking together cryptocurrency exchanges and
-  # institutions around the world. Liquid is accessed with the elements-cli
-  # tool run as user operator.
+  # institutions around the world.
   # services.liquidd.enable = true;
+  #
+  # Liquid can be controlled with command 'elements-cli'.
 
   ### RECURRING-DONATIONS
-  # Enable this module to send recurring donations. This is EXPERIMENTAL; it's
+  # Set this to enable recurring donations. This is EXPERIMENTAL; it's
   # not guaranteed that payments are succeeding or that you will notice payment
   # failure.
-  # Automatically enables clightning.
   # services.recurring-donations.enable = true;
+  # This automatically enables clightning.
+  #
   # Specify the receivers of the donations. By default donations are every
   # Monday at a randomized time. Check `journalctl -eu recurring-donations` or
   # `lightning-cli listpayments` for successful lightning donations.
@@ -142,54 +148,68 @@
   # };
 
   ### Hardware wallets
-  # Enable this module to allow using hardware wallets. See https://github.com/bitcoin-core/HWI
-  # for more information. Only available if electrs.high-memory is disabled.
+  # Enable the following to allow using hardware wallets.
+  # See https://github.com/bitcoin-core/HWI for more information.
+  # Only available if electrs.high-memory is disabled.
+  #
   # Ledger must be initialized through the official ledger live app and the Bitcoin app must
   # be installed and running on the device.
   # services.hardware-wallets.ledger = true;
+  #
   # Trezor can be initialized with the trezorctl command in nix-bitcoin. More information in
   # `docs/usage.md`.
   # services.hardware-wallets.trezor = true;
 
-  ### netns-isolation (EXPERIMENTAL)
-  # Enable this module to use Network Namespace Isolation. This feature places
-  # every service in its own network namespace and only allows truly necessary
-  # connections between network namespaces, making sure services are isolated on
-  # a network-level as much as possible.
-  # nix-bitcoin.netns-isolation.enable = true;
-
   ### lightning-loop
-  # Enable this module to use lightninglab's non-custodial off/on chain bridge.
+  # Set this to enable lightninglab's non-custodial off/on chain bridge.
+  # services.lightning-loop.enable = true;
+  #
   # loopd (lightning-loop daemon) will be started automatically. Users can
   # interact with off/on chain bridge using `loop in` and `loop out`.
   # Automatically enables lnd.
-  # services.lightning-loop.enable = true;
 
   ### lightning-pool
-  # Enable this module to use Lightning Lab's non-custodial batched uniform
+  # Set this to enable Lightning Lab's non-custodial batched uniform
   # clearing-price auction for Lightning Channel Leases.
+  # services.lightning-pool.enable = true;
+  #
   # Use the `pool` command to interact with the lightning-pool service.
   # Automatically enables lnd.
-  # services.lightning-pool.enable = true;
   #
   # lightning-pool requires that lnd has a publicly reachable address.
   # Set this to create a public onion service for lnd.
   # nix-bitcoin.onionServices.lnd.public = true;
 
   ### charge-lnd
-  # Enable this module to use charge-lnd, a simple policy based fee manager for
+  # Set this to enable charge-lnd, a simple policy based fee manager for
   # LND. With this tool you can set fees to autobalance, recover channel open
   # costs, use on-chain fees as reference, or just use static fees. You decide.
   # services.charge-lnd.enable = true;
+  #
   # Define policies as outlined in the project documentation.
   # services.charge-lnd.policies = ''
   # '';
 
+  ### JOINMARKET
+  # Set this to enable the JoinMarket service, including its command-line scripts.
+  # These scripts have prefix 'jm-', like 'jm-tumbler'.
+  # Note: JoinMarket has full access to bitcoind, including its wallet functionality.
+  # services.joinmarket.enable = true;
+  #
+  # Set this to enable the JoinMarket Yield Generator Bot. You will be able to
+  # earn sats by providing CoinJoin liquidity. This makes it impossible to use other
+  # scripts that access your wallet.
+  # services.joinmarket.yieldgenerator.enable = true;
+  #
+  # Set this to enable the JoinMarket order book watcher.
+  # services.joinmarket-ob-watcher.enable = true;
+
   ### Backups
-  # Enable this module to use nix-bitcoin's own backups module. By default, it
+  # Set this to enable nix-bitcoin's own backup service. By default, it
   # uses duplicity to incrementally back up all important files in /var/lib to
   # /var/lib/localBackups once a day.
   # services.backups.enable = true;
+  #
   # You can pull the localBackups folder with
   # `scp bitcoin-node:/var/lib/localBackups /my-backup-path/`
   # Alternatively, you can also set a remote target url, for example
@@ -206,17 +226,12 @@
   # and electrs data directory, enable
   # services.backups.with-bulk-data = true;
 
-  ### JOINMARKET
-  # Enable this module to allow using JoinMarket's user interactive scripts (including
-  # tumbler.py).
-  # Note: JoinMarket has full access to bitcoind, including its wallet functionality.
-  # services.joinmarket.enable = true;
-  # Enable this option to enable the JoinMarket Yield Generator Bot. You will be able to
-  # earn sats by providing CoinJoin liquidity. This makes it impossible to use other
-  # scripts that access your wallet.
-  # services.joinmarket.yieldgenerator.enable = true;
-  # Enable this option to enable the JoinMarket order book watcher.
-  # services.joinmarket-ob-watcher.enable = true;
+  ### netns-isolation (EXPERIMENTAL)
+  # Enable this module to use Network Namespace Isolation. This feature places
+  # every service in its own network namespace and only allows truly necessary
+  # connections between network namespaces, making sure services are isolated on
+  # a network-level as much as possible.
+  # nix-bitcoin.netns-isolation.enable = true;
 
   # FIXME: Define your hostname.
   networking.hostName = "host";

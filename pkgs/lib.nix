@@ -3,7 +3,7 @@ lib: pkgs:
 with lib;
 
 # See `man systemd.exec` and `man systemd.resource-control` for an explanation
-# of the systemd-related options available through this module.
+# of the systemd-related options available through this file.
 let self = {
   # These settings roughly follow systemd's "strict" security profile
   defaultHardening = {
@@ -70,7 +70,7 @@ let self = {
   '';
 
   # Used for ExecStart*
-  privileged = name: src: "+${self.script name src}";
+  rootScript = name: src: "+${self.script name src}";
 
   cliExec = mkOption {
     # Used by netns-isolation to execute the cli in the service's private netns

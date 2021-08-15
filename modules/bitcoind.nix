@@ -374,11 +374,11 @@ in {
         cd ${cfg.cli}/bin
         echo "Importing node banlist..."
         cat ${./banlist.cli.txt} | while read line; do
-            if ! err=$(eval "$line" 2>&1) && [[ $err != *already\ banned* ]]; then
-                # unexpected error
-                echo "$err"
-                exit 1
-            fi
+          if ! err=$(eval "$line" 2>&1) && [[ $err != *already\ banned* ]]; then
+            # unexpected error
+            echo "$err"
+            exit 1
+          fi
         done
       '';
       serviceConfig = nbLib.defaultHardening // {
