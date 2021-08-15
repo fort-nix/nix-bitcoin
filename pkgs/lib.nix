@@ -70,7 +70,7 @@ let self = {
   '';
 
   # Used for ExecStart*
-  privileged = name: src: "+${self.script name src}";
+  rootScript = name: src: "+${self.script name src}";
 
   cliExec = mkOption {
     # Used by netns-isolation to execute the cli in the service's private netns

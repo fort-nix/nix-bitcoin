@@ -244,7 +244,7 @@ in {
             done
           '')
           # Setting macaroon permission for other users needs root permissions
-          (nbLib.privileged "lnd-create-macaroons" ''
+          (nbLib.rootScript "lnd-create-macaroons" ''
             umask ug=r,o=
             ${lib.concatMapStrings (macaroon: ''
               echo "Create custom macaroon ${macaroon}"
