@@ -160,13 +160,6 @@
   # `docs/usage.md`.
   # services.hardware-wallets.trezor = true;
 
-  ### netns-isolation (EXPERIMENTAL)
-  # Enable this module to use Network Namespace Isolation. This feature places
-  # every service in its own network namespace and only allows truly necessary
-  # connections between network namespaces, making sure services are isolated on
-  # a network-level as much as possible.
-  # nix-bitcoin.netns-isolation.enable = true;
-
   ### lightning-loop
   # Set this to enable lightninglab's non-custodial off/on chain bridge.
   # services.lightning-loop.enable = true;
@@ -174,7 +167,6 @@
   # loopd (lightning-loop daemon) will be started automatically. Users can
   # interact with off/on chain bridge using `loop in` and `loop out`.
   # Automatically enables lnd.
-
 
   ### lightning-pool
   # Set this to enable Lightning Lab's non-custodial batched uniform
@@ -198,6 +190,20 @@
   # services.charge-lnd.policies = ''
   # '';
 
+  ### JOINMARKET
+  # Set this to enable the JoinMarket service, including its command-line scripts.
+  # These scripts have prefix 'jm-', like 'jm-tumbler'.
+  # Note: JoinMarket has full access to bitcoind, including its wallet functionality.
+  # services.joinmarket.enable = true;
+  #
+  # Set this to enable the JoinMarket Yield Generator Bot. You will be able to
+  # earn sats by providing CoinJoin liquidity. This makes it impossible to use other
+  # scripts that access your wallet.
+  # services.joinmarket.yieldgenerator.enable = true;
+  #
+  # Set this to enable the JoinMarket order book watcher.
+  # services.joinmarket-ob-watcher.enable = true;
+
   ### Backups
   # Set this to enable nix-bitcoin's own backup service. By default, it
   # uses duplicity to incrementally back up all important files in /var/lib to
@@ -220,19 +226,12 @@
   # and electrs data directory, enable
   # services.backups.with-bulk-data = true;
 
-  ### JOINMARKET
-  # Set this to enable the JoinMarket service, including its command-line scripts.
-  # These scripts have prefix 'jm-', like 'jm-tumbler'.
-  # Note: JoinMarket has full access to bitcoind, including its wallet functionality.
-  # services.joinmarket.enable = true;
-  #
-  # Set this to enable the JoinMarket Yield Generator Bot. You will be able to
-  # earn sats by providing CoinJoin liquidity. This makes it impossible to use other
-  # scripts that access your wallet.
-  # services.joinmarket.yieldgenerator.enable = true;
-  #
-  # Set this to enable the JoinMarket order book watcher.
-  # services.joinmarket-ob-watcher.enable = true;
+  ### netns-isolation (EXPERIMENTAL)
+  # Enable this module to use Network Namespace Isolation. This feature places
+  # every service in its own network namespace and only allows truly necessary
+  # connections between network namespaces, making sure services are isolated on
+  # a network-level as much as possible.
+  # nix-bitcoin.netns-isolation.enable = true;
 
   # FIXME: Define your hostname.
   networking.hostName = "host";
