@@ -1,6 +1,6 @@
 { config, pkgs, lib, ... }: {
   imports = [
-    <nix-bitcoin/modules/nix-bitcoin.nix>
+    <nix-bitcoin/modules/modules.nix>
   ];
 
   nix-bitcoin.generateSecrets = true;
