@@ -74,7 +74,7 @@ in {
       serviceConfig = nbLib.defaultHardening // rec {
         DynamicUser = true;
         StateDirectory = "joinmarket-ob-watcher";
-        StateDirectoryMode = "0770";
+        StateDirectoryMode = "770";
         WorkingDirectory = cfg.dataDir; # The service creates dir 'logs' in the working dir
         ExecStart = ''
           ${nbPkgs.joinmarket}/bin/ob-watcher --datadir=${cfg.dataDir} \
