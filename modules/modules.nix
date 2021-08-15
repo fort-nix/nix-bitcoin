@@ -1,4 +1,7 @@
 {
+  # The modules are topologically sorted by their dependencies.
+  # This means that modules only depend on modules higher in the list
+  # (unless otherwise noted).
   imports = [
     # Core modules
     ./nix-bitcoin.nix
@@ -11,7 +14,7 @@
     ./clightning-plugins
     ./spark-wallet.nix
     ./lnd.nix
-    ./lnd-rest-onion-service.nix
+    ./lnd-rest-onion-service.nix # Requires onion-addresses.nix
     ./lightning-loop.nix
     ./lightning-pool.nix
     ./charge-lnd.nix
