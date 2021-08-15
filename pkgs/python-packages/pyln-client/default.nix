@@ -2,7 +2,7 @@
 
 buildPythonPackage rec {
   pname = "pyln-client";
-  version = "0.9.3"; # defined in ${src}/contrib/pyln-client/pyln/client/__init__.py
+  version = "0.10.1"; # defined in ${src}/contrib/pyln-client/pyln/client/__init__.py
 
   inherit (clightning) src;
 
