@@ -60,6 +60,7 @@ in
     };
 
     secretsSetupMethod = mkOption {
+      internal = true;
       type = types.str;
       default = throw  ''
         Error: No secrets setup method has been defined.
