@@ -157,6 +157,16 @@ in {
       { assertion = bitcoind.prune == 0;
         message = "lnd does not support bitcoind pruning.";
       }
+      { assertion =
+          !(config.services ? clightning)
+          || !config.services.clightning.enable
+          || config.services.clightning.port != cfg.port;
+        message = ''
+          LND and clightning can't both bind to lightning port 9735. Either
+          disable LND/clightning or change services.clightning.port or
+          services.lnd.port to a port other than 9735.
+        '';
+      }
     ];
 
     services.bitcoind = {

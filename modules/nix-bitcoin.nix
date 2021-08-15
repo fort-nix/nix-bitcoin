@@ -41,16 +41,4 @@ with lib;
       };
     };
   };
-
-  config = {
-    assertions = [
-      { assertion = (config.services.lnd.enable -> ( !config.services.clightning.enable || config.services.clightning.port != config.services.lnd.port));
-        message = ''
-          LND and clightning can't both bind to lightning port 9735. Either
-          disable LND/clightning or change services.clightning.bindPort or
-          services.lnd.port to a port other than 9735.
-        '';
-      }
-    ];
-  };
 }
