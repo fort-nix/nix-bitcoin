@@ -68,3 +68,10 @@ c systemctl status bitcoind
 }' container --run c nodeinfo
 ```
 See [`run-tests.sh`](../test/run-tests.sh) for a complete documentation.
+
+
+### Real-world example
+Check the [server repo](https://github.com/fort-nix/nixbitcoin.org) for https://nixbitcoin.org
+to see the configuration of a nix-bitcoin node that's used in production.
+
+The commands in `shell.nix` allow you to locally run the node in a VM or container.
