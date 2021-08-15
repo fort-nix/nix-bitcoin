@@ -282,7 +282,7 @@ in {
     users.groups.${cfg.group} = {};
     nix-bitcoin.operator = {
       groups = [ cfg.group ];
-      allowRunAsUsers = [ cfg.group ];
+      allowRunAsUsers = [ cfg.user ];
     };
 
     nix-bitcoin.secrets.jm-wallet-password.user = cfg.user;
