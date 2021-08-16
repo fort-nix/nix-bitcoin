@@ -1,12 +1,6 @@
-let
-  nixpkgsPinned = import ./nixpkgs-pinned.nix;
-  nixpkgsStable = import nixpkgsPinned.nixpkgs { config = {}; overlays = []; };
-  nixpkgsUnstable = import nixpkgsPinned.nixpkgs-unstable { config = {}; overlays = []; };
-  nixBitcoinPkgsStable = import ./. { pkgs = nixpkgsStable; };
-  nixBitcoinPkgsUnstable = import ./. { pkgs = nixpkgsUnstable; };
-in
+pkgs: pkgsUnstable:
 {
-  inherit (nixpkgsUnstable)
+  inherit (pkgsUnstable)
     bitcoin
     bitcoind
     charge-lnd
@@ -21,8 +15,5 @@ in
     lightning-loop
     lightning-pool;
 
-  inherit nixpkgsStable nixpkgsUnstable;
-
-  stable = nixBitcoinPkgsStable;
-  unstable = nixBitcoinPkgsUnstable;
+  inherit pkgs pkgsUnstable;
 }
