@@ -251,6 +251,7 @@ in {
       };
       joinmarket-ob-watcher = {
         id = 26;
+        connections = [ "bitcoind" ];
       };
       lightning-pool = {
         id = 27;
