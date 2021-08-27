@@ -10,19 +10,7 @@ let
   version = config.nix-bitcoin.configVersion;
 
   # Sorted by increasing version numbers
-  changes = let
-    mkOnionServiceChange = service: {
-      version = "0.0.30";
-      condition = config.services.${service}.enable;
-      message = ''
-        The onion service for ${service} has been disabled in the default
-        configuration (`secure-node.nix`).
-
-        To enable the onion service, add the following to your configuration:
-        nix-bitcon.onionServices.${service}.enable = true;
-      '';
-    };
-  in [
+  changes = [
     {
       version = "0.0.26";
       condition = config.services.joinmarket.enable;
@@ -113,6 +101,18 @@ let
       '';
     }
   ];
+
+  mkOnionServiceChange = service: {
+    version = "0.0.30";
+    condition = config.services.${service}.enable;
+    message = ''
+        The onion service for ${service} has been disabled in the default
+        configuration (`secure-node.nix`).
+
+        To enable the onion service, add the following to your configuration:
+        nix-bitcon.onionServices.${service}.enable = true;
+      '';
+  };
 
   incompatibleChanges = optionals
     (version != null && versionOlder lastChange)
