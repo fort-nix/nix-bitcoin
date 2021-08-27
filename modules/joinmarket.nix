@@ -33,7 +33,6 @@ let
     rpc_host = ${bitcoind.rpc.address}
     rpc_port = ${toString bitcoind.rpc.port}
     rpc_user = ${bitcoind.rpc.users.privileged.name}
-    @@RPC_PASSWORD@@
     ${optionalString (cfg.rpcWalletFile != null) "rpc_wallet_file = ${cfg.rpcWalletFile}"}
 
     [MESSAGING:server1]
@@ -237,11 +236,13 @@ in {
       requires = [ "bitcoind.service" ];
       after = [ "bitcoind.service" ];
       preStart = ''
-        install -o '${cfg.user}' -g '${cfg.group}' -m 640 ${configFile} ${cfg.dataDir}/joinmarket.cfg
-          sed -i \
-            "s|@@RPC_PASSWORD@@|rpc_password = $(cat ${secretsDir}/bitcoin-rpcpassword-privileged)|" \
-            '${cfg.dataDir}/joinmarket.cfg'
-        '';
+        {
+          cat ${configFile}
+          echo
+          echo '[BLOCKCHAIN]'
+          echo "rpc_password = $(cat ${secretsDir}/bitcoin-rpcpassword-privileged)"
+        } > '${cfg.dataDir}/joinmarket.cfg'
+      '';
       # Generating wallets (jmclient/wallet.py) is only supported for mainnet or testnet
       postStart = mkIf (bitcoind.network == "mainnet") ''
         walletname=wallet.jmdat
@@ -252,12 +253,14 @@ in {
             ${bitcoind.cli}/bin/bitcoin-cli -named createwallet \
               wallet_name="${cfg.rpcWalletFile}" disable_private_keys=true
           ''}
-          pw=$(cat "${secretsDir}"/jm-wallet-password)
           cd ${cfg.dataDir}
-          if ! ${nbPkgs.joinmarket}/bin/jm-genwallet --datadir=${cfg.dataDir} $walletname $pw \
-                 | grep 'recovery_seed' \
-                 | cut -d ':' -f2 \
-                 | (umask u=r,go=; cat > jm-wallet-seed); then
+          # Strip trailing newline from password file
+          if ! tr -d "\n" <"${secretsDir}/jm-wallet-password" \
+               | ${nbPkgs.joinmarket}/bin/jm-genwallet \
+                   --datadir=${cfg.dataDir} --wallet-password-stdin $walletname \
+               | grep 'recovery_seed' \
+               | cut -d ':' -f2 \
+               | (umask u=r,go=; cat > jm-wallet-seed); then
             echo "wallet creation failed"
             rm -f "$wallet" jm-wallet-seed
             exit 1
