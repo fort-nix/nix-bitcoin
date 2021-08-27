@@ -252,10 +252,15 @@ For clarity reasons, nix-bitcoin renames all scripts to `jm-*` without `.py`, fo
 example `wallet-tool.py` becomes `jm-wallet-tool`. The rest of this section
 details nix-bitcoin specific workflows for JoinMarket.
 
-## Initialize JoinMarket Wallet
+## Wallets
 
-By default, nix-bitcoin's JoinMarket module automatically generates a wallet for
-you. If however, you want to manually initialize your wallet, follow these steps.
+By default, a wallet is automatically generated at service startup.
+It's stored at `/var/lib/joinmarket/wallets/wallet.jmdat`, and its mnmenoic recovery
+seed phrase is stored at `/var/lib/joinmarket/jm-wallet-seed`.
+
+A missing wallet file is automatically recreated if the seed file is still present.
+
+If you want to manually initialize your wallet instead, follow these steps:
 
 1. Enable JoinMarket in your node configuration
 

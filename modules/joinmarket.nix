@@ -250,17 +250,31 @@ in {
         if [[ ! -f $wallet ]]; then
           ${optionalString (cfg.rpcWalletFile != null) ''
             echo "Create watch-only wallet ${cfg.rpcWalletFile}"
-            ${bitcoind.cli}/bin/bitcoin-cli -named createwallet \
-              wallet_name="${cfg.rpcWalletFile}" disable_private_keys=true
+            if ! output=$(${bitcoind.cli}/bin/bitcoin-cli -named createwallet \
+                          wallet_name="${cfg.rpcWalletFile}" disable_private_keys=true 2>&1); then
+              # Ignore error if bitcoind wallet already exists
+              if [[ $output != *"already exists"* ]]; then
+                echo "$output"
+                exit 1
+              fi
+            fi
           ''}
+          # Restore wallet from seed if available
+          seed=
+          if [[ -e jm-wallet-seed ]]; then
+            seed="--recovery-seed-file jm-wallet-seed"
+          fi
           cd ${cfg.dataDir}
           # Strip trailing newline from password file
           if ! tr -d "\n" <"${secretsDir}/jm-wallet-password" \
                | ${nbPkgs.joinmarket}/bin/jm-genwallet \
-                   --datadir=${cfg.dataDir} --wallet-password-stdin $walletname \
-               | grep 'recovery_seed' \
-               | cut -d ':' -f2 \
-               | (umask u=r,go=; cat > jm-wallet-seed); then
+                   --datadir=${cfg.dataDir} --wallet-password-stdin $seed $walletname \
+               | (if [[ ! $seed ]]; then
+                    umask u=r,go=
+                    grep -ohP '(?<=recovery_seed:).*' > jm-wallet-seed
+                  else
+                    cat > /dev/null
+                  fi); then
             echo "wallet creation failed"
             rm -f "$wallet" jm-wallet-seed
             exit 1

@@ -100,6 +100,29 @@ let
         [1] https://github.com/bitcoin/bitcoin/pull/15454
       '';
     }
+    {
+      version = "0.0.51";
+      condition = config.services.joinmarket.enable;
+      message = let
+        jmDataDir = config.services.joinmarket.dataDir;
+      in ''
+        Joinmarket 0.9.1 has added support for Fidelity Bonds [1].
+
+        If you've used joinmarket before, do the following to enable Fidelity Bonds in your existing wallet.
+        Enabling Fidelity Bonds has no effect if you don't use them.
+
+        1. Deploy the new system config to your node
+        2. Run the following on your node:
+           # Ensure that the wallet seed exists and rename the wallet
+           ls ${jmDataDir}/jm-wallet-seed && mv ${jmDataDir}/wallets/wallet.jmdat{,.bak}
+           # This automatically recreates the wallet with Fidelity Bonds support
+           systemctl restart joinmarket
+           # Remove wallet backup if update was successful
+           rm ${jmDataDir}/wallets/wallet.jmdat.bak
+
+        [1] https://github.com/JoinMarket-Org/joinmarket-clientserver/blob/master/docs/fidelity-bonds.md
+      '';
+    }
   ];
 
   mkOnionServiceChange = service: {
