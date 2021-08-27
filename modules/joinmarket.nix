@@ -312,21 +312,15 @@ in {
       wantedBy = [ "joinmarket.service" ];
       requires = [ "joinmarket.service" ];
       after = [ "joinmarket.service" ];
-      preStart = let
-        start = ''
-          exec ${nbPkgs.joinmarket}/bin/jm-yg-privacyenhanced --datadir='${cfg.dataDir}' --wallet-password-stdin wallet.jmdat
-        '';
-      in ''
-        pw=$(cat "${secretsDir}"/jm-wallet-password)
-        echo "echo -n $pw | ${start}" > $RUNTIME_DIRECTORY/start
+      script = ''
+        tr -d "\n" <"${secretsDir}/jm-wallet-password" \
+        | ${nbPkgs.joinmarket}/bin/jm-yg-privacyenhanced --datadir='${cfg.dataDir}' \
+          --wallet-password-stdin wallet.jmdat
       '';
       serviceConfig = nbLib.defaultHardening // rec {
-        RuntimeDirectory = "joinmarket-yieldgenerator"; # Only used to create start script
-        RuntimeDirectoryMode = "700";
         WorkingDirectory = cfg.dataDir; # The service creates dir 'logs' in the working dir
-        ExecStart = "${pkgs.bash}/bin/bash /run/${RuntimeDirectory}/start";
         # Show "joinmarket-yieldgenerator" instead of "bash" in the journal.
-        # The parent bash start process has to run alongside the main process
+        # The start script has to run alongside the main process
         # because it provides the wallet password via stdin to the main process
         SyslogIdentifier = "joinmarket-yieldgenerator";
         User = cfg.user;
