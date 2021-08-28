@@ -4,8 +4,6 @@ let
 
   joinmarketPkg = pkg: callPackage pkg { inherit (nbPkgs.joinmarket) version src; };
   clightningPkg = pkg: callPackage pkg { inherit (nbPkgs.pinned) clightning; };
-
-  unstable = (import ../nixpkgs-pinned.nix).nixpkgs-unstable;
 in {
   bencoderpyx = callPackage ./bencoderpyx {};
   coincurve = callPackage ./coincurve {};

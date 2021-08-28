@@ -281,9 +281,18 @@ examples() {
     (cd "$scriptDir/../examples" && nix-shell --run "$script")
 }
 
+flake() {
+    if [[ $(nix flake 2>&1) != *"requires a sub-command"* ]]; then
+        echo "Skipping flake test. Nix flake support is not enabled."
+    else
+        nix flake check "$scriptDir/.."
+    fi
+}
+
 all() {
     buildable
     examples
+    flake
 }
 
 # An alias for buildTest

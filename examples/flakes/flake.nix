@@ -1,0 +1,49 @@
+{
+  description = "A basic nix-bitcoin node";
+
+  inputs.nix-bitcoin.url = "github:fort-nix/nix-bitcoin";
+
+  outputs = { self, nix-bitcoin }: {
+
+    nixosConfigurations.mynode = nix-bitcoin.inputs.nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux";
+      modules = [
+        ## Note:
+        ## If you use a custom nixpkgs version for evaluating your system,
+        ## consider using `withLockedPkgs` instead of `withSystemPkgs` to use the exact
+        ## pkgs versions for nix-bitcoin services that are tested by nix-bitcoin.
+        ## The downsides are increased evaluation times and increased system
+        ## closure size.
+        #
+        # nix-bitcoin.nixosModules.withLockedPkgs
+        nix-bitcoin.nixosModules.withSystemPkgs
+
+        ## Optional:
+        ## Import the secure-node preset, an opinionated config to enhance security
+        ## and privacy.
+        #
+        # "${nix-bitcoin}/modules/presets/secure-node.nix"
+
+        {
+          nix-bitcoin.generateSecrets = true;
+
+          services.bitcoind.enable = true;
+
+          # When using nix-bitcoin as part of a larger NixOS configuration, set the following to enable
+          # interactive access to nix-bitcoin features (like bitcoin-cli) for your system's main user
+          nix-bitcoin.operator = {
+            enable = true;
+            name = "main"; # Set this to your system's main user
+          };
+
+          # The system's main unprivileged user. This setting is usually part of your
+          # existing NixOS configuration.
+          users.users.main = {
+            isNormalUser = true;
+            password = "a";
+          };
+        }
+      ];
+    };
+  };
+}
