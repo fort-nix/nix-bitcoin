@@ -221,8 +221,9 @@ def _():
 
 @test("joinmarket-ob-watcher")
 def _():
-    assert_running("joinmarket-ob-watcher")
-    machine.wait_until_succeeds(log_has_string("joinmarket-ob-watcher", "Starting ob-watcher"))
+    # joinmarket-ob-watcher fails on non-synced mainnet nodes.
+    # Also, it doesn't support any of the test networks.
+    machine.wait_until_succeeds(log_has_string("joinmarket-ob-watcher", "unknown error in JSON-RPC"))
 
 @test("nodeinfo")
 def _():

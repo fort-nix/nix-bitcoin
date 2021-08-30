@@ -1,4 +1,4 @@
-{ version, src, lib, buildPythonPackage, fetchurl, future, configparser, joinmarketbase, mnemonic, argon2_cffi, bencoderpyx, pyaes, joinmarketbitcoin, txtorcon }:
+{ version, src, lib, buildPythonPackage, fetchurl, future, configparser, joinmarketbase, joinmarketdaemon, mnemonic, argon2_cffi, bencoderpyx, pyaes, joinmarketbitcoin, txtorcon }:
 
 buildPythonPackage rec {
   pname = "joinmarketclient";
@@ -6,7 +6,7 @@ buildPythonPackage rec {
 
   postUnpack = "sourceRoot=$sourceRoot/jmclient";
 
-  checkInputs = [ joinmarketbitcoin txtorcon ];
+  checkInputs = [ joinmarketbitcoin joinmarketdaemon txtorcon ];
 
   # configparser may need to be compiled with python_version<"3.2"
   propagatedBuildInputs = [ future configparser joinmarketbase mnemonic argon2_cffi bencoderpyx pyaes ];

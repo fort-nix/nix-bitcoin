@@ -252,10 +252,15 @@ For clarity reasons, nix-bitcoin renames all scripts to `jm-*` without `.py`, fo
 example `wallet-tool.py` becomes `jm-wallet-tool`. The rest of this section
 details nix-bitcoin specific workflows for JoinMarket.
 
-## Initialize JoinMarket Wallet
+## Wallets
 
-By default, nix-bitcoin's JoinMarket module automatically generates a wallet for
-you. If however, you want to manually initialize your wallet, follow these steps.
+By default, a wallet is automatically generated at service startup.
+It's stored at `/var/lib/joinmarket/wallets/wallet.jmdat`, and its mnmenoic recovery
+seed phrase is stored at `/var/lib/joinmarket/jm-wallet-seed`.
+
+A missing wallet file is automatically recreated if the seed file is still present.
+
+If you want to manually initialize your wallet instead, follow these steps:
 
 1. Enable JoinMarket in your node configuration
 
@@ -301,7 +306,7 @@ to run it accross SSH sessions. You can also use tmux in the same fashion.
     screen -S "tumbler"
     ```
 
-2. Start the tumbler
+3. Start the tumbler
 
     Example: Tumbling into your wallet after buying from an exchange to improve privacy:
 
@@ -314,19 +319,19 @@ to run it accross SSH sessions. You can also use tmux in the same fashion.
 
     Get more information [here](https://github.com/JoinMarket-Org/joinmarket-clientserver/blob/master/docs/tumblerguide.md)
 
-3. Detach the screen session to leave the tumbler running in the background
+4. Detach the screen session to leave the tumbler running in the background
 
     ```
     Ctrl-a d or Ctrl-a Ctrl-d
     ```
 
-4. Re-attach to the screen session
+5. Re-attach to the screen session
 
     ```console
     screen -r tumbler
     ```
 
-5. End screen session
+6. End screen session
 
     Type exit when tumbler is done
 

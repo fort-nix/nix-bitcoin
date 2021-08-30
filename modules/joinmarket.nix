@@ -33,7 +33,6 @@ let
     rpc_host = ${bitcoind.rpc.address}
     rpc_port = ${toString bitcoind.rpc.port}
     rpc_user = ${bitcoind.rpc.users.privileged.name}
-    @@RPC_PASSWORD@@
     ${optionalString (cfg.rpcWalletFile != null) "rpc_wallet_file = ${cfg.rpcWalletFile}"}
 
     [MESSAGING:server1]
@@ -64,6 +63,8 @@ let
     tx_broadcast = self
     minimum_makers = 4
     max_sats_freeze_reuse = -1
+    interest_rate = """ + _DEFAULT_INTEREST_RATE + """
+    bondless_makers_allowance = """ + _DEFAULT_BONDLESS_MAKERS_ALLOWANCE + """
     taker_utxo_retries = 3
     taker_utxo_age = 5
     taker_utxo_amtpercent = 20
@@ -235,11 +236,13 @@ in {
       requires = [ "bitcoind.service" ];
       after = [ "bitcoind.service" ];
       preStart = ''
-        install -o '${cfg.user}' -g '${cfg.group}' -m 640 ${configFile} ${cfg.dataDir}/joinmarket.cfg
-          sed -i \
-            "s|@@RPC_PASSWORD@@|rpc_password = $(cat ${secretsDir}/bitcoin-rpcpassword-privileged)|" \
-            '${cfg.dataDir}/joinmarket.cfg'
-        '';
+        {
+          cat ${configFile}
+          echo
+          echo '[BLOCKCHAIN]'
+          echo "rpc_password = $(cat ${secretsDir}/bitcoin-rpcpassword-privileged)"
+        } > '${cfg.dataDir}/joinmarket.cfg'
+      '';
       # Generating wallets (jmclient/wallet.py) is only supported for mainnet or testnet
       postStart = mkIf (bitcoind.network == "mainnet") ''
         walletname=wallet.jmdat
@@ -247,15 +250,31 @@ in {
         if [[ ! -f $wallet ]]; then
           ${optionalString (cfg.rpcWalletFile != null) ''
             echo "Create watch-only wallet ${cfg.rpcWalletFile}"
-            ${bitcoind.cli}/bin/bitcoin-cli -named createwallet \
-              wallet_name="${cfg.rpcWalletFile}" disable_private_keys=true
+            if ! output=$(${bitcoind.cli}/bin/bitcoin-cli -named createwallet \
+                          wallet_name="${cfg.rpcWalletFile}" disable_private_keys=true 2>&1); then
+              # Ignore error if bitcoind wallet already exists
+              if [[ $output != *"already exists"* ]]; then
+                echo "$output"
+                exit 1
+              fi
+            fi
           ''}
-          pw=$(cat "${secretsDir}"/jm-wallet-password)
+          # Restore wallet from seed if available
+          seed=
+          if [[ -e jm-wallet-seed ]]; then
+            seed="--recovery-seed-file jm-wallet-seed"
+          fi
           cd ${cfg.dataDir}
-          if ! ${nbPkgs.joinmarket}/bin/jm-genwallet --datadir=${cfg.dataDir} $walletname $pw \
-                 | grep 'recovery_seed' \
-                 | cut -d ':' -f2 \
-                 | (umask u=r,go=; cat > jm-wallet-seed); then
+          # Strip trailing newline from password file
+          if ! tr -d "\n" <"${secretsDir}/jm-wallet-password" \
+               | ${nbPkgs.joinmarket}/bin/jm-genwallet \
+                   --datadir=${cfg.dataDir} --wallet-password-stdin $seed $walletname \
+               | (if [[ ! $seed ]]; then
+                    umask u=r,go=
+                    grep -ohP '(?<=recovery_seed:).*' > jm-wallet-seed
+                  else
+                    cat > /dev/null
+                  fi); then
             echo "wallet creation failed"
             rm -f "$wallet" jm-wallet-seed
             exit 1
@@ -293,21 +312,15 @@ in {
       wantedBy = [ "joinmarket.service" ];
       requires = [ "joinmarket.service" ];
       after = [ "joinmarket.service" ];
-      preStart = let
-        start = ''
-          exec ${nbPkgs.joinmarket}/bin/jm-yg-privacyenhanced --datadir='${cfg.dataDir}' --wallet-password-stdin wallet.jmdat
-        '';
-      in ''
-        pw=$(cat "${secretsDir}"/jm-wallet-password)
-        echo "echo -n $pw | ${start}" > $RUNTIME_DIRECTORY/start
+      script = ''
+        tr -d "\n" <"${secretsDir}/jm-wallet-password" \
+        | ${nbPkgs.joinmarket}/bin/jm-yg-privacyenhanced --datadir='${cfg.dataDir}' \
+          --wallet-password-stdin wallet.jmdat
       '';
       serviceConfig = nbLib.defaultHardening // rec {
-        RuntimeDirectory = "joinmarket-yieldgenerator"; # Only used to create start script
-        RuntimeDirectoryMode = "700";
         WorkingDirectory = cfg.dataDir; # The service creates dir 'logs' in the working dir
-        ExecStart = "${pkgs.bash}/bin/bash /run/${RuntimeDirectory}/start";
         # Show "joinmarket-yieldgenerator" instead of "bash" in the journal.
-        # The parent bash start process has to run alongside the main process
+        # The start script has to run alongside the main process
         # because it provides the wallet password via stdin to the main process
         SyslogIdentifier = "joinmarket-yieldgenerator";
         User = cfg.user;

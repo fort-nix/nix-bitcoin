@@ -15,6 +15,7 @@ makeHMAC() {
 
 makePasswordSecret bitcoin-rpcpassword-privileged
 makePasswordSecret bitcoin-rpcpassword-btcpayserver
+makePasswordSecret bitcoin-rpcpassword-joinmarket-ob-watcher
 makePasswordSecret bitcoin-rpcpassword-public
 makePasswordSecret lnd-wallet-password
 makePasswordSecret liquid-rpcpassword
@@ -25,6 +26,7 @@ makePasswordSecret jm-wallet-password
 [[ -e bitcoin-HMAC-privileged ]] || makeHMAC privileged
 [[ -e bitcoin-HMAC-public ]] || makeHMAC public
 [[ -e bitcoin-HMAC-btcpayserver ]] || makeHMAC btcpayserver
+[[ -e bitcoin-HMAC-joinmarket-ob-watcher ]] || makeHMAC joinmarket-ob-watcher
 [[ -e spark-wallet-login   ]] || echo "login=spark-wallet:$(cat spark-wallet-password)" > spark-wallet-login
 [[ -e backup-encryption-env ]] || echo "PASSPHRASE=$(cat backup-encryption-password)" > backup-encryption-env
 

@@ -1,10 +1,20 @@
-{ stdenv, lib, fetchurl, python3, nbPython3Packages, pkgs }:
+{ stdenv, lib, fetchurl, applyPatches, fetchpatch, python3, nbPython3Packages, pkgs }:
 
 let
-  version = "0.8.3";
-  src = fetchurl {
-    url = "https://github.com/JoinMarket-Org/joinmarket-clientserver/archive/v${version}.tar.gz";
-    sha256 = "0kcgp8lsgnbaxfv13lrg6x7vcbdi5yj526lq9vmvbbidyw4km3r2";
+  version = "0.9.1";
+  src = applyPatches {
+    src = fetchurl {
+      url = "https://github.com/JoinMarket-Org/joinmarket-clientserver/archive/v${version}.tar.gz";
+      sha256 = "0a8jlzi3ll1dw60fwnqs5awmcfxdjynh6i1gfmcc29qhwjpx5djl";
+    };
+    patches = [
+      (fetchpatch {
+        # https://github.com/JoinMarket-Org/joinmarket-clientserver/pull/999
+        name = "improve-genwallet";
+        url = "https://patch-diff.githubusercontent.com/raw/JoinMarket-Org/joinmarket-clientserver/pull/999.patch";
+        sha256 = "08x2i1q8qsn5rxmfmmj4i8s1d2yc862i152riw3d8zwz7x2cq40h";
+      })
+    ];
   };
 
   runtimePackages = with nbPython3Packages; [
@@ -32,7 +42,6 @@ stdenv.mkDerivation {
     }
 
     cp scripts/joinmarketd.py $out/bin/joinmarketd
-    cp scripts/obwatch/ob-watcher.py $out/bin/ob-watcher
     cpBin add-utxo.py
     cpBin convert_old_wallet.py
     cpBin receive-payjoin.py
@@ -46,8 +55,13 @@ stdenv.mkDerivation {
     chmod +x -R $out/bin
     patchShebangs $out/bin
 
+    ## ob-watcher
+    obw=$out/libexec/joinmarket-ob-watcher
+    install -D scripts/obwatch/ob-watcher.py $obw/ob-watcher
+    patchShebangs $obw/ob-watcher
+    ln -s $obw/ob-watcher $out/bin/jm-ob-watcher
+
     # These files must be placed in the same dir as ob-watcher
-    cp scripts/obwatch/orderbook.html $out/bin/orderbook.html
-    cp -r scripts/obwatch/vendor $out/bin/vendor
+    cp -r scripts/obwatch/{orderbook.html,sybil_attack_calculations.py,vendor} $obw
   '';
 }
