@@ -165,8 +165,7 @@ debug() {
 }
 
 evalTest() {
-    nix eval --raw "($(vmTestNixExpr)).outPath"
-    echo # nix eval doesn't print a newline
+    nix-instantiate --eval -E "($(vmTestNixExpr)).outPath"
 }
 
 instantiate() {
