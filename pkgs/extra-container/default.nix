@@ -4,6 +4,7 @@
 
 stdenv.mkDerivation rec {
   pname = "extra-container";
+  # Update this file when changing the version: ../../test/lib/make-container.sh
   version = "0.7";
 
   src = builtins.fetchTarball {
