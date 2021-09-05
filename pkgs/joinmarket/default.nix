@@ -12,7 +12,7 @@ let
         # https://github.com/JoinMarket-Org/joinmarket-clientserver/pull/999
         name = "improve-genwallet";
         url = "https://patch-diff.githubusercontent.com/raw/JoinMarket-Org/joinmarket-clientserver/pull/999.patch";
-        sha256 = "08x2i1q8qsn5rxmfmmj4i8s1d2yc862i152riw3d8zwz7x2cq40h";
+        sha256 = "etlbi0yhb4X5EAPUerIIAXU6l7EeB9O2c07QaXxCEAg=";
       })
     ];
   };
