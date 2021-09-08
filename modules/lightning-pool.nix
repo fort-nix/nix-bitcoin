@@ -6,6 +6,9 @@ let
   cfg = config.services.lightning-pool;
   nbLib = config.nix-bitcoin.lib;
   secretsDir = config.nix-bitcoin.secretsDir;
+
+  lnd = config.services.lnd;
+
   network = config.services.bitcoind.network;
   rpclisten = "${cfg.rpcAddress}:${toString cfg.rpcPort}";
   configFile = builtins.toFile "pool.conf" ''
@@ -13,8 +16,8 @@ let
     restlisten=${cfg.restAddress}:${toString cfg.restPort}
     ${optionalString (cfg.proxy != null) "proxy=${cfg.proxy}"}
 
-    lnd.host=${config.services.lnd.rpcAddress}:${toString config.services.lnd.rpcPort}
-    lnd.macaroondir=${config.services.lnd.networkDir}
+    lnd.host=${lnd.rpcAddress}:${toString lnd.rpcPort}
+    lnd.macaroondir=${lnd.networkDir}
     lnd.tlspath=${secretsDir}/lnd-cert
 
     ${cfg.extraConfig}
