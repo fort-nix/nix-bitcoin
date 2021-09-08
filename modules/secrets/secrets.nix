@@ -24,8 +24,8 @@ in
       type = types.bool;
       default = false;
       description = ''
-        Automatically generate all required secrets.
-        Make sure to create a backup of the generated secrets.
+        Automatically generate all required secrets at system startup.
+        Note: Make sure to create a backup of the generated secrets.
       '';
     };
 
@@ -60,7 +60,6 @@ in
     };
 
     secretsSetupMethod = mkOption {
-      internal = true;
       type = types.str;
       default = throw  ''
         Error: No secrets setup method has been defined.
