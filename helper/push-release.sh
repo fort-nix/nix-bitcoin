@@ -59,6 +59,10 @@ SHA256SUMS=$TMPDIR/SHA256SUMS.txt
 (cd $TMPDIR; sha256sum $ARCHIVE_NAME > $SHA256SUMS)
 gpg -o $SHA256SUMS.asc -a --detach-sig $SHA256SUMS
 
+cd $TMPDIR
+nix hash to-sri --type sha256 $(nix-prefetch-url --unpack file://$ARCHIVE 2> /dev/null) > nar-hash.txt
+gpg -o nar-hash.txt.asc -a --detach-sig nar-hash.txt
+
 if [[ $DRY_RUN ]]; then
     echo "Created v$TAG_NAME in $TMPDIR"
     exit 0
@@ -77,6 +81,10 @@ post_asset() {
     curl -H "Authorization: token $OAUTH_TOKEN" --data-binary "@$1" -H "Content-Type: application/octet-stream" \
          $GH_ASSET/$(basename $1) &> /dev/null
 }
+post_asset nar-hash.txt
+post_asset nar-hash.txt.asc
+# Post additional assets for backwards compatibility.
+# This allows older nix-bitcoin installations to upgrade via `fetch-release`.
 post_asset $ARCHIVE
 post_asset $SHA256SUMS
 post_asset $SHA256SUMS.asc
