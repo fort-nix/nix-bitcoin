@@ -17,8 +17,39 @@ stdenv.mkDerivation rec {
 
     export NIX_BITCOIN_EXAMPLES_DIR="${cfgDir}"
 
+    help() {
+        echo "nix-bitcoin path: ${toString ../.}"
+        echo
+        echo "Available commands"
+        echo "=================="
+        echo "deploy"
+        echo "  Run krops-deploy and eval-config in parallel."
+        echo "  This ensures that eval failures appear quickly when deploying."
+        echo "  In this case, deployment is stopped."
+        echo
+        echo "krops-deploy"
+        echo "  Deploy your node via krops"
+        echo
+        echo "eval-config"
+        echo "  Evaluate your node system configuration"
+        echo
+        echo "generate-secrets"
+        echo "  Create secrets required by your node configuration."
+        echo "  Secrets are written to ./secrets/"
+        echo "  This function is automatically called by krops-deploy."
+        echo
+        echo "update-nix-bitcoin"
+        echo "  Fetch and use the latest version of nix-bitcoin"
+    }
+    h() { help; }
+
     fetch-release() {
       ${toString ./fetch-release}
+    }
+
+    update-nix-bitcoin() {
+      fetch-release > "${cfgDir}/nix-bitcoin-release.nix"
+      exec nix-shell
     }
 
     generate-secrets() {(
@@ -27,6 +58,19 @@ stdenv.mkDerivation rec {
                    '<nixpkgs/nixos>' -A config.nix-bitcoin.generateSecretsScript)
       mkdir -p "${cfgDir}/secrets"
       (cd "${cfgDir}/secrets"; $genSecrets)
+    )}
+
+    deploy() {(
+      set -euo pipefail
+      krops-deploy &
+      kropsPid=$!
+      if eval-config; then
+        wait $kropsPid
+      else
+        # Kill all subprocesses
+        kill $(pidClosure $kropsPid)
+        return 1
+      fi
     )}
 
     krops-deploy() {(
@@ -38,11 +82,24 @@ stdenv.mkDerivation rec {
       $(nix-build --no-out-link "${cfgDir}/krops/deploy.nix")
     )}
 
-    # Print logo if
+    eval-config() {
+      NIXOS_CONFIG="${cfgDir}/krops/krops-configuration.nix" nix eval --raw -f ${nixpkgs}/nixos system.outPath
+      echo
+    }
+
+    pidClosure() {
+      echo "$1"
+      for pid in $(ps -o pid= --ppid "$1"); do
+        pidClosure "$pid"
+      done
+    }
+
+    # Print welcome message if
     # 1. stdout is a TTY, i.e. we're not piping the output
     # 2. the shell is interactive
     if [[ -t 1 && $- == *i* ]]; then
       ${figlet}/bin/figlet "nix-bitcoin"
+      echo 'Enter "h" or "help" for documentation.'
     fi
 
     # Don't run this hook when another nix-shell is run inside this shell
