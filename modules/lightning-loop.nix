@@ -22,7 +22,7 @@ let
 
     lnd.host=${lnd.rpcAddress}:${toString lnd.rpcPort}
     lnd.macaroonpath=${lnd.networkDir}/admin.macaroon
-    lnd.tlspath=${secretsDir}/lnd-cert
+    lnd.tlspath=${lnd.certPath}
 
     ${optionalString (cfg.proxy != null) "server.proxy=${cfg.proxy}"}
 

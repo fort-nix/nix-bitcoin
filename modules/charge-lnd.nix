@@ -105,7 +105,7 @@ in
         macaroonDir=${dataDir}/lnddir-proxy/data/chain/bitcoin/mainnet
         mkdir -p $macaroonDir
         ln -sf /run/lnd/charge-lnd.macaroon $macaroonDir
-        ln -sf ${config.nix-bitcoin.secretsDir}/lnd-cert ${dataDir}/lnddir-proxy/tls.cert
+        ln -sf ${lnd.certPath} ${dataDir}/lnddir-proxy/tls.cert
       '';
       serviceConfig = nbLib.defaultHardening // {
         ExecStart = ''

@@ -5,7 +5,6 @@ with lib;
 let
   cfg = config.services.lightning-pool;
   nbLib = config.nix-bitcoin.lib;
-  secretsDir = config.nix-bitcoin.secretsDir;
 
   lnd = config.services.lnd;
 
@@ -18,7 +17,7 @@ let
 
     lnd.host=${lnd.rpcAddress}:${toString lnd.rpcPort}
     lnd.macaroondir=${lnd.networkDir}
-    lnd.tlspath=${secretsDir}/lnd-cert
+    lnd.tlspath=${lnd.certPath}
 
     ${cfg.extraConfig}
   '';
