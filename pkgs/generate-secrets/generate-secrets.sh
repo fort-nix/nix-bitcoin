@@ -30,16 +30,15 @@ makePasswordSecret jm-wallet-password
 [[ -e spark-wallet-login   ]] || echo "login=spark-wallet:$(cat spark-wallet-password)" > spark-wallet-login
 [[ -e backup-encryption-env ]] || echo "PASSPHRASE=$(cat backup-encryption-password)" > backup-encryption-env
 
-if [[ ! -e lnd-key || ! -e lnd-cert ]]; then
-    openssl ecparam -genkey -name prime256v1 -out lnd-key
-    openssl req -config $opensslConf -new -sha256 -key lnd-key -out lnd.csr -subj '/CN=localhost/O=lnd'
-    openssl req -config $opensslConf -x509 -sha256 -days 1825 -key lnd-key -in lnd.csr -out lnd-cert
-    rm lnd.csr
-fi
+makeCert() {
+  if [[ ! -e $name-key || ! -e $name-cert ]]; then
+    openssl req -x509 -newkey ec -pkeyopt ec_paramgen_curve:prime256v1 \
+      -sha256 -days 3650 -nodes -keyout "$name-key" -out "$name-cert" \
+      -subj "/CN=localhost/O=$name" \
+      -addext "subjectAltName=DNS:localhost,IP:127.0.0.1,IP:169.254.1.14,IP:169.254.1.22"
+    # TODO: Remove hardcoded lnd, loopd netns ips
+  fi
+}
 
-if [[ ! -e loop-key || ! -e loop-cert ]]; then
-    openssl ecparam -genkey -name prime256v1 -out loop-key
-    openssl req -config $opensslConf -new -sha256 -key loop-key -out loop.csr -subj '/CN=localhost/O=loopd'
-    openssl req -config $opensslConf -x509 -sha256 -days 1825 -key loop-key -in loop.csr -out loop-cert
-    rm loop.csr
-fi
+makeCert lnd
+makeCert loop
