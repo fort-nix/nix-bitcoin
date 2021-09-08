@@ -21,12 +21,22 @@ stdenv.mkDerivation rec {
       ${toString ./fetch-release}
     }
 
-    krops-deploy() {
+    generate-secrets() {(
+      set -euo pipefail
+      genSecrets=$(nix-build --no-out-link -I nixos-config="${cfgDir}/configuration.nix" \
+                   '<nixpkgs/nixos>' -A config.nix-bitcoin.generateSecretsScript)
+      mkdir -p "${cfgDir}/secrets"
+      (cd "${cfgDir}/secrets"; $genSecrets)
+    )}
+
+    krops-deploy() {(
+      set -euo pipefail
+      generate-secrets
       # Ensure strict permissions on secrets/ directory before rsyncing it to
       # the target machine
       chmod 700 "${cfgDir}/secrets"
       $(nix-build --no-out-link "${cfgDir}/krops/deploy.nix")
-    }
+    )}
 
     # Print logo if
     # 1. stdout is a TTY, i.e. we're not piping the output

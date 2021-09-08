@@ -131,5 +131,8 @@ in {
       bitcoin-rpcpassword-joinmarket-ob-watcher.user = cfg.user;
       bitcoin-HMAC-joinmarket-ob-watcher.user = bitcoind.user;
     };
+    nix-bitcoin.generateSecretsCmds.joinmarket-ob-watcher = ''
+      makeBitcoinRPCPassword joinmarket-ob-watcher
+    '';
   };
 }

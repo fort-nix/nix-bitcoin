@@ -98,6 +98,12 @@ in {
       };
 
       nix-bitcoin.secrets.backup-encryption-env.user = "root";
+      nix-bitcoin.generateSecretsCmds.backups = ''
+        makePasswordSecret backup-encryption-password
+        if [[ backup-encryption-password -nt backup-encryption-env ]]; then
+           echo "PASSPHRASE=$(cat backup-encryption-password)" > backup-encryption-env
+        fi
+      '';
 
       services.backups.postgresqlDatabases = mkIf config.services.btcpayserver.enable [ "btcpaydb" ];
     };

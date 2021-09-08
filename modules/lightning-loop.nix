@@ -112,5 +112,8 @@ in {
        loop-key.user = lnd.user;
        loop-cert.user = lnd.user;
      };
+     nix-bitcoin.generateSecretsCmds.lightning-loop = ''
+       makeCert loop '${optionalString (cfg.rpcAddress != "localhost") "IP:${cfg.rpcAddress}"}'
+    '';
   };
 }

@@ -253,5 +253,8 @@ in {
       };
       bitcoin-HMAC-btcpayserver.user = cfg.bitcoind.user;
     };
+    nix-bitcoin.generateSecretsCmds.btcpayserver = ''
+      makeBitcoinRPCPassword btcpayserver
+    '';
   };
 }

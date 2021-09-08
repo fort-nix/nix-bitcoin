@@ -293,7 +293,14 @@ in {
       lnd-wallet-password.user = cfg.user;
       lnd-key.user = cfg.user;
       lnd-cert.user = cfg.user;
-      lnd-cert.permissions = "0444"; # world readable
+      lnd-cert.permissions = "444"; # world readable
     };
+    # Advantages of manually pre-generating certs:
+    # - Reduces dynamic state
+    # - Enables deployment of a mesh of server plus client nodes with predefined certs
+    nix-bitcoin.generateSecretsCmds.lnd = ''
+      makePasswordSecret lnd-wallet-password
+      makeCert lnd '${optionalString (cfg.rpcAddress != "localhost") "IP:${cfg.rpcAddress}"}'
+    '';
   };
 }
