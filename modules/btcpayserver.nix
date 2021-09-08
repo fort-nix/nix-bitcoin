@@ -210,9 +210,9 @@ in {
         install -m 600 ${configFile} '${cfg.btcpayserver.dataDir}/settings.config'
         ${optionalString (cfg.btcpayserver.lightningBackend == "lnd") ''
           {
-            echo -n "${lndConfig}";
+            echo -n "${lndConfig}"
             ${pkgs.openssl}/bin/openssl x509 -noout -fingerprint -sha256 -in ${config.nix-bitcoin.secretsDir}/lnd-cert \
-              | sed -e 's/.*=//;s/://g';
+              | sed -e 's/.*=//;s/://g'
           } >> '${cfg.btcpayserver.dataDir}/settings.config'
         ''}
       '';

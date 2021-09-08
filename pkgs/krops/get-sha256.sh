@@ -5,7 +5,7 @@ set -euo pipefail
 archive_hash () {
     repo=$1
     rev=$2
-    nix-prefetch-url --unpack "https://github.com/${repo}/archive/${rev}.tar.gz" 2> /dev/null | tail -n 1
+    nix-prefetch-url --unpack "https://github.com/${repo}/archive/${rev}.tar.gz" 2> /dev/null
 }
 
 echo "Fetching latest krops commit"
