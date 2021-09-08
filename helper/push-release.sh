@@ -3,13 +3,9 @@ set -euo pipefail
 
 REPO=fort-nix/nix-bitcoin
 BRANCH=master
-OAUTH_TOKEN=$(pass show nix-bitcoin/github/oauth-token)
+OAUTH_TOKEN=
 DRY_RUN=
 TAG_NAME=
-
-if [[ ! $OAUTH_TOKEN ]]; then
-    echo "Please set OAUTH_TOKEN variable"
-fi
 
 for arg in "$@"; do
     case $arg in
@@ -26,18 +22,28 @@ if [[ ! $TAG_NAME ]]; then
     echo "$0 [--dry-run|-n] <tag_name>"
     exit
 fi
-if [[ $DRY_RUN ]]; then echo "Dry run"; fi
+if [[ $DRY_RUN ]]; then
+    echo "Dry run"
+else
+    OAUTH_TOKEN=$(pass show nix-bitcoin/github/oauth-token)
+    if [[ ! $OAUTH_TOKEN ]]; then
+        echo "Please set OAUTH_TOKEN variable"
+    fi
+fi
 
 RESPONSE=$(curl https://api.github.com/repos/$REPO/releases/latest 2> /dev/null)
 echo "Latest release" $(echo $RESPONSE | jq -r '.tag_name' | tail -c +2)
-while true; do
-    read -p "Create release $TAG_NAME? [yn] " yn
-    case $yn in
-        [Yy]* ) break;;
-        [Nn]* ) exit;;
-        * ) echo "Please answer y or n.";;
-    esac
-done
+
+if [[ ! $DRY_RUN ]]; then
+   while true; do
+       read -p "Create release $TAG_NAME? [yn] " yn
+       case $yn in
+           [Yy]* ) break;;
+           [Nn]* ) exit;;
+           * ) echo "Please answer y or n.";;
+       esac
+   done
+fi
 
 TMPDIR=$(mktemp -d)
 if [[ ! $DRY_RUN ]]; then trap "rm -rf $TMPDIR" EXIT; fi
