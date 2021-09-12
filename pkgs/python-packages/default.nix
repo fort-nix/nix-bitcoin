@@ -17,6 +17,9 @@ in {
   cryptography = callPackage ./cryptography {};
   cryptography_vectors = callPackage ./cryptography/vectors.nix {};
 
+  # twisted 20.3.0, required by joinmarketbase
+  twisted = callPackage ./twisted {};
+
   joinmarketbase = joinmarketPkg ./jmbase;
   joinmarketclient = joinmarketPkg ./jmclient;
   joinmarketbitcoin = joinmarketPkg ./jmbitcoin;
