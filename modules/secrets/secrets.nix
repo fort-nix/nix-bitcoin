@@ -2,9 +2,6 @@
 
 with lib;
 let
-  cfg = config.nix-bitcoin;
-in
-{
   options.nix-bitcoin = {
     secretsDir = mkOption {
       type = types.path;
@@ -24,8 +21,16 @@ in
       type = types.bool;
       default = false;
       description = ''
-        Automatically generate all required secrets.
-        Make sure to create a backup of the generated secrets.
+        Automatically generate all required secrets at system startup.
+        Note: Make sure to create a backup of the generated secrets.
+      '';
+    };
+
+    generateSecretsCmds = mkOption {
+      type = types.attrsOf types.str;
+      default = {};
+      description = ''
+        Bash expressions for generating secrets.
       '';
     };
 
@@ -60,7 +65,6 @@ in
     };
 
     secretsSetupMethod = mkOption {
-      internal = true;
       type = types.str;
       default = throw  ''
         Error: No secrets setup method has been defined.
@@ -73,7 +77,67 @@ in
          - Set `nix-bitcoin.secretsSetupMethod = "manual"` if you want to manually setup secrets
       '';
     };
+
+    generateSecretsScript = mkOption {
+      internal = true;
+      default = let
+        rpcauthSrc = builtins.fetchurl {
+          url = "https://raw.githubusercontent.com/bitcoin/bitcoin/d6cde007db9d3e6ee93bd98a9bbfdce9bfa9b15b/share/rpcauth/rpcauth.py";
+          sha256 = "189mpplam6yzizssrgiyv70c9899ggh8cac76j4n7v0xqzfip07n";
+        };
+        rpcauth = pkgs.writers.writeBash "rpcauth" ''
+          exec ${pkgs.python3}/bin/python ${rpcauthSrc} "$@"
+        '';
+      in pkgs.writers.writeBash "generate-secrets" ''
+        set -euo pipefail
+
+        export PATH=${lib.makeBinPath (with pkgs; [ coreutils gnugrep ])}
+
+        makePasswordSecret() {
+          # Passwords have alphabet {a-z, A-Z, 0-9} and ~119 bits of entropy
+          [[ -e $1 ]] || ${pkgs.pwgen}/bin/pwgen -s 20 1 > "$1"
+        }
+        makeBitcoinRPCPassword() {
+          user=$1
+          file=bitcoin-rpcpassword-$user
+          HMACfile=bitcoin-HMAC-$user
+          makePasswordSecret "$file"
+          if [[ $file -nt $HMACfile ]]; then
+            ${rpcauth} $user $(cat "$file") | grep rpcauth | cut -d ':' -f 2 > "$HMACfile"
+          fi
+        }
+        makeCert() {
+          name=$1
+          # Add leading comma if not empty
+          extraAltNames=''${2:+,}''${2:-}
+          if [[ ! -e $name-key ]]; then
+            # Create new key and cert
+            doMakeCert "-newkey ec -pkeyopt ec_paramgen_curve:prime256v1 -nodes -keyout $name-key"
+          elif [[ ! -e $name-cert \
+                  || $(cat "$name-cert-alt-names" 2>/dev/null) != $extraAltNames ]]; then
+            # Create cert from existing key
+            doMakeCert "-key $name-key"
+          fi;
+        }
+        doMakeCert() {
+           # This fn uses global variables `name` and `extraAltNames`
+           keyOpts=$1
+           ${pkgs.openssl}/bin/openssl req -x509 \
+             -sha256 -days 3650 $keyOpts -out "$name-cert"  \
+             -subj "/CN=localhost/O=$name" \
+             -addext "subjectAltName=DNS:localhost,IP:127.0.0.1$extraAltNames"
+           echo "$extraAltNames" > "$name-cert-alt-names"
+        }
+
+        umask u=rw,go=
+        ${builtins.concatStringsSep "\n" (builtins.attrValues cfg.generateSecretsCmds)}
+      '';
+    };
   };
+
+  cfg = config.nix-bitcoin;
+in {
+  inherit options;
 
   config = {
     # This target is active when secrets have been setup successfully.
@@ -107,7 +171,7 @@ in
           cd "${cfg.secretsDir}"
           chown root: .
           chmod 0700 .
-          ${cfg.pkgs.generate-secrets}
+          ${cfg.generateSecretsScript}
         ''}
 
         setupSecret() {
@@ -141,9 +205,11 @@ in
 
         # Make all other files accessible to root only
         unprocessedFiles=$(comm -23 <(printf '%s\n' *) <(printf '%s\n' "''${processedFiles[@]}" | sort))
-        IFS=$'\n'
-        chown root: $unprocessedFiles
-        chmod 0440 $unprocessedFiles
+        if [[ $unprocessedFiles ]]; then
+          IFS=$'\n'
+          chown root: $unprocessedFiles
+          chmod 0440 $unprocessedFiles
+        fi
 
         # Now make the secrets dir accessible to other users
         chmod 0751 "$dir"

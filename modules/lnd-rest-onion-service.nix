@@ -5,7 +5,6 @@ with lib;
 let
   cfg = config.services.lnd.restOnionService;
   nbLib = config.nix-bitcoin.lib;
-  secretsDir = config.nix-bitcoin.secretsDir;
   runAsUser = config.nix-bitcoin.runAsUserCmd;
 
   lnd = config.services.lnd;
@@ -17,7 +16,7 @@ let
      --host=$(cat ${config.nix-bitcoin.onionAddresses.dataDir}/lnd/lnd-rest) \
      --port=${toString lnd.restPort} \
      --lnddir=${lnd.dataDir} \
-     --tlscertpath=${secretsDir}/lnd-cert "$@"
+     --tlscertpath=${lnd.certPath} "$@"
   '';
 in {
   options.services.lnd.restOnionService = {

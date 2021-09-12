@@ -62,7 +62,7 @@
         nbPkgs = self.mkNbPkgs { inherit system pkgs; };
 
         packages = flake-utils.lib.flattenTree (removeAttrs nbPkgs [
-          "pinned" "modulesPkgs" "nixops19_09" "krops"
+          "pinned" "modulesPkgs" "nixops19_09" "krops" "generate-secrets"
         ]) // {
           runVM = mkVMScript packages.vm;
 

@@ -83,6 +83,13 @@ in {
       } // nbLib.allowedIPAddresses cfg.enforceTor
         // nbLib.nodejs;
     };
+
     nix-bitcoin.secrets.spark-wallet-login.user = cfg.user;
+    nix-bitcoin.generateSecretsCmds.spark-wallet = ''
+      makePasswordSecret spark-wallet-password
+      if [[ spark-wallet-password -nt spark-wallet-login ]]; then
+         echo "login=spark-wallet:$(cat spark-wallet-password)" > spark-wallet-login
+      fi
+    '';
   };
 }

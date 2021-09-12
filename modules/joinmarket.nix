@@ -305,6 +305,9 @@ in {
     };
 
     nix-bitcoin.secrets.jm-wallet-password.user = cfg.user;
+    nix-bitcoin.generateSecretsCmds.joinmarket = ''
+      makePasswordSecret jm-wallet-password
+    '';
   }
 
   (mkIf cfg.yieldgenerator.enable {

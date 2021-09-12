@@ -14,7 +14,7 @@ let
   configFile = pkgs.writeText "lnd.conf" ''
     datadir=${cfg.dataDir}
     logdir=${cfg.dataDir}/logs
-    tlscertpath=${secretsDir}/lnd-cert
+    tlscertpath=${cfg.certPath}
     tlskeypath=${secretsDir}/lnd-key
 
     listen=${toString cfg.address}:${toString cfg.port}
@@ -126,7 +126,7 @@ in {
       ''
         ${runAsUser} ${cfg.user} ${cfg.package}/bin/lncli \
           --rpcserver ${cfg.rpcAddress}:${toString cfg.rpcPort} \
-          --tlscertpath '${secretsDir}/lnd-cert' \
+          --tlscertpath '${cfg.certPath}' \
           --macaroonpath '${networkDir}/admin.macaroon' "$@"
       '';
       description = "Binary to connect with the lnd instance.";
@@ -148,6 +148,11 @@ in {
       type = types.str;
       default = cfg.user;
       description = "The group as which to run LND.";
+    };
+    certPath = mkOption {
+      readOnly = true;
+      default = "${secretsDir}/lnd-cert";
+      description = "LND TLS certificate path.";
     };
     inherit (nbLib) enforceTor;
   };
@@ -211,7 +216,7 @@ in {
           # Retrying is necessary because it can happen that the lnd socket is
           # existing, but the RPC service isn't yet, which results in error
           # "waiting to start, RPC services not available".
-          curl = "${pkgs.curl}/bin/curl -s --show-error --retry 10 --cacert ${secretsDir}/lnd-cert";
+          curl = "${pkgs.curl}/bin/curl -s --show-error --retry 10 --cacert ${cfg.certPath}";
           restUrl = "https://${cfg.restAddress}:${toString cfg.restPort}/v1";
         in [
           (nbLib.script "lnd-create-wallet" ''
@@ -288,7 +293,14 @@ in {
       lnd-wallet-password.user = cfg.user;
       lnd-key.user = cfg.user;
       lnd-cert.user = cfg.user;
-      lnd-cert.permissions = "0444"; # world readable
+      lnd-cert.permissions = "444"; # world readable
     };
+    # Advantages of manually pre-generating certs:
+    # - Reduces dynamic state
+    # - Enables deployment of a mesh of server plus client nodes with predefined certs
+    nix-bitcoin.generateSecretsCmds.lnd = ''
+      makePasswordSecret lnd-wallet-password
+      makeCert lnd '${optionalString (cfg.rpcAddress != "localhost") "IP:${cfg.rpcAddress}"}'
+    '';
   };
 }

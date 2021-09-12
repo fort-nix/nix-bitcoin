@@ -247,5 +247,8 @@ in {
     nix-bitcoin.operator.groups = [ cfg.group ];
 
     nix-bitcoin.secrets.liquid-rpcpassword.user = cfg.user;
+    nix-bitcoin.generateSecretsCmds.liquid = ''
+      makePasswordSecret liquid-rpcpassword
+    '';
   };
 }

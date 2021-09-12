@@ -210,9 +210,9 @@ in {
         install -m 600 ${configFile} '${cfg.btcpayserver.dataDir}/settings.config'
         ${optionalString (cfg.btcpayserver.lightningBackend == "lnd") ''
           {
-            echo -n "${lndConfig}";
-            ${pkgs.openssl}/bin/openssl x509 -noout -fingerprint -sha256 -in ${config.nix-bitcoin.secretsDir}/lnd-cert \
-              | sed -e 's/.*=//;s/://g';
+            echo -n "${lndConfig}"
+            ${pkgs.openssl}/bin/openssl x509 -noout -fingerprint -sha256 -in ${config.services.lnd.certPath} \
+              | sed -e 's/.*=//;s/://g'
           } >> '${cfg.btcpayserver.dataDir}/settings.config'
         ''}
       '';
@@ -253,5 +253,8 @@ in {
       };
       bitcoin-HMAC-btcpayserver.user = cfg.bitcoind.user;
     };
+    nix-bitcoin.generateSecretsCmds.btcpayserver = ''
+      makeBitcoinRPCPassword btcpayserver
+    '';
   };
 }

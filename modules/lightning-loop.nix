@@ -6,6 +6,9 @@ let
   cfg = config.services.lightning-loop;
   nbLib = config.nix-bitcoin.lib;
   secretsDir = config.nix-bitcoin.secretsDir;
+
+  lnd = config.services.lnd;
+
   network = config.services.bitcoind.network;
   rpclisten = "${cfg.rpcAddress}:${toString cfg.rpcPort}";
   configFile = builtins.toFile "loop.conf" ''
@@ -17,9 +20,9 @@ let
     tlscertpath=${secretsDir}/loop-cert
     tlskeypath=${secretsDir}/loop-key
 
-    lnd.host=${config.services.lnd.rpcAddress}:${toString config.services.lnd.rpcPort}
-    lnd.macaroonpath=${config.services.lnd.networkDir}/admin.macaroon
-    lnd.tlspath=${secretsDir}/lnd-cert
+    lnd.host=${lnd.rpcAddress}:${toString lnd.rpcPort}
+    lnd.macaroonpath=${lnd.networkDir}/admin.macaroon
+    lnd.tlspath=${lnd.certPath}
 
     ${optionalString (cfg.proxy != null) "server.proxy=${cfg.proxy}"}
 
@@ -89,7 +92,7 @@ in {
     environment.systemPackages = [ cfg.package (hiPrio cfg.cli) ];
 
     systemd.tmpfiles.rules = [
-      "d '${cfg.dataDir}' 0770 ${config.services.lnd.user} ${config.services.lnd.group} - -"
+      "d '${cfg.dataDir}' 0770 ${lnd.user} ${lnd.group} - -"
     ];
 
     systemd.services.lightning-loop = {
@@ -98,7 +101,7 @@ in {
       after = [ "lnd.service" ];
       serviceConfig = nbLib.defaultHardening // {
         ExecStart = "${cfg.package}/bin/loopd --configfile=${configFile}";
-        User = config.services.lnd.user;
+        User = lnd.user;
         Restart = "on-failure";
         RestartSec = "10s";
         ReadWritePaths = cfg.dataDir;
@@ -106,8 +109,11 @@ in {
     };
 
      nix-bitcoin.secrets = {
-       loop-key.user = config.services.lnd.user;
-       loop-cert.user = config.services.lnd.user;
+       loop-key.user = lnd.user;
+       loop-cert.user = lnd.user;
      };
+     nix-bitcoin.generateSecretsCmds.lightning-loop = ''
+       makeCert loop '${optionalString (cfg.rpcAddress != "localhost") "IP:${cfg.rpcAddress}"}'
+    '';
   };
 }

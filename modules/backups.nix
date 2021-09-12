@@ -18,10 +18,11 @@ let
     ${config.services.nbxplorer.dataDir}
     ${config.services.btcpayserver.dataDir}
     ${config.services.joinmarket.dataDir}
-    ${config.services.postgresqlBackup.location}/btcpaydb.sql.gz
     ${optionalString config.nix-bitcoin.generateSecrets "${config.nix-bitcoin.secretsDir}"}
     /var/lib/tor
     /var/lib/nixos
+
+    ${builtins.concatStringsSep "\n" postgresqlBackupPaths}
 
     # Extra files
     ${cfg.extraFiles}
@@ -29,6 +30,10 @@ let
     # Exclude all unspecified files and directories
     - /
   '';
+
+  postgresqlBackupDir = config.services.postgresqlBackup.location;
+  postgresqlBackupPaths = map (db: "${postgresqlBackupDir}/${db}.sql.gz") cfg.postgresqlDatabases;
+  postgresqlBackupServices = map (db: "postgresqlBackup-${db}.service") cfg.postgresqlDatabases;
 in {
   options.services.backups = {
     enable = mkEnableOption "Backups service";
@@ -53,6 +58,11 @@ in {
         Run backup with the given frequency. If null, do not run automatically.
       '';
     };
+    postgresqlDatabases = mkOption {
+      type = types.listOf types.str;
+      default = [];
+      description = "List of database names to backup.";
+    };
     extraFiles = mkOption {
       type = types.lines;
       default = "";
@@ -63,8 +73,7 @@ in {
     };
   };
 
-  config = mkIf cfg.enable (mkMerge [
-    {
+  config = mkIf cfg.enable {
       environment.systemPackages = [ pkgs.duplicity ];
 
       services.duplicity = {
@@ -78,17 +87,24 @@ in {
         secretFile = "${config.nix-bitcoin.secretsDir}/backup-encryption-env";
       };
 
-      nix-bitcoin.secrets.backup-encryption-env.user = "root";
-    }
-    (mkIf config.services.btcpayserver.enable {
+      systemd.services.duplicity = {
+        wants = postgresqlBackupServices;
+        after = postgresqlBackupServices;
+      };
+
       services.postgresqlBackup = {
-        enable = true;
-        databases = [ "btcpaydb" ];
+        enable = mkIf (cfg.postgresqlDatabases != []) true;
+        databases = cfg.postgresqlDatabases;
       };
-      systemd.services.duplicity = rec {
-        wants = [ "postgresqlBackup-btcpaydb.service" ];
-        after = wants;
-      };
-    })
-  ]);
+
+      nix-bitcoin.secrets.backup-encryption-env.user = "root";
+      nix-bitcoin.generateSecretsCmds.backups = ''
+        makePasswordSecret backup-encryption-password
+        if [[ backup-encryption-password -nt backup-encryption-env ]]; then
+           echo "PASSPHRASE=$(cat backup-encryption-password)" > backup-encryption-env
+        fi
+      '';
+
+      services.backups.postgresqlDatabases = mkIf config.services.btcpayserver.enable [ "btcpaydb" ];
+    };
 }
