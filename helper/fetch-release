@@ -18,7 +18,7 @@ mkdir -p -m 700 "$GPG_HOME"
 # Import key
 gpg --homedir $GPG_HOME --import "$scriptDir/key-jonasnick.bin" &> /dev/null
 # Verify key fingerprint
-gpg --homedir $GPG_HOME --list-keys 36C71A37C9D988BDE82508D9B1A70E4F8DCD0366 > /dev/null
+gpg --homedir $GPG_HOME --list-keys "36C7 1A37 C9D9 88BD E825 08D9 B1A7 0E4F 8DCD 0366" > /dev/null
 
 # Fetch nar-hash of release
 cd $TMPDIR
