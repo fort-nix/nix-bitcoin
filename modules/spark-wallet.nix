@@ -44,6 +44,8 @@ let
   cfg = config.services.spark-wallet;
   nbLib = config.nix-bitcoin.lib;
 
+  clightning = config.services.clightning;
+
   # Use wasabi rate provider because the default (bitstamp) doesn't accept
   # connections through Tor
   torRateProvider = "--rate-provider wasabi --proxy socks5h://${config.nix-bitcoin.torClientAddressWithPort}";
@@ -52,7 +54,7 @@ let
       publicURL="--public-url http://$(${cfg.getPublicAddressCmd})"
     ''}
     exec ${config.nix-bitcoin.pkgs.spark-wallet}/bin/spark-wallet \
-      --ln-path '${config.services.clightning.networkDir}'  \
+      --ln-path '${clightning.networkDir}'  \
       --host ${cfg.address} --port ${toString cfg.port} \
       --config '${config.nix-bitcoin.secretsDir}/spark-wallet-login' \
       ${optionalString cfg.enforceTor torRateProvider} \
@@ -81,7 +83,7 @@ in {
     users.users.${cfg.user} = {
       isSystemUser = true;
       group = cfg.group;
-      extraGroups = [ config.services.clightning.group ];
+      extraGroups = [ clightning.group ];
     };
     users.groups.${cfg.group} = {};
 

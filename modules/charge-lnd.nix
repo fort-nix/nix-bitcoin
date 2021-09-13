@@ -69,6 +69,7 @@ let
 
   cfg = config.services.charge-lnd;
   nbLib = config.nix-bitcoin.lib;
+
   lnd = config.services.lnd;
   electrs = if (config.services ? electrs) && config.services.electrs.enable
             then config.services.electrs
@@ -77,7 +78,6 @@ let
   user = "charge-lnd";
   group = user;
   dataDir = "/var/lib/charge-lnd";
-
   configFile = builtins.toFile "charge-lnd.config" cfg.policies;
   checkedConfig = pkgs.runCommandNoCC "charge-lnd-checked.config" { } ''
     ${config.nix-bitcoin.pkgs.charge-lnd}/bin/charge-lnd --check --config ${configFile}

@@ -140,9 +140,12 @@ let
   nbLib = config.nix-bitcoin.lib;
   nbPkgs = config.nix-bitcoin.pkgs;
   secretsDir = config.nix-bitcoin.secretsDir;
+
+  bitcoind = config.services.bitcoind;
+
   pidFile = "${cfg.dataDir}/liquidd.pid";
   configFile = pkgs.writeText "elements.conf" ''
-    chain=${config.services.bitcoind.makeNetworkName "liquidv1" ''
+    chain=${bitcoind.makeNetworkName "liquidv1" ''
       regtest
       [regtest]'' # Add [regtest] config section
     }
@@ -166,9 +169,9 @@ let
     rpcconnect=${cfg.rpc.address}
     ${lib.concatMapStrings (rpcallowip: "rpcallowip=${rpcallowip}\n") cfg.rpcallowip}
     rpcuser=${cfg.rpcuser}
-    mainchainrpchost=${config.services.bitcoind.rpc.address}
-    mainchainrpcport=${toString config.services.bitcoind.rpc.port}
-    mainchainrpcuser=${config.services.bitcoind.rpc.users.public.name}
+    mainchainrpchost=${bitcoind.rpc.address}
+    mainchainrpcport=${toString bitcoind.rpc.port}
+    mainchainrpcuser=${bitcoind.rpc.users.public.name}
 
     # Extra config options (from liquidd nixos service)
     ${cfg.extraConfig}

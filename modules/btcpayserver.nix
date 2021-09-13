@@ -100,6 +100,8 @@ let
   cfg = config.services;
   nbLib = config.nix-bitcoin.lib;
   nbPkgs = config.nix-bitcoin.pkgs;
+
+  bitcoind = config.services.bitcoind;
 in {
   inherit options;
 
@@ -139,10 +141,10 @@ in {
 
     systemd.services.nbxplorer = let
       configFile = builtins.toFile "config" ''
-        network=${config.services.bitcoind.network}
+        network=${bitcoind.network}
         btcrpcuser=${cfg.bitcoind.rpc.users.btcpayserver.name}
-        btcrpcurl=http://${config.services.bitcoind.rpc.address}:${toString cfg.bitcoind.rpc.port}
-        btcnodeendpoint=${config.services.bitcoind.address}:${toString config.services.bitcoind.port}
+        btcrpcurl=http://${bitcoind.rpc.address}:${toString cfg.bitcoind.rpc.port}
+        btcnodeendpoint=${bitcoind.address}:${toString bitcoind.port}
         bind=${cfg.nbxplorer.address}
         port=${toString cfg.nbxplorer.port}
         ${optionalString cfg.btcpayserver.lbtc ''
@@ -180,9 +182,9 @@ in {
 
     systemd.services.btcpayserver = let
       nbExplorerUrl = "http://${cfg.nbxplorer.address}:${toString cfg.nbxplorer.port}/";
-      nbExplorerCookie = "${cfg.nbxplorer.dataDir}/${config.services.bitcoind.makeNetworkName "Main" "RegTest"}/.cookie";
+      nbExplorerCookie = "${cfg.nbxplorer.dataDir}/${bitcoind.makeNetworkName "Main" "RegTest"}/.cookie";
       configFile = builtins.toFile "config" (''
-        network=${config.services.bitcoind.network}
+        network=${bitcoind.network}
         bind=${cfg.btcpayserver.address}
         port=${toString cfg.btcpayserver.port}
         socksendpoint=${config.nix-bitcoin.torClientAddressWithPort}

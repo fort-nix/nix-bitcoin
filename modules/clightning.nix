@@ -76,6 +76,7 @@ let
   cfg = config.services.clightning;
   nbLib = config.nix-bitcoin.lib;
   nbPkgs = config.nix-bitcoin.pkgs;
+
   network = config.services.bitcoind.makeNetworkName "bitcoin" "regtest";
   configFile = pkgs.writeText "config" ''
     network=${network}

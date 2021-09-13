@@ -128,6 +128,7 @@ let
   runAsUser = config.nix-bitcoin.runAsUserCmd;
 
   bitcoind = config.services.bitcoind;
+
   bitcoindRpcAddress = bitcoind.rpc.address;
   networkDir = "${cfg.dataDir}/chain/bitcoin/${bitcoind.network}";
   configFile = pkgs.writeText "lnd.conf" ''
