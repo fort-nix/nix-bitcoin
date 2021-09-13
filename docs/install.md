@@ -311,12 +311,10 @@ You can also build Nix from source by following the instructions at https://nixo
     nix-shell
     ```
 
-    NOTE that a new directory `secrets/` appeared which contains the secrets for your node.
-
 7. Deploy with krops in nix-shell
 
     ```
-    krops-deploy
+    deploy
     ```
 
     This will now create a nix-bitcoin node on the target machine.
