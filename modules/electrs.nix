@@ -2,11 +2,6 @@
 
 with lib;
 let
-  cfg = config.services.electrs;
-  nbLib = config.nix-bitcoin.lib;
-  secretsDir = config.nix-bitcoin.secretsDir;
-  bitcoind = config.services.bitcoind;
-in {
   options.services.electrs = {
     enable = mkEnableOption "electrs";
     address = mkOption {
@@ -53,6 +48,13 @@ in {
     };
     enforceTor = nbLib.enforceTor;
   };
+
+  cfg = config.services.electrs;
+  nbLib = config.nix-bitcoin.lib;
+  secretsDir = config.nix-bitcoin.secretsDir;
+  bitcoind = config.services.bitcoind;
+in {
+  inherit options;
 
   config = mkIf cfg.enable {
     assertions = [

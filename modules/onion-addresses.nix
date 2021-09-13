@@ -7,11 +7,7 @@
 { config, lib, ... }:
 
 with lib;
-
 let
-  cfg = config.nix-bitcoin.onionAddresses;
-  nbLib = config.nix-bitcoin.lib;
-in {
   options.nix-bitcoin.onionAddresses = {
     access = mkOption {
       type = with types; attrsOf (listOf str);
@@ -41,6 +37,11 @@ in {
       default = "/var/lib/onion-addresses";
     };
   };
+
+  cfg = config.nix-bitcoin.onionAddresses;
+  nbLib = config.nix-bitcoin.lib;
+in {
+  inherit options;
 
   config = mkIf (cfg.access != {} || cfg.services != []) {
     systemd.services.onion-addresses = {

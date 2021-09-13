@@ -1,12 +1,7 @@
 { config, lib, pkgs, ... }:
 
 with lib;
-
 let
-  cfg = config.services;
-  nbLib = config.nix-bitcoin.lib;
-  nbPkgs = config.nix-bitcoin.pkgs;
-in {
   options.services = {
     nbxplorer = {
       package = mkOption {
@@ -101,6 +96,12 @@ in {
       enforceTor = nbLib.enforceTor;
     };
   };
+
+  cfg = config.services;
+  nbLib = config.nix-bitcoin.lib;
+  nbPkgs = config.nix-bitcoin.pkgs;
+in {
+  inherit options;
 
   config = mkIf cfg.btcpayserver.enable {
     services.bitcoind.enable = true;

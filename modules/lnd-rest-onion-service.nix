@@ -1,24 +1,7 @@
 { config, lib, pkgs, ... }:
 
 with lib;
-
 let
-  cfg = config.services.lnd.restOnionService;
-  nbLib = config.nix-bitcoin.lib;
-  runAsUser = config.nix-bitcoin.runAsUserCmd;
-
-  lnd = config.services.lnd;
-
-  bin = pkgs.writeScriptBin "lndconnect-rest-onion" ''
-    #!/usr/bin/env -S ${runAsUser} ${lnd.user} ${pkgs.bash}/bin/bash
-
-    exec ${cfg.package}/bin/lndconnect \
-     --host=$(cat ${config.nix-bitcoin.onionAddresses.dataDir}/lnd/lnd-rest) \
-     --port=${toString lnd.restPort} \
-     --lnddir=${lnd.dataDir} \
-     --tlscertpath=${lnd.certPath} "$@"
-  '';
-in {
   options.services.lnd.restOnionService = {
     enable = mkOption {
       default = false;
@@ -35,6 +18,24 @@ in {
       description = "The package providing lndconnect binaries.";
     };
   };
+
+  cfg = config.services.lnd.restOnionService;
+  nbLib = config.nix-bitcoin.lib;
+  runAsUser = config.nix-bitcoin.runAsUserCmd;
+
+  lnd = config.services.lnd;
+
+  bin = pkgs.writeScriptBin "lndconnect-rest-onion" ''
+    #!/usr/bin/env -S ${runAsUser} ${lnd.user} ${pkgs.bash}/bin/bash
+
+    exec ${cfg.package}/bin/lndconnect \
+     --host=$(cat ${config.nix-bitcoin.onionAddresses.dataDir}/lnd/lnd-rest) \
+     --port=${toString lnd.restPort} \
+     --lnddir=${lnd.dataDir} \
+     --tlscertpath=${lnd.certPath} "$@"
+  '';
+in {
+  inherit options;
 
   config = mkIf cfg.enable {
     services.tor = {

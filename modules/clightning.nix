@@ -1,25 +1,7 @@
 { config, lib, pkgs, ... }:
 
 with lib;
-
 let
-  cfg = config.services.clightning;
-  nbLib = config.nix-bitcoin.lib;
-  nbPkgs = config.nix-bitcoin.pkgs;
-  network = config.services.bitcoind.makeNetworkName "bitcoin" "regtest";
-  configFile = pkgs.writeText "config" ''
-    network=${network}
-    bitcoin-datadir=${config.services.bitcoind.dataDir}
-    ${optionalString (cfg.proxy != null) "proxy=${cfg.proxy}"}
-    always-use-proxy=${boolToString cfg.always-use-proxy}
-    bind-addr=${cfg.address}:${toString cfg.port}
-    bitcoin-rpcconnect=${config.services.bitcoind.rpc.address}
-    bitcoin-rpcport=${toString config.services.bitcoind.rpc.port}
-    bitcoin-rpcuser=${config.services.bitcoind.rpc.users.public.name}
-    rpc-file-mode=0660
-    ${cfg.extraConfig}
-  '';
-in {
   options.services.clightning = {
     enable = mkEnableOption "clightning";
     address = mkOption {
@@ -90,6 +72,25 @@ in {
     };
     inherit (nbLib) enforceTor;
   };
+
+  cfg = config.services.clightning;
+  nbLib = config.nix-bitcoin.lib;
+  nbPkgs = config.nix-bitcoin.pkgs;
+  network = config.services.bitcoind.makeNetworkName "bitcoin" "regtest";
+  configFile = pkgs.writeText "config" ''
+    network=${network}
+    bitcoin-datadir=${config.services.bitcoind.dataDir}
+    ${optionalString (cfg.proxy != null) "proxy=${cfg.proxy}"}
+    always-use-proxy=${boolToString cfg.always-use-proxy}
+    bind-addr=${cfg.address}:${toString cfg.port}
+    bitcoin-rpcconnect=${config.services.bitcoind.rpc.address}
+    bitcoin-rpcport=${toString config.services.bitcoind.rpc.port}
+    bitcoin-rpcuser=${config.services.bitcoind.rpc.users.public.name}
+    rpc-file-mode=0660
+    ${cfg.extraConfig}
+  '';
+in {
+  inherit options;
 
   config = mkIf cfg.enable {
     services.bitcoind = {

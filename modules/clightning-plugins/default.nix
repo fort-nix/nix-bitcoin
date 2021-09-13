@@ -2,6 +2,12 @@
 
 with lib;
 let
+  options.services.clightning.plugins = {
+    helpme.enable = mkEnableOption "Help me (clightning plugin)";
+    monitor.enable = mkEnableOption "Monitor (clightning plugin)";
+    rebalance.enable = mkEnableOption "Rebalance (clightning plugin)";
+  };
+
   cfg = config.services.clightning.plugins;
   pluginPkgs = config.nix-bitcoin.pkgs.clightning-plugins;
 in {
@@ -12,11 +18,7 @@ in {
     ./zmq.nix
   ];
 
-  options.services.clightning.plugins = {
-    helpme.enable = mkEnableOption "Help me (clightning plugin)";
-    monitor.enable = mkEnableOption "Monitor (clightning plugin)";
-    rebalance.enable = mkEnableOption "Rebalance (clightning plugin)";
-  };
+  inherit options;
 
   config = {
     services.clightning.extraConfig = mkMerge [

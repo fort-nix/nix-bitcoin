@@ -1,26 +1,7 @@
 { config, lib, pkgs, ... }:
 
 with lib;
-
 let
-  cfg = config.services.charge-lnd;
-  nbLib = config.nix-bitcoin.lib;
-  lnd = config.services.lnd;
-  electrs = if (config.services ? electrs) && config.services.electrs.enable
-            then config.services.electrs
-            else null;
-
-  user = "charge-lnd";
-  group = user;
-  dataDir = "/var/lib/charge-lnd";
-
-  configFile = builtins.toFile "charge-lnd.config" cfg.policies;
-  checkedConfig = pkgs.runCommandNoCC "charge-lnd-checked.config" { } ''
-    ${config.nix-bitcoin.pkgs.charge-lnd}/bin/charge-lnd --check --config ${configFile}
-    cp ${configFile} $out
-  '';
-in
-{
   options.services.charge-lnd = with types; {
     enable = mkEnableOption "charge-lnd, policy-based fee manager";
 
@@ -85,6 +66,26 @@ in
       '';
     };
   };
+
+  cfg = config.services.charge-lnd;
+  nbLib = config.nix-bitcoin.lib;
+  lnd = config.services.lnd;
+  electrs = if (config.services ? electrs) && config.services.electrs.enable
+            then config.services.electrs
+            else null;
+
+  user = "charge-lnd";
+  group = user;
+  dataDir = "/var/lib/charge-lnd";
+
+  configFile = builtins.toFile "charge-lnd.config" cfg.policies;
+  checkedConfig = pkgs.runCommandNoCC "charge-lnd-checked.config" { } ''
+    ${config.nix-bitcoin.pkgs.charge-lnd}/bin/charge-lnd --check --config ${configFile}
+    cp ${configFile} $out
+  '';
+in
+{
+  inherit options;
 
   config = mkIf cfg.enable {
     services.lnd = {

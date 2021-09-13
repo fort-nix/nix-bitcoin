@@ -1,8 +1,39 @@
 { config, lib, pkgs, ... }:
 
 with lib;
-
 let
+  options.services.recurring-donations = {
+    enable = mkEnableOption "recurring-donations";
+    tallycoin = mkOption {
+      type = types.attrs;
+      default = {};
+      description = ''
+        This option is used to specify tallycoin donation receivers using an
+        attribute set.  For example the following setting instructs the module
+        to repeatedly send 1000 satoshis to djbooth007.
+        {
+          "djbooth007" = 1000;
+        }
+      '';
+    };
+    interval = mkOption {
+      type = types.str;
+      default = "Mon *-*-* 00:00:00";
+      description = ''
+        Schedules the donations. Default is weekly on Mon 00:00:00. See `man
+        systemd.time` for further options.
+      '';
+    };
+    randomizedDelaySec = mkOption {
+      type = types.int;
+      default = 86400;
+      description = ''
+        Random delay to add to scheduled time for donation. Default is one day.
+      '';
+    };
+    enforceTor = nbLib.enforceTor;
+  };
+
   cfg = config.services.recurring-donations;
   nbLib = config.nix-bitcoin.lib;
   recurring-donations-script = pkgs.writeScript "recurring-donations.sh" ''
@@ -40,37 +71,7 @@ let
     }
   '';
 in {
-  options.services.recurring-donations = {
-    enable = mkEnableOption "recurring-donations";
-    tallycoin = mkOption {
-      type = types.attrs;
-      default = {};
-      description = ''
-        This option is used to specify tallycoin donation receivers using an
-        attribute set.  For example the following setting instructs the module
-        to repeatedly send 1000 satoshis to djbooth007.
-        {
-          "djbooth007" = 1000;
-        }
-      '';
-    };
-    interval = mkOption {
-      type = types.str;
-      default = "Mon *-*-* 00:00:00";
-      description = ''
-        Schedules the donations. Default is weekly on Mon 00:00:00. See `man
-        systemd.time` for further options.
-      '';
-    };
-    randomizedDelaySec = mkOption {
-      type = types.int;
-      default = 86400;
-      description = ''
-        Random delay to add to scheduled time for donation. Default is one day.
-      '';
-    };
-    enforceTor = nbLib.enforceTor;
-  };
+  inherit options;
 
   config = mkIf cfg.enable {
     services.clightning.enable = true;

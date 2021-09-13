@@ -2,6 +2,10 @@
 
 with lib;
 let
+  options.services.clightning.plugins.zmq = {
+    enable = mkEnableOption "ZMQ (clightning plugin)";
+  } // lib.genAttrs endpoints mkEndpointOption;
+
   cfg = config.services.clightning.plugins.zmq;
 
   nbLib = config.nix-bitcoin.lib;
@@ -31,9 +35,7 @@ let
     '';
 in
 {
-  options.services.clightning.plugins.zmq = {
-    enable = mkEnableOption "ZMQ (clightning plugin)";
-  } // lib.genAttrs endpoints mkEndpointOption;
+  inherit options;
 
   config = mkIf cfg.enable {
     services.clightning.extraConfig = ''

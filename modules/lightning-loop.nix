@@ -1,34 +1,7 @@
 { config, lib, pkgs, ... }:
 
 with lib;
-
 let
-  cfg = config.services.lightning-loop;
-  nbLib = config.nix-bitcoin.lib;
-  secretsDir = config.nix-bitcoin.secretsDir;
-
-  lnd = config.services.lnd;
-
-  network = config.services.bitcoind.network;
-  rpclisten = "${cfg.rpcAddress}:${toString cfg.rpcPort}";
-  configFile = builtins.toFile "loop.conf" ''
-    datadir=${cfg.dataDir}
-    network=${network}
-    rpclisten=${rpclisten}
-    restlisten=${cfg.restAddress}:${toString cfg.restPort}
-    logdir=${cfg.dataDir}/logs
-    tlscertpath=${secretsDir}/loop-cert
-    tlskeypath=${secretsDir}/loop-key
-
-    lnd.host=${lnd.rpcAddress}:${toString lnd.rpcPort}
-    lnd.macaroonpath=${lnd.networkDir}/admin.macaroon
-    lnd.tlspath=${lnd.certPath}
-
-    ${optionalString (cfg.proxy != null) "server.proxy=${cfg.proxy}"}
-
-    ${cfg.extraConfig}
-  '';
-in {
   options.services.lightning-loop = {
     enable = mkEnableOption "lightning-loop";
     rpcAddress = mkOption {
@@ -85,6 +58,34 @@ in {
     };
     enforceTor = nbLib.enforceTor;
   };
+
+  cfg = config.services.lightning-loop;
+  nbLib = config.nix-bitcoin.lib;
+  secretsDir = config.nix-bitcoin.secretsDir;
+
+  lnd = config.services.lnd;
+
+  network = config.services.bitcoind.network;
+  rpclisten = "${cfg.rpcAddress}:${toString cfg.rpcPort}";
+  configFile = builtins.toFile "loop.conf" ''
+    datadir=${cfg.dataDir}
+    network=${network}
+    rpclisten=${rpclisten}
+    restlisten=${cfg.restAddress}:${toString cfg.restPort}
+    logdir=${cfg.dataDir}/logs
+    tlscertpath=${secretsDir}/loop-cert
+    tlskeypath=${secretsDir}/loop-key
+
+    lnd.host=${lnd.rpcAddress}:${toString lnd.rpcPort}
+    lnd.macaroonpath=${lnd.networkDir}/admin.macaroon
+    lnd.tlspath=${lnd.certPath}
+
+    ${optionalString (cfg.proxy != null) "server.proxy=${cfg.proxy}"}
+
+    ${cfg.extraConfig}
+  '';
+in {
+  inherit options;
 
   config = mkIf cfg.enable {
     services.lnd.enable = true;

@@ -8,8 +8,6 @@
 
 with lib;
 let
-  cfg = config.nix-bitcoin.operator;
-in {
   options.nix-bitcoin.operator = {
     enable = mkEnableOption "operator user";
     name = mkOption {
@@ -28,6 +26,10 @@ in {
       description = "Users as which the operator is allowed to run commands.";
     };
   };
+
+  cfg = config.nix-bitcoin.operator;
+in {
+  inherit options;
 
   config = mkIf cfg.enable {
     users.users.${cfg.name} = {

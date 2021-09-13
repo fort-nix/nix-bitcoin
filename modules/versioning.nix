@@ -7,6 +7,21 @@
 
 with lib;
 let
+  options = {
+    nix-bitcoin.configVersion = mkOption {
+      type = with types; nullOr str;
+      default = null;
+      description = ''
+        Set this option to the nix-bitcoin release version that your config is
+        compatible with.
+
+        When upgrading to a backwards-incompatible release, nix-bitcoin will throw an
+        error during evaluation and provide hints for migrating your config to the
+        new release.
+      '';
+    };
+  };
+
   version = config.nix-bitcoin.configVersion;
 
   # Sorted by increasing version numbers
@@ -161,20 +176,7 @@ in
     ./obsolete-options.nix
   ];
 
-  options = {
-    nix-bitcoin.configVersion = mkOption {
-      type = with types; nullOr str;
-      default = null;
-      description = ''
-        Set this option to the nix-bitcoin release version that your config is
-        compatible with.
-
-        When upgrading to a backwards-incompatible release, nix-bitcoin will throw an
-        error during evaluation and provide hints for migrating your config to the
-        new release.
-      '';
-    };
-  };
+  inherit options;
 
   config = {
     # Force evaluation. An actual option value is never assigned

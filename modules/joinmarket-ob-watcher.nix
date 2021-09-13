@@ -2,6 +2,40 @@
 
 with lib;
 let
+  options.services.joinmarket-ob-watcher = {
+    enable = mkEnableOption "JoinMarket orderbook watcher";
+    address = mkOption {
+      type = types.str;
+      default = "127.0.0.1";
+      description = "HTTP server address.";
+    };
+    port = mkOption {
+      type = types.port;
+      default = 62601;
+      description = "HTTP server port.";
+    };
+    dataDir = mkOption {
+      readOnly = true;
+      default = "/var/lib/joinmarket-ob-watcher";
+      description = "The data directory for JoinMarket orderbook watcher.";
+    };
+    user = mkOption {
+      type = types.str;
+      default = "joinmarket-ob-watcher";
+      description = "The user as which to run JoinMarket.";
+    };
+    group = mkOption {
+      type = types.str;
+      default = cfg.user;
+      description = "The group as which to run JoinMarket.";
+    };
+    # This option is only used by netns-isolation
+    enforceTor = mkOption {
+      readOnly = true;
+      default = true;
+    };
+  };
+
   cfg = config.services.joinmarket-ob-watcher;
   nbLib = config.nix-bitcoin.lib;
   nbPkgs = config.nix-bitcoin.pkgs;
@@ -39,39 +73,7 @@ let
     ${socks5Settings}
   '';
 in {
-  options.services.joinmarket-ob-watcher = {
-    enable = mkEnableOption "JoinMarket orderbook watcher";
-    address = mkOption {
-      type = types.str;
-      default = "127.0.0.1";
-      description = "HTTP server address.";
-    };
-    port = mkOption {
-      type = types.port;
-      default = 62601;
-      description = "HTTP server port.";
-    };
-    dataDir = mkOption {
-      readOnly = true;
-      default = "/var/lib/joinmarket-ob-watcher";
-      description = "The data directory for JoinMarket orderbook watcher.";
-    };
-    user = mkOption {
-      type = types.str;
-      default = "joinmarket-ob-watcher";
-      description = "The user as which to run JoinMarket.";
-    };
-    group = mkOption {
-      type = types.str;
-      default = cfg.user;
-      description = "The group as which to run JoinMarket.";
-    };
-    # This option is only used by netns-isolation
-    enforceTor = mkOption {
-      readOnly = true;
-      default = true;
-    };
-  };
+  inherit options;
 
   config = mkIf cfg.enable {
     services.bitcoind.rpc.users.joinmarket-ob-watcher = {

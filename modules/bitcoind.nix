@@ -1,63 +1,7 @@
 { config, pkgs, lib, ... }:
 
 with lib;
-
 let
-  cfg = config.services.bitcoind;
-  nbLib = config.nix-bitcoin.lib;
-  secretsDir = config.nix-bitcoin.secretsDir;
-
-  configFile = builtins.toFile "bitcoin.conf" ''
-    # We're already logging via journald
-    nodebuglogfile=1
-
-    startupnotify=/run/current-system/systemd/bin/systemd-notify --ready
-
-    ${optionalString cfg.regtest ''
-      regtest=1
-      [regtest]
-    ''}
-    ${optionalString (cfg.dbCache != null) "dbcache=${toString cfg.dbCache}"}
-    prune=${toString cfg.prune}
-    ${optionalString (cfg.sysperms != null) "sysperms=${if cfg.sysperms then "1" else "0"}"}
-    ${optionalString (cfg.disablewallet != null) "disablewallet=${if cfg.disablewallet then "1" else "0"}"}
-    ${optionalString (cfg.assumevalid != null) "assumevalid=${cfg.assumevalid}"}
-
-    # Connection options
-    ${optionalString cfg.listen "bind=${cfg.address}${optionalString cfg.enforceTor "=onion"}"}
-    port=${toString cfg.port}
-    ${optionalString (cfg.proxy != null) "proxy=${cfg.proxy}"}
-    listen=${if cfg.listen then "1" else "0"}
-    ${optionalString (cfg.discover != null) "discover=${if cfg.discover then "1" else "0"}"}
-    ${lib.concatMapStrings (node: "addnode=${node}\n") cfg.addnodes}
-
-    # RPC server options
-    rpcbind=${cfg.rpc.address}
-    rpcport=${toString cfg.rpc.port}
-    rpcconnect=${cfg.rpc.address}
-    ${optionalString (cfg.rpc.threads != null) "rpcthreads=${toString cfg.rpc.threads}"}
-    rpcwhitelistdefault=0
-    ${concatMapStrings (user: ''
-        ${optionalString (!user.passwordHMACFromFile) "rpcauth=${user.name}:${passwordHMAC}"}
-        ${optionalString (user.rpcwhitelist != [])
-          "rpcwhitelist=${user.name}:${lib.strings.concatStringsSep "," user.rpcwhitelist}"}
-      '') (builtins.attrValues cfg.rpc.users)
-    }
-    ${lib.concatMapStrings (rpcallowip: "rpcallowip=${rpcallowip}\n") cfg.rpc.allowip}
-
-    # Wallet options
-    ${optionalString (cfg.addresstype != null) "addresstype=${cfg.addresstype}"}
-
-    # ZMQ options
-    ${optionalString (cfg.zmqpubrawblock != null) "zmqpubrawblock=${cfg.zmqpubrawblock}"}
-    ${optionalString (cfg.zmqpubrawtx != null) "zmqpubrawtx=${cfg.zmqpubrawtx}"}
-
-    # Extra options
-    ${cfg.extraConfig}
-  '';
-
-  zmqServerEnabled = (cfg.zmqpubrawblock != null) || (cfg.zmqpubrawtx != null);
-in {
   options = {
     services.bitcoind = {
       enable = mkEnableOption "Bitcoin daemon";
@@ -288,6 +232,63 @@ in {
       enforceTor = nbLib.enforceTor;
     };
   };
+
+  cfg = config.services.bitcoind;
+  nbLib = config.nix-bitcoin.lib;
+  secretsDir = config.nix-bitcoin.secretsDir;
+
+  configFile = builtins.toFile "bitcoin.conf" ''
+    # We're already logging via journald
+    nodebuglogfile=1
+
+    startupnotify=/run/current-system/systemd/bin/systemd-notify --ready
+
+    ${optionalString cfg.regtest ''
+      regtest=1
+      [regtest]
+    ''}
+    ${optionalString (cfg.dbCache != null) "dbcache=${toString cfg.dbCache}"}
+    prune=${toString cfg.prune}
+    ${optionalString (cfg.sysperms != null) "sysperms=${if cfg.sysperms then "1" else "0"}"}
+    ${optionalString (cfg.disablewallet != null) "disablewallet=${if cfg.disablewallet then "1" else "0"}"}
+    ${optionalString (cfg.assumevalid != null) "assumevalid=${cfg.assumevalid}"}
+
+    # Connection options
+    ${optionalString cfg.listen "bind=${cfg.address}${optionalString cfg.enforceTor "=onion"}"}
+    port=${toString cfg.port}
+    ${optionalString (cfg.proxy != null) "proxy=${cfg.proxy}"}
+    listen=${if cfg.listen then "1" else "0"}
+    ${optionalString (cfg.discover != null) "discover=${if cfg.discover then "1" else "0"}"}
+    ${lib.concatMapStrings (node: "addnode=${node}\n") cfg.addnodes}
+
+    # RPC server options
+    rpcbind=${cfg.rpc.address}
+    rpcport=${toString cfg.rpc.port}
+    rpcconnect=${cfg.rpc.address}
+    ${optionalString (cfg.rpc.threads != null) "rpcthreads=${toString cfg.rpc.threads}"}
+    rpcwhitelistdefault=0
+    ${concatMapStrings (user: ''
+        ${optionalString (!user.passwordHMACFromFile) "rpcauth=${user.name}:${passwordHMAC}"}
+        ${optionalString (user.rpcwhitelist != [])
+          "rpcwhitelist=${user.name}:${lib.strings.concatStringsSep "," user.rpcwhitelist}"}
+      '') (builtins.attrValues cfg.rpc.users)
+    }
+    ${lib.concatMapStrings (rpcallowip: "rpcallowip=${rpcallowip}\n") cfg.rpc.allowip}
+
+    # Wallet options
+    ${optionalString (cfg.addresstype != null) "addresstype=${cfg.addresstype}"}
+
+    # ZMQ options
+    ${optionalString (cfg.zmqpubrawblock != null) "zmqpubrawblock=${cfg.zmqpubrawblock}"}
+    ${optionalString (cfg.zmqpubrawtx != null) "zmqpubrawtx=${cfg.zmqpubrawtx}"}
+
+    # Extra options
+    ${cfg.extraConfig}
+  '';
+
+  zmqServerEnabled = (cfg.zmqpubrawblock != null) || (cfg.zmqpubrawtx != null);
+in {
+  inherit options;
 
   config = mkIf cfg.enable {
     environment.systemPackages = [ cfg.package (hiPrio cfg.cli) ];

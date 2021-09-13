@@ -1,73 +1,7 @@
 { config, pkgs, lib, ... }:
 
 with lib;
-
 let
-  cfg = config.services.liquidd;
-  nbLib = config.nix-bitcoin.lib;
-  nbPkgs = config.nix-bitcoin.pkgs;
-  secretsDir = config.nix-bitcoin.secretsDir;
-  pidFile = "${cfg.dataDir}/liquidd.pid";
-  configFile = pkgs.writeText "elements.conf" ''
-    chain=${config.services.bitcoind.makeNetworkName "liquidv1" ''
-      regtest
-      [regtest]'' # Add [regtest] config section
-    }
-    ${optionalString (cfg.dbCache != null) "dbcache=${toString cfg.dbCache}"}
-    ${optionalString (cfg.prune != null) "prune=${toString cfg.prune}"}
-    ${optionalString (cfg.validatepegin != null) "validatepegin=${if cfg.validatepegin then "1" else "0"}"}
-
-    # Connection options
-    ${optionalString cfg.listen "bind=${cfg.address}"}
-    port=${toString cfg.port}
-    ${optionalString (cfg.proxy != null) "proxy=${cfg.proxy}"}
-    listen=${if cfg.listen then "1" else "0"}
-
-    # RPC server options
-    rpcport=${toString cfg.rpc.port}
-    ${concatMapStringsSep  "\n"
-      (rpcUser: "rpcauth=${rpcUser.name}:${rpcUser.passwordHMAC}")
-      (attrValues cfg.rpc.users)
-    }
-    rpcbind=${cfg.rpc.address}
-    rpcconnect=${cfg.rpc.address}
-    ${lib.concatMapStrings (rpcallowip: "rpcallowip=${rpcallowip}\n") cfg.rpcallowip}
-    rpcuser=${cfg.rpcuser}
-    mainchainrpchost=${config.services.bitcoind.rpc.address}
-    mainchainrpcport=${toString config.services.bitcoind.rpc.port}
-    mainchainrpcuser=${config.services.bitcoind.rpc.users.public.name}
-
-    # Extra config options (from liquidd nixos service)
-    ${cfg.extraConfig}
-  '';
-  cmdlineOptions = concatMapStringsSep " " (arg: "'${arg}'") [
-    "-datadir=${cfg.dataDir}"
-    "-pid=${pidFile}"
-  ];
-  hexStr = types.strMatching "[0-9a-f]+";
-  rpcUserOpts = { name, ... }: {
-    options = {
-      name = mkOption {
-        type = types.str;
-        example = "alice";
-        description = ''
-          Username for JSON-RPC connections.
-        '';
-      };
-      passwordHMAC = mkOption {
-        type = with types; uniq (strMatching "[0-9a-f]+\\$[0-9a-f]{64}");
-        example = "f7efda5c189b999524f151318c0c86$d5b51b3beffbc02b724e5d095828e0bc8b2456e9ac8757ae3211a5d9b16a22ae";
-        description = ''
-          Password HMAC-SHA-256 for JSON-RPC connections. Must be a string of the
-          format <SALT-HEX>$<HMAC-HEX>.
-        '';
-      };
-    };
-    config = {
-      name = mkDefault name;
-    };
-  };
-in {
   options = {
 
     services.liquidd = {
@@ -202,6 +136,73 @@ in {
       enforceTor = nbLib.enforceTor;
     };
   };
+
+  cfg = config.services.liquidd;
+  nbLib = config.nix-bitcoin.lib;
+  nbPkgs = config.nix-bitcoin.pkgs;
+  secretsDir = config.nix-bitcoin.secretsDir;
+  pidFile = "${cfg.dataDir}/liquidd.pid";
+  configFile = pkgs.writeText "elements.conf" ''
+    chain=${config.services.bitcoind.makeNetworkName "liquidv1" ''
+      regtest
+      [regtest]'' # Add [regtest] config section
+    }
+    ${optionalString (cfg.dbCache != null) "dbcache=${toString cfg.dbCache}"}
+    ${optionalString (cfg.prune != null) "prune=${toString cfg.prune}"}
+    ${optionalString (cfg.validatepegin != null) "validatepegin=${if cfg.validatepegin then "1" else "0"}"}
+
+    # Connection options
+    ${optionalString cfg.listen "bind=${cfg.address}"}
+    port=${toString cfg.port}
+    ${optionalString (cfg.proxy != null) "proxy=${cfg.proxy}"}
+    listen=${if cfg.listen then "1" else "0"}
+
+    # RPC server options
+    rpcport=${toString cfg.rpc.port}
+    ${concatMapStringsSep  "\n"
+      (rpcUser: "rpcauth=${rpcUser.name}:${rpcUser.passwordHMAC}")
+      (attrValues cfg.rpc.users)
+    }
+    rpcbind=${cfg.rpc.address}
+    rpcconnect=${cfg.rpc.address}
+    ${lib.concatMapStrings (rpcallowip: "rpcallowip=${rpcallowip}\n") cfg.rpcallowip}
+    rpcuser=${cfg.rpcuser}
+    mainchainrpchost=${config.services.bitcoind.rpc.address}
+    mainchainrpcport=${toString config.services.bitcoind.rpc.port}
+    mainchainrpcuser=${config.services.bitcoind.rpc.users.public.name}
+
+    # Extra config options (from liquidd nixos service)
+    ${cfg.extraConfig}
+  '';
+  cmdlineOptions = concatMapStringsSep " " (arg: "'${arg}'") [
+    "-datadir=${cfg.dataDir}"
+    "-pid=${pidFile}"
+  ];
+  hexStr = types.strMatching "[0-9a-f]+";
+  rpcUserOpts = { name, ... }: {
+    options = {
+      name = mkOption {
+        type = types.str;
+        example = "alice";
+        description = ''
+          Username for JSON-RPC connections.
+        '';
+      };
+      passwordHMAC = mkOption {
+        type = with types; uniq (strMatching "[0-9a-f]+\\$[0-9a-f]{64}");
+        example = "f7efda5c189b999524f151318c0c86$d5b51b3beffbc02b724e5d095828e0bc8b2456e9ac8757ae3211a5d9b16a22ae";
+        description = ''
+          Password HMAC-SHA-256 for JSON-RPC connections. Must be a string of the
+          format <SALT-HEX>$<HMAC-HEX>.
+        '';
+      };
+    };
+    config = {
+      name = mkDefault name;
+    };
+  };
+in {
+  inherit options;
 
   config = mkIf cfg.enable {
     services.bitcoind.enable = true;

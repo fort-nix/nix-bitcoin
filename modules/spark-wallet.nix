@@ -1,27 +1,7 @@
 { config, lib, pkgs, ... }:
 
 with lib;
-
 let
-  cfg = config.services.spark-wallet;
-  nbLib = config.nix-bitcoin.lib;
-
-  # Use wasabi rate provider because the default (bitstamp) doesn't accept
-  # connections through Tor
-  torRateProvider = "--rate-provider wasabi --proxy socks5h://${config.nix-bitcoin.torClientAddressWithPort}";
-  startScript = ''
-    ${optionalString (cfg.getPublicAddressCmd != "") ''
-      publicURL="--public-url http://$(${cfg.getPublicAddressCmd})"
-    ''}
-    exec ${config.nix-bitcoin.pkgs.spark-wallet}/bin/spark-wallet \
-      --ln-path '${config.services.clightning.networkDir}'  \
-      --host ${cfg.address} --port ${toString cfg.port} \
-      --config '${config.nix-bitcoin.secretsDir}/spark-wallet-login' \
-      ${optionalString cfg.enforceTor torRateProvider} \
-      $publicURL \
-      --pairing-qr --print-key ${cfg.extraArgs}
-  '';
-in {
   options.services.spark-wallet = {
     enable = mkEnableOption "spark-wallet";
     address = mkOption {
@@ -60,6 +40,27 @@ in {
     };
     inherit (nbLib) enforceTor;
   };
+
+  cfg = config.services.spark-wallet;
+  nbLib = config.nix-bitcoin.lib;
+
+  # Use wasabi rate provider because the default (bitstamp) doesn't accept
+  # connections through Tor
+  torRateProvider = "--rate-provider wasabi --proxy socks5h://${config.nix-bitcoin.torClientAddressWithPort}";
+  startScript = ''
+    ${optionalString (cfg.getPublicAddressCmd != "") ''
+      publicURL="--public-url http://$(${cfg.getPublicAddressCmd})"
+    ''}
+    exec ${config.nix-bitcoin.pkgs.spark-wallet}/bin/spark-wallet \
+      --ln-path '${config.services.clightning.networkDir}'  \
+      --host ${cfg.address} --port ${toString cfg.port} \
+      --config '${config.nix-bitcoin.secretsDir}/spark-wallet-login' \
+      ${optionalString cfg.enforceTor torRateProvider} \
+      $publicURL \
+      --pairing-qr --print-key ${cfg.extraArgs}
+  '';
+in {
+  inherit options;
 
   config = mkIf cfg.enable {
     services.clightning.enable = true;

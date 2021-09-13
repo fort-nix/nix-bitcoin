@@ -2,6 +2,16 @@
 
 with lib;
 let
+  options = {
+    nix-bitcoin.nodeinfo = {
+      enable = mkEnableOption "nodeinfo";
+      program = mkOption {
+        readOnly = true;
+        default = script;
+      };
+    };
+  };
+
   cfg = config.nix-bitcoin.nodeinfo;
 
   # Services included in the output
@@ -102,15 +112,7 @@ let
 
   inherit (config.services.tor.relay) onionServices;
 in {
-  options = {
-    nix-bitcoin.nodeinfo = {
-      enable = mkEnableOption "nodeinfo";
-      program = mkOption {
-        readOnly = true;
-        default = script;
-      };
-    };
-  };
+  inherit options;
 
   config = {
     environment.systemPackages = optional cfg.enable script;
