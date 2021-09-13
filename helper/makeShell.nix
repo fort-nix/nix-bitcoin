@@ -17,6 +17,11 @@ stdenv.mkDerivation rec {
 
     export NIX_BITCOIN_EXAMPLES_DIR="${cfgDir}"
 
+    # Set isInteractive=1 if
+    # 1. stdout is a TTY, i.e. we're not piping the output
+    # 2. the shell is interactive
+    if [[ -t 1 && $- == *i* ]]; then isInteractive=1; else isInteractive=; fi
+
     help() {
         echo "nix-bitcoin path: ${toString ../.}"
         echo
@@ -47,10 +52,21 @@ stdenv.mkDerivation rec {
       ${toString ./fetch-release}
     }
 
-    update-nix-bitcoin() {
-      fetch-release > "${cfgDir}/nix-bitcoin-release.nix"
-      exec nix-shell
-    }
+    update-nix-bitcoin() {(
+      set -euo pipefail
+      releaseFile="${cfgDir}/nix-bitcoin-release.nix"
+      current=$(cat "$releaseFile" 2>/dev/null || true)
+      new=$(fetch-release)
+      if [[ $new == $current ]]; then
+        echo "nix-bitcoin-release.nix already contains the latest release"
+      else
+        echo "$new" > "$releaseFile"
+        echo "Updated nix-bitcoin-release.nix"
+        if [[ $isInteractive ]]; then
+          exec nix-shell
+        fi
+      fi
+    )}
 
     generate-secrets() {(
       set -euo pipefail
@@ -94,10 +110,7 @@ stdenv.mkDerivation rec {
       done
     }
 
-    # Print welcome message if
-    # 1. stdout is a TTY, i.e. we're not piping the output
-    # 2. the shell is interactive
-    if [[ -t 1 && $- == *i* ]]; then
+    if [[ $isInteractive ]]; then
       ${figlet}/bin/figlet "nix-bitcoin"
       echo 'Enter "h" or "help" for documentation.'
     fi
