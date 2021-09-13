@@ -1,4 +1,4 @@
-{ config, options, lib, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 
 with lib;
 
@@ -6,7 +6,7 @@ let
   cfg = config.services.charge-lnd;
   nbLib = config.nix-bitcoin.lib;
   lnd = config.services.lnd;
-  electrs = if (options ? services.electrs) && config.services.electrs.enable
+  electrs = if (config.services ? electrs) && config.services.electrs.enable
             then config.services.electrs
             else null;
 

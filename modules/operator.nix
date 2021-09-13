@@ -4,7 +4,7 @@
 # When using nix-bitcoin as part of a larger system config, set
 # `nix-bitcoin.operator.name` to your main user name.
 
-{ config, lib, pkgs, options, ... }:
+{ config, lib, pkgs, ... }:
 
 with lib;
 let
