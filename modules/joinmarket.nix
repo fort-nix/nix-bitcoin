@@ -9,6 +9,13 @@ let
       default = "/var/lib/joinmarket";
       description = "The data directory for JoinMarket.";
     };
+    rpcWalletFile = mkOption {
+      type = types.nullOr types.str;
+      default = "jm_wallet";
+      description = ''
+        Name of the watch-only bitcoind wallet the JoinMarket addresses are imported to.
+      '';
+    };
     user = mkOption {
       type = types.str;
       default = "joinmarket";
@@ -18,13 +25,6 @@ let
       type = types.str;
       default = cfg.user;
       description = "The group as which to run JoinMarket.";
-    };
-    rpcWalletFile = mkOption {
-      type = types.nullOr types.str;
-      default = "jm_wallet";
-      description = ''
-        Name of the watch-only bitcoind wallet the JoinMarket addresses are imported to.
-      '';
     };
     cli = mkOption {
       default = cli;

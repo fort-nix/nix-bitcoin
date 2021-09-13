@@ -67,16 +67,6 @@ let
         default = "/var/lib/btcpayserver";
         description = "The data directory for btcpayserver.";
       };
-      user = mkOption {
-        type = types.str;
-        default = "btcpayserver";
-        description = "The user as which to run btcpayserver.";
-      };
-      group = mkOption {
-        type = types.str;
-        default = cfg.btcpayserver.user;
-        description = "The group as which to run btcpayserver.";
-      };
       lightningBackend = mkOption {
         type = types.nullOr (types.enum [ "clightning" "lnd" ]);
         default = null;
@@ -92,6 +82,16 @@ let
         default = null;
         example = "btcpayserver";
         description = "The prefix for root-relative btcpayserver URLs.";
+      };
+      user = mkOption {
+        type = types.str;
+        default = "btcpayserver";
+        description = "The user as which to run btcpayserver.";
+      };
+      group = mkOption {
+        type = types.str;
+        default = cfg.btcpayserver.user;
+        description = "The group as which to run btcpayserver.";
       };
       enforceTor = nbLib.enforceTor;
     };

@@ -3,7 +3,6 @@
 with lib;
 let
   options = {
-
     services.liquidd = {
       enable = mkEnableOption "Liquid sidechain";
       address = mkOption {
@@ -30,16 +29,6 @@ let
         type = types.path;
         default = "/var/lib/liquidd";
         description = "The data directory for liquidd.";
-      };
-      user = mkOption {
-        type = types.str;
-        default = "liquid";
-        description = "The user as which to run liquidd.";
-      };
-      group = mkOption {
-        type = types.str;
-        default = cfg.user;
-        description = "The group as which to run liquidd.";
       };
       rpc = {
         address = mkOption {
@@ -119,6 +108,16 @@ let
         description = ''
           Validate pegin claims. All functionaries must run this.
         '';
+      };
+      user = mkOption {
+        type = types.str;
+        default = "liquid";
+        description = "The user as which to run liquidd.";
+      };
+      group = mkOption {
+        type = types.str;
+        default = cfg.user;
+        description = "The group as which to run liquidd.";
       };
       cli = mkOption {
         readOnly = true;

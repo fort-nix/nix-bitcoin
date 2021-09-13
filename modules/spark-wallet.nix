@@ -65,13 +65,6 @@ in {
   config = mkIf cfg.enable {
     services.clightning.enable = true;
 
-    users.users.${cfg.user} = {
-      isSystemUser = true;
-      group = cfg.group;
-      extraGroups = [ config.services.clightning.group ];
-    };
-    users.groups.${cfg.group} = {};
-
     systemd.services.spark-wallet = {
       wantedBy = [ "multi-user.target" ];
       requires = [ "clightning.service" ];
@@ -84,6 +77,13 @@ in {
       } // nbLib.allowedIPAddresses cfg.enforceTor
         // nbLib.nodejs;
     };
+
+    users.users.${cfg.user} = {
+      isSystemUser = true;
+      group = cfg.group;
+      extraGroups = [ config.services.clightning.group ];
+    };
+    users.groups.${cfg.group} = {};
 
     nix-bitcoin.secrets.spark-wallet-login.user = cfg.user;
     nix-bitcoin.generateSecretsCmds.spark-wallet = ''

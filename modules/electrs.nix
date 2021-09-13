@@ -19,16 +19,6 @@ let
       default = "/var/lib/electrs";
       description = "The data directory for electrs.";
     };
-    user = mkOption {
-      type = types.str;
-      default = "electrs";
-      description = "The user as which to run electrs.";
-    };
-    group = mkOption {
-      type = types.str;
-      default = cfg.user;
-      description = "The group as which to run electrs.";
-    };
     high-memory = mkOption {
       type = types.bool;
       default = false;
@@ -45,6 +35,16 @@ let
       type = types.separatedString " ";
       default = "";
       description = "Extra command line arguments passed to electrs.";
+    };
+    user = mkOption {
+      type = types.str;
+      default = "electrs";
+      description = "The user as which to run electrs.";
+    };
+    group = mkOption {
+      type = types.str;
+      default = cfg.user;
+      description = "The group as which to run electrs.";
     };
     enforceTor = nbLib.enforceTor;
   };

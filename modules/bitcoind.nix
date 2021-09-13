@@ -43,16 +43,6 @@ let
         default = "/var/lib/bitcoind";
         description = "The data directory for bitcoind.";
       };
-      user = mkOption {
-        type = types.str;
-        default = "bitcoin";
-        description = "The user as which to run bitcoind.";
-      };
-      group = mkOption {
-        type = types.str;
-        default = cfg.user;
-        description = "The group as which to run bitcoind.";
-      };
       rpc = {
         address = mkOption {
           type = types.str;
@@ -220,6 +210,16 @@ let
         default = null;
         example = "bech32";
         description = "The type of addresses to use";
+      };
+      user = mkOption {
+        type = types.str;
+        default = "bitcoin";
+        description = "The user as which to run bitcoind.";
+      };
+      group = mkOption {
+        type = types.str;
+        default = cfg.user;
+        description = "The group as which to run bitcoind.";
       };
       cli = mkOption {
         readOnly = true;
