@@ -16,6 +16,7 @@ stdenv.mkDerivation rec {
     export PATH="${path}''${PATH:+:}$PATH"
 
     export NIX_BITCOIN_EXAMPLES_DIR="${cfgDir}"
+    export NIX_BITCOIN_SHELL_VERSION=0.0.51
 
     # Set isInteractive=1 if
     # 1. stdout is a TTY, i.e. we're not piping the output
