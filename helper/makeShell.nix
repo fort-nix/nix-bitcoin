@@ -1,4 +1,4 @@
-{ configDir, extraShellInitCmds ? (pkgs: "") }:
+{ configDir, shellVersion ? null, extraShellInitCmds ? (pkgs: "") }:
 let
   nixpkgs = (import ../pkgs/nixpkgs-pinned.nix).nixpkgs;
   pkgs = import nixpkgs {};
