@@ -4,5 +4,5 @@ in
   import "${nix-bitcoin}/helper/makeShell.nix" {
     configDir = ./.;
     # Set this to modify your shell
-    # extraShellInitCmds = (pkgs: ''<my bash code>'');
+    # extraShellInitCmds = pkgs: ''<my bash code>'';
   }
