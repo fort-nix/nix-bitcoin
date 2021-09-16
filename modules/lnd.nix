@@ -4,16 +4,6 @@ with lib;
 let
   options.services.lnd = {
     enable = mkEnableOption "Lightning Network Daemon";
-    dataDir = mkOption {
-      type = types.path;
-      default = "/var/lib/lnd";
-      description = "The data directory for LND.";
-    };
-    networkDir = mkOption {
-      readOnly = true;
-      default = networkDir;
-      description = "The network data directory.";
-    };
     address = mkOption {
       type = types.str;
       default = "localhost";
@@ -37,14 +27,22 @@ let
     restAddress = mkOption {
       type = types.str;
       default = "localhost";
-      description = ''
-        Address to listen for REST connections.
-      '';
+      description = "Address to listen for REST connections.";
     };
     restPort = mkOption {
       type = types.port;
       default = 8080;
       description = "Port to listen for REST connections.";
+    };
+    dataDir = mkOption {
+      type = types.path;
+      default = "/var/lib/lnd";
+      description = "The data directory for LND.";
+    };
+    networkDir = mkOption {
+      readOnly = true;
+      default = "${cfg.dataDir}/chain/bitcoin/${bitcoind.network}";
+      description = "The network data directory.";
     };
     tor-socks = mkOption {
       type = types.nullOr types.str;
@@ -87,13 +85,13 @@ let
     };
     cli = mkOption {
       default = pkgs.writeScriptBin "lncli"
-      # Switch user because lnd makes datadir contents readable by user only
-      ''
-        ${runAsUser} ${cfg.user} ${cfg.package}/bin/lncli \
-          --rpcserver ${cfg.rpcAddress}:${toString cfg.rpcPort} \
-          --tlscertpath '${cfg.certPath}' \
-          --macaroonpath '${networkDir}/admin.macaroon' "$@"
-      '';
+        # Switch user because lnd makes datadir contents readable by user only
+        ''
+          ${runAsUser} ${cfg.user} ${cfg.package}/bin/lncli \
+            --rpcserver ${cfg.rpcAddress}:${toString cfg.rpcPort} \
+            --tlscertpath '${cfg.certPath}' \
+            --macaroonpath '${networkDir}/admin.macaroon' "$@"
+        '';
       description = "Binary to connect with the lnd instance.";
     };
     getPublicAddressCmd = mkOption {
@@ -130,7 +128,7 @@ let
   bitcoind = config.services.bitcoind;
 
   bitcoindRpcAddress = bitcoind.rpc.address;
-  networkDir = "${cfg.dataDir}/chain/bitcoin/${bitcoind.network}";
+  networkDir = cfg.networkDir;
   configFile = pkgs.writeText "lnd.conf" ''
     datadir=${cfg.dataDir}
     logdir=${cfg.dataDir}/logs
