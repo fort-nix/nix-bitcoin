@@ -36,7 +36,6 @@ in {
       enable = true;
       listen = true;
       dataDirReadableByGroup = mkIf cfg.electrs.high-memory true;
-      addnodes = [ "ecoc5q34tmbq54wl.onion" ];
       discover = false;
       addresstype = "bech32";
       dbCache = 1000;
