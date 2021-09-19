@@ -2,11 +2,6 @@
 
 with lib;
 let
-  cfg = config.services.electrs;
-  nbLib = config.nix-bitcoin.lib;
-  secretsDir = config.nix-bitcoin.secretsDir;
-  bitcoind = config.services.bitcoind;
-in {
   options.services.electrs = {
     enable = mkEnableOption "electrs";
     address = mkOption {
@@ -23,16 +18,6 @@ in {
       type = types.path;
       default = "/var/lib/electrs";
       description = "The data directory for electrs.";
-    };
-    user = mkOption {
-      type = types.str;
-      default = "electrs";
-      description = "The user as which to run electrs.";
-    };
-    group = mkOption {
-      type = types.str;
-      default = cfg.user;
-      description = "The group as which to run electrs.";
     };
     high-memory = mkOption {
       type = types.bool;
@@ -51,8 +36,25 @@ in {
       default = "";
       description = "Extra command line arguments passed to electrs.";
     };
+    user = mkOption {
+      type = types.str;
+      default = "electrs";
+      description = "The user as which to run electrs.";
+    };
+    group = mkOption {
+      type = types.str;
+      default = cfg.user;
+      description = "The group as which to run electrs.";
+    };
     enforceTor = nbLib.enforceTor;
   };
+
+  cfg = config.services.electrs;
+  nbLib = config.nix-bitcoin.lib;
+  secretsDir = config.nix-bitcoin.secretsDir;
+  bitcoind = config.services.bitcoind;
+in {
+  inherit options;
 
   config = mkIf cfg.enable {
     assertions = [

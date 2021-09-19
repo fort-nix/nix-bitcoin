@@ -7,19 +7,7 @@
 { config, lib, pkgs, ... }:
 
 with lib;
-
 let
-  cfg = config.nix-bitcoin.onionServices;
-  nbLib = config.nix-bitcoin.lib;
-
-  services = builtins.attrNames cfg;
-
-  activeServices = builtins.filter (service:
-    config.services.${service}.enable && cfg.${service}.enable
-  ) services;
-
-  publicServices = builtins.filter (service: cfg.${service}.public) activeServices;
-in {
   options.nix-bitcoin.onionServices = mkOption {
     default = {};
     type = with types; attrsOf (submodule (
@@ -51,6 +39,19 @@ in {
       }
     ));
   };
+
+  cfg = config.nix-bitcoin.onionServices;
+  nbLib = config.nix-bitcoin.lib;
+
+  services = builtins.attrNames cfg;
+
+  activeServices = builtins.filter (service:
+    config.services.${service}.enable && cfg.${service}.enable
+  ) services;
+
+  publicServices = builtins.filter (service: cfg.${service}.public) activeServices;
+in {
+  inherit options;
 
   config = mkMerge [
     (mkIf (cfg != {}) {

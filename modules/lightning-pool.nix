@@ -1,27 +1,7 @@
 { config, lib, pkgs, ... }:
 
 with lib;
-
 let
-  cfg = config.services.lightning-pool;
-  nbLib = config.nix-bitcoin.lib;
-
-  lnd = config.services.lnd;
-
-  network = config.services.bitcoind.network;
-  rpclisten = "${cfg.rpcAddress}:${toString cfg.rpcPort}";
-  configFile = builtins.toFile "pool.conf" ''
-    rpclisten=${rpclisten}
-    restlisten=${cfg.restAddress}:${toString cfg.restPort}
-    ${optionalString (cfg.proxy != null) "proxy=${cfg.proxy}"}
-
-    lnd.host=${lnd.rpcAddress}:${toString lnd.rpcPort}
-    lnd.macaroondir=${lnd.networkDir}
-    lnd.tlspath=${lnd.certPath}
-
-    ${cfg.extraConfig}
-  '';
-in {
   options.services.lightning-pool = {
     enable = mkEnableOption "lightning-pool";
     rpcAddress = mkOption {
@@ -78,6 +58,27 @@ in {
     };
     enforceTor = nbLib.enforceTor;
   };
+
+  cfg = config.services.lightning-pool;
+  nbLib = config.nix-bitcoin.lib;
+
+  lnd = config.services.lnd;
+
+  network = config.services.bitcoind.network;
+  rpclisten = "${cfg.rpcAddress}:${toString cfg.rpcPort}";
+  configFile = builtins.toFile "pool.conf" ''
+    rpclisten=${rpclisten}
+    restlisten=${cfg.restAddress}:${toString cfg.restPort}
+    ${optionalString (cfg.proxy != null) "proxy=${cfg.proxy}"}
+
+    lnd.host=${lnd.rpcAddress}:${toString lnd.rpcPort}
+    lnd.macaroondir=${lnd.networkDir}
+    lnd.tlspath=${lnd.certPath}
+
+    ${cfg.extraConfig}
+  '';
+in {
+  inherit options;
 
   config = mkIf cfg.enable {
     services.lnd.enable = true;

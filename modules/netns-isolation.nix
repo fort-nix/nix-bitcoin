@@ -1,50 +1,7 @@
 { config, lib, pkgs, ... }:
 
 with lib;
-
 let
-  cfg = config.nix-bitcoin.netns-isolation;
-
-  netns = builtins.mapAttrs (n: v: {
-    inherit (v) id;
-    address = "169.254.${toString cfg.addressblock}.${toString v.id}";
-    availableNetns = availableNetns.${n};
-    netnsName = "nb-${n}";
-  }) enabledServices;
-
-  # Symmetric netns connection matrix
-  # if clightning.connections = [ "bitcoind" ]; then
-  #   availableNetns.bitcoind = [ "clighting" ];
-  #   and
-  #   availableNetns.clighting = [ "bitcoind" ];
-  #
-  # FIXME: Although negligible for our purposes, this calculation's runtime
-  # is in the order of (number of connections * number of services),
-  # because attrsets and lists are fully copied on each update with '//' or '++'.
-  # This can only be improved with an update in the nix language.
-  #
-  availableNetns = let
-    # base = { clightning = [ "bitcoind" ]; ... }
-    base = builtins.mapAttrs (n: v:
-      builtins.filter isEnabled v.connections
-    ) enabledServices;
-  in
-    foldl (xs: s1:
-      foldl (xs: s2:
-        xs // { "${s2}" = xs.${s2} ++ [ s1 ]; }
-      ) xs cfg.services.${s1}.connections
-    ) base (builtins.attrNames base);
-
-  enabledServices = filterAttrs (n: v: isEnabled n) cfg.services;
-  isEnabled = x: config.services.${x}.enable;
-
-  ip = "${pkgs.iproute}/bin/ip";
-  iptables = "${config.networking.firewall.package}/bin/iptables";
-
-  bridgeIp = "169.254.${toString cfg.addressblock}.10";
-
-  mkCliExec = service: "exec netns-exec ${netns.${service}.netnsName}";
-in {
   options.nix-bitcoin.netns-isolation = {
     enable = mkEnableOption "netns isolation";
 
@@ -91,6 +48,50 @@ in {
       description = "Exposes netns parameters.";
     };
   };
+
+  cfg = config.nix-bitcoin.netns-isolation;
+
+  netns = builtins.mapAttrs (n: v: {
+    inherit (v) id;
+    address = "169.254.${toString cfg.addressblock}.${toString v.id}";
+    availableNetns = availableNetns.${n};
+    netnsName = "nb-${n}";
+  }) enabledServices;
+
+  # Symmetric netns connection matrix
+  # if clightning.connections = [ "bitcoind" ]; then
+  #   availableNetns.bitcoind = [ "clighting" ];
+  #   and
+  #   availableNetns.clighting = [ "bitcoind" ];
+  #
+  # FIXME: Although negligible for our purposes, this calculation's runtime
+  # is in the order of (number of connections * number of services),
+  # because attrsets and lists are fully copied on each update with '//' or '++'.
+  # This can only be improved with an update in the nix language.
+  #
+  availableNetns = let
+    # base = { clightning = [ "bitcoind" ]; ... }
+    base = builtins.mapAttrs (n: v:
+      builtins.filter isEnabled v.connections
+    ) enabledServices;
+  in
+    foldl (xs: s1:
+      foldl (xs: s2:
+        xs // { "${s2}" = xs.${s2} ++ [ s1 ]; }
+      ) xs cfg.services.${s1}.connections
+    ) base (builtins.attrNames base);
+
+  enabledServices = filterAttrs (n: v: isEnabled n) cfg.services;
+  isEnabled = x: config.services.${x}.enable;
+
+  ip = "${pkgs.iproute}/bin/ip";
+  iptables = "${config.networking.firewall.package}/bin/iptables";
+
+  bridgeIp = "169.254.${toString cfg.addressblock}.10";
+
+  mkCliExec = service: "exec netns-exec ${netns.${service}.netnsName}";
+in {
+  inherit options;
 
   config = mkIf cfg.enable (mkMerge [
 

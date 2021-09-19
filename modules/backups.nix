@@ -1,40 +1,7 @@
 { config, lib, pkgs, ... }:
 
 with lib;
-
 let
-  cfg = config.services.backups;
-
-  filelist = pkgs.writeText "filelist.txt" ''
-    ${optionalString (!cfg.with-bulk-data) "- ${config.services.bitcoind.dataDir}/blocks"}
-    ${optionalString (!cfg.with-bulk-data) "- ${config.services.bitcoind.dataDir}/chainstate"}
-    ${config.services.bitcoind.dataDir}
-    ${config.services.clightning.dataDir}
-    ${config.services.lnd.dataDir}
-    ${optionalString (!cfg.with-bulk-data) "- ${config.services.liquidd.dataDir}/*/blocks"}
-    ${optionalString (!cfg.with-bulk-data) "- ${config.services.liquidd.dataDir}/*/chainstate"}
-    ${config.services.liquidd.dataDir}
-    ${optionalString cfg.with-bulk-data "${config.services.electrs.dataDir}"}
-    ${config.services.nbxplorer.dataDir}
-    ${config.services.btcpayserver.dataDir}
-    ${config.services.joinmarket.dataDir}
-    ${optionalString config.nix-bitcoin.generateSecrets "${config.nix-bitcoin.secretsDir}"}
-    /var/lib/tor
-    /var/lib/nixos
-
-    ${builtins.concatStringsSep "\n" postgresqlBackupPaths}
-
-    # Extra files
-    ${cfg.extraFiles}
-
-    # Exclude all unspecified files and directories
-    - /
-  '';
-
-  postgresqlBackupDir = config.services.postgresqlBackup.location;
-  postgresqlBackupPaths = map (db: "${postgresqlBackupDir}/${db}.sql.gz") cfg.postgresqlDatabases;
-  postgresqlBackupServices = map (db: "postgresqlBackup-${db}.service") cfg.postgresqlDatabases;
-in {
   options.services.backups = {
     enable = mkEnableOption "Backups service";
     with-bulk-data = mkOption {
@@ -72,6 +39,40 @@ in {
       description = "Additional files to be appended to filelist.";
     };
   };
+
+  cfg = config.services.backups;
+
+  filelist = pkgs.writeText "filelist.txt" ''
+    ${optionalString (!cfg.with-bulk-data) "- ${config.services.bitcoind.dataDir}/blocks"}
+    ${optionalString (!cfg.with-bulk-data) "- ${config.services.bitcoind.dataDir}/chainstate"}
+    ${config.services.bitcoind.dataDir}
+    ${config.services.clightning.dataDir}
+    ${config.services.lnd.dataDir}
+    ${optionalString (!cfg.with-bulk-data) "- ${config.services.liquidd.dataDir}/*/blocks"}
+    ${optionalString (!cfg.with-bulk-data) "- ${config.services.liquidd.dataDir}/*/chainstate"}
+    ${config.services.liquidd.dataDir}
+    ${optionalString cfg.with-bulk-data "${config.services.electrs.dataDir}"}
+    ${config.services.nbxplorer.dataDir}
+    ${config.services.btcpayserver.dataDir}
+    ${config.services.joinmarket.dataDir}
+    ${optionalString config.nix-bitcoin.generateSecrets "${config.nix-bitcoin.secretsDir}"}
+    /var/lib/tor
+    /var/lib/nixos
+
+    ${builtins.concatStringsSep "\n" postgresqlBackupPaths}
+
+    # Extra files
+    ${cfg.extraFiles}
+
+    # Exclude all unspecified files and directories
+    - /
+  '';
+
+  postgresqlBackupDir = config.services.postgresqlBackup.location;
+  postgresqlBackupPaths = map (db: "${postgresqlBackupDir}/${db}.sql.gz") cfg.postgresqlDatabases;
+  postgresqlBackupServices = map (db: "postgresqlBackup-${db}.service") cfg.postgresqlDatabases;
+in {
+  inherit options;
 
   config = mkIf cfg.enable {
       environment.systemPackages = [ pkgs.duplicity ];

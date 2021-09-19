@@ -1,12 +1,7 @@
 { config, lib, pkgs, ... }:
 
 with lib;
-
 let
-  cfg = config.services.hardware-wallets;
-  dataDir = "/var/lib/hardware-wallets/";
-  enabled = cfg.ledger || cfg.trezor;
-in {
   options.services.hardware-wallets = {
     ledger = mkOption {
       type = types.bool;
@@ -30,6 +25,12 @@ in {
       '';
     };
   };
+
+  cfg = config.services.hardware-wallets;
+  dataDir = "/var/lib/hardware-wallets/";
+  enabled = cfg.ledger || cfg.trezor;
+in {
+  inherit options;
 
   config = mkMerge [
     (mkIf (cfg.ledger || cfg.trezor) {

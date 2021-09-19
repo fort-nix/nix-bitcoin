@@ -1,8 +1,102 @@
 { config, lib, pkgs, ... }:
 
 with lib;
-
 let
+  options.services.joinmarket = {
+    enable = mkEnableOption "JoinMarket";
+    dataDir = mkOption {
+      type = types.path;
+      default = "/var/lib/joinmarket";
+      description = "The data directory for JoinMarket.";
+    };
+    rpcWalletFile = mkOption {
+      type = types.nullOr types.str;
+      default = "jm_wallet";
+      description = ''
+        Name of the watch-only bitcoind wallet the JoinMarket addresses are imported to.
+      '';
+    };
+    user = mkOption {
+      type = types.str;
+      default = "joinmarket";
+      description = "The user as which to run JoinMarket.";
+    };
+    group = mkOption {
+      type = types.str;
+      default = cfg.user;
+      description = "The group as which to run JoinMarket.";
+    };
+    cli = mkOption {
+      default = cli;
+    };
+    # This option is only used by netns-isolation
+    enforceTor = mkOption {
+      readOnly = true;
+      default = true;
+    };
+    inherit (nbLib) cliExec;
+
+    yieldgenerator = {
+      enable = mkEnableOption "yield generator bot";
+      ordertype = mkOption {
+        type = types.enum [ "reloffer" "absoffer" ];
+        default = "reloffer";
+        description = ''
+          Which fee type to actually use
+        '';
+      };
+      cjfee_a = mkOption {
+        type = types.ints.unsigned;
+        default = 500;
+        description = ''
+          Absolute offer fee you wish to receive for coinjoins (cj) in Satoshis
+        '';
+      };
+      cjfee_r = mkOption {
+        type = types.float;
+        default = 0.00002;
+        description = ''
+          Relative offer fee you wish to receive based on a cj's amount
+        '';
+      };
+      cjfee_factor = mkOption {
+        type = types.float;
+        default = 0.1;
+        description = ''
+          Variance around the average cj fee
+        '';
+      };
+      txfee = mkOption {
+        type = types.ints.unsigned;
+        default = 100;
+        description = ''
+          The average transaction fee you're adding to coinjoin transactions
+        '';
+      };
+      txfee_factor = mkOption {
+        type = types.float;
+        default = 0.3;
+        description = ''
+          Variance around the average tx fee
+        '';
+      };
+      minsize = mkOption {
+        type = types.ints.unsigned;
+        default = 100000;
+        description = ''
+          Minimum size of your cj offer in Satoshis. Lower cj amounts will be disregarded.
+        '';
+      };
+      size_factor = mkOption {
+        type = types.float;
+        default = 0.1;
+        description = ''
+          Variance around all offer sizes
+        '';
+      };
+    };
+  };
+
   cfg = config.services.joinmarket;
   nbLib = config.nix-bitcoin.lib;
   nbPkgs = config.nix-bitcoin.pkgs;
@@ -114,100 +208,7 @@ let
      chmod -R +x $out/bin
    '';
 in {
-  options.services.joinmarket = {
-    enable = mkEnableOption "JoinMarket";
-    dataDir = mkOption {
-      type = types.path;
-      default = "/var/lib/joinmarket";
-      description = "The data directory for JoinMarket.";
-    };
-    user = mkOption {
-      type = types.str;
-      default = "joinmarket";
-      description = "The user as which to run JoinMarket.";
-    };
-    group = mkOption {
-      type = types.str;
-      default = cfg.user;
-      description = "The group as which to run JoinMarket.";
-    };
-    rpcWalletFile = mkOption {
-      type = types.nullOr types.str;
-      default = "jm_wallet";
-      description = ''
-        Name of the watch-only bitcoind wallet the JoinMarket addresses are imported to.
-      '';
-    };
-    cli = mkOption {
-      default = cli;
-    };
-    # This option is only used by netns-isolation
-    enforceTor = mkOption {
-      readOnly = true;
-      default = true;
-    };
-    inherit (nbLib) cliExec;
-
-    yieldgenerator = {
-      enable = mkEnableOption "yield generator bot";
-      ordertype = mkOption {
-        type = types.enum [ "reloffer" "absoffer" ];
-        default = "reloffer";
-        description = ''
-          Which fee type to actually use
-        '';
-      };
-      cjfee_a = mkOption {
-        type = types.ints.unsigned;
-        default = 500;
-        description = ''
-          Absolute offer fee you wish to receive for coinjoins (cj) in Satoshis
-        '';
-      };
-      cjfee_r = mkOption {
-        type = types.float;
-        default = 0.00002;
-        description = ''
-          Relative offer fee you wish to receive based on a cj's amount
-        '';
-      };
-      cjfee_factor = mkOption {
-        type = types.float;
-        default = 0.1;
-        description = ''
-          Variance around the average cj fee
-        '';
-      };
-      txfee = mkOption {
-        type = types.ints.unsigned;
-        default = 100;
-        description = ''
-          The average transaction fee you're adding to coinjoin transactions
-        '';
-      };
-      txfee_factor = mkOption {
-        type = types.float;
-        default = 0.3;
-        description = ''
-          Variance around the average tx fee
-        '';
-      };
-      minsize = mkOption {
-        type = types.ints.unsigned;
-        default = 100000;
-        description = ''
-          Minimum size of your cj offer in Satoshis. Lower cj amounts will be disregarded.
-        '';
-      };
-      size_factor = mkOption {
-        type = types.float;
-        default = 0.1;
-        description = ''
-          Variance around all offer sizes
-        '';
-      };
-    };
-  };
+  inherit options;
 
   config = mkIf cfg.enable (mkMerge [{
     services.bitcoind = {

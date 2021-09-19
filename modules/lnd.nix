@@ -1,54 +1,9 @@
 { config, lib, pkgs, ... }:
 
 with lib;
-
 let
-  cfg = config.services.lnd;
-  nbLib = config.nix-bitcoin.lib;
-  secretsDir = config.nix-bitcoin.secretsDir;
-  runAsUser = config.nix-bitcoin.runAsUserCmd;
-
-  bitcoind = config.services.bitcoind;
-  bitcoindRpcAddress = bitcoind.rpc.address;
-  networkDir = "${cfg.dataDir}/chain/bitcoin/${bitcoind.network}";
-  configFile = pkgs.writeText "lnd.conf" ''
-    datadir=${cfg.dataDir}
-    logdir=${cfg.dataDir}/logs
-    tlscertpath=${cfg.certPath}
-    tlskeypath=${secretsDir}/lnd-key
-
-    listen=${toString cfg.address}:${toString cfg.port}
-    rpclisten=${cfg.rpcAddress}:${toString cfg.rpcPort}
-    restlisten=${cfg.restAddress}:${toString cfg.restPort}
-
-    bitcoin.${bitcoind.network}=1
-    bitcoin.active=1
-    bitcoin.node=bitcoind
-
-    ${optionalString (cfg.enforceTor) "tor.active=true"}
-    ${optionalString (cfg.tor-socks != null) "tor.socks=${cfg.tor-socks}"}
-
-    bitcoind.rpchost=${bitcoindRpcAddress}:${toString bitcoind.rpc.port}
-    bitcoind.rpcuser=${bitcoind.rpc.users.public.name}
-    bitcoind.zmqpubrawblock=${bitcoind.zmqpubrawblock}
-    bitcoind.zmqpubrawtx=${bitcoind.zmqpubrawtx}
-
-    ${cfg.extraConfig}
-  '';
-in {
-
   options.services.lnd = {
     enable = mkEnableOption "Lightning Network Daemon";
-    dataDir = mkOption {
-      type = types.path;
-      default = "/var/lib/lnd";
-      description = "The data directory for LND.";
-    };
-    networkDir = mkOption {
-      readOnly = true;
-      default = networkDir;
-      description = "The network data directory.";
-    };
     address = mkOption {
       type = types.str;
       default = "localhost";
@@ -72,14 +27,22 @@ in {
     restAddress = mkOption {
       type = types.str;
       default = "localhost";
-      description = ''
-        Address to listen for REST connections.
-      '';
+      description = "Address to listen for REST connections.";
     };
     restPort = mkOption {
       type = types.port;
       default = 8080;
       description = "Port to listen for REST connections.";
+    };
+    dataDir = mkOption {
+      type = types.path;
+      default = "/var/lib/lnd";
+      description = "The data directory for LND.";
+    };
+    networkDir = mkOption {
+      readOnly = true;
+      default = "${cfg.dataDir}/chain/bitcoin/${bitcoind.network}";
+      description = "The network data directory.";
     };
     tor-socks = mkOption {
       type = types.nullOr types.str;
@@ -122,13 +85,13 @@ in {
     };
     cli = mkOption {
       default = pkgs.writeScriptBin "lncli"
-      # Switch user because lnd makes datadir contents readable by user only
-      ''
-        ${runAsUser} ${cfg.user} ${cfg.package}/bin/lncli \
-          --rpcserver ${cfg.rpcAddress}:${toString cfg.rpcPort} \
-          --tlscertpath '${cfg.certPath}' \
-          --macaroonpath '${networkDir}/admin.macaroon' "$@"
-      '';
+        # Switch user because lnd makes datadir contents readable by user only
+        ''
+          ${runAsUser} ${cfg.user} ${cfg.package}/bin/lncli \
+            --rpcserver ${cfg.rpcAddress}:${toString cfg.rpcPort} \
+            --tlscertpath '${cfg.certPath}' \
+            --macaroonpath '${networkDir}/admin.macaroon' "$@"
+        '';
       description = "Binary to connect with the lnd instance.";
     };
     getPublicAddressCmd = mkOption {
@@ -156,6 +119,43 @@ in {
     };
     inherit (nbLib) enforceTor;
   };
+
+  cfg = config.services.lnd;
+  nbLib = config.nix-bitcoin.lib;
+  secretsDir = config.nix-bitcoin.secretsDir;
+  runAsUser = config.nix-bitcoin.runAsUserCmd;
+
+  bitcoind = config.services.bitcoind;
+
+  bitcoindRpcAddress = bitcoind.rpc.address;
+  networkDir = cfg.networkDir;
+  configFile = pkgs.writeText "lnd.conf" ''
+    datadir=${cfg.dataDir}
+    logdir=${cfg.dataDir}/logs
+    tlscertpath=${cfg.certPath}
+    tlskeypath=${secretsDir}/lnd-key
+
+    listen=${toString cfg.address}:${toString cfg.port}
+    rpclisten=${cfg.rpcAddress}:${toString cfg.rpcPort}
+    restlisten=${cfg.restAddress}:${toString cfg.restPort}
+
+    bitcoin.${bitcoind.network}=1
+    bitcoin.active=1
+    bitcoin.node=bitcoind
+
+    ${optionalString (cfg.enforceTor) "tor.active=true"}
+    ${optionalString (cfg.tor-socks != null) "tor.socks=${cfg.tor-socks}"}
+
+    bitcoind.rpchost=${bitcoindRpcAddress}:${toString bitcoind.rpc.port}
+    bitcoind.rpcuser=${bitcoind.rpc.users.public.name}
+    bitcoind.zmqpubrawblock=${bitcoind.zmqpubrawblock}
+    bitcoind.zmqpubrawtx=${bitcoind.zmqpubrawtx}
+
+    ${cfg.extraConfig}
+  '';
+in {
+
+  inherit options;
 
   config = mkIf cfg.enable {
     assertions = [
