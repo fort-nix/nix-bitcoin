@@ -25,8 +25,12 @@
         # "${nix-bitcoin}/modules/presets/secure-node.nix"
 
         {
+          # Automatically generate all secrets required by services.
+          # The secrets are stored in /etc/nix-bitcoin-secrets
           nix-bitcoin.generateSecrets = true;
 
+          # Enable services.
+          # See ../configuration.nix for all available features.
           services.bitcoind.enable = true;
 
           # When using nix-bitcoin as part of a larger NixOS configuration, set the following to enable
