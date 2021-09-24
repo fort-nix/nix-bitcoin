@@ -31,11 +31,9 @@ let
       description = "List of database names to backup.";
     };
     extraFiles = mkOption {
-      type = types.lines;
-      default = "";
-      example = ''
-        /var/lib/nginx
-      '';
+      type = types.listOf types.str;
+      default = [];
+      example = [ "/var/lib/nginx" ];
       description = "Additional files to be appended to filelist.";
     };
   };
@@ -62,7 +60,7 @@ let
     ${builtins.concatStringsSep "\n" postgresqlBackupPaths}
 
     # Extra files
-    ${cfg.extraFiles}
+    ${builtins.concatStringsSep "\n" cfg.extraFiles}
 
     # Exclude all unspecified files and directories
     - /
