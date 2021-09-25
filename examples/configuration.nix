@@ -211,7 +211,7 @@
   # services.backups.enable = true;
   #
   # You can pull the localBackups folder with
-  # `scp bitcoin-node:/var/lib/localBackups /my-backup-path/`
+  # `scp -r bitcoin-node:/var/lib/localBackups /my-backup-path/`
   # Alternatively, you can also set a remote target url, for example
   # services.backups.destination = "sftp://user@host[:port]/[relative|/absolute]_path";
   # Supply the sftp password by appending the FTP_PASSWORD environment variable
