@@ -28,22 +28,24 @@ nix-bitcoin is a collection of Nix packages and NixOS modules for easily install
 
 Overview
 ---
-A Bitcoin node verifies the Bitcoin protocol and provides ways of interacting with the Bitcoin network. nix-bitcoin
-nodes are used for a variety of purposes and can serve as personal or merchant wallets, second layer public
-infrastructure and as backends for Bitcoin applications. In all cases, the aim is to provide security and privacy by
-default. However, while nix-bitcoin is used in production today, it is still considered experimental.
+nix-bitcoin can be used for personal or merchant wallets, public infrastructure or
+for Bitcoin application backends. In all cases, the aim is to provide security and
+privacy by default. However, while nix-bitcoin is used in production today, it is
+still considered experimental.
 
-A full installation of nix-bitcoin is usually deployed either on a dedicated (virtual) machine or runs in a container
-and is online 24/7. Alternatively, the Nix packages, NixOS modules and configurations can be used independently and
-combined freely.
+nix-bitcoin nodes can be deployed on dedicated hardware, virtual machines or containers.
+The Nix packages and NixOS modules can be used independently and combined freely.
 
-nix-bitcoin is built on top of Nix and NixOS which provide powerful abstractions to keep it highly customizable and
+nix-bitcoin is built on top of Nix and [NixOS](https://nixos.org/) which provide powerful abstractions to keep it highly customizable and
 maintainable. Testament to this are nix-bitcoin's robust security features and its potent test framework.  However,
 running nix-bitcoin does not require any previous experience with the Nix ecosystem.
 
-Examples
+Get started
 ---
-See [here for examples](examples/README.md).
+- See the [examples](examples/README.md) for an overview of all features.
+- To setup a new node from scratch, see the [installation instructions](docs/install.md).
+- To add nix-bitcoin to an existing NixOS configuration, see [importable-configuration.nix](examples/importable-configuration.nix)
+  and the [Flake example](examples/flakes/flake.nix).
 
 Features
 ---
