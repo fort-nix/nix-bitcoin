@@ -18,11 +18,11 @@ By default, [`configuration.nix`](configuration.nix) enables `bitcoind` and `cli
   Requires: [Nix](https://nixos.org/), a systemd-based Linux distro and root privileges
 
 - [`./deploy-qemu-vm.sh`](deploy-qemu-vm.sh) creates a QEMU VM.\
-  Requires: [Nix](https://nixos.org/nix/)
+  Requires: [Nix](https://nixos.org/nix/), Linux
 
 - [`./deploy-krops.sh`](deploy-krops.sh) creates a QEMU VM and deploys a
   nix-bitcoin configuration to it using [krops](https://github.com/krebs/krops).\
-  Requires: [Nix](https://nixos.org/nix/)
+  Requires: [Nix](https://nixos.org/nix/), Linux
 
 - [`./deploy-container-minimal.sh`](deploy-container-minimal.sh) creates a
   container defined by [importable-configuration.nix](importable-configuration.nix).\

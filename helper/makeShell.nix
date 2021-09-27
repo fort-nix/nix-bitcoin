@@ -1,20 +1,20 @@
 { configDir, shellVersion ? null, extraShellInitCmds ? (pkgs: "") }:
 let
+  inherit (pkgs) lib;
   nixpkgs = (import ../pkgs/nixpkgs-pinned.nix).nixpkgs;
   pkgs = import nixpkgs {};
   nbPkgs = import ../pkgs { inherit pkgs; };
   cfgDir = toString configDir;
+  path = lib.optionalString pkgs.stdenv.isLinux ''
+    export PATH="${lib.makeBinPath [ nbPkgs.extra-container ]}''${PATH:+:}$PATH"
+  '';
 in
-with pkgs;
-stdenv.mkDerivation rec {
+pkgs.stdenv.mkDerivation {
   name = "nix-bitcoin-environment";
-
-  path = lib.makeBinPath [ nbPkgs.extra-container ];
 
   shellHook = ''
     export NIX_PATH="nixpkgs=${nixpkgs}:nix-bitcoin=${toString ../.}:."
-    export PATH="${path}''${PATH:+:}$PATH"
-
+    ${path}
     export NIX_BITCOIN_EXAMPLES_DIR="${cfgDir}"
 
     # Set isInteractive=1 if
@@ -111,7 +111,7 @@ stdenv.mkDerivation rec {
     }
 
     if [[ $isInteractive ]]; then
-      ${figlet}/bin/figlet "nix-bitcoin"
+      ${pkgs.figlet}/bin/figlet "nix-bitcoin"
       echo 'Enter "h" or "help" for documentation.'
     fi
 
