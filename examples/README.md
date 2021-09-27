@@ -25,9 +25,9 @@ By default, [`configuration.nix`](configuration.nix) enables `bitcoind` and `cli
   Requires: [Nix](https://nixos.org/nix/)
 
 - [`./deploy-container-minimal.sh`](deploy-container-minimal.sh) creates a
-  container defined by [minimal-configuration.nix](minimal-configuration.nix) that
-  doesn't use the [secure-node.nix](../modules/presets/secure-node.nix) preset.
-  Also shows how to use nix-bitcoin in an existing NixOS config.\
+  container defined by [importable-configuration.nix](importable-configuration.nix).\
+  You can copy and import this file to use nix-bitcoin in an existing NixOS configuration.\
+  The configuration doesn't use the [secure-node.nix](../modules/presets/secure-node.nix) preset.\
   Requires: [Nix](https://nixos.org/), a systemd-based Linux distro and root privileges
 
 Run the examples with option `--interactive` or `-i` to start a shell for interacting with

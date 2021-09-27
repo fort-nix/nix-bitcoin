@@ -28,14 +28,14 @@ if [[ $EUID != 0 ]]; then
 fi
 
 interactive=
-minimalConfig=
+configuration=
 for arg in "$@"; do
     case $arg in
         -i|--interactive)
             interactive=1
             ;;
-        --minimal-config)
-            minimalConfig=1
+        *)
+            configuration=$arg
             ;;
     esac
 done
@@ -61,9 +61,7 @@ echo "Node info:"
 c nodeinfo
 '
 
-if [[ $minimalConfig ]]; then
-    configuration=minimal-configuration.nix
-else
+if [[ ! $configuration ]]; then
     configuration=configuration.nix
     demoCmds="${demoCmds}${nodeInfoCmd}"
 fi
@@ -84,7 +82,7 @@ read -d '' src <<EOF || true
     extra.enableWAN = true;
     config = { pkgs, config, lib, ... }: {
       imports = [
-        <${configuration}>
+        $(realpath "$configuration")
       ];
       nix-bitcoin.generateSecrets = true;
     };
