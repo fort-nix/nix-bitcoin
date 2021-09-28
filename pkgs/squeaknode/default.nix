@@ -29,7 +29,7 @@
 
 buildPythonPackage rec {
   pname = "squeaknode";
-  version = "0.1.156";
+  version = "0.1.157";
 
   propagatedBuildInputs = [
     alembic
