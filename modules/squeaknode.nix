@@ -62,7 +62,8 @@ let
       default = cfg.squeaknode.user;
       description = "The group as which to run squeaknode.";
     };
-    enforceTor = nbLib.enforceTor;
+    # enforceTor = nbLib.enforceTor;
+    enforceTor = true;
   };
 
   cfg = config.services.squeaknode;
