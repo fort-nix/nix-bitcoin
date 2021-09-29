@@ -1,31 +1,4 @@
-{ lib
-, buildPythonPackage
-, fetchurl
-, alembic
-, expiringdict
-, flask
-, flask-cors
-, flask-login
-, flask-wtf
-, googleapis-common-protos
-, grpcio
-, grpcio-tools
-, importlib-resources
-, mypy-protobuf
-, protobuf
-, psycopg2
-, pysocks
-, bitcoinlib
-, pyzmq
-, requests
-, sqlalchemy
-, ecpy
-, cryptography
-, squeakpy
-, typed-config
-, tox
-
-}:
+{ lib, buildPythonPackage, fetchurl, alembic, expiringdict, flask, flask-cors, flask-login, flask-wtf, googleapis-common-protos, grpcio, grpcio-tools, importlib-resources, mypy-protobuf, protobuf, psycopg2, pysocks, bitcoinlib, pyzmq, requests, sqlalchemy, ecpy, cryptography, squeakpy, typed-config, tox }:
 
 buildPythonPackage rec {
   pname = "squeaknode";
