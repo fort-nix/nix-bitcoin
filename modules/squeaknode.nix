@@ -102,7 +102,17 @@ in {
   inherit options;
 
   config = mkIf cfg.enable {
-    services.bitcoind.enable = true;
+    services.bitcoind = {
+      enable = true;
+
+      # Increase rpc thread count due to reports that lightning implementations fail
+      # under high bitcoind rpc load
+      rpc.threads = 16;
+
+      zmqpubrawblock = "tcp://${bitcoindRpcAddress}:28332";
+      zmqpubrawtx = "tcp://${bitcoindRpcAddress}:28333";
+      zmqpubhashblock = "tcp://${bitcoindRpcAddress}:28334";
+    };
     services.lnd.enable = true;
 
     environment.systemPackages = [ cfg.package ];
