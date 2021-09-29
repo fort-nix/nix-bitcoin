@@ -77,7 +77,7 @@ let
   [node]
   network=${network}
   sqk_dir_path=${cfg.dataDir}
-  max_squeaks=${10000}
+  max_squeaks=10000
   tor_proxy_ip=${cfg.proxyHost}
   tor_proxy_port=${cfg.proxyPort}
   external_address=''${NODE_EXTERNAL_ADDRESS}
