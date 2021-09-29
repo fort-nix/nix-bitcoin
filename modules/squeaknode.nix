@@ -115,8 +115,8 @@ in {
 
     systemd.services.lightning-loop = {
       wantedBy = [ "multi-user.target" ];
-      requires = [ "bitcoind.service", "lnd.service" ];
-      after = [ "bitcoind.service", "lnd.service" ];
+      requires = [ "bitcoind.service" "lnd.service" ];
+      after = [ "bitcoind.service" "lnd.service" ];
       preStart = ''
         install -m600 ${configFileTemplate} '${cfg.dataDir}/squeaknode.conf'
         export BITCOIN_RPC_PASS=$(cat ${secretsDir}/bitcoin-rpcpassword-public)
