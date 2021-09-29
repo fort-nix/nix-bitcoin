@@ -86,7 +86,7 @@ let
   rpc_port=${toString bitcoind.rpc.port}
   rpc_user=${bitcoind.rpc.users.public.name}
   rpc_pass=''${BITCOIN_RPC_PASS}
-  zeromq_hashblock_port=${bitcoind.zmqpubrawblock}
+  zeromq_hashblock_port=${bitcoind.zmqpubhashblock}
 
   [lnd]
   host=${lnd.rpcAddress}
