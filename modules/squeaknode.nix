@@ -34,6 +34,11 @@ let
       default = if cfg.enforceTor then config.nix-bitcoin.torClientPort else null;
       description = "port of SOCKS5 proxy for connnecting to other squeaknode peers.";
     };
+    package = mkOption {
+      type = types.package;
+      default = config.nix-bitcoin.pkgs.squeaknode;
+      description = "The package providing squeaknode binaries.";
+    };
     dataDir = mkOption {
       type = types.path;
       default = "/var/lib/squeaknode";
