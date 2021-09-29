@@ -185,6 +185,12 @@ let
         example = "tcp://127.0.0.1:28333";
         description = "ZMQ address for zmqpubrawtx notifications";
       };
+      zmqpubhashblock = mkOption {
+        type = types.nullOr types.str;
+        default = null;
+        example = "tcp://127.0.0.1:28334";
+        description = "ZMQ address for zmqpubhashblock notifications";
+      };
       assumevalid = mkOption {
         type = types.nullOr types.str;
         default = null;
@@ -281,12 +287,13 @@ let
     # ZMQ options
     ${optionalString (cfg.zmqpubrawblock != null) "zmqpubrawblock=${cfg.zmqpubrawblock}"}
     ${optionalString (cfg.zmqpubrawtx != null) "zmqpubrawtx=${cfg.zmqpubrawtx}"}
+    ${optionalString (cfg.zmqpubhashblock != null) "zmqpubhashblock=${cfg.zmqpubhashblock}"}
 
     # Extra options
     ${cfg.extraConfig}
   '';
 
-  zmqServerEnabled = (cfg.zmqpubrawblock != null) || (cfg.zmqpubrawtx != null);
+  zmqServerEnabled = (cfg.zmqpubrawblock != null) || (cfg.zmqpubrawtx != null) || (cfg.zmqpubhashblock != null);
 in {
   inherit options;
 

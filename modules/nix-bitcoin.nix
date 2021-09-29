@@ -20,6 +20,18 @@ with lib;
           "${addr}:${toString port}";
       };
 
+      torClientAddress = mkOption {
+        readOnly = true;
+        default =  with config.services.tor.client.socksListenAddress;
+          "${addr}";
+      };
+
+      torClientPort = mkOption {
+        readOnly = true;
+        default =  with config.services.tor.client.socksListenAddress;
+          "${toString port}";
+      };
+
       # Torify binary that works with custom Tor SOCKS addresses
       # Related issue: https://github.com/NixOS/nixpkgs/issues/94236
       torify = mkOption {
