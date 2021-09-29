@@ -90,7 +90,7 @@ let
 
   [lnd]
   host=${lnd.rpcAddress}
-  port=${lnd.rpcPort}
+  port=${toString lnd.rpcPort}
   tls_cert_path=${lnd.certPath}
   macaroon_path=${lnd.networkDir}/admin.macaroon
 
