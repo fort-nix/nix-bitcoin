@@ -206,6 +206,21 @@ def _():
     spark_auth = re.search("login=(.*)", succeed("cat /secrets/spark-wallet-login"))[1]
     assert_matches(f"curl -s {spark_auth}@{ip('spark-wallet')}:9737", "Spark")
 
+@test("squeaknode")
+def _():
+    assert_running("squeaknode")
+    wait_for_open_port(ip("squeaknode"), 8994)
+    wait_for_open_port(ip("squeaknode"), 12994)
+    # Login page should load
+    assert_matches(f"curl -s {ip('squeaknode')}:12994/login", "Squeaknode")
+    # squeaknode can connect to lnd
+    machine.wait_until_succeeds(
+        log_has_string(
+            "squeaknode",
+            "Starting payment subscription with settle index:",
+        )
+    )
+
 @test("joinmarket")
 def _():
     assert_running("joinmarket")

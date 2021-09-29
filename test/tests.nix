@@ -75,6 +75,8 @@ let
 
       tests.electrs = cfg.electrs.enable;
 
+      tests.squeaknode = cfg.squeaknode.enable;
+
       tests.liquidd = cfg.liquidd.enable;
       services.liquidd.extraConfig = mkIf config.test.noConnections "connect=0";
 
