@@ -16,7 +16,8 @@ pkgs: pkgsUnstable:
     lightning-loop
     lightning-pool
     lnd
-    nbxplorer;
+    nbxplorer
+    squeaknode;
 
   inherit pkgs pkgsUnstable;
 }
