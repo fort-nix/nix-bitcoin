@@ -154,6 +154,7 @@ let
       services.lightning-pool.enable = true;
       services.charge-lnd.enable = true;
       services.electrs.enable = true;
+      services.squeaknode.enable = true;
       services.liquidd.enable = true;
       services.btcpayserver.enable = true;
       services.joinmarket.enable = true;
@@ -198,6 +199,7 @@ let
       services.lightning-pool.enable = true;
       services.charge-lnd.enable = true;
       services.electrs.enable = true;
+      services.squeaknode.enable = true;
       services.btcpayserver.enable = true;
       services.joinmarket.enable = true;
     };
