@@ -72,6 +72,7 @@ let
   bitcoind = config.services.bitcoind;
   lnd = config.services.lnd;
   network = config.services.bitcoind.network;
+  bitcoindRpcAddress = bitcoind.rpc.address;
   # TODO: Fix zeromq_hashblock_port
   configFileTemplate = builtins.toFile "squeaknode.conf.tmpl" ''
   [node]
