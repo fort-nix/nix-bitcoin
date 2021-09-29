@@ -20,6 +20,7 @@
     ./charge-lnd.nix
     ./btcpayserver.nix
     ./electrs.nix
+    ./squeaknode.nix
     ./liquid.nix
     ./joinmarket.nix
     ./joinmarket-ob-watcher.nix
