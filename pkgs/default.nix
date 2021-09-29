@@ -6,6 +6,7 @@ in
 , pkgsUnstable ? import nixpkgsPinned.nixpkgs-unstable { config = {}; overlays = []; }
 }:
 let self = {
+  squeaknode = pkgs.callPackage ./squeaknode { };
   spark-wallet = pkgs.callPackage ./spark-wallet { };
   liquid-swap = pkgs.python3Packages.callPackage ./liquid-swap { };
   joinmarket = pkgs.callPackage ./joinmarket { inherit (self) nbPython3Packages; };
