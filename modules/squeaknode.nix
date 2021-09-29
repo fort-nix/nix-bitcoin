@@ -72,6 +72,7 @@ let
   bitcoind = config.services.bitcoind;
   lnd = config.services.lnd;
   network = config.services.bitcoind.network;
+  # TODO: Fix zeromq_hashblock_port
   configFileTemplate = builtins.toFile "squeaknode.conf.tmpl" ''
   [node]
   network=${network}
@@ -103,6 +104,7 @@ in {
   inherit options;
 
   config = mkIf cfg.enable {
+    services.bitcoind.enable = true;
     services.lnd.enable = true;
 
     environment.systemPackages = [ cfg.package ];
