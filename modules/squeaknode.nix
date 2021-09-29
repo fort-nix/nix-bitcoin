@@ -121,7 +121,8 @@ in {
         install -m600 ${configFileTemplate} '${cfg.dataDir}/squeaknode.conf'
         export BITCOIN_RPC_PASS=$(cat ${secretsDir}/bitcoin-rpcpassword-public)
         ${optionalString (cfg.getPublicAddressCmd != "") ''
-          export NODE_EXTERNAL_ADDRESS=$(${cfg.getPublicAddressCmd})"
+          export NODE_EXTERNAL_ADDRESS=$(${cfg.getPublicAddressCmd})
+        ''}
         eval "echo \"${configFileTemplate}\" > '${cfg.dataDir}/squeaknode.conf'
       '';
       serviceConfig = nbLib.defaultHardening // {
