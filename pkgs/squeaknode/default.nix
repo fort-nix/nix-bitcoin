@@ -31,8 +31,6 @@ buildPythonPackage rec {
   pname = "squeaknode";
   version = "0.1.157";
 
-  nativeBuildInputs = [ libpq-dev ];
-
   propagatedBuildInputs = [
     alembic
     expiringdict
