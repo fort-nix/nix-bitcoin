@@ -11,4 +11,5 @@
   lnd = ./lnd.nix;
   charge-lnd = ./charge-lnd.nix;
   joinmarket = ./joinmarket.nix;
+  squeaknode = ./squeaknode.nix;
 }
