@@ -28,4 +28,9 @@ in {
   pyln-client = clightningPkg ./pyln-client;
   pyln-proto = clightningPkg ./pyln-proto;
   pylightning = clightningPkg ./pylightning;
+
+  # squeakpy 0.7.7, required by squeaknode
+  squeakpy = callPackage ./squeakpy {};
+  # typed-config 0.2.5, required by squeaknode
+  typed-config = callPackage ./typed-config {};
 }
