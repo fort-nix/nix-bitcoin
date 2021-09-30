@@ -37,5 +37,7 @@ buildPythonPackage rec {
   checkInputs = with nbPython3Packages; [
     tox
   ];
+
+  doCheck = false;
 }
 
