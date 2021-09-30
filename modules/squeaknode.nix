@@ -110,8 +110,6 @@ in {
       # under high bitcoind rpc load
       rpc.threads = 16;
 
-      zmqpubrawblock = "tcp://${bitcoindRpcAddress}:28332";
-      zmqpubrawtx = "tcp://${bitcoindRpcAddress}:28333";
       zmqpubhashblock = "tcp://${bitcoindRpcAddress}:28334";
     };
     services.lnd.enable = true;
