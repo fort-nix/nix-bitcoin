@@ -1,29 +1,7 @@
 { lib
 , buildPythonPackage
 , fetchurl
-, alembic
-, expiringdict
-, flask
-, flask-cors
-, flask-login
-, flask-wtf
-, googleapis-common-protos
-, grpcio
-, grpcio-tools
-, importlib-resources
-, mypy-protobuf
-, protobuf
-, psycopg2
-, pysocks
-, bitcoinlib
-, pyzmq
-, requests
-, sqlalchemy
-, ecpy
-, cryptography
-, squeakpy
-, typed-config
-, tox
+, nbPython3Packages
 
 }:
 
@@ -31,13 +9,10 @@ buildPythonPackage rec {
   pname = "squeaknode";
   version = "0.1.157";
 
-  propagatedBuildInputs = [
+  propagatedBuildInputs = with nbPython3Packages; [
     alembic
     expiringdict
     flask
-    flask-cors
-    flask-login
-    flask-wtf
     googleapis-common-protos
     grpcio
     grpcio-tools
@@ -59,7 +34,7 @@ buildPythonPackage rec {
     sha256 = "TODO";
   };
 
-  checkInputs = [
+  checkInputs = with nbPython3Packages; [
     tox
   ];
 }
