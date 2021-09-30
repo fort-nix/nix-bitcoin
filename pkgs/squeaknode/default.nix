@@ -30,7 +30,7 @@ buildPythonPackage rec {
   ];
 
   src = fetchurl {
-    urls = [ "https://github.com/yzernik/squeaknode/archive/release_${version}.tar.gz" ];
+    urls = [ "https://github.com/yzernik/squeaknode/archive/refs/tags/v${version}.tar.gz" ];
     sha256 = "a179cca7101291ae078a185929fceb1a9954f57aeea2e3ffaaf687396bdb3ea6";
   };
 
