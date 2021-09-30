@@ -122,7 +122,7 @@ in {
       "d '${cfg.dataDir}' 0770 ${cfg.user} ${cfg.group} - -"
     ];
 
-    systemd.services.lightning-loop = {
+    systemd.services.squeaknode = {
       wantedBy = [ "multi-user.target" ];
       requires = [ "bitcoind.service" "lnd.service" ];
       after = [ "bitcoind.service" "lnd.service" ];
