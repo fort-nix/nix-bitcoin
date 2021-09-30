@@ -59,7 +59,7 @@ let
     };
     group = mkOption {
       type = types.str;
-      default = cfg.squeaknode.user;
+      default = cfg.user;
       description = "The group as which to run squeaknode.";
     };
     enforceTor = nbLib.enforceTor;
