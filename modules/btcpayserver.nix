@@ -106,18 +106,31 @@ in {
   inherit options;
 
   config = mkIf cfg.btcpayserver.enable {
-    services.bitcoind.enable = true;
+    services.bitcoind = {
+      enable = true;
+      rpc.users.btcpayserver = {
+        passwordHMACFromFile = true;
+        rpcwhitelist = cfg.bitcoind.rpc.users.public.rpcwhitelist ++ [
+          "setban"
+          "generatetoaddress"
+          "getpeerinfo"
+        ];
+      };
+      # Enable p2p connections
+      listen = true;
+      extraConfig = ''
+        whitelist=${nbLib.address cfg.nbxplorer.address}
+      '';
+    };
     services.clightning.enable = mkIf (cfg.btcpayserver.lightningBackend == "clightning") true;
     services.lnd.enable = mkIf (cfg.btcpayserver.lightningBackend == "lnd") true;
-    services.liquidd.enable = mkIf cfg.btcpayserver.lbtc true;
-
-    services.bitcoind.rpc.users.btcpayserver = {
-      passwordHMACFromFile = true;
-      rpcwhitelist = cfg.bitcoind.rpc.users.public.rpcwhitelist ++ [
-        "setban"
-        "generatetoaddress"
-        "getpeerinfo"
-      ];
+    services.liquidd = mkIf cfg.btcpayserver.lbtc {
+      enable = true;
+      # Enable p2p connections
+      listen = true;
+      extraConfig = ''
+        whitelist=${nbLib.address cfg.nbxplorer.address}
+      '';
     };
 
     services.lnd.macaroons.btcpayserver = mkIf (cfg.btcpayserver.lightningBackend == "lnd") {
