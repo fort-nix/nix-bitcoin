@@ -127,7 +127,7 @@ let
 
   bitcoind = config.services.bitcoind;
 
-  bitcoindRpcAddress = bitcoind.rpc.address;
+  bitcoindRpcAddress = nbLib.address bitcoind.rpc.address;
   networkDir = cfg.networkDir;
   configFile = pkgs.writeText "lnd.conf" ''
     datadir=${cfg.dataDir}
@@ -217,12 +217,12 @@ in {
           # existing, but the RPC service isn't yet, which results in error
           # "waiting to start, RPC services not available".
           curl = "${pkgs.curl}/bin/curl -s --show-error --retry 10 --cacert ${cfg.certPath}";
-          restUrl = "https://${cfg.restAddress}:${toString cfg.restPort}/v1";
+          restUrl = "https://${nbLib.addressWithPort cfg.restAddress cfg.restPort}/v1";
         in [
           (nbLib.script "lnd-create-wallet" ''
             attempts=250
             while ! {
-              exec 3>/dev/tcp/${cfg.restAddress}/${toString cfg.restPort} && exec 3>&-
+              exec 3>/dev/tcp/${nbLib.address cfg.restAddress}/${toString cfg.restPort} && exec 3>&-
             } &>/dev/null; do
               ((attempts-- == 0)) && { echo "lnd REST service unreachable"; exit 1; }
               sleep 0.1

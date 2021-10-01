@@ -143,15 +143,15 @@ in {
       configFile = builtins.toFile "config" ''
         network=${bitcoind.network}
         btcrpcuser=${cfg.bitcoind.rpc.users.btcpayserver.name}
-        btcrpcurl=http://${bitcoind.rpc.address}:${toString cfg.bitcoind.rpc.port}
-        btcnodeendpoint=${bitcoind.address}:${toString bitcoind.port}
+        btcrpcurl=http://${nbLib.addressWithPort bitcoind.rpc.address cfg.bitcoind.rpc.port}
+        btcnodeendpoint=${nbLib.addressWithPort bitcoind.address bitcoind.port}
         bind=${cfg.nbxplorer.address}
         port=${toString cfg.nbxplorer.port}
         ${optionalString cfg.btcpayserver.lbtc ''
           chains=btc,lbtc
           lbtcrpcuser=${liquidd.rpcuser}
-          lbtcrpcurl=http://${liquidd.rpc.address}:${toString liquidd.rpc.port}
-          lbtcnodeendpoint=${liquidd.address}:${toString liquidd.port}
+          lbtcrpcurl=http://${nbLib.addressWithPort liquidd.rpc.address liquidd.rpc.port}
+          lbtcnodeendpoint=${nbLib.addressWithPort liquidd.address liquidd.port}
         ''}
       '';
     in {

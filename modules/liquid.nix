@@ -169,7 +169,7 @@ let
     rpcconnect=${cfg.rpc.address}
     ${lib.concatMapStrings (rpcallowip: "rpcallowip=${rpcallowip}\n") cfg.rpcallowip}
     rpcuser=${cfg.rpcuser}
-    mainchainrpchost=${bitcoind.rpc.address}
+    mainchainrpchost=${nbLib.address bitcoind.rpc.address}
     mainchainrpcport=${toString bitcoind.rpc.port}
     mainchainrpcuser=${bitcoind.rpc.users.public.name}
 

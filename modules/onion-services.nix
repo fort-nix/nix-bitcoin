@@ -65,7 +65,7 @@ in {
           in nbLib.mkOnionService {
             port = if externalPort != null then externalPort else service.port;
             target.port = service.port;
-            target.addr = if service.address == "0.0.0.0" then "127.0.0.1" else service.address;
+            target.addr = nbLib.address service.address;
           }
         );
       };

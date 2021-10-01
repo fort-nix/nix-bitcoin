@@ -83,4 +83,17 @@ let self = {
     map = [ map ];
     version = 3;
   };
+
+  # Convert a bind address, which may be a special INADDR_ANY address,
+  # to an actual IP address
+  address = addr:
+    if addr == "0.0.0.0" then
+      "127.0.0.1"
+    else if addr == "::" then
+      "::1"
+    else
+      addr;
+
+  addressWithPort = addr: port: "${self.address addr}:${toString port}";
+
 }; in self

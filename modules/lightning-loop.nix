@@ -50,7 +50,7 @@ let
     cli = mkOption {
       default = pkgs.writeScriptBin "loop" ''
         ${cfg.package}/bin/loop \
-        --rpcserver ${rpclisten} \
+        --rpcserver ${nbLib.addressWithPort cfg.rpcAddress cfg.rpcPort} \
         --macaroonpath '${cfg.dataDir}/${network}/loop.macaroon' \
         --tlscertpath '${secretsDir}/loop-cert' "$@"
       '';
@@ -66,17 +66,16 @@ let
   lnd = config.services.lnd;
 
   network = config.services.bitcoind.network;
-  rpclisten = "${cfg.rpcAddress}:${toString cfg.rpcPort}";
   configFile = builtins.toFile "loop.conf" ''
     datadir=${cfg.dataDir}
     network=${network}
-    rpclisten=${rpclisten}
+    rpclisten=${cfg.rpcAddress}:${toString cfg.rpcPort}
     restlisten=${cfg.restAddress}:${toString cfg.restPort}
     logdir=${cfg.dataDir}/logs
     tlscertpath=${secretsDir}/loop-cert
     tlskeypath=${secretsDir}/loop-key
 
-    lnd.host=${lnd.rpcAddress}:${toString lnd.rpcPort}
+    lnd.host=${nbLib.addressWithPort lnd.rpcAddress lnd.rpcPort}
     lnd.macaroonpath=${lnd.networkDir}/admin.macaroon
     lnd.tlspath=${lnd.certPath}
 
