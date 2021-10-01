@@ -47,6 +47,12 @@ let
       readOnly = true;
       description = "Exposes netns parameters.";
     };
+
+    bridgeIp = mkOption {
+      default = bridgeIp;
+      readOnly = true;
+      description = "IP of the netns bridge interface.";
+    };
   };
 
   cfg = config.nix-bitcoin.netns-isolation;
