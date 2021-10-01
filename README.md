@@ -52,7 +52,7 @@ Features
 A [configuration preset](modules/presets/secure-node.nix) for setting up a secure node
 * All applications use Tor for outbound connections and support accepting inbound connections via onion services.
 
-NixOS modules
+NixOS modules ([src](modules/modules.nix))
 * Application services
   * [bitcoind](https://github.com/bitcoin/bitcoin), with a default banlist against spy nodes
   * [clightning](https://github.com/ElementsProject/lightning) with support for announcing an onion service\
@@ -85,10 +85,10 @@ NixOS modules
 
 Security
 ---
-* **Simplicity:** Only services you select in `configuration.nix` and their dependencies are installed, packages and dependencies are [pinned](pkgs/nixpkgs-pinned.nix), support for [doas](https://github.com/Duncaen/OpenDoas) ([sudo alternative](https://lobste.rs/s/efsvqu/heap_based_buffer_overflow_sudo_cve_2021#c_c6fcfa)), most packages are built from the [NixOS stable channel](https://github.com/NixOS/nixpkgs/tree/nixos-20.09), with a few exceptions that are built from the nixpkgs unstable channel, builds happen in a [sandboxed environment](https://nixos.org/manual/nix/stable/#conf-sandbox), code is continuously reviewed and refined.
-* **Integrity:** Nix package manager, NixOS and packages can be built from source to reduce reliance on binary caches, nix-bitcoin merge commits are signed, all commits are approved by multiple nix-bitcoin developers, upstream packages are cryptographically verified where possible, we use this software ourselves.
-* **Principle of Least Privilege:** Services operate with least privileges; they each have their own user and are restricted further with [systemd options](pkgs/lib.nix), [RPC whitelisting](modules/bitcoind-rpc-public-whitelist.nix), and [netns-isolation](modules/netns-isolation.nix). There's a non-root user *operator* to interact with the various services.
-* **Defense-in-depth:** nix-bitcoin is built with a [hardened kernel](https://github.com/NixOS/nixpkgs/blob/master/nixos/modules/profiles/hardened.nix) by default, services are confined through discretionary access control, Linux namespaces, [dbus firewall](modules/security.nix) and seccomp-bpf with continuous improvements.
+* **Simplicity:** Only services enabled in `configuration.nix` and their dependencies are installed, support for [doas](https://github.com/Duncaen/OpenDoas) ([sudo alternative](https://lobste.rs/s/efsvqu/heap_based_buffer_overflow_sudo_cve_2021#c_c6fcfa)), code is continuously reviewed and refined.
+* **Integrity:** The Nix package manager guarantees that all dependencies are exactly specified, packages can be built from source to reduce reliance on binary caches, nix-bitcoin merge commits are signed, all commits are approved by multiple nix-bitcoin developers, upstream packages are cryptographically verified where possible, we use this software ourselves.
+* **Principle of Least Privilege:** Services operate with least privileges; they each have their own user and are restricted further with [systemd features](pkgs/lib.nix), [RPC whitelisting](modules/bitcoind-rpc-public-whitelist.nix) and [netns-isolation](modules/netns-isolation.nix). There's a non-root user *operator* to interact with the various services.
+* **Defense-in-depth:** nix-bitcoin supports a [hardened kernel](https://github.com/NixOS/nixpkgs/blob/master/nixos/modules/profiles/hardened.nix), services are confined through discretionary access control, Linux namespaces, [dbus firewall](modules/security.nix) and seccomp-bpf with continuous improvements.
 
 Note that if the machine you're deploying *from* is insecure, there is nothing nix-bitcoin can do to protect itself.
 
