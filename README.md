@@ -94,10 +94,10 @@ Note that if the machine you're deploying *from* is insecure, there is nothing n
 
 Docs
 ---
-* [FAQ](docs/faq.md)
 * [Hardware Requirements](docs/hardware.md)
 * [Install instructions](docs/install.md)
 * [Usage instructions](docs/usage.md)
+* [FAQ](docs/faq.md)
 
 Troubleshooting
 ---
