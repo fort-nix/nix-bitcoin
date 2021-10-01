@@ -42,6 +42,7 @@ name: testConfig:
       builtins.concatStringsSep "\n\n" [
         initData
         (builtins.readFile ./../tests.py)
+        cfg.test.extraTestScript
         # Don't run tests in interactive mode.
         # is_interactive is set in ../run-tests.sh
         ''
