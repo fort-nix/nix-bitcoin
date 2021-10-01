@@ -101,7 +101,7 @@ let
   nbLib = config.nix-bitcoin.lib;
   nbPkgs = config.nix-bitcoin.pkgs;
 
-  bitcoind = config.services.bitcoind;
+  inherit (config.services) bitcoind liquidd;
 in {
   inherit options;
 
@@ -149,9 +149,9 @@ in {
         port=${toString cfg.nbxplorer.port}
         ${optionalString cfg.btcpayserver.lbtc ''
           chains=btc,lbtc
-          lbtcrpcuser=${cfg.liquidd.rpcuser}
-          lbtcrpcurl=http://${cfg.liquidd.rpc.address}:${toString cfg.liquidd.rpc.port}
-          lbtcnodeendpoint=${cfg.liquidd.address}:${toString cfg.liquidd.port}
+          lbtcrpcuser=${liquidd.rpcuser}
+          lbtcrpcurl=http://${liquidd.rpc.address}:${toString liquidd.rpc.port}
+          lbtcnodeendpoint=${liquidd.address}:${toString liquidd.port}
         ''}
       '';
     in {
@@ -221,8 +221,8 @@ in {
       '';
       serviceConfig = nbLib.defaultHardening // {
         ExecStart = ''
-          ${cfg.btcpayserver.package}/bin/btcpayserver --conf=${cfg.btcpayserver.dataDir}/settings.config \
-            --datadir=${cfg.btcpayserver.dataDir}
+          ${cfg.btcpayserver.package}/bin/btcpayserver --conf='${cfg.btcpayserver.dataDir}/settings.config' \
+            --datadir='${cfg.btcpayserver.dataDir}'
         '';
         User = cfg.btcpayserver.user;
         Restart = "on-failure";
@@ -236,7 +236,7 @@ in {
       isSystemUser = true;
       group = cfg.nbxplorer.group;
       extraGroups = [ "bitcoinrpc-public" ]
-                    ++ optional cfg.btcpayserver.lbtc cfg.liquidd.group;
+                    ++ optional cfg.btcpayserver.lbtc liquidd.group;
       home = cfg.nbxplorer.dataDir;
     };
     users.groups.${cfg.nbxplorer.group} = {};
