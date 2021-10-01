@@ -13,7 +13,8 @@ let
       type = types.bool;
       default = false;
       description = ''
-        Set permissions for existing secrets in `nix-bitcoin.secretsDir`.
+        Set permissions for existing secrets in `nix-bitcoin.secretsDir`
+        before services are started.
       '';
     };
 
@@ -21,7 +22,7 @@ let
       type = types.bool;
       default = false;
       description = ''
-        Automatically generate all required secrets at system startup.
+        Automatically generate all required secrets before services are started.
         Note: Make sure to create a backup of the generated secrets.
       '';
     };

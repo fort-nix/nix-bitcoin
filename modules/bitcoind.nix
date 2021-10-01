@@ -26,7 +26,6 @@ let
       package = mkOption {
         type = types.package;
         default = config.nix-bitcoin.pkgs.bitcoind;
-        defaultText = "pkgs.blockchains.bitcoind";
         description = "The package providing bitcoin binaries.";
       };
       extraConfig = mkOption {

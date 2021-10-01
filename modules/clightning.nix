@@ -7,7 +7,7 @@ let
     address = mkOption {
       type = types.str;
       default = "127.0.0.1";
-      description = "IP address or UNIX domain socket to listen for peer connections.";
+      description = "Address to listen for peer connections.";
     };
     port = mkOption {
       type = types.port;
