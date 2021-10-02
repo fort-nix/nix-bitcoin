@@ -58,7 +58,7 @@ let
             };
             permissions = mkOption {
               type = str;
-              default = "0440";
+              default = "440";
             };
           };
         }
@@ -205,7 +205,9 @@ in {
         }
 
         # Make all other files accessible to root only
-        unprocessedFiles=$(comm -23 <(printf '%s\n' *) <(printf '%s\n' "''${processedFiles[@]}" | sort))
+        unprocessedFiles=$(
+          comm -23 <(shopt -s nullglob; printf '%s\n' *) <(printf '%s\n' "''${processedFiles[@]}")
+        )
         if [[ $unprocessedFiles ]]; then
           IFS=$'\n'
           chown root: $unprocessedFiles
