@@ -77,9 +77,10 @@ while [[ $# > 0 ]]; do
 done
 
 containerBin=$(type -P extra-container) || true
-if [[ ! ($containerBin && $(realpath $containerBin) == *extra-container-0.7*) ]]; then
-    echo "Building extra-container. Skip this step by adding extra-container 0.7 to PATH."
-    nix-build --out-link /tmp/extra-container "$scriptDir"/../pkgs -A extra-container >/dev/null
+if [[ ! ($containerBin && $(realpath $containerBin) == *extra-container-0.8*) ]]; then
+    echo "Building extra-container. Skip this step by adding extra-container 0.8 to PATH."
+    nix-build --out-link /tmp/extra-container "$scriptDir"/../pkgs \
+      -A pinned.extra-container >/dev/null
     export PATH="/tmp/extra-container/bin${PATH:+:}$PATH"
 fi
 

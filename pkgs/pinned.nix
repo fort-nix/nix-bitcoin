@@ -12,6 +12,7 @@ pkgs: pkgsUnstable:
     clightning
     electrs
     elementsd
+    extra-container
     hwi
     lightning-loop
     lightning-pool

@@ -6,7 +6,7 @@ let
   nbPkgs = import ../pkgs { inherit pkgs; };
   cfgDir = toString configDir;
   path = lib.optionalString pkgs.stdenv.isLinux ''
-    export PATH="${lib.makeBinPath [ nbPkgs.extra-container ]}''${PATH:+:}$PATH"
+    export PATH="${lib.makeBinPath [ nbPkgs.pinned.extra-container ]}''${PATH:+:}$PATH"
   '';
 in
 pkgs.stdenv.mkDerivation {
