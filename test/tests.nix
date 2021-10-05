@@ -229,7 +229,8 @@ let
       services.bitcoind.regtest = true;
       systemd.services.bitcoind.postStart = mkAfter ''
         cli=${config.services.bitcoind.cli}/bin/bitcoin-cli
-        $cli createwallet "test"
+        # Don't fail when wallet already exists
+        $cli createwallet "test" || true
         address=$($cli getnewaddress)
         $cli generatetoaddress 10 $address
       '';
