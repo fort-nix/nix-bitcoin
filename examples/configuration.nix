@@ -93,10 +93,6 @@
   ### ELECTRS
   # Set this to enable electrs, an efficient Electrum server implemented in Rust.
   # services.electrs.enable = true;
-  #
-  # If you have more than 8GB memory, enable this option so electrs will
-  # sync faster. Only available if hardware wallets are disabled.
-  # services.electrs.high-memory = true;
 
   ### BTCPayServer
   # Set this to enable BTCPayServer, a self-hosted, open-source
@@ -150,7 +146,6 @@
   ### Hardware wallets
   # Enable the following to allow using hardware wallets.
   # See https://github.com/bitcoin-core/HWI for more information.
-  # Only available if electrs.high-memory is disabled.
   #
   # Ledger must be initialized through the official ledger live app and the Bitcoin app must
   # be installed and running on the device.
@@ -264,5 +259,5 @@
   # The nix-bitcoin release version that your config is compatible with.
   # When upgrading to a backwards-incompatible release, nix-bitcoin will display an
   # an error and provide hints for migrating your config to the new release.
-  nix-bitcoin.configVersion = "0.0.51";
+  nix-bitcoin.configVersion = "0.0.53";
 }

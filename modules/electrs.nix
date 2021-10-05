@@ -19,13 +19,6 @@ let
       default = "/var/lib/electrs";
       description = "The data directory for electrs.";
     };
-    high-memory = mkOption {
-      type = types.bool;
-      default = false;
-      description = ''
-        If enabled, the electrs service will sync faster on high-memory systems (≥ 8GB).
-      '';
-    };
     monitoringPort = mkOption {
       type = types.port;
       default = 4224;
@@ -63,7 +56,12 @@ in {
       }
     ];
 
-    services.bitcoind.enable = true;
+    services.bitcoind = {
+      enable = true;
+      # Enable p2p connections
+      listen = true;
+      extraConfig = "whitelist=download@${nbLib.address cfg.address}";
+    };
 
     systemd.tmpfiles.rules = [
       "d '${cfg.dataDir}' 0770 ${cfg.user} ${cfg.group} - -"
@@ -80,37 +78,31 @@ in {
       serviceConfig = nbLib.defaultHardening // {
         RuntimeDirectory = "electrs";
         RuntimeDirectoryMode = "700";
+        # electrs only uses the working directory for reading electrs.toml
         WorkingDirectory = "/run/electrs";
         ExecStart = ''
-          ${config.nix-bitcoin.pkgs.electrs}/bin/electrs -vvv \
-          ${if cfg.high-memory then
-              traceIf (!bitcoind.dataDirReadableByGroup) ''
-                Warning: For optimal electrs syncing performance, enable services.bitcoind.dataDirReadableByGroup.
-                Note that this disables wallet support in bitcoind.
-              '' ""
-            else
-              "--jsonrpc-import --index-batch-size=10"
-          } \
+          ${config.nix-bitcoin.pkgs.electrs}/bin/electrs -vv \
           --network=${bitcoind.makeNetworkName "bitcoin" "regtest"} \
           --db-dir='${cfg.dataDir}' \
           --daemon-dir='${bitcoind.dataDir}' \
           --electrum-rpc-addr=${cfg.address}:${toString cfg.port} \
           --monitoring-addr=${cfg.address}:${toString cfg.monitoringPort} \
           --daemon-rpc-addr=${nbLib.addressWithPort bitcoind.rpc.address bitcoind.rpc.port} \
+          --daemon-p2p-addr=${nbLib.addressWithPort bitcoind.address bitcoind.port} \
           ${cfg.extraArgs}
         '';
         User = cfg.user;
         Group = cfg.group;
         Restart = "on-failure";
         RestartSec = "10s";
-        ReadWritePaths = "${cfg.dataDir} ${if cfg.high-memory then "${bitcoind.dataDir}" else ""}";
+        ReadWritePaths = cfg.dataDir;
       } // nbLib.allowedIPAddresses cfg.enforceTor;
     };
 
     users.users.${cfg.user} = {
       isSystemUser = true;
       group = cfg.group;
-      extraGroups = [ "bitcoinrpc-public" ] ++ optionals cfg.high-memory [ bitcoind.user ];
+      extraGroups = [ "bitcoinrpc-public" ];
     };
     users.groups.${cfg.group} = {};
   };

@@ -25,6 +25,7 @@
   "gettxoutsetinfo"
   "scantxoutset"
   "verifytxoutproof"
+  "waitfornewblock"
   # Mining
   "getblocktemplate"
   "getmininginfo"

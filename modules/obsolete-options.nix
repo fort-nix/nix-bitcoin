@@ -26,5 +26,12 @@ in {
 
     (mkRenamedAnnounceTorOption "clightning")
     (mkRenamedAnnounceTorOption "lnd")
+
+    # 0.0.53
+    (mkRemovedOptionModule [ "services" "electrs" "high-memory" ] ''
+      This option is no longer supported by electrs 0.9.0. Electrs now always uses
+      bitcoin peer connections for syncing blocks. This performs well on low and high
+      memory systems.
+    '')
   ];
 }
