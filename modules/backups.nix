@@ -41,13 +41,19 @@ let
   cfg = config.services.backups;
 
   filelist = pkgs.writeText "filelist.txt" ''
-    ${optionalString (!cfg.with-bulk-data) "- ${config.services.bitcoind.dataDir}/blocks"}
-    ${optionalString (!cfg.with-bulk-data) "- ${config.services.bitcoind.dataDir}/chainstate"}
+    ${optionalString (!cfg.with-bulk-data) ''
+      - ${config.services.bitcoind.dataDir}/blocks
+      - ${config.services.bitcoind.dataDir}/chainstate
+      - ${config.services.bitcoind.dataDir}/indexes
+    ''}
     ${config.services.bitcoind.dataDir}
     ${config.services.clightning.dataDir}
     ${config.services.lnd.dataDir}
-    ${optionalString (!cfg.with-bulk-data) "- ${config.services.liquidd.dataDir}/*/blocks"}
-    ${optionalString (!cfg.with-bulk-data) "- ${config.services.liquidd.dataDir}/*/chainstate"}
+    ${optionalString (!cfg.with-bulk-data) ''
+      - ${config.services.liquidd.dataDir}/*/blocks
+      - ${config.services.liquidd.dataDir}/*/chainstate
+      - ${config.services.liquidd.dataDir}/*/indexes
+    ''}
     ${config.services.liquidd.dataDir}
     ${optionalString cfg.with-bulk-data "${config.services.electrs.dataDir}"}
     ${config.services.nbxplorer.dataDir}
