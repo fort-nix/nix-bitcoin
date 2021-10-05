@@ -40,7 +40,12 @@ let
 
   cfg = config.services.backups;
 
-  filelist = pkgs.writeText "filelist.txt" ''
+  # Potential backup file paths are are matched against filelist
+  # entries from top to bottom.
+  # The first match determines inclusion or exclusion.
+  filelist = builtins.toFile "filelist.txt" ''
+    ${builtins.concatStringsSep "\n" cfg.extraFiles}
+
     ${optionalString (!cfg.with-bulk-data) ''
       - ${config.services.bitcoind.dataDir}/blocks
       - ${config.services.bitcoind.dataDir}/chainstate
@@ -64,9 +69,6 @@ let
     /var/lib/nixos
 
     ${builtins.concatStringsSep "\n" postgresqlBackupPaths}
-
-    # Extra files
-    ${builtins.concatStringsSep "\n" cfg.extraFiles}
 
     # Exclude all unspecified files and directories
     - /
