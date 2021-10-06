@@ -13,7 +13,6 @@ let self = {
   nixops19_09 = pkgs.callPackage ./nixops { };
   krops = import ./krops { };
   netns-exec = pkgs.callPackage ./netns-exec { };
-  extra-container = pkgs.callPackage ./extra-container { };
   clightning-plugins = pkgs.recurseIntoAttrs (import ./clightning-plugins pkgs self.nbPython3Packages);
   clboss = pkgs.callPackage ./clboss { };
   secp256k1 = pkgs.callPackage ./secp256k1 { };

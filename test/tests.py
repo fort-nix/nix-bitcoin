@@ -106,10 +106,13 @@ def _():
     assert_running("electrs")
     wait_for_open_port(ip("electrs"), 4224)  # prometeus metrics provider
     # Check RPC connection to bitcoind
-    machine.wait_until_succeeds(log_has_string("electrs", "NetworkInfo"))
+    if not "regtest" in enabled_tests:
+        machine.wait_until_succeeds(
+            log_has_string("electrs", "waiting for 0 blocks to download")
+        )
 
 # Impure: Stops electrs
-# Stop electrs from spamming the test log with 'WARN - wait until IBD is over' messages
+# Stop electrs from spamming the test log with 'waiting for 0 blocks to download' messages
 @test("stop-electrs")
 def _():
     succeed("systemctl stop electrs")
@@ -353,10 +356,10 @@ def _():
 
     if enabled("electrs"):
         machine.wait_for_unit("onion-addresses")
-        machine.wait_until_succeeds(log_has_string("electrs", "BlockchainInfo"))
+        machine.wait_until_succeeds(log_has_string("electrs", "serving Electrum RPC"))
         get_block_height_cmd = (
             """echo '{"method": "blockchain.headers.subscribe", "id": 0, "params": []}'"""
-            f" | nc -N {ip('electrs')} 50001 | jq -M .result.height"
+            f" | nc {ip('electrs')} 50001 | head -1 | jq -M .result.height"
         )
         assert_full_match(get_block_height_cmd, "10\n")
     if enabled("clightning"):

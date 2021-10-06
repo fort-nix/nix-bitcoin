@@ -35,7 +35,6 @@ in {
     services.bitcoind = {
       enable = true;
       listen = true;
-      dataDirReadableByGroup = mkIf cfg.electrs.high-memory true;
       dbCache = 1000;
     };
 

@@ -38,7 +38,6 @@ in {
         { assertion = (config.services.bitcoind.disablewallet == null || !config.services.bitcoind.disablewallet);
           message = ''
             Hardware-Wallets are not compatible with bitcoind.disablewallet.
-            Note that this option is active when enabling electrs.high-memory.
           '';
         }
       ];
