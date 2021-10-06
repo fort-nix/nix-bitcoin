@@ -50,7 +50,7 @@ let
     cli = mkOption {
       default = pkgs.writeScriptBin "pool" ''
         exec ${cfg.package}/bin/pool \
-          --rpcserver ${rpclisten} \
+          --rpcserver ${nbLib.addressWithPort cfg.rpcAddress cfg.rpcPort} \
           --network ${network} \
           --basedir '${cfg.dataDir}' "$@"
       '';
@@ -65,9 +65,8 @@ let
   lnd = config.services.lnd;
 
   network = config.services.bitcoind.network;
-  rpclisten = "${cfg.rpcAddress}:${toString cfg.rpcPort}";
   configFile = builtins.toFile "pool.conf" ''
-    rpclisten=${rpclisten}
+    rpclisten=${cfg.rpcAddress}:${toString cfg.rpcPort}
     restlisten=${cfg.restAddress}:${toString cfg.restPort}
     ${optionalString (cfg.proxy != null) "proxy=${cfg.proxy}"}
 

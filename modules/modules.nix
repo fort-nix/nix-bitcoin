@@ -18,9 +18,9 @@
     ./lightning-loop.nix
     ./lightning-pool.nix
     ./charge-lnd.nix
-    ./btcpayserver.nix
     ./electrs.nix
     ./liquid.nix
+    ./btcpayserver.nix
     ./joinmarket.nix
     ./joinmarket-ob-watcher.nix
     ./hardware-wallets.nix

@@ -101,23 +101,36 @@ let
   nbLib = config.nix-bitcoin.lib;
   nbPkgs = config.nix-bitcoin.pkgs;
 
-  bitcoind = config.services.bitcoind;
+  inherit (config.services) bitcoind liquidd;
 in {
   inherit options;
 
   config = mkIf cfg.btcpayserver.enable {
-    services.bitcoind.enable = true;
+    services.bitcoind = {
+      enable = true;
+      rpc.users.btcpayserver = {
+        passwordHMACFromFile = true;
+        rpcwhitelist = cfg.bitcoind.rpc.users.public.rpcwhitelist ++ [
+          "setban"
+          "generatetoaddress"
+          "getpeerinfo"
+        ];
+      };
+      # Enable p2p connections
+      listen = true;
+      extraConfig = ''
+        whitelist=${nbLib.address cfg.nbxplorer.address}
+      '';
+    };
     services.clightning.enable = mkIf (cfg.btcpayserver.lightningBackend == "clightning") true;
     services.lnd.enable = mkIf (cfg.btcpayserver.lightningBackend == "lnd") true;
-    services.liquidd.enable = mkIf cfg.btcpayserver.lbtc true;
-
-    services.bitcoind.rpc.users.btcpayserver = {
-      passwordHMACFromFile = true;
-      rpcwhitelist = cfg.bitcoind.rpc.users.public.rpcwhitelist ++ [
-        "setban"
-        "generatetoaddress"
-        "getpeerinfo"
-      ];
+    services.liquidd = mkIf cfg.btcpayserver.lbtc {
+      enable = true;
+      # Enable p2p connections
+      listen = true;
+      extraConfig = ''
+        whitelist=${nbLib.address cfg.nbxplorer.address}
+      '';
     };
 
     services.lnd.macaroons.btcpayserver = mkIf (cfg.btcpayserver.lightningBackend == "lnd") {
@@ -143,15 +156,15 @@ in {
       configFile = builtins.toFile "config" ''
         network=${bitcoind.network}
         btcrpcuser=${cfg.bitcoind.rpc.users.btcpayserver.name}
-        btcrpcurl=http://${bitcoind.rpc.address}:${toString cfg.bitcoind.rpc.port}
-        btcnodeendpoint=${bitcoind.address}:${toString bitcoind.port}
+        btcrpcurl=http://${nbLib.addressWithPort bitcoind.rpc.address cfg.bitcoind.rpc.port}
+        btcnodeendpoint=${nbLib.addressWithPort bitcoind.address bitcoind.port}
         bind=${cfg.nbxplorer.address}
         port=${toString cfg.nbxplorer.port}
         ${optionalString cfg.btcpayserver.lbtc ''
           chains=btc,lbtc
-          lbtcrpcuser=${cfg.liquidd.rpcuser}
-          lbtcrpcurl=http://${cfg.liquidd.rpc.address}:${toString cfg.liquidd.rpc.port}
-          lbtcnodeendpoint=${cfg.liquidd.address}:${toString cfg.liquidd.port}
+          lbtcrpcuser=${liquidd.rpcuser}
+          lbtcrpcurl=http://${nbLib.addressWithPort liquidd.rpc.address liquidd.rpc.port}
+          lbtcnodeendpoint=${nbLib.addressWithPort liquidd.address liquidd.port}
         ''}
       '';
     in {
@@ -221,8 +234,8 @@ in {
       '';
       serviceConfig = nbLib.defaultHardening // {
         ExecStart = ''
-          ${cfg.btcpayserver.package}/bin/btcpayserver --conf=${cfg.btcpayserver.dataDir}/settings.config \
-            --datadir=${cfg.btcpayserver.dataDir}
+          ${cfg.btcpayserver.package}/bin/btcpayserver --conf='${cfg.btcpayserver.dataDir}/settings.config' \
+            --datadir='${cfg.btcpayserver.dataDir}'
         '';
         User = cfg.btcpayserver.user;
         Restart = "on-failure";
@@ -236,7 +249,7 @@ in {
       isSystemUser = true;
       group = cfg.nbxplorer.group;
       extraGroups = [ "bitcoinrpc-public" ]
-                    ++ optional cfg.btcpayserver.lbtc cfg.liquidd.group;
+                    ++ optional cfg.btcpayserver.lbtc liquidd.group;
       home = cfg.nbxplorer.dataDir;
     };
     users.groups.${cfg.nbxplorer.group} = {};

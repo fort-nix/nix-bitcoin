@@ -93,10 +93,10 @@ in {
       "d '${cfg.dataDir}' 0770 ${cfg.user} ${cfg.group} - -"
     ];
 
-    systemd.services.joinmarket-ob-watcher = {
+    systemd.services.joinmarket-ob-watcher = rec {
       wantedBy = [ "multi-user.target" ];
-      requires = [ "tor.service" ];
-      after = [ "tor.service" ];
+      requires = [ "tor.service" "bitcoind.service" ];
+      after = requires;
       # The service writes to HOME/.config/matplotlib
       environment.HOME = cfg.dataDir;
       preStart = ''

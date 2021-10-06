@@ -13,7 +13,8 @@ let
       type = types.bool;
       default = false;
       description = ''
-        Set permissions for existing secrets in `nix-bitcoin.secretsDir`.
+        Set permissions for existing secrets in `nix-bitcoin.secretsDir`
+        before services are started.
       '';
     };
 
@@ -21,7 +22,7 @@ let
       type = types.bool;
       default = false;
       description = ''
-        Automatically generate all required secrets at system startup.
+        Automatically generate all required secrets before services are started.
         Note: Make sure to create a backup of the generated secrets.
       '';
     };
@@ -57,7 +58,7 @@ let
             };
             permissions = mkOption {
               type = str;
-              default = "0440";
+              default = "440";
             };
           };
         }
@@ -204,7 +205,9 @@ in {
         }
 
         # Make all other files accessible to root only
-        unprocessedFiles=$(comm -23 <(printf '%s\n' *) <(printf '%s\n' "''${processedFiles[@]}" | sort))
+        unprocessedFiles=$(
+          comm -23 <(shopt -s nullglob; printf '%s\n' *) <(printf '%s\n' "''${processedFiles[@]}")
+        )
         if [[ $unprocessedFiles ]]; then
           IFS=$'\n'
           chown root: $unprocessedFiles

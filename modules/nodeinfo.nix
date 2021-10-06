@@ -13,6 +13,7 @@ let
   };
 
   cfg = config.nix-bitcoin.nodeinfo;
+  nbLib = config.nix-bitcoin.lib;
 
   # Services included in the output
   services = {
@@ -96,7 +97,7 @@ let
   mkInfo = extraCode: name: cfg:
     ''
       add_service("${name}", """
-      info["local_address"] = "${cfg.address}:${toString cfg.port}"
+      info["local_address"] = "${nbLib.addressWithPort cfg.address cfg.port}"
     '' + mkIfOnionPort name (onionPort: ''
       set_onion_address(info, "${name}", ${onionPort})
     '') + extraCode + ''

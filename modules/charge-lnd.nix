@@ -112,9 +112,10 @@ in
         ExecStart = ''
           ${config.nix-bitcoin.pkgs.charge-lnd}/bin/charge-lnd \
             --lnddir ${dataDir}/lnddir-proxy \
-            --grpc ${lnd.rpcAddress}:${toString lnd.rpcPort} \
+            --grpc ${nbLib.addressWithPort lnd.rpcAddress lnd.rpcPort} \
             --config ${checkedConfig} \
-            ${optionalString (electrs != null) "--electrum-server ${electrs.address}:${toString electrs.port}"} \
+            ${optionalString (electrs != null)
+              "--electrum-server ${nbLib.addressWithPort electrs.address electrs.port}"} \
             ${escapeShellArgs cfg.extraFlags}
         '';
         Type = "oneshot";

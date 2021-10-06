@@ -19,7 +19,11 @@ with lib;
           dictionary variable 'test_data'. The data is exported via JSON.
         '';
       };
-
+      extraTestScript = mkOption {
+        type = types.lines;
+        default = "";
+        description = "Extra lines added to the Python test script.";
+      };
       container = {
         # Forwarded to extra-container. For descriptions, see
         # https://github.com/erikarvstedt/extra-container/blob/master/eval-config.nix

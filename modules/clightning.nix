@@ -7,7 +7,7 @@ let
     address = mkOption {
       type = types.str;
       default = "127.0.0.1";
-      description = "IP address or UNIX domain socket to listen for peer connections.";
+      description = "Address to listen for peer connections.";
     };
     port = mkOption {
       type = types.port;
@@ -84,7 +84,7 @@ let
     ${optionalString (cfg.proxy != null) "proxy=${cfg.proxy}"}
     always-use-proxy=${boolToString cfg.always-use-proxy}
     bind-addr=${cfg.address}:${toString cfg.port}
-    bitcoin-rpcconnect=${config.services.bitcoind.rpc.address}
+    bitcoin-rpcconnect=${nbLib.address config.services.bitcoind.rpc.address}
     bitcoin-rpcport=${toString config.services.bitcoind.rpc.port}
     bitcoin-rpcuser=${config.services.bitcoind.rpc.users.public.name}
     rpc-file-mode=0660

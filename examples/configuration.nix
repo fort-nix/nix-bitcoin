@@ -243,6 +243,10 @@
     openssh.authorizedKeys.keys = [ "" ];
   };
 
+  # FIXME: Uncomment this to allow the operator user to run
+  # commands as root with `sudo` or `doas`
+  # users.users.operator.extraGroups = [ "wheel" ];
+
   # FIXME: add packages you need in your system
   environment.systemPackages = with pkgs; [
     vim
@@ -261,5 +265,4 @@
   # When upgrading to a backwards-incompatible release, nix-bitcoin will display an
   # an error and provide hints for migrating your config to the new release.
   nix-bitcoin.configVersion = "0.0.51";
-
 }

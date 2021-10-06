@@ -43,18 +43,18 @@ let
   cfg = config.nix-bitcoin.onionServices;
   nbLib = config.nix-bitcoin.lib;
 
-  services = builtins.attrNames cfg;
+  onionServices = builtins.attrNames cfg;
 
   activeServices = builtins.filter (service:
     config.services.${service}.enable && cfg.${service}.enable
-  ) services;
+  ) onionServices;
 
   publicServices = builtins.filter (service: cfg.${service}.public) activeServices;
 in {
   inherit options;
 
   config = mkMerge [
-    (mkIf (cfg != {}) {
+    (mkIf (activeServices != []) {
       # Define hidden services
       services.tor = {
         enable = true;
@@ -65,7 +65,7 @@ in {
           in nbLib.mkOnionService {
             port = if externalPort != null then externalPort else service.port;
             target.port = service.port;
-            target.addr = if service.address == "0.0.0.0" then "127.0.0.1" else service.address;
+            target.addr = nbLib.address service.address;
           }
         );
       };
@@ -93,7 +93,7 @@ in {
         publicServices' = builtins.filter (service:
           let srv = cfg.${service};
           in srv.public && srv.enable
-        ) services;
+        ) onionServices;
       in genAttrs publicServices' (service: {
         getPublicAddressCmd = "cat ${config.nix-bitcoin.onionAddresses.dataDir}/services/${service}";
       });

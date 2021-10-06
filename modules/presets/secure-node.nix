@@ -36,8 +36,6 @@ in {
       enable = true;
       listen = true;
       dataDirReadableByGroup = mkIf cfg.electrs.high-memory true;
-      discover = false;
-      addresstype = "bech32";
       dbCache = 1000;
     };
 

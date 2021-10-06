@@ -16,7 +16,7 @@ with lib;
 
       torClientAddressWithPort = mkOption {
         readOnly = true;
-        default =  with config.services.tor.client.socksListenAddress;
+        default = with config.services.tor.client.socksListenAddress;
           "${addr}:${toString port}";
       };
 

@@ -41,7 +41,7 @@ in {
     services.tor = {
       enable = true;
       relay.onionServices.lnd-rest = nbLib.mkOnionService {
-        target.addr = lnd.restAddress;
+        target.addr = nbLib.address lnd.restAddress;
         target.port = lnd.restPort;
         port = lnd.restPort;
       };

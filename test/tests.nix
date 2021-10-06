@@ -98,6 +98,10 @@ let
         txfee = 200;
       };
 
+      # Disable restarting joinmarket-ob-watcher because it always fails
+      # on non-synced mainnet nodes
+      systemd.services.joinmarket-ob-watcher.serviceConfig.Restart = mkForce "no";
+
       tests.nodeinfo = config.nix-bitcoin.nodeinfo.enable;
 
       tests.backups = cfg.backups.enable;
@@ -225,7 +229,8 @@ let
       services.bitcoind.regtest = true;
       systemd.services.bitcoind.postStart = mkAfter ''
         cli=${config.services.bitcoind.cli}/bin/bitcoin-cli
-        $cli createwallet "test"
+        # Don't fail when wallet already exists
+        $cli createwallet "test" || true
         address=$($cli getnewaddress)
         $cli generatetoaddress 10 $address
       '';

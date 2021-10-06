@@ -143,7 +143,6 @@ let
 
   bitcoind = config.services.bitcoind;
 
-  pidFile = "${cfg.dataDir}/liquidd.pid";
   configFile = pkgs.writeText "elements.conf" ''
     chain=${bitcoind.makeNetworkName "liquidv1" ''
       regtest
@@ -169,18 +168,13 @@ let
     rpcconnect=${cfg.rpc.address}
     ${lib.concatMapStrings (rpcallowip: "rpcallowip=${rpcallowip}\n") cfg.rpcallowip}
     rpcuser=${cfg.rpcuser}
-    mainchainrpchost=${bitcoind.rpc.address}
+    mainchainrpchost=${nbLib.address bitcoind.rpc.address}
     mainchainrpcport=${toString bitcoind.rpc.port}
     mainchainrpcuser=${bitcoind.rpc.users.public.name}
 
     # Extra config options (from liquidd nixos service)
     ${cfg.extraConfig}
   '';
-  cmdlineOptions = concatMapStringsSep " " (arg: "'${arg}'") [
-    "-datadir=${cfg.dataDir}"
-    "-pid=${pidFile}"
-  ];
-  hexStr = types.strMatching "[0-9a-f]+";
   rpcUserOpts = { name, ... }: {
     options = {
       name = mkOption {
@@ -234,8 +228,7 @@ in {
         Type = "simple";
         User = cfg.user;
         Group = cfg.group;
-        ExecStart = "${nbPkgs.elementsd}/bin/elementsd ${cmdlineOptions}";
-        PIDFile = pidFile;
+        ExecStart = "${nbPkgs.elementsd}/bin/elementsd -datadir='${cfg.dataDir}'";
         Restart = "on-failure";
         ReadWritePaths = cfg.dataDir;
       } // nbLib.allowedIPAddresses cfg.enforceTor;
