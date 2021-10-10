@@ -110,7 +110,11 @@ in {
       port = 9050;
       IsolateDestAddr = true;
     };
-    networking.firewall.interfaces.nb-br.allowedTCPPorts = [ config.services.tor.client.socksListenAddress.port ];
+    services.i2pd.proto.sam.address = bridgeIp;
+    networking.firewall.interfaces.nb-br.allowedTCPPorts = [
+      config.services.tor.client.socksListenAddress.port
+      config.services.i2pd.proto.sam.port
+    ];
     boot.kernel.sysctl."net.ipv4.ip_forward" = true;
 
     security.wrappers.netns-exec = {
