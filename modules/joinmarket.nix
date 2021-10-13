@@ -133,6 +133,14 @@ let
     port = 6667
     usessl = false
     ${socks5Settings}
+
+    # agora.anarplex.net
+    [MESSAGING:server3]
+    host = vxecvd6lc4giwtasjhgbrr3eop6pzq6i5rveracktioneunalgqlwfad.onion
+    channel = joinmarket-pit
+    port = 6667
+    usessl = false
+    ${socks5Settings}
   '';
 
   # Based on https://github.com/JoinMarket-Org/joinmarket-clientserver/blob/master/jmclient/jmclient/configure.py
