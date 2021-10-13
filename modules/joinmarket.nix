@@ -29,6 +29,11 @@ let
     cli = mkOption {
       default = cli;
     };
+    # Used by ./joinmarket-ob-watcher.nix
+    ircServers = mkOption {
+      readOnly = true;
+      default = ircServers;
+    };
     # This option is only used by netns-isolation
     enforceTor = mkOption {
       readOnly = true;
@@ -112,6 +117,24 @@ let
     socks5_port = ${toString torAddress.port}
   '';
 
+  ircServers = ''
+    # irc.darkscience.net
+    [MESSAGING:server1]
+    host = darkirc6tqgpnwd3blln3yfv5ckl47eg7llfxkmtovrv7c7iwohhb6ad.onion
+    channel = joinmarket-pit
+    port = 6697
+    usessl = true
+    ${socks5Settings}
+
+    # irc.hackint.org
+    [MESSAGING:server2]
+    host = ncwkrwxpq2ikcngxq3dy2xctuheniggtqeibvgofixpzvrwpa77tozqd.onion
+    channel = joinmarket-pit
+    port = 6667
+    usessl = false
+    ${socks5Settings}
+  '';
+
   # Based on https://github.com/JoinMarket-Org/joinmarket-clientserver/blob/master/jmclient/jmclient/configure.py
   yg = cfg.yieldgenerator;
   configFile = builtins.toFile "config" ''
@@ -129,19 +152,7 @@ let
     rpc_user = ${bitcoind.rpc.users.privileged.name}
     ${optionalString (cfg.rpcWalletFile != null) "rpc_wallet_file = ${cfg.rpcWalletFile}"}
 
-    [MESSAGING:server1]
-    host = darkirc6tqgpnwd3blln3yfv5ckl47eg7llfxkmtovrv7c7iwohhb6ad.onion
-    channel = joinmarket-pit
-    port = 6697
-    usessl = true
-    ${socks5Settings}
-
-    [MESSAGING:server2]
-    host = ncwkrwxpq2ikcngxq3dy2xctuheniggtqeibvgofixpzvrwpa77tozqd.onion
-    channel = joinmarket-pit
-    port = 6667
-    usessl = false
-    ${socks5Settings}
+    ${ircServers}
 
     [LOGGING]
     console_log_level = INFO
