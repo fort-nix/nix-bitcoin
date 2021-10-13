@@ -1,20 +1,10 @@
-{ stdenv, lib, fetchurl, applyPatches, fetchpatch, python3, nbPython3Packages, pkgs }:
+{ stdenv, lib, fetchurl, python3, nbPython3Packages, pkgs }:
 
 let
-  version = "0.9.1";
-  src = applyPatches {
-    src = fetchurl {
-      url = "https://github.com/JoinMarket-Org/joinmarket-clientserver/archive/v${version}.tar.gz";
-      sha256 = "0a8jlzi3ll1dw60fwnqs5awmcfxdjynh6i1gfmcc29qhwjpx5djl";
-    };
-    patches = [
-      (fetchpatch {
-        # https://github.com/JoinMarket-Org/joinmarket-clientserver/pull/999
-        name = "improve-genwallet";
-        url = "https://patch-diff.githubusercontent.com/raw/JoinMarket-Org/joinmarket-clientserver/pull/999.patch";
-        sha256 = "etlbi0yhb4X5EAPUerIIAXU6l7EeB9O2c07QaXxCEAg=";
-      })
-    ];
+  version = "0.9.2";
+  src = fetchurl {
+    url = "https://github.com/JoinMarket-Org/joinmarket-clientserver/archive/v${version}.tar.gz";
+    sha256 = "0nzhnf2324d0qc9pljcjwpzpvhcclqg0ijvzb1skmn73s4f25akg";
   };
 
   runtimePackages = with nbPython3Packages; [
