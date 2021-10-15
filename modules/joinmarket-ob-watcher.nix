@@ -41,14 +41,7 @@ let
   nbPkgs = config.nix-bitcoin.pkgs;
   secretsDir = config.nix-bitcoin.secretsDir;
 
-  inherit (config.services) bitcoind;
-
-  torAddress = config.services.tor.client.socksListenAddress;
-  socks5Settings = with config.services.tor.client.socksListenAddress; ''
-    socks5 = true
-    socks5_host = ${addr}
-    socks5_port = ${toString port}
-  '';
+  inherit (config.services) bitcoind joinmarket;
 
   configFile = builtins.toFile "config" ''
     [BLOCKCHAIN]
@@ -58,19 +51,7 @@ let
     rpc_port = ${toString bitcoind.rpc.port}
     rpc_user = ${bitcoind.rpc.users.joinmarket-ob-watcher.name}
 
-    [MESSAGING:server1]
-    host = darkirc6tqgpnwd3blln3yfv5ckl47eg7llfxkmtovrv7c7iwohhb6ad.onion
-    channel = joinmarket-pit
-    port = 6697
-    usessl = true
-    ${socks5Settings}
-
-    [MESSAGING:server2]
-    host = ncwkrwxpq2ikcngxq3dy2xctuheniggtqeibvgofixpzvrwpa77tozqd.onion
-    channel = joinmarket-pit
-    port = 6667
-    usessl = false
-    ${socks5Settings}
+    ${joinmarket.ircServers}
   '';
 in {
   inherit options;
