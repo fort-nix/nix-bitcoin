@@ -18,7 +18,7 @@ let
             default = config.public;
             description = ''
               Create an onion service for the given service.
-              The service must define options 'address' and 'port'.
+              The service must define options 'address' and 'onionPort' (or `port`).
             '';
           };
           public = mkOption {
@@ -64,7 +64,7 @@ in {
             inherit (cfg.${name}) externalPort;
           in nbLib.mkOnionService {
             port = if externalPort != null then externalPort else service.port;
-            target.port = service.port;
+            target.port = service.onionPort or service.port;
             target.addr = nbLib.address service.address;
           }
         );
@@ -118,6 +118,10 @@ in {
           externalPort = 80;
         };
       };
+
+      # When the bitcoind onion service is enabled, add an onion-tagged socket
+      # to distinguish local connections from Tor connections
+      services.bitcoind.onionPort = mkIf (cfg.bitcoind.enable or false) 8334;
     }
   ];
 }

@@ -15,6 +15,14 @@ let
         default = 8333;
         description = "Port to listen for peer connections.";
       };
+      onionPort = mkOption {
+        type = types.nullOr types.port;
+        default = null;
+        description = ''
+          Port to listen for Tor peer connections.
+          If set, inbound connections to this port are tagged as onion peers.
+        '';
+      };
       getPublicAddressCmd = mkOption {
         type = types.str;
         default = "";
@@ -253,8 +261,10 @@ let
     ${optionalString (cfg.assumevalid != null) "assumevalid=${cfg.assumevalid}"}
 
     # Connection options
-    ${optionalString cfg.listen "bind=${cfg.address}"}
-    port=${toString cfg.port}
+    ${optionalString cfg.listen
+      "bind=${cfg.address}:${toString cfg.port}"}
+    ${optionalString (cfg.listen && cfg.onionPort != null)
+      "bind=${cfg.address}:${toString cfg.onionPort}=onion"}
     ${optionalString (cfg.proxy != null) "proxy=${cfg.proxy}"}
     listen=${if cfg.listen then "1" else "0"}
     ${optionalString (cfg.discover != null) "discover=${if cfg.discover then "1" else "0"}"}
