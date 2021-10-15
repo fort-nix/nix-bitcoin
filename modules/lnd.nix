@@ -209,6 +209,7 @@ in {
         RuntimeDirectoryMode = "711";
         ExecStart = "${cfg.package}/bin/lnd --configfile=${cfg.dataDir}/lnd.conf";
         User = cfg.user;
+        TimeoutSec = "15min";
         Restart = "on-failure";
         RestartSec = "10s";
         ReadWritePaths = cfg.dataDir;
