@@ -129,6 +129,14 @@ let
         default = if cfg.enforceTor then config.nix-bitcoin.torClientAddressWithPort else null;
         description = "Connect through SOCKS5 proxy";
       };
+      i2p = mkOption {
+        type = types.enum [ false true "only-outgoing" ];
+        default = false;
+        description = ''
+          Enable peer connections via i2p.
+          With `only-outgoing`, incoming i2p connections are disabled.
+        '';
+      };
       listen = mkOption {
         type = types.bool;
         default = false;
@@ -236,6 +244,8 @@ let
   nbLib = config.nix-bitcoin.lib;
   secretsDir = config.nix-bitcoin.secretsDir;
 
+  i2pSAM = config.services.i2pd.proto.sam;
+
   configFile = builtins.toFile "bitcoin.conf" ''
     # We're already logging via journald
     nodebuglogfile=1
@@ -256,6 +266,9 @@ let
     ${optionalString cfg.listen "bind=${cfg.address}"}
     port=${toString cfg.port}
     ${optionalString (cfg.proxy != null) "proxy=${cfg.proxy}"}
+    ${optionalString (cfg.i2p != false) "i2psam=${nbLib.addressWithPort i2pSAM.address i2pSAM.port}"}
+    ${optionalString (cfg.i2p == "only-outgoing") "i2pacceptincoming=0"}
+
     listen=${if cfg.listen then "1" else "0"}
     ${optionalString (cfg.discover != null) "discover=${if cfg.discover then "1" else "0"}"}
     ${lib.concatMapStrings (node: "addnode=${node}\n") cfg.addnodes}
@@ -307,6 +320,11 @@ in {
         };
       }
     ];
+
+    services.i2pd = mkIf (cfg.i2p != false) {
+      enable = true;
+      proto.sam.enable = true;
+    };
 
     systemd.tmpfiles.rules = [
       "d '${cfg.dataDir}' 0770 ${cfg.user} ${cfg.group} - -"
