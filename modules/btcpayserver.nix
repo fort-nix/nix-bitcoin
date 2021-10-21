@@ -119,7 +119,7 @@ in {
       # Enable p2p connections
       listen = true;
       extraConfig = ''
-        whitelist=${nbLib.address cfg.nbxplorer.address}
+        whitelist=download@${nbLib.address cfg.nbxplorer.address}
       '';
     };
     services.clightning.enable = mkIf (cfg.btcpayserver.lightningBackend == "clightning") true;
@@ -128,9 +128,6 @@ in {
       enable = true;
       # Enable p2p connections
       listen = true;
-      extraConfig = ''
-        whitelist=${nbLib.address cfg.nbxplorer.address}
-      '';
     };
 
     services.lnd.macaroons.btcpayserver = mkIf (cfg.btcpayserver.lightningBackend == "lnd") {
