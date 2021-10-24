@@ -30,6 +30,15 @@ in {
   # twisted 20.3.0, required by joinmarketbase
   twisted = callPackage ./specific-versions/twisted.nix {};
 
+  # autobahn 20.12.3, required by joinmarketclient
+  autobahn = callPackage ./specific-versions/autobahn.nix {};
+
+  # klein 20.6.0, required by joinmarketclient
+  klein = callPackage ./specific-versions/klein.nix {};
+
+  # tubes 0.2.0, required by klein
+  tubes = callPackage ./specific-versions/tubes.nix {};
+
   # recommonmark 0.7.1, required by pyln-client
   recommonmark = callPackage ./specific-versions/recommonmark.nix { inherit (super) recommonmark; };
 }

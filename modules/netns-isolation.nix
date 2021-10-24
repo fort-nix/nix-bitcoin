@@ -313,7 +313,10 @@ in {
     services.nbxplorer.address = netns.nbxplorer.address;
     services.btcpayserver.address = netns.btcpayserver.address;
 
-    services.joinmarket.cliExec = mkCliExec "joinmarket";
+    services.joinmarket = {
+      payjoinAddress = netns.joinmarket.address;
+      cliExec = mkCliExec "joinmarket";
+    };
     systemd.services.joinmarket-yieldgenerator.serviceConfig.NetworkNamespacePath = "/var/run/netns/nb-joinmarket";
 
     services.joinmarket-ob-watcher.address = netns.joinmarket-ob-watcher.address;

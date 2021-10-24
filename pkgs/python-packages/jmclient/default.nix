@@ -1,4 +1,4 @@
-{ version, src, lib, buildPythonPackage, fetchurl, future, configparser, joinmarketbase, joinmarketdaemon, mnemonic, argon2_cffi, bencoderpyx, pyaes, joinmarketbitcoin, txtorcon }:
+{ version, src, lib, buildPythonPackage, fetchurl, future, configparser, joinmarketbase, joinmarketdaemon, mnemonic, argon2_cffi, bencoderpyx, pyaes, joinmarketbitcoin, txtorcon, klein, pyjwt, autobahn, cryptography }:
 
 buildPythonPackage rec {
   pname = "joinmarketclient";
@@ -9,7 +9,7 @@ buildPythonPackage rec {
   checkInputs = [ joinmarketbitcoin joinmarketdaemon txtorcon ];
 
   # configparser may need to be compiled with python_version<"3.2"
-  propagatedBuildInputs = [ future configparser joinmarketbase mnemonic argon2_cffi bencoderpyx pyaes ];
+  propagatedBuildInputs = [ future configparser joinmarketbase mnemonic argon2_cffi bencoderpyx pyaes klein pyjwt autobahn cryptography ];
 
   meta = with lib; {
     description = "Client library for Bitcoin coinjoins";
