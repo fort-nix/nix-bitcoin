@@ -169,8 +169,8 @@ let
     use_ssl = false
 
     [BLOCKCHAIN]
-    blockchain_source = bitcoin-rpc
-    network = ${bitcoind.network}
+    blockchain_source = ${bitcoind.makeNetworkName "bitcoin-rpc" "regtest"}
+    network = ${bitcoind.makeNetworkName "mainnet" "testnet"}
     rpc_host = ${nbLib.address bitcoind.rpc.address}
     rpc_port = ${toString bitcoind.rpc.port}
     rpc_user = ${bitcoind.rpc.users.privileged.name}
@@ -282,15 +282,16 @@ in {
           echo "rpc_password = $(cat ${secretsDir}/bitcoin-rpcpassword-privileged)"
         } > '${cfg.dataDir}/joinmarket.cfg'
       '';
-      # Generating wallets (jmclient/wallet.py) is only supported for mainnet or testnet
-      postStart = mkIf (bitcoind.network == "mainnet") ''
+      postStart = ''
         walletname=wallet.jmdat
         wallet=${cfg.dataDir}/wallets/$walletname
         if [[ ! -f $wallet ]]; then
           ${optionalString (cfg.rpcWalletFile != null) ''
             echo "Create watch-only wallet ${cfg.rpcWalletFile}"
             if ! output=$(${bitcoind.cli}/bin/bitcoin-cli -named createwallet \
-                          wallet_name="${cfg.rpcWalletFile}" disable_private_keys=true 2>&1); then
+                            wallet_name="${cfg.rpcWalletFile}" \
+                            ${optionalString (!bitcoind.regtest) "disable_private_keys=true"} 2>&1
+                         ); then
               # Ignore error if bitcoind wallet already exists
               if [[ $output != *"already exists"* ]]; then
                 echo "$output"
