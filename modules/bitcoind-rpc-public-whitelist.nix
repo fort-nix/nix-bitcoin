@@ -1,5 +1,6 @@
 # RPC calls that are safe for public use
 [
+  "ping"
   "echo"
   "getinfo"
   "uptime"
