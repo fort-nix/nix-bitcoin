@@ -90,6 +90,12 @@ let
     rpc-file-mode=0660
     ${cfg.extraConfig}
   '';
+
+  # If the clightning onion service is enabled, use the onion port as the public port
+  publicPort = if config.nix-bitcoin.onionServices.clightning.enable or false then
+                 (builtins.elemAt config.services.tor.relay.onionServices.clightning.map 0).port
+               else
+                 cfg.port;
 in {
   inherit options;
 
@@ -119,7 +125,7 @@ in {
         {
           echo "bitcoin-rpcpassword=$(cat ${config.nix-bitcoin.secretsDir}/bitcoin-rpcpassword-public)"
           ${optionalString (cfg.getPublicAddressCmd != "") ''
-            echo "announce-addr=$(${cfg.getPublicAddressCmd})"
+            echo "announce-addr=$(${cfg.getPublicAddressCmd}):${toString publicPort}"
           ''}
         } >> '${cfg.dataDir}/config'
       '';
