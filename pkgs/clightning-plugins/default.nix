@@ -13,6 +13,12 @@ let
   version = builtins.substring 0 7 src.rev;
 
   plugins = with nbPython3Packages; {
+    backup = {
+      extraPkgs = [ click flaky tqdm psutil ];
+      patchRequirements = "--replace Click==7.0 Click~=7.0"
+        + " --replace 'pyln-client ~= 0.9.2' pyln-client~=0.10.1";
+      extraScript = "backup-cli";
+    };
     helpme = {};
     monitor = {};
     prometheus = {
@@ -35,7 +41,8 @@ let
 
   mkPlugin = name: plugin: let
     python = pkgs.python3.withPackages (_: basePkgs ++ (plugin.extraPkgs or []));
-    script = "${plugin.scriptName or name}.py";
+    pluginScript = "${plugin.scriptName or name}.py";
+    scripts = [pluginScript] ++ lib.optional (plugin ? extraScript) [plugin.extraScript];
     drv = pkgs.stdenv.mkDerivation {
       pname = "clightning-plugin-${name}";
       inherit version;
@@ -53,11 +60,12 @@ let
         PYTHONPATH=${toString python}/${python.sitePackages} \
           ${pkgs.python3Packages.pip}/bin/pip install -r requirements.txt --no-cache --no-index
 
-        chmod +x ${script}
-        patchShebangs ${script}
+        ${lib.concatMapStrings (script: ''
+          chmod +x ${script}
+          patchShebangs ${script}
+        '') (map toString scripts)}
       '';
-
-      passthru.path = "${drv}/${script}";
+      passthru.path = "${drv}/${pluginScript}";
     };
   in drv;
 
