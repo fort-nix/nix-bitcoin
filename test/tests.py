@@ -218,9 +218,12 @@ def _():
 
 @test("joinmarket-yieldgenerator")
 def _():
-    machine.wait_until_succeeds(
-        log_has_string("joinmarket-yieldgenerator", "Critical error updating blockheight.")
-    )
+    if "regtest" in enabled_tests:
+        expected_log_msg = "You do not have the minimum required amount of coins to be a maker"
+    else:
+        expected_log_msg = "Critical error updating blockheight."
+
+    machine.wait_until_succeeds(log_has_string("joinmarket-yieldgenerator", expected_log_msg))
 
 @test("joinmarket-ob-watcher")
 def _():

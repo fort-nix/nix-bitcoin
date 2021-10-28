@@ -4,6 +4,22 @@ with lib;
 let
   options.services.joinmarket = {
     enable = mkEnableOption "JoinMarket";
+    payjoinAddress = mkOption {
+      type = types.str;
+      default = "127.0.0.1";
+      description = ''
+        The address where payjoin onion connections are forwarded to.
+        This address is never used directly, it only serves as the internal endpoint
+        for the payjoin onion service.
+        The onion service is automatically setup by joinmarket and accepts
+        connections at port 80.
+      '';
+    };
+    payjoinPort = mkOption {
+      type = types.port;
+      default = 64180; # A random private port
+      description = "The port corresponding to option `payjoinAddress`.";
+    };
     dataDir = mkOption {
       type = types.path;
       default = "/var/lib/joinmarket";
@@ -78,7 +94,7 @@ let
           The average transaction fee you're adding to coinjoin transactions
         '';
       };
-      txfee_factor = mkOption {
+      txfee_contribution_factor = mkOption {
         type = types.float;
         default = 0.3;
         description = ''
@@ -153,8 +169,8 @@ let
     use_ssl = false
 
     [BLOCKCHAIN]
-    blockchain_source = bitcoin-rpc
-    network = ${bitcoind.network}
+    blockchain_source = ${bitcoind.makeNetworkName "bitcoin-rpc" "regtest"}
+    network = ${bitcoind.makeNetworkName "mainnet" "testnet"}
     rpc_host = ${nbLib.address bitcoind.rpc.address}
     rpc_port = ${toString bitcoind.rpc.port}
     rpc_user = ${bitcoind.rpc.users.privileged.name}
@@ -171,6 +187,7 @@ let
     native = true
     merge_algorithm = default
     tx_fees = 3
+    tx_fees_factor = 0.2
     absurd_fee_per_kb = 350000
     max_sweep_fee_change = 0.8
     tx_broadcast = self
@@ -192,6 +209,8 @@ let
     onion_socks5_host = ${torAddress.addr}
     onion_socks5_port = ${toString torAddress.port}
     tor_control_host = unix:/run/tor/control
+    onion_serving_host = ${cfg.payjoinAddress}
+    onion_serving_port = ${toString cfg.payjoinPort}
     hidden_service_ssl = false
 
     [YIELDGENERATOR]
@@ -199,8 +218,8 @@ let
     cjfee_a = ${toString yg.cjfee_a}
     cjfee_r = ${toString yg.cjfee_r}
     cjfee_factor = ${toString yg.cjfee_factor}
-    txfee = ${toString yg.txfee}
-    txfee_factor = ${toString yg.txfee_factor}
+    txfee_contribution = 0
+    txfee_contribution_factor = ${toString yg.txfee_contribution_factor}
     minsize = ${toString yg.minsize}
     size_factor = ${toString yg.size_factor}
     gaplimit = 6
@@ -263,15 +282,16 @@ in {
           echo "rpc_password = $(cat ${secretsDir}/bitcoin-rpcpassword-privileged)"
         } > '${cfg.dataDir}/joinmarket.cfg'
       '';
-      # Generating wallets (jmclient/wallet.py) is only supported for mainnet or testnet
-      postStart = mkIf (bitcoind.network == "mainnet") ''
+      postStart = ''
         walletname=wallet.jmdat
         wallet=${cfg.dataDir}/wallets/$walletname
         if [[ ! -f $wallet ]]; then
           ${optionalString (cfg.rpcWalletFile != null) ''
             echo "Create watch-only wallet ${cfg.rpcWalletFile}"
             if ! output=$(${bitcoind.cli}/bin/bitcoin-cli -named createwallet \
-                          wallet_name="${cfg.rpcWalletFile}" disable_private_keys=true 2>&1); then
+                            wallet_name="${cfg.rpcWalletFile}" \
+                            ${optionalString (!bitcoind.regtest) "disable_private_keys=true"} 2>&1
+                         ); then
               # Ignore error if bitcoind wallet already exists
               if [[ $output != *"already exists"* ]]; then
                 echo "$output"

@@ -248,9 +248,6 @@ let
       services.lightning-pool.extraConfig = ''
         auctionserver=localhost
       '';
-
-      # Needs wallet support which is unavailable for regtest
-      services.joinmarket.yieldgenerator.enable = mkForce false;
     };
 
     ## Examples / debug helper
