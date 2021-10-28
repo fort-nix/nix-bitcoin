@@ -74,8 +74,6 @@ let
       tests.charge-lnd = cfg.charge-lnd.enable;
 
       tests.electrs = cfg.electrs.enable;
-      # Sigterm is broken during IBD in version 0.9.0 https://github.com/romanz/electrs/issues/532
-      systemd.services.electrs.serviceConfig.KillSignal = "SIGKILL";
 
       tests.liquidd = cfg.liquidd.enable;
       services.liquidd.extraConfig = mkIf config.test.noConnections "connect=0";

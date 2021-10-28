@@ -15,6 +15,16 @@ let
         default = 7042;
         description = "Override the default port on which to listen for connections.";
       };
+      onionPort = mkOption {
+        type = types.nullOr types.port;
+        # When the liquidd onion service is enabled, add an onion-tagged socket
+        # to distinguish local connections from Tor connections
+        default = if (config.nix-bitcoin.onionServices.liquidd.enable or false) then 7043 else null;
+        description = ''
+          Port to listen for Tor peer connections.
+          If set, inbound connections to this port are tagged as onion peers.
+        '';
+      };
       extraConfig = mkOption {
         type = types.lines;
         default = "";
@@ -153,8 +163,10 @@ let
     ${optionalString (cfg.validatepegin != null) "validatepegin=${if cfg.validatepegin then "1" else "0"}"}
 
     # Connection options
-    ${optionalString cfg.listen "bind=${cfg.address}"}
-    port=${toString cfg.port}
+    ${optionalString cfg.listen
+      "bind=${cfg.address}:${toString cfg.port}"}
+    ${optionalString (cfg.listen && cfg.onionPort != null)
+      "bind=${cfg.address}:${toString cfg.onionPort}=onion"}
     ${optionalString (cfg.proxy != null) "proxy=${cfg.proxy}"}
     listen=${if cfg.listen then "1" else "0"}
 
