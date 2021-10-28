@@ -17,7 +17,9 @@ let
       };
       onionPort = mkOption {
         type = types.nullOr types.port;
-        default = null;
+        # When the bitcoind onion service is enabled, add an onion-tagged socket
+        # to distinguish local connections from Tor connections
+        default = if (config.nix-bitcoin.onionServices.bitcoind.enable or false) then 8334 else null;
         description = ''
           Port to listen for Tor peer connections.
           If set, inbound connections to this port are tagged as onion peers.

@@ -118,10 +118,6 @@ in {
           externalPort = 80;
         };
       };
-
-      # When the bitcoind onion service is enabled, add an onion-tagged socket
-      # to distinguish local connections from Tor connections
-      services.bitcoind.onionPort = mkIf (cfg.bitcoind.enable or false) 8334;
     }
   ];
 }
