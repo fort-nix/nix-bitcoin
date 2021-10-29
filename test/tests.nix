@@ -116,6 +116,8 @@ let
     }
     (mkIf config.test.features.clightningPlugins {
       services.clightning.plugins = {
+        backup.enable = true;
+        backup.backendURL = "file://" + cfg.clightning.dataDir + "/db.backup";
         clboss.enable = true;
         helpme.enable = true;
         monitor.enable = true;

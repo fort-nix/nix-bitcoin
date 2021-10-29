@@ -12,6 +12,7 @@ let
   pluginPkgs = config.nix-bitcoin.pkgs.clightning-plugins;
 in {
   imports = [
+    ./backup.nix
     ./clboss.nix
     ./prometheus.nix
     ./summary.nix
