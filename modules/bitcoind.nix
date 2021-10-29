@@ -25,6 +25,27 @@ let
           If set, inbound connections to this port are tagged as onion peers.
         '';
       };
+      listen = mkOption {
+        type = types.bool;
+        default = false;
+        description = ''
+          Listen for peer connections at `address:port`
+          and `address:onionPort` (if `onionPort` is set).
+        '';
+      };
+      listenWhitelisted = mkOption {
+        type = types.bool;
+        default = false;
+        description = ''
+          Listen for peer connections at `address:whitelistedPort`.
+          Peers connected through this socket are automatically whitelisted.
+        '';
+      };
+      whitelistedPort = mkOption {
+        type = types.port;
+        default = 8335;
+        description = "See `listenWhitelisted`.";
+      };
       getPublicAddressCmd = mkOption {
         type = types.str;
         default = "";
@@ -147,11 +168,6 @@ let
           With `only-outgoing`, incoming i2p connections are disabled.
         '';
       };
-      listen = mkOption {
-        type = types.bool;
-        default = false;
-        description = "Accept incoming connections.";
-      };
       dataDirReadableByGroup = mkOption {
         type = types.bool;
         default = false;
@@ -273,15 +289,17 @@ let
     ${optionalString (cfg.assumevalid != null) "assumevalid=${cfg.assumevalid}"}
 
     # Connection options
+    listen=${if (cfg.listen || cfg.listenWhitelisted) then "1" else "0"}
     ${optionalString cfg.listen
       "bind=${cfg.address}:${toString cfg.port}"}
     ${optionalString (cfg.listen && cfg.onionPort != null)
       "bind=${cfg.address}:${toString cfg.onionPort}=onion"}
+    ${optionalString cfg.listenWhitelisted
+      "whitebind=${cfg.address}:${toString cfg.whitelistedPort}"}
     ${optionalString (cfg.proxy != null) "proxy=${cfg.proxy}"}
     ${optionalString (cfg.i2p != false) "i2psam=${nbLib.addressWithPort i2pSAM.address i2pSAM.port}"}
     ${optionalString (cfg.i2p == "only-outgoing") "i2pacceptincoming=0"}
 
-    listen=${if cfg.listen then "1" else "0"}
     ${optionalString (cfg.discover != null) "discover=${if cfg.discover then "1" else "0"}"}
     ${lib.concatMapStrings (node: "addnode=${node}\n") cfg.addnodes}
 

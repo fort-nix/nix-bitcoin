@@ -25,6 +25,27 @@ let
           If set, inbound connections to this port are tagged as onion peers.
         '';
       };
+      listen = mkOption {
+        type = types.bool;
+        default = false;
+        description = ''
+          Listen for peer connections at `address:port`
+          and `address:onionPort` (if `onionPort` is set).
+        '';
+      };
+      listenWhitelisted = mkOption {
+        type = types.bool;
+        default = false;
+        description = ''
+          Listen for peer connections at `address:whitelistedPort`.
+          Peers connected through this socket are automatically whitelisted.
+        '';
+      };
+      whitelistedPort = mkOption {
+        type = types.port;
+        default = 7044;
+        description = "See `listenWhitelisted`.";
+      };
       extraConfig = mkOption {
         type = types.lines;
         default = "";
@@ -79,13 +100,6 @@ let
         type = types.nullOr types.str;
         default = if cfg.enforceTor then config.nix-bitcoin.torClientAddressWithPort else null;
         description = "Connect through SOCKS5 proxy";
-      };
-      listen = mkOption {
-        type = types.bool;
-        default = false;
-        description = ''
-          If enabled, the liquid service will listen.
-        '';
       };
       dbCache = mkOption {
         type = types.nullOr (types.ints.between 4 16384);
@@ -163,12 +177,14 @@ let
     ${optionalString (cfg.validatepegin != null) "validatepegin=${if cfg.validatepegin then "1" else "0"}"}
 
     # Connection options
+    listen=${if (cfg.listen || cfg.listenWhitelisted) then "1" else "0"}
     ${optionalString cfg.listen
       "bind=${cfg.address}:${toString cfg.port}"}
     ${optionalString (cfg.listen && cfg.onionPort != null)
       "bind=${cfg.address}:${toString cfg.onionPort}=onion"}
+    ${optionalString cfg.listenWhitelisted
+      "whitebind=${cfg.address}:${toString cfg.whitelistedPort}"}
     ${optionalString (cfg.proxy != null) "proxy=${cfg.proxy}"}
-    listen=${if cfg.listen then "1" else "0"}
 
     # RPC server options
     rpcport=${toString cfg.rpc.port}

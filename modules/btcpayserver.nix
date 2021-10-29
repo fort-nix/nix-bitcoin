@@ -116,18 +116,13 @@ in {
           "getpeerinfo"
         ];
       };
-      # Enable p2p connections
-      listen = true;
-      extraConfig = ''
-        whitelist=download@${nbLib.address cfg.nbxplorer.address}
-      '';
+      listenWhitelisted = true;
     };
     services.clightning.enable = mkIf (cfg.btcpayserver.lightningBackend == "clightning") true;
     services.lnd.enable = mkIf (cfg.btcpayserver.lightningBackend == "lnd") true;
     services.liquidd = mkIf cfg.btcpayserver.lbtc {
       enable = true;
-      # Enable p2p connections
-      listen = true;
+      listenWhitelisted = true;
     };
 
     services.lnd.macaroons.btcpayserver = mkIf (cfg.btcpayserver.lightningBackend == "lnd") {
@@ -154,14 +149,14 @@ in {
         network=${bitcoind.network}
         btcrpcuser=${cfg.bitcoind.rpc.users.btcpayserver.name}
         btcrpcurl=http://${nbLib.addressWithPort bitcoind.rpc.address cfg.bitcoind.rpc.port}
-        btcnodeendpoint=${nbLib.addressWithPort bitcoind.address bitcoind.port}
+        btcnodeendpoint=${nbLib.addressWithPort bitcoind.address bitcoind.whitelistedPort}
         bind=${cfg.nbxplorer.address}
         port=${toString cfg.nbxplorer.port}
         ${optionalString cfg.btcpayserver.lbtc ''
           chains=btc,lbtc
           lbtcrpcuser=${liquidd.rpcuser}
           lbtcrpcurl=http://${nbLib.addressWithPort liquidd.rpc.address liquidd.rpc.port}
-          lbtcnodeendpoint=${nbLib.addressWithPort liquidd.address liquidd.port}
+          lbtcnodeendpoint=${nbLib.addressWithPort liquidd.address bitcoind.whitelistedPort}
         ''}
       '';
     in {
