@@ -119,17 +119,17 @@ in {
       listenWhitelisted = true;
     };
     services.clightning.enable = mkIf (cfg.btcpayserver.lightningBackend == "clightning") true;
-    services.lnd.enable = mkIf (cfg.btcpayserver.lightningBackend == "lnd") true;
+    services.lnd = mkIf (cfg.btcpayserver.lightningBackend == "lnd") {
+      enable = true;
+      macaroons.btcpayserver = {
+        inherit (cfg.btcpayserver) user;
+        permissions = ''{"entity":"info","action":"read"},{"entity":"onchain","action":"read"},{"entity":"offchain","action":"read"},{"entity":"address","action":"read"},{"entity":"message","action":"read"},{"entity":"peers","action":"read"},{"entity":"signer","action":"read"},{"entity":"invoices","action":"read"},{"entity":"invoices","action":"write"},{"entity":"address","action":"write"}'';
+      };
+    };
     services.liquidd = mkIf cfg.btcpayserver.lbtc {
       enable = true;
       listenWhitelisted = true;
     };
-
-    services.lnd.macaroons.btcpayserver = mkIf (cfg.btcpayserver.lightningBackend == "lnd") {
-      inherit (cfg.btcpayserver) user;
-      permissions = ''{"entity":"info","action":"read"},{"entity":"onchain","action":"read"},{"entity":"offchain","action":"read"},{"entity":"address","action":"read"},{"entity":"message","action":"read"},{"entity":"peers","action":"read"},{"entity":"signer","action":"read"},{"entity":"invoices","action":"read"},{"entity":"invoices","action":"write"},{"entity":"address","action":"write"}'';
-    };
-
     services.postgresql = {
       enable = true;
       ensureDatabases = [ "btcpaydb" ];

@@ -201,6 +201,8 @@ def _():
         f"-X GET https://{ip('lnd')}:8080/v1/getinfo | jq",
         '"version"',
     )
+    # Test web server response
+    assert_matches(f"curl -L {ip('btcpayserver')}:23000", "Welcome to your BTCPay&nbsp;Server")
 
 @test("spark-wallet")
 def _():
