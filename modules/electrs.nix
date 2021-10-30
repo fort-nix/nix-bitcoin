@@ -58,9 +58,7 @@ in {
 
     services.bitcoind = {
       enable = true;
-      # Enable p2p connections
-      listen = true;
-      extraConfig = "whitelist=download@${nbLib.address cfg.address}";
+      listenWhitelisted = true;
     };
 
     systemd.tmpfiles.rules = [
@@ -88,7 +86,7 @@ in {
           --electrum-rpc-addr=${cfg.address}:${toString cfg.port} \
           --monitoring-addr=${cfg.address}:${toString cfg.monitoringPort} \
           --daemon-rpc-addr=${nbLib.addressWithPort bitcoind.rpc.address bitcoind.rpc.port} \
-          --daemon-p2p-addr=${nbLib.addressWithPort bitcoind.address bitcoind.port} \
+          --daemon-p2p-addr=${nbLib.addressWithPort bitcoind.address bitcoind.whitelistedPort} \
           ${cfg.extraArgs}
         '';
         User = cfg.user;

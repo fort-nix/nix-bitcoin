@@ -74,16 +74,14 @@ let
       tests.charge-lnd = cfg.charge-lnd.enable;
 
       tests.electrs = cfg.electrs.enable;
-      # Sigterm is broken during IBD in version 0.9.0 https://github.com/romanz/electrs/issues/532
-      systemd.services.electrs.serviceConfig.KillSignal = "SIGKILL";
 
       tests.liquidd = cfg.liquidd.enable;
       services.liquidd.extraConfig = mkIf config.test.noConnections "connect=0";
 
       tests.btcpayserver = cfg.btcpayserver.enable;
       services.btcpayserver = {
-        lightningBackend = "lnd";
-        lbtc = true;
+        lightningBackend = mkDefault "lnd";
+        lbtc = mkDefault true;
       };
       # Needed to test macaroon creation
       environment.systemPackages = mkIfTest "btcpayserver" (with pkgs; [ openssl xxd ]);

@@ -91,8 +91,10 @@ let
     ${cfg.extraConfig}
   '';
 
-  # If the clightning onion service is enabled, use the onion port as the public port
-  publicPort = if config.nix-bitcoin.onionServices.clightning.enable or false then
+  # If a public clightning onion service is enabled, use the onion port as the public port
+  publicPort = if (config.nix-bitcoin.onionServices.clightning.enable or false)
+                  && config.nix-bitcoin.onionServices.clightning.public
+               then
                  (builtins.elemAt config.services.tor.relay.onionServices.clightning.map 0).port
                else
                  cfg.port;

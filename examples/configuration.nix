@@ -24,7 +24,7 @@
   # modules by commenting out their respective line.
 
   ### BITCOIND
-  # Bitcoind is enabled by default.
+  # Bitcoind is enabled by default via secure-node.nix.
   #
   # Set this option to enable pruning with a specified MiB value.
   # clightning is compatible with pruning. See

@@ -43,14 +43,14 @@ let
     };
 
     netns = mkOption {
-      default = netns;
       readOnly = true;
+      default = netns;
       description = "Exposes netns parameters.";
     };
 
     bridgeIp = mkOption {
-      default = bridgeIp;
       readOnly = true;
+      default = bridgeIp;
       description = "IP of the netns bridge interface.";
     };
   };
