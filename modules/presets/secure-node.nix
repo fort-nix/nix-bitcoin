@@ -12,6 +12,11 @@ in {
     ./enable-tor.nix
   ];
 
+  options = {
+    # Used by ../versioning.nix
+    nix-bitcoin.secure-node-preset-enabled = {};
+  };
+
   config =  {
     # For backwards compatibility only
     nix-bitcoin.secretsDir = mkDefault "/secrets";
