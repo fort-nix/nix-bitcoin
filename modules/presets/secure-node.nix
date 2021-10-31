@@ -44,7 +44,9 @@ in {
     };
 
     services.liquidd = {
-      prune = 1000;
+      # Enable `validatepegin` to verify that a transaction sending BTC into
+      # Liquid exists on Bitcoin. Without it, a malicious liquid federation can
+      # make the node accept a sidechain that is not fully backed.
       validatepegin = true;
       listen = true;
     };

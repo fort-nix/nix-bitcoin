@@ -259,5 +259,5 @@
   # The nix-bitcoin release version that your config is compatible with.
   # When upgrading to a backwards-incompatible release, nix-bitcoin will display an
   # an error and provide hints for migrating your config to the new release.
-  nix-bitcoin.configVersion = "0.0.53";
+  nix-bitcoin.configVersion = "0.0.57";
 }
