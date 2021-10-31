@@ -169,6 +169,20 @@ let
             This includes the final database size (0.4) plus some extra storage (0.2).
       '';
     }
+    {
+      version = "0.0.57";
+      condition = config.nix-bitcoin ? secure-node-preset-enabled && config.services.liquidd.enable;
+      message = ''
+        The `secure-node.nix` preset does _not_ set `liquidd.prune = 1000` anymore.
+
+          - If you want to keep the same behavior as before, manually set
+            `services.liquidd.prune = 1000;` in your configuration.nix.
+          - Otherwise, if you want to turn off pruning, you must instruct liquidd
+            to reindex by setting `services.liquidd.extraConfig = "reindex=1";`.
+            This can be removed after having started liquidd with that option
+            once.
+      '';
+    }
   ];
 
   mkOnionServiceChange = service: {
