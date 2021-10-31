@@ -113,6 +113,11 @@ in {
 
     systemd.tmpfiles.rules = [
       "d '${cfg.dataDir}' 0770 ${cfg.user} ${cfg.group} - -"
+      # Create networkDir subdirectory as well because other services assume
+      # that this directory exists before clightning is run.
+      # Execute permissions are given to the group to allow the group to run the
+      # `lightning-cli` command.
+      "d '${cfg.networkDir}' 0710 ${cfg.user} ${cfg.group} - -"
     ];
 
     systemd.services.clightning = {
@@ -143,8 +148,6 @@ in {
         while [[ ! -e ${cfg.networkDir}/lightning-rpc ]]; do
             sleep 0.1
         done
-        # Needed to enable lightning-cli for users with group 'clightning'
-        chmod g+x ${cfg.networkDir}
       '';
     };
 
