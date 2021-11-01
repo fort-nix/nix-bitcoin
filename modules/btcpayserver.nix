@@ -156,7 +156,7 @@ in {
           chains=btc,lbtc
           lbtcrpcuser=${liquidd.rpcuser}
           lbtcrpcurl=http://${nbLib.addressWithPort liquidd.rpc.address liquidd.rpc.port}
-          lbtcnodeendpoint=${nbLib.addressWithPort liquidd.address bitcoind.whitelistedPort}
+          lbtcnodeendpoint=${nbLib.addressWithPort liquidd.address liquidd.whitelistedPort}
         ''}
       '';
     in {
