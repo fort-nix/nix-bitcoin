@@ -22,7 +22,7 @@ pkgs.stdenv.mkDerivation {
     # 2. the shell is interactive
     if [[ -t 1 && $- == *i* ]]; then isInteractive=1; else isInteractive=; fi
 
-    help() {
+    nixBitcoinHelp() {
         echo "nix-bitcoin path: ${toString ../.}"
         echo
         echo "Available commands"
@@ -46,6 +46,7 @@ pkgs.stdenv.mkDerivation {
         echo "update-nix-bitcoin"
         echo "  Fetch and use the latest version of nix-bitcoin"
     }
+    help() { nixBitcoinHelp; }
     h() { help; }
 
     fetch-release() {
