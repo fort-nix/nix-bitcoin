@@ -225,6 +225,7 @@ let
 
     regtestBase = { config, ... }: {
       tests.regtest = true;
+      test.data.num_blocks = 100;
 
       services.bitcoind.regtest = true;
       systemd.services.bitcoind.postStart = mkAfter ''
@@ -232,7 +233,7 @@ let
         if ! $cli listwallets | ${pkgs.jq}/bin/jq -e 'index("test")'; then
           $cli -named createwallet  wallet_name=test load_on_startup=true
           address=$($cli -rpcwallet=test getnewaddress)
-          $cli generatetoaddress 10 $address
+          $cli generatetoaddress ${toString config.test.data.num_blocks} $address
         fi
       '';
 
