@@ -229,10 +229,11 @@ let
       services.bitcoind.regtest = true;
       systemd.services.bitcoind.postStart = mkAfter ''
         cli=${config.services.bitcoind.cli}/bin/bitcoin-cli
-        # Don't fail when wallet already exists
-        $cli createwallet "test" || true
-        address=$($cli getnewaddress)
-        $cli generatetoaddress 10 $address
+        if ! $cli listwallets | ${pkgs.jq}/bin/jq -e 'index("test")'; then
+          $cli -named createwallet  wallet_name=test load_on_startup=true
+          address=$($cli -rpcwallet=test getnewaddress)
+          $cli generatetoaddress 10 $address
+        fi
       '';
 
       # lightning-loop contains no builtin swap server for regtest.
