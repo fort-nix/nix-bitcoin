@@ -159,10 +159,10 @@ in {
           lbtcnodeendpoint=${nbLib.addressWithPort liquidd.address bitcoind.whitelistedPort}
         ''}
       '';
-    in {
+    in rec {
       wantedBy = [ "multi-user.target" ];
-      requires = [ "bitcoind.service" ];
-      after = [ "bitcoind.service" ];
+      requires = [ "bitcoind.service" ] ++ optional cfg.btcpayserver.lbtc "liquidd.service";
+      after = requires;
       preStart = ''
         install -m 600 ${configFile} '${cfg.nbxplorer.dataDir}/settings.config'
         {
