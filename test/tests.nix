@@ -248,6 +248,9 @@ let
       services.lightning-pool.extraConfig = ''
         auctionserver=localhost
       '';
+
+      # `validatepegin` is incompatible with regtest
+      services.liquidd.validatepegin = mkForce false;
     };
 
     ## Examples / debug helper

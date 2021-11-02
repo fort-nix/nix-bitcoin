@@ -234,6 +234,12 @@ in {
   inherit options;
 
   config = mkIf cfg.enable {
+    assertions = [
+      { assertion = bitcoind.regtest -> cfg.validatepegin != true;
+        message = "liquidd: `validatepegin` is incompatible with regtest.";
+      }
+    ];
+
     services.bitcoind.enable = true;
 
     environment.systemPackages = [
