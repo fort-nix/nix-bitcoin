@@ -1399,12 +1399,12 @@ let
         sha512 = "dh/frvCBVmSsDYzw6n926jv974gddhkFPfiN8hPOi30Wax25QZyZEGveluCgliBnqmuM+UJmBErbAUFIoDbjOw==";
       };
     };
-    "proxy-agent-git://github.com/shesek/node-proxy-agent#0d916427f586e41a1a4485db88509218017f9696" = {
+    "proxy-agent-https://github.com/shesek/node-proxy-agent#0d916427f586e41a1a4485db88509218017f9696" = {
       name = "proxy-agent";
       packageName = "proxy-agent";
       version = "3.1.1";
       src = fetchgit {
-        url = "git://github.com/shesek/node-proxy-agent";
+        url = "https://github.com/shesek/node-proxy-agent";
         rev = "0d916427f586e41a1a4485db88509218017f9696";
         sha256 = "9582aafb90887f3a600806240c0f71fd09ef2b8805a37281894b56e717a35d98";
       };
@@ -1823,12 +1823,12 @@ let
         sha512 = "OUDHEssirmplo3F+1HWKUrUjvnQuA+nZI6i/JJBdXb5eq9IyEQwPyPpqND+SSsxf6TygpBEkUjISVRN4/VOpeg==";
       };
     };
-    "superagent-proxy-git://github.com/shesek/superagent-proxy#b512f8bbcf1baa196058922ee3b6cfe45375ebc9" = {
+    "superagent-proxy-https://github.com/shesek/superagent-proxy#b512f8bbcf1baa196058922ee3b6cfe45375ebc9" = {
       name = "superagent-proxy";
       packageName = "superagent-proxy";
       version = "2.0.0";
       src = fetchgit {
-        url = "git://github.com/shesek/superagent-proxy";
+        url = "https://github.com/shesek/superagent-proxy";
         rev = "b512f8bbcf1baa196058922ee3b6cfe45375ebc9";
         sha256 = "ca984f1f2dc7cfed2aa301de1daf4305c359e89276d897fffa92e7c80850d03c";
       };
@@ -2208,7 +2208,7 @@ in
       sources."prelude-ls-1.1.2"
       sources."process-nextick-args-2.0.1"
       sources."proxy-addr-2.0.6"
-      (sources."proxy-agent-git://github.com/shesek/node-proxy-agent#0d916427f586e41a1a4485db88509218017f9696" // {
+      (sources."proxy-agent-https://github.com/shesek/node-proxy-agent#0d916427f586e41a1a4485db88509218017f9696" // {
         dependencies = [
           sources."debug-4.3.0"
           sources."ms-2.1.2"
@@ -2273,7 +2273,7 @@ in
           sources."semver-7.3.2"
         ];
       })
-      (sources."superagent-proxy-git://github.com/shesek/superagent-proxy#b512f8bbcf1baa196058922ee3b6cfe45375ebc9" // {
+      (sources."superagent-proxy-https://github.com/shesek/superagent-proxy#b512f8bbcf1baa196058922ee3b6cfe45375ebc9" // {
         dependencies = [
           sources."debug-3.2.6"
           sources."ms-2.1.2"
