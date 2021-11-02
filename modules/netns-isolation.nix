@@ -173,6 +173,8 @@ in {
             ${ip} link add ${veth} type veth peer name ${peer}
             ${ip} link set ${veth} netns ${netnsName}
             ${ipNetns} addr add ${v.address}/24 dev ${veth}
+            # The peer link is never used directly, so don't auto-assign an IPv6 address
+            echo 1 > /proc/sys/net/ipv6/conf/${peer}/disable_ipv6
             ${ip} link set ${peer} up
             ${ipNetns} link set ${veth} up
             ${ip} link set ${peer} master nb-br
