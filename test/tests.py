@@ -189,8 +189,10 @@ def _():
 def _():
     assert_running("nbxplorer")
     machine.wait_until_succeeds(log_has_string("nbxplorer", "BTC: RPC connection successful"))
-    machine.wait_until_succeeds(log_has_string("nbxplorer", "LBTC: RPC connection successful"))
+    if "liquidd" in enabled_tests:
+        machine.wait_until_succeeds(log_has_string("nbxplorer", "LBTC: RPC connection successful"))
     wait_for_open_port(ip("nbxplorer"), 24444)
+
     assert_running("btcpayserver")
     machine.wait_until_succeeds(log_has_string("btcpayserver", "Listening on"))
     wait_for_open_port(ip("btcpayserver"), 23000)
@@ -359,6 +361,8 @@ def _():
         else:
             return False
 
+    num_blocks = test_data["num_blocks"]
+
     if enabled("electrs"):
         machine.wait_for_unit("onion-addresses")
         machine.wait_until_succeeds(log_has_string("electrs", "serving Electrum RPC"))
@@ -366,18 +370,18 @@ def _():
             """echo '{"method": "blockchain.headers.subscribe", "id": 0, "params": []}'"""
             f" | nc {ip('electrs')} 50001 | head -1 | jq -M .result.height"
         )
-        assert_full_match(get_block_height_cmd, "10\n")
+        assert_full_match(get_block_height_cmd, f"{num_blocks}\n")
     if enabled("clightning"):
         machine.wait_until_succeeds(
-            "[[ $(runuser -u operator -- lightning-cli getinfo | jq -M .blockheight) == 10 ]]"
+            f"[[ $(runuser -u operator -- lightning-cli getinfo | jq -M .blockheight) == {num_blocks} ]]"
         )
     if enabled("lnd"):
         machine.wait_until_succeeds(
-            "[[ $(runuser -u operator -- lncli getinfo | jq -M .block_height) == 10 ]]"
+            f"[[ $(runuser -u operator -- lncli getinfo | jq -M .block_height) == {num_blocks} ]]"
         )
     if enabled("lightning-loop"):
         machine.wait_until_succeeds(
-            log_has_string("lightning-loop", "Starting event loop at height 10")
+            log_has_string("lightning-loop", f"Starting event loop at height {num_blocks}")
         )
         succeed("runuser -u operator -- loop getparams")
     if enabled("lightning-pool"):
@@ -385,6 +389,13 @@ def _():
             log_has_string("lightning-pool", "lnd is now fully synced to its chain backend")
         )
         succeed("runuser -u operator -- pool orders list")
+    if enabled("btcpayserver"):
+        machine.wait_until_succeeds(log_has_string("nbxplorer", f"BTC: Starting scan at block {num_blocks}"))
+        # nbxplorer 2.2.16 currently fails with with lbtc (liquidd) on regtest
+        # LBTC: Full node version detected: 210000
+        # LBTC: RPC connection successful
+        # LBTC: Failed to connect to RPC
+        # System.IO.EndOfStreamException: No more byte to read
 
 if "netns-isolation" in enabled_tests:
     def ip(name):

@@ -168,6 +168,11 @@ let
   bitcoind = config.services.bitcoind;
 
   configFile = pkgs.writeText "elements.conf" ''
+    # We're already logging via journald
+    nodebuglogfile=1
+
+    startupnotify=/run/current-system/systemd/bin/systemd-notify --ready
+
     chain=${bitcoind.makeNetworkName "liquidv1" ''
       regtest
       [regtest]'' # Add [regtest] config section
@@ -229,6 +234,12 @@ in {
   inherit options;
 
   config = mkIf cfg.enable {
+    assertions = [
+      { assertion = bitcoind.regtest -> cfg.validatepegin != true;
+        message = "liquidd: `validatepegin` is incompatible with regtest.";
+      }
+    ];
+
     services.bitcoind.enable = true;
 
     environment.systemPackages = [
@@ -253,7 +264,8 @@ in {
         } >> '${cfg.dataDir}/elements.conf'
       '';
       serviceConfig = nbLib.defaultHardening // {
-        Type = "simple";
+        Type = "notify";
+        NotifyAccess = "all";
         User = cfg.user;
         Group = cfg.group;
         ExecStart = "${nbPkgs.elementsd}/bin/elementsd -datadir='${cfg.dataDir}'";

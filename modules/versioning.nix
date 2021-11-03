@@ -22,8 +22,6 @@ let
     };
   };
 
-  version = config.nix-bitcoin.configVersion;
-
   # Sorted by increasing version numbers
   changes = [
     {
@@ -196,6 +194,8 @@ let
         nix-bitcon.onionServices.${service}.enable = true;
       '';
   };
+
+  version = config.nix-bitcoin.configVersion;
 
   incompatibleChanges = optionals
     (version != null && versionOlder lastChange)
