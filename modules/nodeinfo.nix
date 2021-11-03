@@ -42,6 +42,7 @@ let
 
     import json
     import subprocess
+    import sys
     from collections import OrderedDict
 
     def success(*args):
