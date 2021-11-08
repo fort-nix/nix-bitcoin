@@ -117,6 +117,9 @@ in {
         joinmarket-ob-watcher = {
           externalPort = 80;
         };
+        rtl = {
+          externalPort = 80;
+        };
       };
     }
   ];
