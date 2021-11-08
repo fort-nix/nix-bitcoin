@@ -1,11 +1,12 @@
 { configDir, shellVersion ? null, extraShellInitCmds ? (pkgs: "") }:
 let
+  pinned = import ../pkgs/nixpkgs-pinned.nix;
+  pkgs = import nixpkgs { config = {}; overlays = []; };
   inherit (pkgs) lib;
-  nixpkgs = (import ../pkgs/nixpkgs-pinned.nix).nixpkgs;
-  pkgs = import nixpkgs {};
+  inherit (pinned) nixpkgs;
   nbPkgs = import ../pkgs { inherit pkgs; };
   cfgDir = toString configDir;
-  path = lib.optionalString pkgs.stdenv.isLinux ''
+  setPath = lib.optionalString pkgs.stdenv.isLinux ''
     export PATH="${lib.makeBinPath [ nbPkgs.pinned.extra-container ]}''${PATH:+:}$PATH"
   '';
 in
@@ -39,8 +40,9 @@ pkgs.stdenv.mkDerivation {
 
   shellHook = ''
     export NIX_PATH="nixpkgs=${nixpkgs}:nix-bitcoin=${toString ../.}:."
-    ${path}
+    ${setPath}
     export NIX_BITCOIN_EXAMPLES_DIR="${cfgDir}"
+    export nixpkgsUnstable="${pinned.nixpkgs-unstable}"
 
     # Set isInteractive=1 if
     # 1. stdout is a TTY, i.e. we're not piping the output
