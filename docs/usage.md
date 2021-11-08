@@ -97,10 +97,6 @@ Connect to LND with Zeus
 
 2. Deploy new `configuration.nix`
 
-    ```
-    nixops deploy -d bitcoin-node
-    ```
-
 3. Run command `lndconnect-rest-onion` (under `operator` user) to create a QR code for
    connecting to LND via the REST onion service.
 
