@@ -12,6 +12,31 @@ in
 pkgs.stdenv.mkDerivation {
   name = "nix-bitcoin-environment";
 
+  helpMessage = ''
+    nix-bitcoin path: ${toString ../.}
+
+    Available commands
+    ==================
+    deploy
+      Run krops-deploy and eval-config in parallel.
+      This ensures that eval failures appear quickly when deploying.
+      In this case, deployment is stopped.
+
+    krops-deploy
+      Deploy your node via krops
+
+    eval-config
+      Evaluate your node system configuration
+
+    generate-secrets
+      Create secrets required by your node configuration.
+      Secrets are written to ./secrets/
+      This function is automatically called by krops-deploy.
+
+    update-nix-bitcoin
+      Fetch and use the latest version of nix-bitcoin
+  '';
+
   shellHook = ''
     export NIX_PATH="nixpkgs=${nixpkgs}:nix-bitcoin=${toString ../.}:."
     ${path}
@@ -22,31 +47,10 @@ pkgs.stdenv.mkDerivation {
     # 2. the shell is interactive
     if [[ -t 1 && $- == *i* ]]; then isInteractive=1; else isInteractive=; fi
 
-    nixBitcoinHelp() {
-        echo "nix-bitcoin path: ${toString ../.}"
-        echo
-        echo "Available commands"
-        echo "=================="
-        echo "deploy"
-        echo "  Run krops-deploy and eval-config in parallel."
-        echo "  This ensures that eval failures appear quickly when deploying."
-        echo "  In this case, deployment is stopped."
-        echo
-        echo "krops-deploy"
-        echo "  Deploy your node via krops"
-        echo
-        echo "eval-config"
-        echo "  Evaluate your node system configuration"
-        echo
-        echo "generate-secrets"
-        echo "  Create secrets required by your node configuration."
-        echo "  Secrets are written to ./secrets/"
-        echo "  This function is automatically called by krops-deploy."
-        echo
-        echo "update-nix-bitcoin"
-        echo "  Fetch and use the latest version of nix-bitcoin"
-    }
-    help() { nixBitcoinHelp; }
+    # Make this a non-environment var
+    export -n helpMessage
+
+    help() { echo "$helpMessage"; }
     h() { help; }
 
     fetch-release() {
