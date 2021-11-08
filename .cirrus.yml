@@ -31,10 +31,9 @@ task:
         - environment:
             scenario: netnsRegtest
 
-    # Disabled because this test is currently empty
-    # - name: pkgs_unstable
-    #   environment:
-    #     nixpkgs: nixpkgs-unstable
+    - name: pkgs_unstable
+      environment:
+        nixpkgs: nixpkgs-unstable
 
   # This script is run as root
   build_script:

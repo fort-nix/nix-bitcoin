@@ -5,6 +5,8 @@ let
   pkgsUnstable = with nbPkgs; [
     # Disabled because joinmarket dependencies currently don't build on on unstable.
     # joinmarket
+    rtl
+    cl-rest
   ];
 in
 pkgs.writeText "pkgs-unstable" (pkgs.lib.concatMapStringsSep "\n" toString pkgsUnstable)

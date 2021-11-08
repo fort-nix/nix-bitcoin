@@ -206,6 +206,17 @@ def _():
     # Test web server response
     assert_matches(f"curl -L {ip('btcpayserver')}:23000", "Welcome to your BTCPay&nbsp;Server")
 
+@test("rtl")
+def _():
+    assert_running("rtl")
+    machine.wait_until_succeeds(
+        log_has_string("rtl", "Server is up and running")
+    )
+    assert_running("cl-rest")
+    machine.wait_until_succeeds(
+        log_has_string("cl-rest", "cl-rest api server is ready and listening on port: 3001")
+    )
+
 @test("spark-wallet")
 def _():
     assert_running("spark-wallet")

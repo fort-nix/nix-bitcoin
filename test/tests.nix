@@ -59,6 +59,15 @@ let
       systemd.services.clightning.serviceConfig.TimeoutStopSec =
         mkIf config.services.clightning.plugins.clboss.enable "500ms";
 
+      tests.rtl = cfg.rtl.enable;
+      services.rtl.nodes.lnd = mkDefault true;
+      services.rtl.nodes.clightning = mkDefault true;
+      services.rtl.loop = mkIf cfg.rtl.nodes.lnd (mkDefault true);
+      # Use a simple, non-random password for manual web interface tests
+      nix-bitcoin.generateSecretsCmds.rtl = mkIf cfg.rtl.enable (mkForce ''
+        echo a > rtl-password
+      '');
+
       tests.spark-wallet = cfg.spark-wallet.enable;
 
       tests.lnd = cfg.lnd.enable;
@@ -149,6 +158,7 @@ let
 
       services.clightning.enable = true;
       test.features.clightningPlugins = true;
+      services.rtl.enable = true;
       services.spark-wallet.enable = true;
       services.lnd.enable = true;
       services.lnd.restOnionService.enable = true;
@@ -194,6 +204,7 @@ let
       services.clightning.enable = true;
       test.features.clightningPlugins = true;
       services.liquidd.enable = true;
+      services.rtl.enable = true;
       services.spark-wallet.enable = true;
       services.lnd.enable = true;
       services.lightning-loop.enable = true;
