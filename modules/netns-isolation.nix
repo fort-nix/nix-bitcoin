@@ -164,9 +164,8 @@ in {
         "netns-${n}" = rec {
           requires = [ "nb-netns-bridge.service" ];
           after = [ "nb-netns-bridge.service" ];
-          bindsTo = [ "${n}.service" ];
-          requiredBy = bindsTo;
-          before = bindsTo;
+          requiredBy = [ "${n}.service" ];
+          before = requiredBy;
           script = ''
             ${ip} netns add ${netnsName}
             ${ipNetns} link set lo up
