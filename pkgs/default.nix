@@ -7,6 +7,7 @@ in
 }:
 let self = {
   rtl = pkgs.callPackage ./rtl { };
+  cl-rest = pkgs.callPackage ./cl-rest { };
   spark-wallet = pkgs.callPackage ./spark-wallet { };
   liquid-swap = pkgs.python3Packages.callPackage ./liquid-swap { };
   joinmarket = pkgs.callPackage ./joinmarket { inherit (self) nbPython3Packages; };
