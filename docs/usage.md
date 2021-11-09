@@ -11,6 +11,24 @@ Nodeinfo
 ---
 Run `nodeinfo` to see onion addresses and local addresses for enabled services.
 
+Connect to RTL
+---
+Normally you would connect to RTL via SSH tunneling with a command like this
+
+```
+ssh -L 3000:localhost:3000 root@bitcoin-node
+```
+
+Or like this, if you are using `netns-isolation`
+
+```
+ssh -L 3000:169.254.1.29:3000 root@bitcoin-node
+```
+
+Otherwise, you can access it via Tor Browser at `http://<onion-address>`.
+You can find the `<onion-address>` with command `nodeinfo`.
+The default password location is `/secrets/rtl-password`.
+
 Connect to spark-wallet
 ---
 ### Requirements
@@ -78,10 +96,6 @@ Connect to LND with Zeus
     ```
 
 2. Deploy new `configuration.nix`
-
-    ```
-    nixops deploy -d bitcoin-node
-    ```
 
 3. Run command `lndconnect-rest-onion` (under `operator` user) to create a QR code for
    connecting to LND via the REST onion service.

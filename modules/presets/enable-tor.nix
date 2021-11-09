@@ -1,4 +1,4 @@
-{ lib, ... }:
+{ lib, config, ... }:
 let
   defaultTrue = lib.mkDefault true;
 in {
@@ -21,6 +21,7 @@ in {
     spark-wallet.enforceTor = true;
     recurring-donations.enforceTor = true;
     lightning-pool.enforceTor = true;
+    rtl.enforceTor = true;
   };
 
   # Add onion services for incoming connections
@@ -30,5 +31,6 @@ in {
     electrs.enable = defaultTrue;
     spark-wallet.enable = defaultTrue;
     joinmarket-ob-watcher.enable = defaultTrue;
+    rtl.enable = defaultTrue;
   };
 }

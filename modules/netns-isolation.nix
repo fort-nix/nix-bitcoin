@@ -274,6 +274,12 @@ in {
         id = 28;
         connections = [ "lnd" "electrs" ];
       };
+      rtl = {
+        id = 29;
+        connections = []
+                      ++ optional (config.services.rtl.nodes.lnd) "lnd"
+                      ++ optional config.services.rtl.loop "lightning-loop";
+      };
     };
 
     services.bitcoind = {
@@ -324,6 +330,13 @@ in {
     services.joinmarket-ob-watcher.address = netns.joinmarket-ob-watcher.address;
 
     services.lightning-pool.rpcAddress = netns.lightning-pool.address;
+
+    services.rtl.address = netns.rtl.address;
+    systemd.services.cl-rest = {
+      serviceConfig.NetworkNamespacePath = "/var/run/netns/nb-rtl";
+      requires = [ "netns-rtl.service" ] ;
+      after = [ "netns-rtl.service" ];
+    };
   }
   ]);
 }

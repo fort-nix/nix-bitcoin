@@ -84,6 +84,24 @@
   # This will allow you to recover off-chain funds, by force-closing channels.
   #   scp bitcoin-node:/var/lib/lnd/chain/bitcoin/mainnet/channel.backup ./backups/lnd/
 
+  ### RIDE THE LIGHTNING
+  # Set this to enable RTL, a web interface for lnd and clightning.
+  # services.rtl.enable = true;
+  #
+  # Set this to add a clightning node interface.
+  # Automatically enables clightning.
+  # services.rtl.nodes.clightning = true;
+  #
+  # Set this to add a lnd node interface.
+  # Automatically enables lnd.
+  # services.rtl.nodes.lnd = true;
+  #
+  # You can enable both nodes simultaneously.
+  #
+  # Set this option to enable swaps with lightning-loop.
+  # Automatically enables lightning-loop.
+  # services.rtl.loop = true;
+
   ### SPARK WALLET
   # Set this to enable spark-wallet, a minimalistic wallet GUI for
   # c-lightning, accessible over the web or through mobile and desktop apps.
