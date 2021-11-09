@@ -6,7 +6,7 @@ TMPDIR="$(mktemp -d -p /tmp)"
 trap "rm -rf $TMPDIR" EXIT
 
 # Get/verify spark-wallet-npm.tgz
-version="0.2.17"
+version="0.3.1"
 export GNUPGHOME=$TMPDIR
 gpg --keyserver hkps://keyserver.ubuntu.com --recv-key FCF19B67866562F08A43AAD681F6104CD0F150FC
 wget -P $TMPDIR https://github.com/shesek/spark-wallet/releases/download/v${version}/SHA256SUMS.asc
