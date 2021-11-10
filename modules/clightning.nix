@@ -137,6 +137,14 @@ in {
         Restart = "on-failure";
         RestartSec = "10s";
         ReadWritePaths = cfg.dataDir;
+
+        # TODO-EXTERNAL:
+        # The seccomp version used by systemd in NixOS 21.05 doesn't support
+        # handling syscall 436 (close_range), which has only recently been added:
+        # https://github.com/seccomp/libseccomp/commit/ac849e7960547d418009a783da654d5917dbfe2d
+        #
+        # Disable seccomp filtering because clightning depends on this syscall.
+        SystemCallFilter = [];
       } // nbLib.allowedIPAddresses cfg.enforceTor;
       # Wait until the rpc socket appears
       postStart = ''
