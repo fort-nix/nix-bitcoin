@@ -155,41 +155,55 @@ in {
         veth = "nb-veth-${toString v.id}";
         peer = "nb-veth-br-${toString v.id}";
         inherit (v) netnsName;
-        ipNetns = "${ip} -n ${netnsName}";
-        netnsIptables = "${ip} netns exec ${netnsName} ${config.networking.firewall.package}/bin/iptables";
+        nsenter = "${pkgs.utillinux}/bin/nsenter";
         allowedAddresses = concatMapStringsSep "," (available: netns.${available}.address) v.availableNetns;
+
+        setup = ''
+          ${ip} netns add ${netnsName}
+          ${ip} link add ${veth} type veth peer name ${peer}
+          ${ip} link set ${veth} netns ${netnsName}
+          # The peer link is never used directly, so don't auto-assign an IPv6 address
+          echo 1 > /proc/sys/net/ipv6/conf/${peer}/disable_ipv6
+          ${ip} link set ${peer} up
+          ${ip} link set ${peer} master nb-br
+          exec ${nsenter} --net=/run/netns/${netnsName} ${script "in-netns" setupInNetns}
+        '';
+
+        setupInNetns = ''
+          ${ip} link set lo up
+          ${ip} addr add ${v.address}/24 dev ${veth}
+          ${ip} link set ${veth} up
+          ${ip} route add default via ${bridgeIp}
+
+          ${iptables} -w -P INPUT DROP
+          ${iptables} -w -A INPUT -s 127.0.0.1,${bridgeIp},${v.address} -j ACCEPT
+          # allow return traffic to outgoing connections initiated by the service itself
+          ${iptables} -w -A INPUT -m conntrack --ctstate ESTABLISHED -j ACCEPT
+        '' + optionalString (config.services.${n}.enforceTor or false) ''
+          ${iptables} -w -P OUTPUT DROP
+          ${iptables} -w -A OUTPUT -d 127.0.0.1,${bridgeIp},${v.address} -j ACCEPT
+        '' + optionalString (v.availableNetns != []) ''
+          ${iptables} -w -A INPUT -s ${allowedAddresses} -j ACCEPT
+          ${iptables} -w -A OUTPUT -d ${allowedAddresses} -j ACCEPT
+        '';
+
+        script = name: src: pkgs.writers.writeDash name ''
+          set -e
+          ${src}
+        '';
       in {
         "${n}".serviceConfig.NetworkNamespacePath = "/var/run/netns/${netnsName}";
 
         "netns-${n}" = rec {
           requires = [ "nb-netns-bridge.service" ];
           after = [ "nb-netns-bridge.service" ];
-          bindsTo = [ "${n}.service" ];
-          requiredBy = bindsTo;
-          before = bindsTo;
-          script = ''
-            ${ip} netns add ${netnsName}
-            ${ipNetns} link set lo up
-            ${ip} link add ${veth} type veth peer name ${peer}
-            ${ip} link set ${veth} netns ${netnsName}
-            ${ipNetns} addr add ${v.address}/24 dev ${veth}
-            # The peer link is never used directly, so don't auto-assign an IPv6 address
-            echo 1 > /proc/sys/net/ipv6/conf/${peer}/disable_ipv6
-            ${ip} link set ${peer} up
-            ${ipNetns} link set ${veth} up
-            ${ip} link set ${peer} master nb-br
-            ${ipNetns} route add default via ${bridgeIp}
-            ${netnsIptables} -w -P INPUT DROP
-            ${netnsIptables} -w -A INPUT -s 127.0.0.1,${bridgeIp},${v.address} -j ACCEPT
-            # allow return traffic to outgoing connections initiated by the service itself
-            ${netnsIptables} -w -A INPUT -m conntrack --ctstate ESTABLISHED -j ACCEPT
-          '' + optionalString (config.services.${n}.enforceTor or false) ''
-            ${netnsIptables} -w -P OUTPUT DROP
-            ${netnsIptables} -w -A OUTPUT -d 127.0.0.1,${bridgeIp},${v.address} -j ACCEPT
-          '' + optionalString (v.availableNetns != []) ''
-            ${netnsIptables} -w -A INPUT -s ${allowedAddresses} -j ACCEPT
-            ${netnsIptables} -w -A OUTPUT -d ${allowedAddresses} -j ACCEPT
-          '';
+          requiredBy = [ "${n}.service" ];
+          before = requiredBy;
+          serviceConfig = {
+            Type = "oneshot";
+            RemainAfterExit = true;
+            ExecStart = script "setup" setup;
+          };
           # Link deletion is implicit in netns deletion, but it sometimes only happens
           # after `netns delete` finishes. Add an extra `link del` to ensure that
           # the link is deleted before the service stops, which is needed for service
@@ -198,10 +212,7 @@ in {
             ${ip} netns delete ${netnsName}
             ${ip} link del ${peer} 2> /dev/null || true
           '';
-          serviceConfig = {
-            Type = "oneshot";
-            RemainAfterExit = true;
-          };
+
         };
       };
     in foldl (services: n:
