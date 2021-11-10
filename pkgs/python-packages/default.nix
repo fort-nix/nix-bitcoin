@@ -19,6 +19,7 @@ in {
 
   pyln-client = clightningPkg ./pyln-client;
   pyln-proto = clightningPkg ./pyln-proto;
+  pyln-bolt7 = clightningPkg ./pyln-bolt7;
   pylightning = clightningPkg ./pylightning;
 
   ## Specific versions of packages that already exist in nixpkgs
