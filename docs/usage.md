@@ -9,6 +9,31 @@ update-nix-bitcoin
 # Nodeinfo
 Run `nodeinfo` to see onion addresses and local addresses for enabled services.
 
+# Managing services
+
+NixOS uses the [systemd](https://wiki.archlinux.org/title/systemd) service manager.
+
+Usage:
+```shell
+# Show service status
+systemctl status bitcoind
+
+# Show the last 100 log messages
+journalctl -u bitcoind -n 100
+# Show all log messages since the last system boot
+journalctl -b -u bitcoind
+
+# These commands require root permissions
+systemctl stop bitcoind
+systemctl start bitcoind
+systemctl restart bitcoind
+
+# Show the service definition
+systemctl cat bitcoind
+# Show all service parameters
+systemctl show bitcoind
+```
+
 # Connect to RTL
 Normally you would connect to RTL via SSH tunneling with a command like this
 
