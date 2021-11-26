@@ -3,45 +3,6 @@
 with lib;
 let
   options.services = {
-    nbxplorer = {
-      package = mkOption {
-        type = types.package;
-        default = nbPkgs.nbxplorer;
-        description = "The package providing nbxplorer binaries.";
-      };
-      address = mkOption {
-        type = types.str;
-        default = "127.0.0.1";
-        description = "Address to listen on.";
-      };
-      port = mkOption {
-        type = types.port;
-        default = 24444;
-        description = "Port to listen on.";
-      };
-      dataDir = mkOption {
-        type = types.path;
-        default = "/var/lib/nbxplorer";
-        description = "The data directory for nbxplorer.";
-      };
-      user = mkOption {
-        type = types.str;
-        default = "nbxplorer";
-        description = "The user as which to run nbxplorer.";
-      };
-      group = mkOption {
-        type = types.str;
-        default = cfg.nbxplorer.user;
-        description = "The group as which to run nbxplorer.";
-      };
-      enable = mkOption {
-        # This option is only used by netns-isolation
-        internal = true;
-        default = cfg.btcpayserver.enable;
-      };
-      enforceTor = nbLib.enforceTor;
-    };
-
     btcpayserver = {
       enable = mkEnableOption "btcpayserver";
       address = mkOption {
@@ -92,6 +53,48 @@ let
         type = types.str;
         default = cfg.btcpayserver.user;
         description = "The group as which to run btcpayserver.";
+      };
+      enforceTor = nbLib.enforceTor;
+    };
+
+    nbxplorer = {
+      enable = mkOption {
+        # This option is only used by netns-isolation
+        internal = true;
+        default = cfg.btcpayserver.enable;
+        description = ''
+          nbxplorer is always enabled when btcpayserver is enabled.
+        '';
+      };
+      package = mkOption {
+        type = types.package;
+        default = nbPkgs.nbxplorer;
+        description = "The package providing nbxplorer binaries.";
+      };
+      address = mkOption {
+        type = types.str;
+        default = "127.0.0.1";
+        description = "Address to listen on.";
+      };
+      port = mkOption {
+        type = types.port;
+        default = 24444;
+        description = "Port to listen on.";
+      };
+      dataDir = mkOption {
+        type = types.path;
+        default = "/var/lib/nbxplorer";
+        description = "The data directory for nbxplorer.";
+      };
+      user = mkOption {
+        type = types.str;
+        default = "nbxplorer";
+        description = "The user as which to run nbxplorer.";
+      };
+      group = mkOption {
+        type = types.str;
+        default = cfg.nbxplorer.user;
+        description = "The group as which to run nbxplorer.";
       };
       enforceTor = nbLib.enforceTor;
     };
