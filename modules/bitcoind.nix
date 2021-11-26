@@ -206,6 +206,11 @@ let
           Value 0 disables pruning.
         '';
       };
+      txindex = mkOption {
+        type = types.bool;
+        default = false;
+        description = "Enable the transaction index.";
+      };
       zmqpubrawblock = mkOption {
         type = types.nullOr types.str;
         default = null;
@@ -284,6 +289,7 @@ let
     ''}
     ${optionalString (cfg.dbCache != null) "dbcache=${toString cfg.dbCache}"}
     prune=${toString cfg.prune}
+    ${optionalString cfg.txindex "txindex=1"}
     ${optionalString (cfg.sysperms != null) "sysperms=${if cfg.sysperms then "1" else "0"}"}
     ${optionalString (cfg.disablewallet != null) "disablewallet=${if cfg.disablewallet then "1" else "0"}"}
     ${optionalString (cfg.assumevalid != null) "assumevalid=${cfg.assumevalid}"}
