@@ -49,6 +49,17 @@ let
       default = false;
       description = "Enable the Night UI Theme.";
     };
+    extraCurrency = mkOption {
+      type = with types; nullOr str;
+      default = null;
+      example = "USD";
+      description = ''
+        Currency code (ISO 4217) of the extra currency used for displaying balances.
+        When set, this option enables online currency rate fetching.
+        Warning: Rate fetching requires outgoing clearnet connections, so option
+        `tor.enforce` is automatically disabled.
+      '';
+    };
     user = mkOption {
       type = types.str;
       default = "rtl";
@@ -118,7 +129,10 @@ let
           ''"channelBackupPath": "${cfg.dataDir}/backup/lnd",''
          }
         "logLevel": "INFO",
-        "fiatConversion": false,
+        "fiatConversion": ${if cfg.extraCurrency == null then "false" else "true"},
+        ${optionalString (cfg.extraCurrency != null)
+          ''"currencyUnit": "${cfg.extraCurrency}",''
+         }
         ${optionalString (isLnd && cfg.loop)
           ''"swapServerUrl": "https://${nbLib.addressWithPort lightning-loop.restAddress lightning-loop.restPort}",''
          }
@@ -189,6 +203,8 @@ in {
     systemd.tmpfiles.rules = [
       "d '${cfg.dataDir}' 0770 ${cfg.user} ${cfg.group} - -"
     ];
+
+    services.rtl.tor.enforce = mkIf (cfg.extraCurrency != null) false;
 
     systemd.services.rtl = rec {
       wantedBy = [ "multi-user.target" ];

@@ -67,6 +67,7 @@ let
       nix-bitcoin.generateSecretsCmds.rtl = mkIf cfg.rtl.enable (mkForce ''
         echo a > rtl-password
       '');
+      services.rtl.extraCurrency = mkDefault "CHF";
 
       tests.spark-wallet = cfg.spark-wallet.enable;
 
