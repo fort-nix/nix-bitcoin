@@ -23,12 +23,12 @@ let
       clightning = mkOption {
         type = types.bool;
         default = false;
-        description = "Add a node interface for clightning.";
+        description = "Enable the clightning node interface.";
       };
       lnd = mkOption {
         type = types.bool;
         default = false;
-        description = "Add a node interface for lnd.";
+        description = "Enable the lnd node interface.";
       };
       reverseOrder = mkOption {
         type = types.bool;
@@ -49,11 +49,25 @@ let
       default = false;
       description = "Enable the Night UI Theme.";
     };
+    user = mkOption {
+      type = types.str;
+      default = "rtl";
+      description = "The user as which to run RTL.";
+    };
+    group = mkOption {
+      type = types.str;
+      default = cfg.user;
+      description = "The group as which to run RTL.";
+    };
     cl-rest = {
       enable = mkOption {
+        readOnly = true;
         type = types.bool;
         default = cfg.nodes.clightning;
-        description = "Enable c-lightning-REST server.";
+        description = ''
+          Enable c-lightning-REST server. This service is required for
+          clightning support and is automatically enabled.
+        '';
       };
       address = mkOption {
         readOnly = true;
@@ -74,16 +88,6 @@ let
         default = 4001;
         description = "Swagger API documentation server port.";
       };
-    };
-    user = mkOption {
-      type = types.str;
-      default = "rtl";
-      description = "The user as which to run RTL.";
-    };
-    group = mkOption {
-      type = types.str;
-      default = cfg.user;
-      description = "The group as which to run RTL.";
     };
     inherit (nbLib) enforceTor;
   };
