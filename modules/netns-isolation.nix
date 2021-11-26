@@ -246,10 +246,6 @@ in {
         id = 17;
         # communicates with clightning over lightning-rpc socket
       };
-      recurring-donations = {
-        id = 20;
-        # communicates with clightning over lightning-rpc socket
-      };
       nginx = {
         id = 21;
       };

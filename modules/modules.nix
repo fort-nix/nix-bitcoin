@@ -25,7 +25,6 @@
     ./joinmarket.nix
     ./joinmarket-ob-watcher.nix
     ./hardware-wallets.nix
-    ./recurring-donations.nix
 
     # Support features
     ./versioning.nix

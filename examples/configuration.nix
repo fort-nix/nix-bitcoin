@@ -145,22 +145,6 @@
   #
   # Liquid can be controlled with command 'elements-cli'.
 
-  ### RECURRING-DONATIONS
-  # Set this to enable recurring donations. This is EXPERIMENTAL; it's
-  # not guaranteed that payments are succeeding or that you will notice payment
-  # failure.
-  # services.recurring-donations.enable = true;
-  # This automatically enables clightning.
-  #
-  # Specify the receivers of the donations. By default donations are every
-  # Monday at a randomized time. Check `journalctl -eu recurring-donations` or
-  # `lightning-cli listpayments` for successful lightning donations.
-  # services.recurring-donations.tallycoin = {
-  #   "<receiver name>" = <amount you wish to donate in sat>"
-  #   "<additional receiver name>" = <amount you wish to donate in sat>;
-  #   "djbooth007" = 1000;
-  # };
-
   ### Hardware wallets
   # Enable the following to allow using hardware wallets.
   # See https://github.com/bitcoin-core/HWI for more information.
