@@ -332,14 +332,16 @@ in {
       payjoinAddress = netns.joinmarket.address;
       cliExec = mkCliExec "joinmarket";
     };
-    systemd.services.joinmarket-yieldgenerator.serviceConfig.NetworkNamespacePath = "/var/run/netns/nb-joinmarket";
+    systemd.services.joinmarket-yieldgenerator = mkIf config.services.joinmarket.yieldgenerator.enable {
+      serviceConfig.NetworkNamespacePath = "/var/run/netns/nb-joinmarket";
+    };
 
     services.joinmarket-ob-watcher.address = netns.joinmarket-ob-watcher.address;
 
     services.lightning-pool.rpcAddress = netns.lightning-pool.address;
 
     services.rtl.address = netns.rtl.address;
-    systemd.services.cl-rest = {
+    systemd.services.cl-rest = mkIf config.services.rtl.cl-rest.enable {
       serviceConfig.NetworkNamespacePath = "/var/run/netns/nb-rtl";
       requires = [ "netns-rtl.service" ] ;
       after = [ "netns-rtl.service" ];
