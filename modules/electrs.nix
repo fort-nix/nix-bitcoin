@@ -12,7 +12,7 @@ let
     port = mkOption {
       type = types.port;
       default = 50001;
-      description = "RPC port.";
+      description = "Port to listen for RPC connections.";
     };
     dataDir = mkOption {
       type = types.path;

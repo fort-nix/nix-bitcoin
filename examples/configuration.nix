@@ -16,7 +16,7 @@
     # See the comments at the top of `hardened-extended.nix` for further details.
     # <nix-bitcoin/modules/presets/hardened-extended.nix>
 
-    # FIXME: Uncomment next line to import your hardware configuration. If so,
+    # FIXME: Uncomment the next line to import your hardware configuration. If so,
     # add the hardware configuration file to the same directory as this file.
     #./hardware-configuration.nix
   ];

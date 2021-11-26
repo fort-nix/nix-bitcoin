@@ -69,6 +69,7 @@ NixOS modules ([src](modules/modules.nix))
     * [Lightning Pool](https://github.com/lightninglabs/pool)
     * [charge-lnd](https://github.com/accumulator/charge-lnd): policy-based channel fee manager
     * [lndconnect](https://github.com/LN-Zap/lndconnect) via a REST onion service
+  * [Ride The Lightning](https://github.com/Ride-The-Lightning/RTL): web interface for `lnd` and `clightning`
   * [spark-wallet](https://github.com/shesek/spark-wallet)
   * [electrs](https://github.com/romanz/electrs)
   * [btcpayserver](https://github.com/btcpayserver/btcpayserver)

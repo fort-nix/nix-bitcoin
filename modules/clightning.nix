@@ -43,7 +43,16 @@ let
     extraConfig = mkOption {
       type = types.lines;
       default = "";
-      description = "Extra lines appended to the configuration file.";
+      example = ''
+        alias=mynode
+      '';
+      description = ''
+        Extra lines appended to the configuration file.
+
+        See all available options at
+        https://github.com/ElementsProject/lightning/blob/master/doc/lightningd-config.5.md
+        or by running `lightningd --help`.
+      '';
     };
     user = mkOption {
       type = types.str;
@@ -88,6 +97,7 @@ let
     bitcoin-rpcport=${toString config.services.bitcoind.rpc.port}
     bitcoin-rpcuser=${config.services.bitcoind.rpc.users.public.name}
     rpc-file-mode=0660
+    log-timestamps=false
     ${cfg.extraConfig}
   '';
 
@@ -123,13 +133,14 @@ in {
       preStart = ''
         # The RPC socket has to be removed otherwise we might have stale sockets
         rm -f ${cfg.networkDir}/lightning-rpc
-        install -m 640 ${configFile} '${cfg.dataDir}/config'
+        umask u=rw,g=r,o=
         {
+          cat ${configFile}
           echo "bitcoin-rpcpassword=$(cat ${config.nix-bitcoin.secretsDir}/bitcoin-rpcpassword-public)"
           ${optionalString (cfg.getPublicAddressCmd != "") ''
             echo "announce-addr=$(${cfg.getPublicAddressCmd}):${toString publicPort}"
           ''}
-        } >> '${cfg.dataDir}/config'
+        } > '${cfg.dataDir}/config'
       '';
       serviceConfig = nbLib.defaultHardening // {
         ExecStart = "${nbPkgs.clightning}/bin/lightningd --lightning-dir=${cfg.dataDir}";

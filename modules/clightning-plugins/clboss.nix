@@ -9,7 +9,9 @@ let cfg = config.services.clightning.plugins.clboss; in
       type = types.ints.positive;
       default = 30000;
       description = ''
-        Specify target amount (in satoshi) that CLBOSS will leave onchain.
+        Target amount (in satoshi) that CLBOSS will leave on-chain.
+        clboss will only open new channels if this amount is smaller than
+        the funds in your clightning wallet.
       '';
     };
     package = mkOption {
