@@ -74,10 +74,8 @@ in {
           > electrs.toml
         '';
       serviceConfig = nbLib.defaultHardening // {
-        RuntimeDirectory = "electrs";
-        RuntimeDirectoryMode = "700";
         # electrs only uses the working directory for reading electrs.toml
-        WorkingDirectory = "/run/electrs";
+        WorkingDirectory = cfg.dataDir;
         ExecStart = ''
           ${config.nix-bitcoin.pkgs.electrs}/bin/electrs -vv \
           --network=${bitcoind.makeNetworkName "bitcoin" "regtest"} \

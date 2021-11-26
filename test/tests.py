@@ -375,7 +375,6 @@ def _():
     num_blocks = test_data["num_blocks"]
 
     if enabled("electrs"):
-        machine.wait_for_unit("onion-addresses")
         machine.wait_until_succeeds(log_has_string("electrs", "serving Electrum RPC"))
         get_block_height_cmd = (
             """echo '{"method": "blockchain.headers.subscribe", "id": 0, "params": []}'"""
