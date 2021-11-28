@@ -79,7 +79,8 @@ in {
         # electrs only uses the working directory for reading electrs.toml
         WorkingDirectory = "/run/electrs";
         ExecStart = ''
-          ${config.nix-bitcoin.pkgs.electrs}/bin/electrs -vv \
+          ${config.nix-bitcoin.pkgs.electrs}/bin/electrs \
+          --log-filters=INFO \
           --network=${bitcoind.makeNetworkName "bitcoin" "regtest"} \
           --db-dir='${cfg.dataDir}' \
           --daemon-dir='${bitcoind.dataDir}' \
