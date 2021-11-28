@@ -156,7 +156,9 @@ in {
         peer = "nb-veth-br-${toString v.id}";
         inherit (v) netnsName;
         nsenter = "${pkgs.utillinux}/bin/nsenter";
-        allowedAddresses = concatMapStringsSep "," (available: netns.${available}.address) v.availableNetns;
+        allowedNetnsAddresses = map (available: netns.${available}.address) v.availableNetns;
+        allowedAddresses = concatStringsSep ","
+          ([ "127.0.0.1,${bridgeIp},${v.address}" ] ++ allowedNetnsAddresses);
 
         setup = ''
           ${ip} netns add ${netnsName}
@@ -176,17 +178,13 @@ in {
           ${ip} route add default via ${bridgeIp}
 
           ${iptables} -w -P INPUT DROP
-          ${iptables} -w -A INPUT -s 127.0.0.1,${bridgeIp},${v.address} -j ACCEPT
           # allow return traffic to outgoing connections initiated by the service itself
           ${iptables} -w -A INPUT -m conntrack --ctstate ESTABLISHED -j ACCEPT
+          ${iptables} -w -A INPUT -s ${allowedAddresses} -j ACCEPT
         '' + optionalString (config.services.${n}.tor.enforce or false) ''
           ${iptables} -w -P OUTPUT DROP
-          ${iptables} -w -A OUTPUT -d 127.0.0.1,${bridgeIp},${v.address} -j ACCEPT
-        '' + optionalString (v.availableNetns != []) ''
-          ${iptables} -w -A INPUT -s ${allowedAddresses} -j ACCEPT
           ${iptables} -w -A OUTPUT -d ${allowedAddresses} -j ACCEPT
         '';
-
         script = name: src: pkgs.writers.writeDash name ''
           set -e
           ${src}
