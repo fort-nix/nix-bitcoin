@@ -23,6 +23,7 @@ in {
     lnd = defaultEnableTorProxy;
     lightning-loop = defaultEnableTorProxy;
     liquidd = defaultEnableTorProxy;
+    # TODO-EXTERNAL:
     # disable Tor enforcement until btcpayserver can fetch rates over Tor
     # btcpayserver = defaultEnableTorProxy;
     spark-wallet = defaultEnableTorProxy;
