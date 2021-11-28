@@ -16,14 +16,14 @@ let
     };
     proxy = mkOption {
       type = types.nullOr types.str;
-      default = if cfg.enforceTor then config.nix-bitcoin.torClientAddressWithPort else null;
+      default = if cfg.tor.proxy then config.nix-bitcoin.torClientAddressWithPort else null;
       description = ''
         Socks proxy for connecting to Tor nodes (or for all connections if option always-use-proxy is set).
       '';
     };
     always-use-proxy = mkOption {
       type = types.bool;
-      default = cfg.enforceTor;
+      default = cfg.tor.proxy;
       description = ''
         Always use the proxy, even to connect to normal IP addresses.
         You can still connect to Unix domain sockets manually.
@@ -79,7 +79,7 @@ let
         If left empty, no address is announced.
       '';
     };
-    inherit (nbLib) enforceTor;
+    tor = nbLib.tor;
   };
 
   cfg = config.services.clightning;
@@ -156,7 +156,7 @@ in {
         #
         # Disable seccomp filtering because clightning depends on this syscall.
         SystemCallFilter = [];
-      } // nbLib.allowedIPAddresses cfg.enforceTor;
+      } // nbLib.allowedIPAddresses cfg.tor.enforce;
       # Wait until the rpc socket appears
       postStart = ''
         while [[ ! -e ${cfg.networkDir}/lightning-rpc ]]; do

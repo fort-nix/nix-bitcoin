@@ -50,11 +50,9 @@ let
       readOnly = true;
       default = ircServers;
     };
-    # This option is only used by netns-isolation
-    enforceTor = mkOption {
-      readOnly = true;
-      default = true;
-    };
+    # This option is only used by netns-isolation.
+    # Tor is always enabled.
+    tor.enforce = nbLib.tor.enforce;
     inherit (nbLib) cliExec;
 
     yieldgenerator = {
@@ -328,7 +326,7 @@ in {
         Restart = "on-failure";
         RestartSec = "10s";
         ReadWritePaths = cfg.dataDir;
-      } // nbLib.allowTor;
+      } // nbLib.allowedIPAddresses cfg.tor.enforce;
     };
 
     users.users.${cfg.user} = {

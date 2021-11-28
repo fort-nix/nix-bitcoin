@@ -39,7 +39,7 @@ let
       default = cfg.user;
       description = "The group as which to run electrs.";
     };
-    enforceTor = nbLib.enforceTor;
+    tor.enforce = nbLib.tor.enforce;
   };
 
   cfg = config.services.electrs;
@@ -94,7 +94,7 @@ in {
         Restart = "on-failure";
         RestartSec = "10s";
         ReadWritePaths = cfg.dataDir;
-      } // nbLib.allowedIPAddresses cfg.enforceTor;
+      } // nbLib.allowedIPAddresses cfg.tor.enforce;
     };
 
     users.users.${cfg.user} = {

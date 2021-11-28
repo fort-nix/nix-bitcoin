@@ -46,7 +46,7 @@ let
     };
     tor-socks = mkOption {
       type = types.nullOr types.str;
-      default = if cfg.enforceTor then config.nix-bitcoin.torClientAddressWithPort else null;
+      default = if cfg.tor.proxy then config.nix-bitcoin.torClientAddressWithPort else null;
       description = "Socks proxy for connecting to Tor nodes";
     };
     macaroons = mkOption {
@@ -117,7 +117,7 @@ let
       default = "${secretsDir}/lnd-cert";
       description = "LND TLS certificate path.";
     };
-    inherit (nbLib) enforceTor;
+    tor = nbLib.tor;
   };
 
   cfg = config.services.lnd;
@@ -143,7 +143,7 @@ let
     bitcoin.active=1
     bitcoin.node=bitcoind
 
-    ${optionalString (cfg.enforceTor) "tor.active=true"}
+    ${optionalString (cfg.tor.proxy) "tor.active=true"}
     ${optionalString (cfg.tor-socks != null) "tor.socks=${cfg.tor-socks}"}
 
     bitcoind.rpchost=${bitcoindRpcAddress}:${toString bitcoind.rpc.port}
@@ -277,7 +277,7 @@ in {
             '') (attrNames cfg.macaroons)}
           '')
         ];
-      } // nbLib.allowedIPAddresses cfg.enforceTor;
+      } // nbLib.allowedIPAddresses cfg.tor.enforce;
     };
 
     users.users.${cfg.user} = {

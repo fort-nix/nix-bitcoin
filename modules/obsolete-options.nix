@@ -7,6 +7,16 @@ let
     mkRemovedOptionModule [ "services" service "announce-tor" ] ''
       Use option `nix-bitcoin.onionServices.${service}.public` instead.
     '';
+
+  mkSplitEnforceTorOption = service:
+    (mkRemovedOptionModule [ "services" service "enforceTor" ] ''
+      The option has been split into options `tor.proxy` and `tor.enforce`.
+      Set `tor.proxy = true` to proxy outgoing connections with Tor.
+      Set `tor.enforce = true` to only allow connections (incoming and outgoing) through Tor.
+    '');
+  mkRenamedEnforceTorOption = service:
+    (mkRenamedOptionModule [ "services" service "enforceTor" ] [ "services" service "tor" "enforce" ]);
+
 in {
   imports = [
     (mkRenamedOptionModule [ "services" "bitcoind" "bind" ] [ "services" "bitcoind" "address" ])
@@ -33,5 +43,20 @@ in {
       bitcoin peer connections for syncing blocks. This performs well on low and high
       memory systems.
     '')
-  ];
+  ] ++
+  # 0.0.59
+  (map mkSplitEnforceTorOption [
+    "clightning"
+    "lightning-loop"
+    "lightning-pool"
+    "liquid"
+    "lnd"
+    "spark-wallet"
+    "bitcoind"
+  ]) ++
+  (map mkRenamedEnforceTorOption [
+    "btcpayserver"
+    "rtl"
+    "electrs"
+  ]);
 }

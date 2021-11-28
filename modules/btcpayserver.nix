@@ -54,7 +54,7 @@ let
         default = cfg.btcpayserver.user;
         description = "The group as which to run btcpayserver.";
       };
-      enforceTor = nbLib.enforceTor;
+      tor.enforce = nbLib.tor.enforce;
     };
 
     nbxplorer = {
@@ -96,7 +96,7 @@ let
         default = cfg.nbxplorer.user;
         description = "The group as which to run nbxplorer.";
       };
-      enforceTor = nbLib.enforceTor;
+      tor.enforce = nbLib.tor.enforce;
     };
   };
 
@@ -185,7 +185,7 @@ in {
         RestartSec = "10s";
         ReadWritePaths = cfg.nbxplorer.dataDir;
         MemoryDenyWriteExecute = "false";
-      } // nbLib.allowedIPAddresses cfg.nbxplorer.enforceTor;
+      } // nbLib.allowedIPAddresses cfg.nbxplorer.tor.enforce;
     };
 
     systemd.services.btcpayserver = let
@@ -238,7 +238,7 @@ in {
         RestartSec = "10s";
         ReadWritePaths = cfg.btcpayserver.dataDir;
         MemoryDenyWriteExecute = "false";
-      } // nbLib.allowedIPAddresses cfg.btcpayserver.enforceTor;
+      } // nbLib.allowedIPAddresses cfg.btcpayserver.tor.enforce;
     }; in self;
 
     users.users.${cfg.nbxplorer.user} = {

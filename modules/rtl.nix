@@ -89,7 +89,7 @@ let
         description = "Swagger API documentation server port.";
       };
     };
-    inherit (nbLib) enforceTor;
+    tor.enforce = nbLib.tor.enforce;
   };
 
   cfg = config.services.rtl;
@@ -214,7 +214,7 @@ in {
         Restart = "on-failure";
         RestartSec = "10s";
         ReadWritePaths = cfg.dataDir;
-      } // nbLib.allowedIPAddresses cfg.enforceTor
+      } // nbLib.allowedIPAddresses cfg.tor.enforce
         // nbLib.nodejs;
     };
 

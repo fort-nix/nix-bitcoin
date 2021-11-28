@@ -98,7 +98,7 @@ let
       };
       proxy = mkOption {
         type = types.nullOr types.str;
-        default = if cfg.enforceTor then config.nix-bitcoin.torClientAddressWithPort else null;
+        default = if cfg.tor.proxy then config.nix-bitcoin.torClientAddressWithPort else null;
         description = "Connect through SOCKS5 proxy";
       };
       dbCache = mkOption {
@@ -156,7 +156,7 @@ let
         '';
         description = "Binary for managing liquid swaps.";
       };
-      enforceTor = nbLib.enforceTor;
+      tor = nbLib.tor;
     };
   };
 
@@ -271,7 +271,7 @@ in {
         ExecStart = "${nbPkgs.elementsd}/bin/elementsd -datadir='${cfg.dataDir}'";
         Restart = "on-failure";
         ReadWritePaths = cfg.dataDir;
-      } // nbLib.allowedIPAddresses cfg.enforceTor;
+      } // nbLib.allowedIPAddresses cfg.tor.enforce;
     };
 
     users.users.${cfg.user} = {
