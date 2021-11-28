@@ -329,4 +329,7 @@ You can also build Nix from source by following the instructions at https://nixo
 
 For security reasons, all normal system management tasks can and should be performed with the `operator` user. Logging in as `root` should be done as rarely as possible.
 
-See [usage.md](usage.md) for usage instructions, such as how to update.
+See also:
+- [Migrating existing services to bitcoind](configuration.md#migrate-existing-services-to-nix-bitcoin)
+- [Managing your deployment](configuration.md#managing-your-deployment)
+- [Using services](services.md)

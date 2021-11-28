@@ -1,11 +1,3 @@
-# Updating
-In your deployment directory, enter the nix shell with `nix-shell` and run the
-following to update `nix-bitcoin-release.nix`:
-
-```
-update-nix-bitcoin
-```
-
 # Nodeinfo
 Run `nodeinfo` to see onion addresses and local addresses for enabled services.
 

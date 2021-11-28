@@ -47,6 +47,14 @@ Get started
 - To add nix-bitcoin to an existing NixOS configuration, see [importable-configuration.nix](examples/importable-configuration.nix)
   and the [Flake example](examples/flakes/flake.nix).
 
+Docs
+---
+* [Hardware Requirements](docs/hardware.md)
+* [Installation](docs/install.md)
+* [Configuration and maintenance](docs/configuration.md)
+* [Using services](docs/services.md)
+* [FAQ](docs/faq.md)
+
 Features
 ---
 A [configuration preset](modules/presets/secure-node.nix) for setting up a secure node
@@ -91,13 +99,6 @@ Security
 * **Defense-in-depth:** nix-bitcoin supports a [hardened kernel](https://github.com/NixOS/nixpkgs/blob/master/nixos/modules/profiles/hardened.nix), services are confined through discretionary access control, Linux namespaces, [dbus firewall](modules/security.nix) and seccomp-bpf with continuous improvements.
 
 Note that if the machine you're deploying *from* is insecure, there is nothing nix-bitcoin can do to protect itself.
-
-Docs
----
-* [Hardware Requirements](docs/hardware.md)
-* [Install instructions](docs/install.md)
-* [Usage instructions](docs/usage.md)
-* [FAQ](docs/faq.md)
 
 Troubleshooting
 ---
