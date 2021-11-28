@@ -246,10 +246,6 @@ vmTestNixExpr() {
 EOF
 }
 
-pkgsUnstable() {
-    doBuild pkgs-unstable "$scriptDir/pkgs-unstable.nix"
-}
-
 # A basic subset of tests to keep the total runtime within
 # manageable bounds (<4 min on desktop systems).
 # These are also run on the CI server.
@@ -257,7 +253,6 @@ basic() {
     scenario=default buildTest "$@"
     scenario=netns buildTest "$@"
     scenario=netnsRegtest buildTest "$@"
-    pkgsUnstable
 }
 
 # All tests that only consist of building a nix derivation.
