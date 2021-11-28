@@ -15,25 +15,20 @@ task:
   # Use the maximum timeout. Needed when rebuilding packages on a channel update.
   timeout_in: 120m
 
+  name: modules_test
+  environment:
+    nixpkgs: nixpkgs
+  container:
+    # A maximum of 16 CPUs is shared among all concurrent tasks.
+    # https://cirrus-ci.org/faq/#are-there-any-limits
+    cpu: 4
   matrix:
-    - name: modules_test
-      environment:
-        nixpkgs: nixpkgs
-      container:
-        # A maximum of 16 CPUs is shared among all concurrent tasks.
-        # https://cirrus-ci.org/faq/#are-there-any-limits
-        cpu: 4
-      matrix:
-        - environment:
-            scenario: default
-        - environment:
-            scenario: netns
-        - environment:
-            scenario: netnsRegtest
-
-    - name: pkgs_unstable
-      environment:
-        nixpkgs: nixpkgs-unstable
+    - environment:
+        scenario: default
+    - environment:
+        scenario: netns
+    - environment:
+        scenario: netnsRegtest
 
   # This script is run as root
   build_script:
