@@ -58,8 +58,20 @@ in {
         CapabilityBoundingSet = "CAP_CHOWN CAP_FSETID CAP_SETFCAP CAP_DAC_OVERRIDE CAP_DAC_READ_SEARCH CAP_FOWNER CAP_IPC_OWNER";
       };
       script = ''
+        waitForFile() {
+          file=$1
+          for ((i=0; i<300; i++)); do
+            if [[ -e $file ]]; then
+              return;
+            fi
+            sleep 0.1
+          done
+          echo "Error: File $file did not appear after 30 sec."
+          exit 1
+        }
+
         # Wait until tor is up
-        until [[ -e /var/lib/tor/state ]]; do sleep 0.1; done
+        waitForFile /var/lib/tor/state
 
         cd ${cfg.dataDir}
         rm -rf *
@@ -71,22 +83,20 @@ in {
             ${concatMapStrings
               (service: ''
                 onionFile=/var/lib/tor/onion/${service}/hostname
-                if [[ -e $onionFile ]]; then
-                  cp $onionFile ${user}/${service}
-                  chown ${user} ${user}/${service}
-                fi
+                waitForFile $onionFile
+                cp $onionFile ${user}/${service}
+                chown ${user} ${user}/${service}
               '')
               cfg.access.${user}
-            }
+             }
           '')
           (builtins.attrNames cfg.access)
         }
 
         ${concatMapStrings (service: ''
           onionFile=/var/lib/tor/onion/${service}/hostname
-          if [[ -e $onionFile ]]; then
-            install -D -o ${config.systemd.services.${service}.serviceConfig.User} -m 400 $onionFile services/${service}
-          fi
+          waitForFile $onionFile
+          install -D -o ${config.systemd.services.${service}.serviceConfig.User} -m 400 $onionFile services/${service}
         '') cfg.services}
       '';
     };
