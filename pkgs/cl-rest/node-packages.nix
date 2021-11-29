@@ -40,13 +40,13 @@ let
         sha1 = "9a5f699051b1e7073328f2a008968b64ea2955d2";
       };
     };
-    "asn1-0.2.4" = {
+    "asn1-0.2.6" = {
       name = "asn1";
       packageName = "asn1";
-      version = "0.2.4";
+      version = "0.2.6";
       src = fetchurl {
-        url = "https://registry.npmjs.org/asn1/-/asn1-0.2.4.tgz";
-        sha512 = "jxwzQpLQjSmWXgwaCZE9Nz+glAG01yF1QnWgbhGwHI5A6FRIEY6IVqtHhIepHqI7/kyEyQEagBC5mBEFlIYvdg==";
+        url = "https://registry.npmjs.org/asn1/-/asn1-0.2.6.tgz";
+        sha512 = "ix/FxPn0MDjeyJ7i/yoHGFt/EX6LyNbxSEhPPXODPL+KB0VPk86UYfL0lMdy+KCnv+fmvIzySwaK5COwqVbWTQ==";
       };
     };
     "assert-plus-1.0.0" = {
@@ -715,22 +715,22 @@ let
         sha512 = "x0Vn8spI+wuJ1O6S7gnbaQg8Pxh4NNHb7KSINmEWKiPE4RKOplvijn+NkmYmmRgP68mc70j2EbeTFRsrswaQeg==";
       };
     };
-    "mime-db-1.50.0" = {
+    "mime-db-1.51.0" = {
       name = "mime-db";
       packageName = "mime-db";
-      version = "1.50.0";
+      version = "1.51.0";
       src = fetchurl {
-        url = "https://registry.npmjs.org/mime-db/-/mime-db-1.50.0.tgz";
-        sha512 = "9tMZCDlYHqeERXEHO9f/hKfNXhre5dK2eE/krIvUjZbS2KPcqGDfNShIWS1uW9XOTKQKqK6qbeOci18rbfW77A==";
+        url = "https://registry.npmjs.org/mime-db/-/mime-db-1.51.0.tgz";
+        sha512 = "5y8A56jg7XVQx2mbv1lu49NR4dokRnhZYTtL+KGfaa27uq4pSTXkwQkFJl4pkRMyNFz/EtYDSkiiEHx3F7UN6g==";
       };
     };
-    "mime-types-2.1.33" = {
+    "mime-types-2.1.34" = {
       name = "mime-types";
       packageName = "mime-types";
-      version = "2.1.33";
+      version = "2.1.34";
       src = fetchurl {
-        url = "https://registry.npmjs.org/mime-types/-/mime-types-2.1.33.tgz";
-        sha512 = "plLElXp7pRDd0bNZHw+nMd52vRYjLwQjygaNg7ddJ2uJtTlmnTCjWuPKxVu6//AdaRuME84SvLW91sIkBqGT0g==";
+        url = "https://registry.npmjs.org/mime-types/-/mime-types-2.1.34.tgz";
+        sha512 = "6cP692WwGIs9XXdOO4++N+7qjqv0rqxxVvJ3VHPh/Sc9mVZcQP+ZGhkKiTvWMQRr2tbHkJP/Yn7Y0npb3ZBs4A==";
       };
     };
     "minimatch-3.0.4" = {
@@ -1201,6 +1201,15 @@ let
         sha1 = "b5243d8f3ec1aa35f1364605bc0d1036e30ab69f";
       };
     };
+    "ws-8.3.0" = {
+      name = "ws";
+      packageName = "ws";
+      version = "8.3.0";
+      src = fetchurl {
+        url = "https://registry.npmjs.org/ws/-/ws-8.3.0.tgz";
+        sha512 = "Gs5EZtpqZzLvmIM59w4igITU57lrtYVFneaa434VROv4thzJyV6UjIL3D42lslWlI+D4KzLYnxSwtfuiO79sNw==";
+      };
+    };
     "z-schema-4.2.4" = {
       name = "z-schema";
       packageName = "z-schema";
@@ -1216,17 +1225,17 @@ in
   "c-lightning-REST-file:./package" = nodeEnv.buildNodePackage {
     name = "c-lightning-rest";
     packageName = "c-lightning-rest";
-    version = "0.5.2";
+    version = "0.6.0";
     src = fetchurl {
-      url = "https://github.com/Ride-The-Lightning/c-lightning-REST/archive/refs/tags/v0.5.2.tar.gz";
-      sha256 = "d851c1f039b165ca2a8811d9c25b7baac85a9597949319c1aaf7a270894069b5";
+      url = "https://github.com/Ride-The-Lightning/c-lightning-REST/archive/refs/tags/v0.6.0.tar.gz";
+      sha256 = "7fcc3150b84f764e8e994742d0ffaa4511e052964e71bddd8e4c1420531fdaa1";
     };
     dependencies = [
       sources."accepts-1.3.7"
       sources."ajv-6.12.6"
       sources."argparse-1.0.10"
       sources."array-flatten-1.1.1"
-      sources."asn1-0.2.4"
+      sources."asn1-0.2.6"
       sources."assert-plus-1.0.0"
       sources."asynckit-0.4.0"
       sources."atob-2.1.2"
@@ -1304,8 +1313,8 @@ in
       sources."merge-descriptors-1.0.1"
       sources."methods-1.1.2"
       sources."mime-1.6.0"
-      sources."mime-db-1.50.0"
-      sources."mime-types-2.1.33"
+      sources."mime-db-1.51.0"
+      sources."mime-types-2.1.34"
       sources."minimatch-3.0.4"
       sources."ms-2.0.0"
       sources."negotiator-0.6.2"
@@ -1367,6 +1376,7 @@ in
       sources."vary-1.1.2"
       sources."verror-1.10.0"
       sources."wrappy-1.0.2"
+      sources."ws-8.3.0"
       (sources."z-schema-4.2.4" // {
         dependencies = [
           sources."commander-2.20.3"
