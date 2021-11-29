@@ -6,7 +6,7 @@ TMPDIR="$(mktemp -d -p /tmp)"
 trap "rm -rf $TMPDIR" EXIT
 
 # Get/verify source tarball
-version="0.5.2"
+version="0.6.0"
 export GNUPGHOME=$TMPDIR
 gpg --keyserver hkps://keyserver.ubuntu.com --recv-key 3E9BD4436C288039CA827A9200C9E2BC2E45666F
 wget -P $TMPDIR https://github.com/Ride-The-Lightning/c-lightning-REST/archive/refs/tags/v${version}.tar.gz
