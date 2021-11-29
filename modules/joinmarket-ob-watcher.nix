@@ -29,11 +29,9 @@ let
       default = cfg.user;
       description = "The group as which to run JoinMarket.";
     };
-    # This option is only used by netns-isolation
-    enforceTor = mkOption {
-      readOnly = true;
-      default = true;
-    };
+    # This option is only used by netns-isolation.
+    # Tor is always enabled.
+    tor.enforce = nbLib.tor.enforce;
   };
 
   cfg = config.services.joinmarket-ob-watcher;
@@ -100,7 +98,7 @@ in {
         SystemCallFilter = nbLib.defaultHardening.SystemCallFilter ++ [ "mbind" ] ;
         Restart = "on-failure";
         RestartSec = "10s";
-      } // nbLib.allowTor;
+      } // nbLib.allowedIPAddresses cfg.tor.enforce;
     };
 
     users.users.${cfg.user} = {

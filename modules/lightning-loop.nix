@@ -36,7 +36,7 @@ let
     };
     proxy = mkOption {
       type = types.nullOr types.str;
-      default = if cfg.enforceTor then config.nix-bitcoin.torClientAddressWithPort else null;
+      default = if cfg.tor.proxy then config.nix-bitcoin.torClientAddressWithPort else null;
       description = "host:port of SOCKS5 proxy for connnecting to the loop server.";
     };
     extraConfig = mkOption {
@@ -56,7 +56,7 @@ let
       '';
       description = "Binary to connect with the lightning-loop instance.";
     };
-    enforceTor = nbLib.enforceTor;
+    tor = nbLib.tor;
   };
 
   cfg = config.services.lightning-loop;
@@ -105,7 +105,7 @@ in {
         Restart = "on-failure";
         RestartSec = "10s";
         ReadWritePaths = cfg.dataDir;
-      } // nbLib.allowedIPAddresses cfg.enforceTor;
+      } // nbLib.allowedIPAddresses cfg.tor.enforce;
     };
 
      nix-bitcoin.secrets = {

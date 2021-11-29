@@ -23,12 +23,12 @@ let
       clightning = mkOption {
         type = types.bool;
         default = false;
-        description = "Add a node interface for clightning.";
+        description = "Enable the clightning node interface.";
       };
       lnd = mkOption {
         type = types.bool;
         default = false;
-        description = "Add a node interface for lnd.";
+        description = "Enable the lnd node interface.";
       };
       reverseOrder = mkOption {
         type = types.bool;
@@ -49,11 +49,36 @@ let
       default = false;
       description = "Enable the Night UI Theme.";
     };
+    extraCurrency = mkOption {
+      type = with types; nullOr str;
+      default = null;
+      example = "USD";
+      description = ''
+        Currency code (ISO 4217) of the extra currency used for displaying balances.
+        When set, this option enables online currency rate fetching.
+        Warning: Rate fetching requires outgoing clearnet connections, so option
+        `tor.enforce` is automatically disabled.
+      '';
+    };
+    user = mkOption {
+      type = types.str;
+      default = "rtl";
+      description = "The user as which to run RTL.";
+    };
+    group = mkOption {
+      type = types.str;
+      default = cfg.user;
+      description = "The group as which to run RTL.";
+    };
     cl-rest = {
       enable = mkOption {
+        readOnly = true;
         type = types.bool;
         default = cfg.nodes.clightning;
-        description = "Enable c-lightning-REST server.";
+        description = ''
+          Enable c-lightning-REST server. This service is required for
+          clightning support and is automatically enabled.
+        '';
       };
       address = mkOption {
         readOnly = true;
@@ -75,17 +100,7 @@ let
         description = "Swagger API documentation server port.";
       };
     };
-    user = mkOption {
-      type = types.str;
-      default = "rtl";
-      description = "The user as which to run RTL.";
-    };
-    group = mkOption {
-      type = types.str;
-      default = cfg.user;
-      description = "The group as which to run RTL.";
-    };
-    inherit (nbLib) enforceTor;
+    tor.enforce = nbLib.tor.enforce;
   };
 
   cfg = config.services.rtl;
@@ -114,7 +129,10 @@ let
           ''"channelBackupPath": "${cfg.dataDir}/backup/lnd",''
          }
         "logLevel": "INFO",
-        "fiatConversion": false,
+        "fiatConversion": ${if cfg.extraCurrency == null then "false" else "true"},
+        ${optionalString (cfg.extraCurrency != null)
+          ''"currencyUnit": "${cfg.extraCurrency}",''
+         }
         ${optionalString (isLnd && cfg.loop)
           ''"swapServerUrl": "https://${nbLib.addressWithPort lightning-loop.restAddress lightning-loop.restPort}",''
          }
@@ -186,6 +204,8 @@ in {
       "d '${cfg.dataDir}' 0770 ${cfg.user} ${cfg.group} - -"
     ];
 
+    services.rtl.tor.enforce = mkIf (cfg.extraCurrency != null) false;
+
     systemd.services.rtl = rec {
       wantedBy = [ "multi-user.target" ];
       requires = optional cfg.nodes.clightning "cl-rest.service" ++
@@ -210,7 +230,7 @@ in {
         Restart = "on-failure";
         RestartSec = "10s";
         ReadWritePaths = cfg.dataDir;
-      } // nbLib.allowedIPAddresses cfg.enforceTor
+      } // nbLib.allowedIPAddresses cfg.tor.enforce
         // nbLib.nodejs;
     };
 

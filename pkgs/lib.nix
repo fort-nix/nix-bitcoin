@@ -55,13 +55,20 @@ let self = {
     then self.allowLocalIPAddresses
     else self.allowAllIPAddresses;
 
-  enforceTor = mkOption {
-    type = types.bool;
-    default = false;
-    description = ''
-      Whether to force Tor on a service by only allowing connections from and
-      to 127.0.0.1;
-    '';
+  tor = {
+    proxy = mkOption {
+      type = types.bool;
+      default = false;
+      description = "Whether to proxy outgoing connections with Tor.";
+    };
+    enforce = mkOption {
+      type = types.bool;
+      default = false;
+      description = ''
+        Whether to enforce Tor on a service by only allowing connections
+        from and to localhost and link-local addresses.
+      '';
+    };
   };
 
   script = name: src: pkgs.writers.writeBash name ''

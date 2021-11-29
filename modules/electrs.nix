@@ -12,7 +12,7 @@ let
     port = mkOption {
       type = types.port;
       default = 50001;
-      description = "RPC port.";
+      description = "Port to listen for RPC connections.";
     };
     dataDir = mkOption {
       type = types.path;
@@ -39,7 +39,7 @@ let
       default = cfg.user;
       description = "The group as which to run electrs.";
     };
-    enforceTor = nbLib.enforceTor;
+    tor.enforce = nbLib.tor.enforce;
   };
 
   cfg = config.services.electrs;
@@ -74,10 +74,8 @@ in {
           > electrs.toml
         '';
       serviceConfig = nbLib.defaultHardening // {
-        RuntimeDirectory = "electrs";
-        RuntimeDirectoryMode = "700";
         # electrs only uses the working directory for reading electrs.toml
-        WorkingDirectory = "/run/electrs";
+        WorkingDirectory = cfg.dataDir;
         ExecStart = ''
           ${config.nix-bitcoin.pkgs.electrs}/bin/electrs \
           --log-filters=INFO \
@@ -95,7 +93,7 @@ in {
         Restart = "on-failure";
         RestartSec = "10s";
         ReadWritePaths = cfg.dataDir;
-      } // nbLib.allowedIPAddresses cfg.enforceTor;
+      } // nbLib.allowedIPAddresses cfg.tor.enforce;
     };
 
     users.users.${cfg.user} = {

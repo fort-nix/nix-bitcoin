@@ -16,7 +16,7 @@
     # See the comments at the top of `hardened-extended.nix` for further details.
     # <nix-bitcoin/modules/presets/hardened-extended.nix>
 
-    # FIXME: Uncomment next line to import your hardware configuration. If so,
+    # FIXME: Uncomment the next line to import your hardware configuration. If so,
     # add the hardware configuration file to the same directory as this file.
     #./hardware-configuration.nix
   ];
@@ -144,22 +144,6 @@
   # services.liquidd.enable = true;
   #
   # Liquid can be controlled with command 'elements-cli'.
-
-  ### RECURRING-DONATIONS
-  # Set this to enable recurring donations. This is EXPERIMENTAL; it's
-  # not guaranteed that payments are succeeding or that you will notice payment
-  # failure.
-  # services.recurring-donations.enable = true;
-  # This automatically enables clightning.
-  #
-  # Specify the receivers of the donations. By default donations are every
-  # Monday at a randomized time. Check `journalctl -eu recurring-donations` or
-  # `lightning-cli listpayments` for successful lightning donations.
-  # services.recurring-donations.tallycoin = {
-  #   "<receiver name>" = <amount you wish to donate in sat>"
-  #   "<additional receiver name>" = <amount you wish to donate in sat>;
-  #   "djbooth007" = 1000;
-  # };
 
   ### Hardware wallets
   # Enable the following to allow using hardware wallets.

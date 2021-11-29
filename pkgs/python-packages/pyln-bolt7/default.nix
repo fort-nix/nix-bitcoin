@@ -13,7 +13,7 @@ buildPythonPackage rec {
 
   postUnpack = "sourceRoot=$sourceRoot/contrib/pyln-spec/bolt7";
 
-  # TODO-EXTERNAL
+  # TODO-EXTERNAL:
   # Remove when this fix is released
   # https://github.com/ElementsProject/lightning/pull/4910
   postPatch = ''

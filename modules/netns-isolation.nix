@@ -70,7 +70,8 @@ let
   #   and
   #   availableNetns.clighting = [ "bitcoind" ];
   #
-  # FIXME: Although negligible for our purposes, this calculation's runtime
+  # TODO-EXTERNAL:
+  # Although negligible for our purposes, this calculation's runtime
   # is in the order of (number of connections * number of services),
   # because attrsets and lists are fully copied on each update with '//' or '++'.
   # This can only be improved with an update in the nix language.
@@ -156,7 +157,9 @@ in {
         peer = "nb-veth-br-${toString v.id}";
         inherit (v) netnsName;
         nsenter = "${pkgs.utillinux}/bin/nsenter";
-        allowedAddresses = concatMapStringsSep "," (available: netns.${available}.address) v.availableNetns;
+        allowedNetnsAddresses = map (available: netns.${available}.address) v.availableNetns;
+        allowedAddresses = concatStringsSep ","
+          ([ "127.0.0.1,${bridgeIp},${v.address}" ] ++ allowedNetnsAddresses);
 
         setup = ''
           ${ip} netns add ${netnsName}
@@ -176,17 +179,13 @@ in {
           ${ip} route add default via ${bridgeIp}
 
           ${iptables} -w -P INPUT DROP
-          ${iptables} -w -A INPUT -s 127.0.0.1,${bridgeIp},${v.address} -j ACCEPT
           # allow return traffic to outgoing connections initiated by the service itself
           ${iptables} -w -A INPUT -m conntrack --ctstate ESTABLISHED -j ACCEPT
-        '' + optionalString (config.services.${n}.enforceTor or false) ''
-          ${iptables} -w -P OUTPUT DROP
-          ${iptables} -w -A OUTPUT -d 127.0.0.1,${bridgeIp},${v.address} -j ACCEPT
-        '' + optionalString (v.availableNetns != []) ''
           ${iptables} -w -A INPUT -s ${allowedAddresses} -j ACCEPT
+        '' + optionalString (config.services.${n}.tor.enforce or false) ''
+          ${iptables} -w -P OUTPUT DROP
           ${iptables} -w -A OUTPUT -d ${allowedAddresses} -j ACCEPT
         '';
-
         script = name: src: pkgs.writers.writeDash name ''
           set -e
           ${src}
@@ -244,10 +243,6 @@ in {
       };
       spark-wallet = {
         id = 17;
-        # communicates with clightning over lightning-rpc socket
-      };
-      recurring-donations = {
-        id = 20;
         # communicates with clightning over lightning-rpc socket
       };
       nginx = {
@@ -336,14 +331,16 @@ in {
       payjoinAddress = netns.joinmarket.address;
       cliExec = mkCliExec "joinmarket";
     };
-    systemd.services.joinmarket-yieldgenerator.serviceConfig.NetworkNamespacePath = "/var/run/netns/nb-joinmarket";
+    systemd.services.joinmarket-yieldgenerator = mkIf config.services.joinmarket.yieldgenerator.enable {
+      serviceConfig.NetworkNamespacePath = "/var/run/netns/nb-joinmarket";
+    };
 
     services.joinmarket-ob-watcher.address = netns.joinmarket-ob-watcher.address;
 
     services.lightning-pool.rpcAddress = netns.lightning-pool.address;
 
     services.rtl.address = netns.rtl.address;
-    systemd.services.cl-rest = {
+    systemd.services.cl-rest = mkIf config.services.rtl.cl-rest.enable {
       serviceConfig.NetworkNamespacePath = "/var/run/netns/nb-rtl";
       requires = [ "netns-rtl.service" ] ;
       after = [ "netns-rtl.service" ];

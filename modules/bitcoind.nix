@@ -157,7 +157,7 @@ let
       };
       proxy = mkOption {
         type = types.nullOr types.str;
-        default = if cfg.enforceTor then config.nix-bitcoin.torClientAddressWithPort else null;
+        default = if cfg.tor.proxy then config.nix-bitcoin.torClientAddressWithPort else null;
         description = "Connect through SOCKS5 proxy";
       };
       i2p = mkOption {
@@ -205,6 +205,11 @@ let
           Automatically prune block files to stay under the specified target size in MiB.
           Value 0 disables pruning.
         '';
+      };
+      txindex = mkOption {
+        type = types.bool;
+        default = false;
+        description = "Enable the transaction index.";
       };
       zmqpubrawblock = mkOption {
         type = types.nullOr types.str;
@@ -262,7 +267,7 @@ let
         '';
         description = "Binary to connect with the bitcoind instance.";
       };
-      enforceTor = nbLib.enforceTor;
+      tor = nbLib.tor;
     };
   };
 
@@ -284,6 +289,7 @@ let
     ''}
     ${optionalString (cfg.dbCache != null) "dbcache=${toString cfg.dbCache}"}
     prune=${toString cfg.prune}
+    ${optionalString cfg.txindex "txindex=1"}
     ${optionalString (cfg.sysperms != null) "sysperms=${if cfg.sysperms then "1" else "0"}"}
     ${optionalString (cfg.disablewallet != null) "disablewallet=${if cfg.disablewallet then "1" else "0"}"}
     ${optionalString (cfg.assumevalid != null) "assumevalid=${cfg.assumevalid}"}
@@ -407,7 +413,7 @@ in {
         Restart = "on-failure";
         UMask = mkIf cfg.dataDirReadableByGroup "0027";
         ReadWritePaths = cfg.dataDir;
-      } // nbLib.allowedIPAddresses cfg.enforceTor
+      } // nbLib.allowedIPAddresses cfg.tor.enforce
         // optionalAttrs zmqServerEnabled nbLib.allowNetlink;
     };
 

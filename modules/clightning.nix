@@ -16,14 +16,14 @@ let
     };
     proxy = mkOption {
       type = types.nullOr types.str;
-      default = if cfg.enforceTor then config.nix-bitcoin.torClientAddressWithPort else null;
+      default = if cfg.tor.proxy then config.nix-bitcoin.torClientAddressWithPort else null;
       description = ''
         Socks proxy for connecting to Tor nodes (or for all connections if option always-use-proxy is set).
       '';
     };
     always-use-proxy = mkOption {
       type = types.bool;
-      default = cfg.enforceTor;
+      default = cfg.tor.proxy;
       description = ''
         Always use the proxy, even to connect to normal IP addresses.
         You can still connect to Unix domain sockets manually.
@@ -43,7 +43,16 @@ let
     extraConfig = mkOption {
       type = types.lines;
       default = "";
-      description = "Extra lines appended to the configuration file.";
+      example = ''
+        alias=mynode
+      '';
+      description = ''
+        Extra lines appended to the configuration file.
+
+        See all available options at
+        https://github.com/ElementsProject/lightning/blob/master/doc/lightningd-config.5.md
+        or by running `lightningd --help`.
+      '';
     };
     user = mkOption {
       type = types.str;
@@ -70,7 +79,7 @@ let
         If left empty, no address is announced.
       '';
     };
-    inherit (nbLib) enforceTor;
+    tor = nbLib.tor;
   };
 
   cfg = config.services.clightning;
@@ -88,6 +97,7 @@ let
     bitcoin-rpcport=${toString config.services.bitcoind.rpc.port}
     bitcoin-rpcuser=${config.services.bitcoind.rpc.users.public.name}
     rpc-file-mode=0660
+    log-timestamps=false
     ${cfg.extraConfig}
   '';
 
@@ -123,13 +133,14 @@ in {
       preStart = ''
         # The RPC socket has to be removed otherwise we might have stale sockets
         rm -f ${cfg.networkDir}/lightning-rpc
-        install -m 640 ${configFile} '${cfg.dataDir}/config'
+        umask u=rw,g=r,o=
         {
+          cat ${configFile}
           echo "bitcoin-rpcpassword=$(cat ${config.nix-bitcoin.secretsDir}/bitcoin-rpcpassword-public)"
           ${optionalString (cfg.getPublicAddressCmd != "") ''
             echo "announce-addr=$(${cfg.getPublicAddressCmd}):${toString publicPort}"
           ''}
-        } >> '${cfg.dataDir}/config'
+        } > '${cfg.dataDir}/config'
       '';
       serviceConfig = nbLib.defaultHardening // {
         ExecStart = "${nbPkgs.clightning}/bin/lightningd --lightning-dir=${cfg.dataDir}";
@@ -145,7 +156,7 @@ in {
         #
         # Disable seccomp filtering because clightning depends on this syscall.
         SystemCallFilter = [];
-      } // nbLib.allowedIPAddresses cfg.enforceTor;
+      } // nbLib.allowedIPAddresses cfg.tor.enforce;
       # Wait until the rpc socket appears
       postStart = ''
         while [[ ! -e ${cfg.networkDir}/lightning-rpc ]]; do

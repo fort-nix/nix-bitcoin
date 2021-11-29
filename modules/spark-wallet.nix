@@ -38,7 +38,7 @@ let
       default = cfg.user;
       description = "The group as which to run spark-wallet.";
     };
-    inherit (nbLib) enforceTor;
+    tor = nbLib.tor;
   };
 
   cfg = config.services.spark-wallet;
@@ -57,7 +57,7 @@ let
       --ln-path '${clightning.networkDir}'  \
       --host ${cfg.address} --port ${toString cfg.port} \
       --config '${config.nix-bitcoin.secretsDir}/spark-wallet-login' \
-      ${optionalString cfg.enforceTor torRateProvider} \
+      ${optionalString cfg.tor.proxy torRateProvider} \
       $publicURL \
       --pairing-qr --print-key ${cfg.extraArgs}
   '';
@@ -76,7 +76,7 @@ in {
         User = cfg.user;
         Restart = "on-failure";
         RestartSec = "10s";
-      } // nbLib.allowedIPAddresses cfg.enforceTor
+      } // nbLib.allowedIPAddresses cfg.tor.enforce
         // nbLib.nodejs;
     };
 

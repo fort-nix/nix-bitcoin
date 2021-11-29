@@ -3,45 +3,6 @@
 with lib;
 let
   options.services = {
-    nbxplorer = {
-      package = mkOption {
-        type = types.package;
-        default = nbPkgs.nbxplorer;
-        description = "The package providing nbxplorer binaries.";
-      };
-      address = mkOption {
-        type = types.str;
-        default = "127.0.0.1";
-        description = "Address to listen on.";
-      };
-      port = mkOption {
-        type = types.port;
-        default = 24444;
-        description = "Port to listen on.";
-      };
-      dataDir = mkOption {
-        type = types.path;
-        default = "/var/lib/nbxplorer";
-        description = "The data directory for nbxplorer.";
-      };
-      user = mkOption {
-        type = types.str;
-        default = "nbxplorer";
-        description = "The user as which to run nbxplorer.";
-      };
-      group = mkOption {
-        type = types.str;
-        default = cfg.nbxplorer.user;
-        description = "The group as which to run nbxplorer.";
-      };
-      enable = mkOption {
-        # This option is only used by netns-isolation
-        internal = true;
-        default = cfg.btcpayserver.enable;
-      };
-      enforceTor = nbLib.enforceTor;
-    };
-
     btcpayserver = {
       enable = mkEnableOption "btcpayserver";
       address = mkOption {
@@ -93,7 +54,49 @@ let
         default = cfg.btcpayserver.user;
         description = "The group as which to run btcpayserver.";
       };
-      enforceTor = nbLib.enforceTor;
+      tor.enforce = nbLib.tor.enforce;
+    };
+
+    nbxplorer = {
+      enable = mkOption {
+        # This option is only used by netns-isolation
+        internal = true;
+        default = cfg.btcpayserver.enable;
+        description = ''
+          nbxplorer is always enabled when btcpayserver is enabled.
+        '';
+      };
+      package = mkOption {
+        type = types.package;
+        default = nbPkgs.nbxplorer;
+        description = "The package providing nbxplorer binaries.";
+      };
+      address = mkOption {
+        type = types.str;
+        default = "127.0.0.1";
+        description = "Address to listen on.";
+      };
+      port = mkOption {
+        type = types.port;
+        default = 24444;
+        description = "Port to listen on.";
+      };
+      dataDir = mkOption {
+        type = types.path;
+        default = "/var/lib/nbxplorer";
+        description = "The data directory for nbxplorer.";
+      };
+      user = mkOption {
+        type = types.str;
+        default = "nbxplorer";
+        description = "The user as which to run nbxplorer.";
+      };
+      group = mkOption {
+        type = types.str;
+        default = cfg.nbxplorer.user;
+        description = "The group as which to run nbxplorer.";
+      };
+      tor.enforce = nbLib.tor.enforce;
     };
   };
 
@@ -182,11 +185,11 @@ in {
         RestartSec = "10s";
         ReadWritePaths = cfg.nbxplorer.dataDir;
         MemoryDenyWriteExecute = "false";
-      } // nbLib.allowedIPAddresses cfg.nbxplorer.enforceTor;
+      } // nbLib.allowedIPAddresses cfg.nbxplorer.tor.enforce;
     };
 
     systemd.services.btcpayserver = let
-      nbExplorerUrl = "http://${cfg.nbxplorer.address}:${toString cfg.nbxplorer.port}/";
+      nbExplorerUrl = "http://${nbLib.addressWithPort cfg.nbxplorer.address cfg.nbxplorer.port}/";
       nbExplorerCookie = "${cfg.nbxplorer.dataDir}/${bitcoind.makeNetworkName "Main" "RegTest"}/.cookie";
       configFile = builtins.toFile "config" (''
         network=${bitcoind.network}
@@ -196,7 +199,8 @@ in {
         btcexplorerurl=${nbExplorerUrl}
         btcexplorercookiefile=${nbExplorerCookie}
         postgres=User ID=${cfg.btcpayserver.user};Host=/run/postgresql;Database=btcpaydb
-        ${optionalString (cfg.btcpayserver.rootpath != null) "rootpath=${cfg.btcpayserver.rootpath}"}
+      '' + optionalString (cfg.btcpayserver.rootpath != null) ''
+        rootpath=${cfg.btcpayserver.rootpath}
       '' + optionalString (cfg.btcpayserver.lightningBackend == "clightning") ''
         btclightning=type=clightning;server=unix:///${cfg.clightning.dataDir}/bitcoin/lightning-rpc
       '' + optionalString cfg.btcpayserver.lbtc ''
@@ -234,7 +238,7 @@ in {
         RestartSec = "10s";
         ReadWritePaths = cfg.btcpayserver.dataDir;
         MemoryDenyWriteExecute = "false";
-      } // nbLib.allowedIPAddresses cfg.btcpayserver.enforceTor;
+      } // nbLib.allowedIPAddresses cfg.btcpayserver.tor.enforce;
     }; in self;
 
     users.users.${cfg.nbxplorer.user} = {

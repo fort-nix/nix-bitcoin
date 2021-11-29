@@ -1,18 +1,32 @@
-Updating
----
-In your deployment directory, enter the nix shell with `nix-shell` and run the
-following to update `nix-bitcoin-release.nix`:
-
-```
-update-nix-bitcoin
-```
-
-Nodeinfo
----
+# Nodeinfo
 Run `nodeinfo` to see onion addresses and local addresses for enabled services.
 
-Connect to RTL
----
+# Managing services
+
+NixOS uses the [systemd](https://wiki.archlinux.org/title/systemd) service manager.
+
+Usage:
+```shell
+# Show service status
+systemctl status bitcoind
+
+# Show the last 100 log messages
+journalctl -u bitcoind -n 100
+# Show all log messages since the last system boot
+journalctl -b -u bitcoind
+
+# These commands require root permissions
+systemctl stop bitcoind
+systemctl start bitcoind
+systemctl restart bitcoind
+
+# Show the service definition
+systemctl cat bitcoind
+# Show all service parameters
+systemctl show bitcoind
+```
+
+# Connect to RTL
 Normally you would connect to RTL via SSH tunneling with a command like this
 
 ```
@@ -29,8 +43,7 @@ Otherwise, you can access it via Tor Browser at `http://<onion-address>`.
 You can find the `<onion-address>` with command `nodeinfo`.
 The default password location is `/secrets/rtl-password`.
 
-Connect to spark-wallet
----
+# Connect to spark-wallet
 ### Requirements
 * Android phone
 * [Orbot](https://guardianproject.info/apps/orbot/) installed from [F-Droid](https://guardianproject.info/fdroid) (recommended) or [Google Play](https://play.google.com/store/apps/details?id=org.torproject.android&hl=en)
@@ -73,8 +86,7 @@ Connect to spark-wallet
     Done
     ```
 
-Connect to LND with Zeus
----
+# Connect to LND with Zeus
 ### Requirements
 * Android phone
 * [Orbot](https://guardianproject.info/apps/orbot/) installed from
@@ -110,8 +122,7 @@ Connect to LND with Zeus
 
 5. Scan the QR code with your Zeus wallet and start sending Satoshis privately
 
-Connect to electrs
----
+# Connect to electrs
 ### Requirements Android
 * Android phone
 * [Orbot](https://guardianproject.info/apps/orbot/) installed from [F-Droid](https://guardianproject.info/fdroid) (recommended) or [Google Play](https://play.google.com/store/apps/details?id=org.torproject.android&hl=en)
@@ -158,8 +169,7 @@ Connect to electrs
     Network > Server: <electrs onion address>:t
     ```
 
-Connect to nix-bitcoin node through the SSH onion service
----
+# Connect to nix-bitcoin node through the SSH onion service
 1. Get the SSH onion address (excluding the port suffix)
 
     ```
@@ -195,8 +205,7 @@ Connect to nix-bitcoin node through the SSH onion service
 
 6. After deploying the new configuration, it will connect through the SSH tunnel you established in step iv. This also allows you to do more complex SSH setups that some deployment tools don't support. An example would be authenticating with [Trezor's SSH agent](https://github.com/romanz/trezor-agent), which provides extra security.
 
-Initialize a Trezor for Bitcoin Core's Hardware Wallet Interface
----
+# Initialize a Trezor for Bitcoin Core's Hardware Wallet Interface
 
 1. Enable Trezor in `configuration.nix`
 
@@ -258,8 +267,7 @@ Initialize a Trezor for Bitcoin Core's Hardware Wallet Interface
 
 8. Follow Bitcoin Core's instructions on [Using Bitcoin Core with Hardware Wallets](https://github.com/bitcoin-core/HWI/blob/master/docs/bitcoin-core-usage.md) to use your Trezor with `bitcoin-cli` on your nix-bitcoin node
 
-JoinMarket
----
+# JoinMarket
 
 ## Diff to regular JoinMarket usage
 
@@ -380,8 +388,7 @@ See [here](https://github.com/JoinMarket-Org/joinmarket-clientserver/blob/master
 
 3. Profit
 
-clightning
----
+# clightning
 
 ## Plugins
 

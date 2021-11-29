@@ -1,27 +1,43 @@
 { lib, config, ... }:
 let
   defaultTrue = lib.mkDefault true;
+  defaultEnableTorProxy = {
+    tor.proxy = defaultTrue;
+    tor.enforce = defaultTrue;
+  };
+  defaultEnforceTor = {
+    tor.enforce = defaultTrue;
+  };
 in {
   services.tor = {
     enable = true;
     client.enable = true;
   };
 
-  # Use Tor for all outgoing connections
   services = {
-    bitcoind.enforceTor = true;
-    clightning.enforceTor = true;
-    lnd.enforceTor = true;
-    lightning-loop.enforceTor = true;
-    liquidd.enforceTor = true;
-    electrs.enforceTor = true;
+    # Use Tor as a proxy for outgoing connections
+    # and restrict all connections to Tor
+    #
+    bitcoind = defaultEnableTorProxy;
+    clightning = defaultEnableTorProxy;
+    lnd = defaultEnableTorProxy;
+    lightning-loop = defaultEnableTorProxy;
+    liquidd = defaultEnableTorProxy;
+    # TODO-EXTERNAL:
     # disable Tor enforcement until btcpayserver can fetch rates over Tor
-    # btcpayserver.enforceTor = true;
-    nbxplorer.enforceTor = true;
-    spark-wallet.enforceTor = true;
-    recurring-donations.enforceTor = true;
-    lightning-pool.enforceTor = true;
-    rtl.enforceTor = true;
+    # btcpayserver = defaultEnableTorProxy;
+    spark-wallet = defaultEnableTorProxy;
+    lightning-pool = defaultEnableTorProxy;
+
+    # These services don't make outgoing connections
+    # (or use Tor by default in case of joinmarket)
+    # but we restrict them to Tor just to be safe.
+    #
+    electrs = defaultEnforceTor;
+    nbxplorer = defaultEnforceTor;
+    rtl = defaultEnforceTor;
+    joinmarket = defaultEnforceTor;
+    joinmarket-ob-watcher = defaultEnforceTor;
   };
 
   # Add onion services for incoming connections

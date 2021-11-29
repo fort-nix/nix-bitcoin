@@ -12,20 +12,19 @@
     ./bitcoind.nix
     ./clightning.nix
     ./clightning-plugins
-    ./rtl.nix
     ./spark-wallet.nix
     ./lnd.nix
     ./lnd-rest-onion-service.nix # Requires onion-addresses.nix
     ./lightning-loop.nix
     ./lightning-pool.nix
     ./charge-lnd.nix
+    ./rtl.nix
     ./electrs.nix
     ./liquid.nix
     ./btcpayserver.nix
     ./joinmarket.nix
     ./joinmarket-ob-watcher.nix
     ./hardware-wallets.nix
-    ./recurring-donations.nix
 
     # Support features
     ./versioning.nix
