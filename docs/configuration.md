@@ -181,9 +181,26 @@ Some services require extra steps:
 Use a bitcoind instance running on another node within a nix-bitcoin config.
 
 ```nix
+imports = [ <nix-bitcoin/modules/presets/bitcoind-remote.nix> ];
+
 services.bitcoind = {
+  enable = true;
+
   # Address of the other node
   address = "10.10.0.2";
+  rpc.address = "10.10.0.2";
+
+  # Some nix-bitcoin services require whitelisted bitcoind p2p connections
+  # to work reliably.
+  # Search for `whitelistedPort` in this repo to see the affected services.
+  # If you're using one of these services, either add a whitelisted p2p port
+  # on your remote node via `whitebind` and set it here:
+  whitelistedPort = <remote whitebind RPC port>;
+  #
+  # Or use the default p2p port and add `whitelist=<address of this node>` to
+  # your remote bitcoind config:
+  whitelistedPort = config.services.bitcoind.port;
+
   rpc.users = let
     # The fully privileged bitcoind RPC username of the other node
     name = "myrpcuser";
@@ -196,8 +213,6 @@ services.bitcoind = {
     # joinmarket-ob-watcher.name = name;
   };
 };
-# Disable the local bitcoind service
-systemd.services.bitcoind.wantedBy = mkForce [];
 ```
 
 Now save the password of the RPC user to the following files on your nix-bitcoin node:
@@ -210,6 +225,8 @@ $secretsDir/bitcoin-rpcpassword-public
 # $secretsDir/bitcoin-rpcpassword-joinmarket-ob-watcher
 ```
 See: [Secrets dir](#secrets-dir)
+
+Restart `bitcoind` after updating the secrets: `systemctl restart bitcoind`.
 
 # Temporarily disable a service
 
