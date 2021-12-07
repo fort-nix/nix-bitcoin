@@ -49,7 +49,7 @@ Get started
 
 Docs
 ---
-* [Hardware Requirements](docs/hardware.md)
+* [Hardware requirements](docs/hardware.md)
 * [Installation](docs/install.md)
 * [Configuration and maintenance](docs/configuration.md)
 * [Using services](docs/services.md)

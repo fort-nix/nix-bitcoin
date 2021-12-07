@@ -398,10 +398,12 @@ in {
           install -o '${cfg.user}' -g '${cfg.group}' -m 640 <(echo "$cfg") $confFile
         fi
       '';
+
       # Enable RPC access for group
       postStart = ''
         chmod g=r '${cfg.dataDir}/${optionalString cfg.regtest "regtest/"}.cookie'
       '';
+
       serviceConfig = nbLib.defaultHardening // {
         Type = "notify";
         NotifyAccess = "all";
