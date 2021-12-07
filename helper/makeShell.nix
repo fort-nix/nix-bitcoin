@@ -106,7 +106,8 @@ pkgs.stdenv.mkDerivation {
     )}
 
     eval-config() {
-      NIXOS_CONFIG="${cfgDir}/krops/krops-configuration.nix" nix eval --raw -f ${nixpkgs}/nixos system.outPath
+      NIXOS_CONFIG="${cfgDir}/krops/krops-configuration.nix" \
+        nix-instantiate --eval ${nixpkgs}/nixos -A system.outPath | tr -d '"'
       echo
     }
 
