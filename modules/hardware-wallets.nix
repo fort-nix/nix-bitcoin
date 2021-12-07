@@ -27,8 +27,6 @@ let
   };
 
   cfg = config.services.hardware-wallets;
-  dataDir = "/var/lib/hardware-wallets/";
-  enabled = cfg.ledger || cfg.trezor;
 in {
   inherit options;
 
