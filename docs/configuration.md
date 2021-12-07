@@ -89,21 +89,21 @@ services.bitcoind = {
 };
 
 # Open the p2p port in the firewall
-networking.firewall.allowedTCPPorts = [ config.services.nix-bitcoin.port ];
+networking.firewall.allowedTCPPorts = [ config.services.bitcoind.port ];
 ```
 
 ## Allow bitcoind RPC connections from LAN
 
 ```nix
 services.bitcoind = {
-  # Listen to connections on all interfaces
-  address = "0.0.0.0";
+  # Listen to RPC connections on all interfaces
+  rpc.address = "0.0.0.0";
 
   # Allow RPC connections from external addresses
   rpc.allowip = [
     "10.10.0.0/24" # Allow a subnet
     "10.50.0.3" # Allow a specific address
-    "0.0.0.0" # Allow all addresses
+    "0.0.0.0/0" # Allow all addresses
   ];
 
   # Set this if you're using the `secure-node.nix` template
@@ -111,7 +111,7 @@ services.bitcoind = {
 };
 
 # Open the RPC port in the firewall
-networking.firewall.allowedTCPPorts = [ config.services.nix-bitcoin.rpc.port ];
+networking.firewall.allowedTCPPorts = [ config.services.bitcoind.rpc.port ];
 ```
 
 ## Allow connections to electrs
@@ -221,7 +221,8 @@ Use the following approach:
 ```
 systemd.services.<service>.wantedBy = mkForce [];
 ```
-This way, the systemd service still exists, but is not automatically started.
+This way, the systemd service still exists, but is not automatically started.\
+Note: This only works for services that are not required by other active services.
 
 # Appendix
 
