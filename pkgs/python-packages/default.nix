@@ -28,9 +28,6 @@ in {
   cryptography = callPackage ./specific-versions/cryptography {};
   cryptography_vectors = callPackage ./specific-versions/cryptography/vectors.nix {};
 
-  # twisted 20.3.0, required by joinmarketbase
-  twisted = callPackage ./specific-versions/twisted.nix {};
-
   # autobahn 20.12.3, required by joinmarketclient
   autobahn = callPackage ./specific-versions/autobahn.nix {};
 
