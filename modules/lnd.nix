@@ -81,6 +81,7 @@ let
     package = mkOption {
       type = types.package;
       default = config.nix-bitcoin.pkgs.lnd;
+      defaultText = "config.nix-bitcoin.pkgs.lnd";
       description = "The package providing lnd binaries.";
     };
     cli = mkOption {
@@ -92,6 +93,7 @@ let
             --tlscertpath '${cfg.certPath}' \
             --macaroonpath '${networkDir}/admin.macaroon' "$@"
         '';
+      defaultText = "(See source)";
       description = "Binary to connect with the lnd instance.";
     };
     getPublicAddressCmd = mkOption {

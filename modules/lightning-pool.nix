@@ -27,6 +27,7 @@ let
     package = mkOption {
       type = types.package;
       default = config.nix-bitcoin.pkgs.lightning-pool;
+      defaultText = "config.nix-bitcoin.pkgs.lightning-pool";
       description = "The package providing lightning-pool binaries.";
     };
     dataDir = mkOption {
@@ -54,6 +55,7 @@ let
           --network ${network} \
           --basedir '${cfg.dataDir}' "$@"
       '';
+      defaultText = "(See source)";
       description = "Binary to connect with the lightning-pool instance.";
     };
     tor = nbLib.tor;

@@ -21,6 +21,7 @@ let
                     config.nix-bitcoin.pkgs.btcpayserver.override { altcoinSupport = true; }
                   else
                     config.nix-bitcoin.pkgs.btcpayserver;
+        defaultText = "(See source)";
         description = "The package providing btcpayserver binaries.";
       };
       dataDir = mkOption {
@@ -69,6 +70,7 @@ let
       package = mkOption {
         type = types.package;
         default = config.nix-bitcoin.pkgs.nbxplorer;
+        defaultText = "config.nix-bitcoin.pkgs.nbxplorer";
         description = "The package providing nbxplorer binaries.";
       };
       address = mkOption {

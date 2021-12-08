@@ -57,6 +57,7 @@ let
       package = mkOption {
         type = types.package;
         default = config.nix-bitcoin.pkgs.bitcoind;
+        defaultText = "config.nix-bitcoin.pkgs.bitcoind";
         description = "The package providing bitcoin binaries.";
       };
       extraConfig = mkOption {
@@ -265,6 +266,7 @@ let
         default = pkgs.writeScriptBin "bitcoin-cli" ''
           exec ${cfg.package}/bin/bitcoin-cli -datadir='${cfg.dataDir}' "$@"
         '';
+        defaultText = "(See source)";
         description = "Binary to connect with the bitcoind instance.";
       };
       tor = nbLib.tor;

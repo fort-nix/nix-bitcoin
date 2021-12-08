@@ -148,12 +148,14 @@ let
         default = pkgs.writeScriptBin "elements-cli" ''
           ${nbPkgs.elementsd}/bin/elements-cli -datadir='${cfg.dataDir}' "$@"
         '';
+        defaultText = "(See source)";
         description = "Binary to connect with the liquidd instance.";
       };
       swapCli = mkOption {
         default = pkgs.writeScriptBin "liquidswap-cli" ''
           ${nbPkgs.liquid-swap}/bin/liquidswap-cli -c '${cfg.dataDir}/elements.conf' "$@"
         '';
+        defaultText = "(See source)";
         description = "Binary for managing liquid swaps.";
       };
       tor = nbLib.tor;

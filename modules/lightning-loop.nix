@@ -27,6 +27,7 @@ let
     package = mkOption {
       type = types.package;
       default = config.nix-bitcoin.pkgs.lightning-loop;
+      defaultText = "config.nix-bitcoin.pkgs.lightning-loop";
       description = "The package providing lightning-loop binaries.";
     };
     dataDir = mkOption {
@@ -54,6 +55,7 @@ let
         --macaroonpath '${cfg.dataDir}/${network}/loop.macaroon' \
         --tlscertpath '${secretsDir}/loop-cert' "$@"
       '';
+      defaultText = "(See source)";
       description = "Binary to connect with the lightning-loop instance.";
     };
     tor = nbLib.tor;

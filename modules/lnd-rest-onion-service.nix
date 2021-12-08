@@ -15,6 +15,7 @@ let
     package = mkOption {
       type = types.package;
       default = config.nix-bitcoin.pkgs.lndconnect;
+      defaultText = "config.nix-bitcoin.pkgs.lndconnect";
       description = "The package providing lndconnect binaries.";
     };
   };
