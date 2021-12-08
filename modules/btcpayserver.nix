@@ -18,9 +18,9 @@ let
       package = mkOption {
         type = types.package;
         default = if cfg.btcpayserver.lbtc then
-                    nbPkgs.btcpayserver.override { altcoinSupport = true; }
+                    config.nix-bitcoin.pkgs.btcpayserver.override { altcoinSupport = true; }
                   else
-                    nbPkgs.btcpayserver;
+                    config.nix-bitcoin.pkgs.btcpayserver;
         description = "The package providing btcpayserver binaries.";
       };
       dataDir = mkOption {
@@ -68,7 +68,7 @@ let
       };
       package = mkOption {
         type = types.package;
-        default = nbPkgs.nbxplorer;
+        default = config.nix-bitcoin.pkgs.nbxplorer;
         description = "The package providing nbxplorer binaries.";
       };
       address = mkOption {
@@ -102,7 +102,6 @@ let
 
   cfg = config.services;
   nbLib = config.nix-bitcoin.lib;
-  nbPkgs = config.nix-bitcoin.pkgs;
 
   inherit (config.services) bitcoind liquidd;
 in {
