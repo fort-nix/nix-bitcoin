@@ -34,9 +34,6 @@ in {
   # autobahn 20.12.3, required by joinmarketclient
   autobahn = callPackage ./specific-versions/autobahn.nix {};
 
-  # klein 20.6.0, required by joinmarketclient
-  klein = callPackage ./specific-versions/klein.nix {};
-
   # tubes 0.2.0, required by klein
   tubes = callPackage ./specific-versions/tubes.nix {};
 
