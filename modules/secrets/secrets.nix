@@ -67,16 +67,7 @@ let
 
     secretsSetupMethod = mkOption {
       type = types.str;
-      default = throw  ''
-        Error: No secrets setup method has been defined.
-        To fix this, choose one of the following:
-
-         - Use one of the deployment methods in ${toString ./../deployment}
-
-         - Set `nix-bitcoin.generateSecrets = true` to automatically generate secrets
-
-         - Set `nix-bitcoin.secretsSetupMethod = "manual"` if you want to manually setup secrets
-      '';
+      default = null;
     };
 
     generateSecretsScript = mkOption {
@@ -141,6 +132,21 @@ in {
   inherit options;
 
   config = {
+    assertions = [
+      { assertion = cfg.secretsSetupMethod != null;
+        message = ''
+          No secrets setup method has been defined.
+          To fix this, choose one of the following:
+
+           - Use one of the deployment methods in ${toString ./../deployment}
+
+           - Set `nix-bitcoin.generateSecrets = true` to automatically generate secrets
+
+           - Set `nix-bitcoin.secretsSetupMethod = "manual"` if you want to manually setup secrets
+        '';
+      }
+    ];
+
     # This target is active when secrets have been setup successfully.
     systemd.targets.nix-bitcoin-secrets = mkIf (cfg.secretsSetupMethod != "manual") {
       # This ensures that the secrets target is always activated when switching
