@@ -267,6 +267,18 @@ flake() {
     nix flake check "$scriptDir/.."
 }
 
+# Test generating module documentation for search.nixos.org
+nixosSearch() {
+    if ! checkFlakeSupport "nixosSearch"; then return; fi
+
+    if [[ $outLinkPrefix ]]; then
+        # Add gcroots for flake-info
+        nix build $scriptDir/nixos-search#flake-info -o "$outLinkPrefix-flake-info"
+    fi
+    echo "Running flake-info (nixos-search)"
+    nix run $scriptDir/nixos-search#flake-info -- flake ../.
+}
+
 # A basic subset of tests to keep the total runtime within
 # manageable bounds (<4 min on desktop systems).
 # These are also run on the CI server.
@@ -300,6 +312,7 @@ all() {
     buildable
     examples
     flake
+    nixosSearch
 }
 
 # An alias for buildTest

@@ -26,11 +26,16 @@ if [[ ${1:-} != -f ]] && ! git diff --quiet ../flake.{nix,lock}; then
     exit 1
 fi
 
+echo "Updating flake 'nixos-search'"
+nix flake update ../test/nixos-search
+echo
+
 versions=$(nix eval --json -f update-flake.nix versions)
 
 ## Uncomment the following to generate a version change message for testing
 # versions=$(echo "$versions" | sed 's|1|0|g')
 
+echo "Updating main flake"
 nix flake update ..
 
 echo
