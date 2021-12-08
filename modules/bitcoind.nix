@@ -120,7 +120,7 @@ let
                 example = "f7efda5c189b999524f151318c0c86$d5b51b3beffbc02b724e5d095828e0bc8b2456e9ac8757ae3211a5d9b16a22ae";
                 description = ''
                   Password HMAC-SHA-256 for JSON-RPC connections. Must be a string of the
-                  format <SALT-HEX>$<HMAC-HEX>.
+                  format `salt-hex$hmac-hex`.
                 '';
               };
               passwordHMACFromFile = mkOption {
