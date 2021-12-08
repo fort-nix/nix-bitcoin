@@ -246,6 +246,14 @@ vmTestNixExpr() {
 EOF
 }
 
+flake() {
+    if [[ $(nix flake 2>&1) != *"requires a sub-command"* ]]; then
+        echo "Skipping flake test. Nix flake support is not enabled."
+    else
+        nix flake check "$scriptDir/.."
+    fi
+}
+
 # A basic subset of tests to keep the total runtime within
 # manageable bounds (<4 min on desktop systems).
 # These are also run on the CI server.
@@ -273,14 +281,6 @@ examples() {
       ./deploy-krops.sh
     "
     (cd "$scriptDir/../examples" && nix-shell --run "$script")
-}
-
-flake() {
-    if [[ $(nix flake 2>&1) != *"requires a sub-command"* ]]; then
-        echo "Skipping flake test. Nix flake support is not enabled."
-    else
-        nix flake check "$scriptDir/.."
-    fi
 }
 
 all() {
