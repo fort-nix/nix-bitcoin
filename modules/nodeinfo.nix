@@ -8,6 +8,7 @@ let
       program = mkOption {
         readOnly = true;
         default = script;
+        defaultText = "(See source)";
       };
     };
   };

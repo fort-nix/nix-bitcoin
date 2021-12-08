@@ -44,11 +44,13 @@ let
     };
     cli = mkOption {
       default = cli;
+      defaultText = "(See source)";
     };
     # Used by ./joinmarket-ob-watcher.nix
     ircServers = mkOption {
       readOnly = true;
       default = ircServers;
+      defaultText = "(See source)";
     };
     # This option is only used by netns-isolation.
     # Tor is always enabled.
