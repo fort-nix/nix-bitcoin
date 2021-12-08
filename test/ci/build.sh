@@ -26,4 +26,4 @@ else
     testArgs=pkgsUnstable
 fi
 
-"${BASH_SOURCE[0]%/*}/../test/run-tests.sh" --ci $testArgs
+"${BASH_SOURCE[0]%/*}/../run-tests.sh" --ci --scenario $scenario

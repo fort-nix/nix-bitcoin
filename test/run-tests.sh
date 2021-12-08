@@ -199,7 +199,7 @@ doBuild() {
     name=$1
     shift
     if [[ $ciBuild ]]; then
-        "$scriptDir/../ci/build-to-cachix.sh" "$@"
+        "$scriptDir/ci/build-to-cachix.sh" "$@"
     else
         if [[ $outLinkPrefix ]]; then
             outLink="--out-link $outLinkPrefix-$name"
