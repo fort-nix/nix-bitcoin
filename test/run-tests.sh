@@ -246,12 +246,25 @@ vmTestNixExpr() {
 EOF
 }
 
-flake() {
-    if [[ $(nix flake 2>&1) != *"requires a sub-command"* ]]; then
-        echo "Skipping flake test. Nix flake support is not enabled."
-    else
-        nix flake check "$scriptDir/.."
+checkFlakeSupport() {
+    testName=$1
+    if [[ ! -v hasFlakes ]]; then
+        if [[ $(nix flake 2>&1) == *"requires a sub-command"* ]]; then
+            hasFlakes=1
+        else
+            hasFlakes=
+        fi
     fi
+    if [[ ! $hasFlakes ]]; then
+        echo "Skipping test '$testName'. Nix flake support is not enabled."
+        return 1
+    fi
+}
+
+flake() {
+    if ! checkFlakeSupport "flake"; then return; fi
+
+    nix flake check "$scriptDir/.."
 }
 
 # A basic subset of tests to keep the total runtime within
