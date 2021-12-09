@@ -93,7 +93,7 @@
 
     # These parameters prevent information leaks during boot and must be used
     # in combination with the kernel.printk
-    "quiet loglevel=0"
+    "quiet" "loglevel=0"
   ];
 
   boot.blacklistedKernelModules = [
