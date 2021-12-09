@@ -122,6 +122,7 @@ in {
       source = config.nix-bitcoin.pkgs.netns-exec;
       capabilities = "cap_sys_admin=ep";
       owner = cfg.allowedUser;
+      group = ""; # Set to the group of `owner`
       permissions = "550";
     };
 
