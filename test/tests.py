@@ -400,6 +400,7 @@ def _():
         succeed("runuser -u operator -- pool orders list")
     if enabled("btcpayserver"):
         machine.wait_until_succeeds(log_has_string("nbxplorer", f"BTC: Starting scan at block {num_blocks}"))
+        # TODO-EXTERNAL:
         # nbxplorer 2.2.16 currently fails with with lbtc (liquidd) on regtest
         # LBTC: Full node version detected: 210000
         # LBTC: RPC connection successful
