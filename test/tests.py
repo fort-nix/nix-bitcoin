@@ -1,7 +1,6 @@
 from collections import OrderedDict
 import json
-
-logger = machine.logger
+import re
 
 def succeed(*cmds):
     """Returns the concatenated output of all cmds"""
@@ -34,7 +33,7 @@ def wait_for_open_port(address, port):
         status, _ = machine.execute(f"nc -z {address} {port}")
         return status == 0
 
-    with logger.nested(f"Waiting for TCP port {address}:{port}"):
+    with machine.nested(f"Waiting for TCP port {address}:{port}"):
         retry(is_port_open)
 
 
@@ -58,7 +57,7 @@ def run_tests():
         raise RuntimeError(f"The following tests are enabled but not defined: {enabled}")
     machine.connect()  # Visually separate boot output from the test output
     for test in to_run:
-        with logger.nested(f"test: {test}"):
+        with machine.nested(f"test: {test}"):
             tests[test]()
 
 def run_test(test):
@@ -139,9 +138,9 @@ def _():
                 f"Output of 'lightning-cli plugin list':\n{plugin_list}"
             )
         else:
-            logger.log("Active clightning plugins:")
+            machine.log("Active clightning plugins:")
             for p in test_data["clightning-plugins"]:
-                logger.log(os.path.basename(p))
+                machine.log(os.path.basename(p))
 
 @test("lnd")
 def _():
@@ -314,7 +313,7 @@ def _():
 
     succeed("systemctl stop bitcoind")
     succeed("systemctl start duplicity")
-    machine.wait_until_succeeds(log_has_string("duplicity", "duplicity.service: Succeeded."))
+    machine.wait_until_succeeds(log_has_string("duplicity", "duplicity.service: Deactivated successfully."))
     run_duplicity = "export $(cat /secrets/backup-encryption-env); duplicity"
     # Files in backup and /var/lib should be identical
     assert_matches(
