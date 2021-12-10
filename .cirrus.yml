@@ -16,22 +16,18 @@ task:
   timeout_in: 120m
 
   name: modules_test
-  environment:
-    nixpkgs: nixpkgs
   container:
     # A maximum of 16 CPUs is shared among all concurrent tasks.
     # https://cirrus-ci.org/faq/#are-there-any-limits
     cpu: 4
-  matrix:
-    - environment:
-        scenario: default
-    - environment:
-        scenario: netns
-    - environment:
-        scenario: netnsRegtest
+  environment:
+    matrix:
+      - scenario: default
+      - scenario: netns
+      - scenario: netnsRegtest
 
   # This script is run as root
   build_script:
     - echo "sandbox = true" >> /etc/nix/nix.conf
-    - export NIX_PATH="nixpkgs=$(nix eval --raw -f pkgs/nixpkgs-pinned.nix $nixpkgs)"
+    - export NIX_PATH="nixpkgs=$(nix eval --raw -f pkgs/nixpkgs-pinned.nix nixpkgs)"
     - nix run -f '<nixpkgs>' bash coreutils cachix -c ./test/ci/build.sh
