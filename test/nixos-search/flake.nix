@@ -5,5 +5,9 @@
   inputs.nixos-search.url = "github:nixos/nixos-search";
   outputs = { self, nixos-search }: {
     inherit (nixos-search) packages;
+
+    # Used by ./ci-test.sh
+    inherit (nixos-search.inputs.nixpkgs) legacyPackages;
+    nixpkgsPath = toString nixos-search.inputs.nixpkgs;
   };
 }

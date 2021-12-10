@@ -29,3 +29,10 @@ task:
         - echo "sandbox = true" >> /etc/nix/nix.conf
         - export NIX_PATH="nixpkgs=$(nix eval --raw -f pkgs/nixpkgs-pinned.nix nixpkgs)"
         - nix run -f '<nixpkgs>' bash coreutils cachix -c ./test/ci/build.sh
+
+    - name: flake
+      container:
+        image: nixpkgs/nix-flakes
+      build_script:
+        - nix flake check
+        - ./test/nixos-search/ci-test.sh
