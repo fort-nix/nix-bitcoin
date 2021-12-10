@@ -18,7 +18,7 @@ let
     prometheus = {
       extraPkgs = [ prometheus_client ];
       patchRequirements =
-        "--replace prometheus-client==0.6.0 prometheus-client==0.9.0"
+        "--replace prometheus-client==0.6.0 prometheus-client==0.11.0"
         + " --replace pyln-client~=0.9.3 pyln-client~=0.10.1";
     };
     rebalance = {};

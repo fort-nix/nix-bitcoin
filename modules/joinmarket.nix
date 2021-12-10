@@ -155,6 +155,14 @@ let
     port = 6667
     usessl = false
     ${socks5Settings}
+
+    # ilita
+    [MESSAGING:server4]
+    host = ilitafrzzgxymv6umx2ux7kbz3imyeko6cnqkvy4nisjjj4qpqkrptid.onion
+    channel = joinmarket-pit
+    port = 6667
+    usessl = false
+    ${socks5Settings}
   '';
 
   # Based on https://github.com/JoinMarket-Org/joinmarket-clientserver/blob/master/jmclient/jmclient/configure.py

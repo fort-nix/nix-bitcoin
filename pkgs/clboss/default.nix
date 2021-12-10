@@ -1,7 +1,7 @@
 { lib, stdenv, fetchurl, pkgconfig, curl, libev, sqlite }:
 
 let
-  curlWithGnuTLS = curl.override { gnutlsSupport = true; sslSupport = false; };
+  curlWithGnuTLS = curl.override { gnutlsSupport = true; opensslSupport = false; };
 in
 stdenv.mkDerivation rec {
   pname = "clboss";

@@ -11,6 +11,11 @@ buildPythonPackage rec {
   # configparser may need to be compiled with python_version<"3.2"
   propagatedBuildInputs = [ future configparser joinmarketbase mnemonic argon2_cffi bencoderpyx pyaes klein pyjwt autobahn cryptography ];
 
+  patchPhase = ''
+    substituteInPlace setup.py \
+      --replace "'klein==20.6.0'" "'klein==21.8.0'"
+  '';
+
   meta = with lib; {
     description = "Client library for Bitcoin coinjoins";
     homepage = "https://github.com/Joinmarket-Org/joinmarket-clientserver";

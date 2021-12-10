@@ -24,18 +24,15 @@ in {
 
   ## Specific versions of packages that already exist in nixpkgs
 
+  # base58 2.1.0, required by pyln-proto
+  base58 = callPackage ./specific-versions/base58.nix {};
+
   # cryptography 3.3.2, required by joinmarketdaemon
   cryptography = callPackage ./specific-versions/cryptography {};
   cryptography_vectors = callPackage ./specific-versions/cryptography/vectors.nix {};
 
-  # twisted 20.3.0, required by joinmarketbase
-  twisted = callPackage ./specific-versions/twisted.nix {};
-
   # autobahn 20.12.3, required by joinmarketclient
   autobahn = callPackage ./specific-versions/autobahn.nix {};
-
-  # klein 20.6.0, required by joinmarketclient
-  klein = callPackage ./specific-versions/klein.nix {};
 
   # tubes 0.2.0, required by klein
   tubes = callPackage ./specific-versions/tubes.nix {};
