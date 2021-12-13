@@ -1,37 +1,38 @@
-container:
-  image: nixos/nix
-  # Besides virtualization, this also enables privileged containers which are required for
-  # sandboxed builds
-  kvm: true
-  # Needed for package builds
-  memory: 8G
-
-environment:
-  CACHIX_SIGNING_KEY: ENCRYPTED[!cec502ed813cbcd0237697d2031f750186ff20eed5815b1ad950ad2f2d701702ae6ba2f0cb4cb1985687a696c8ee492c!]
-  # Save some traffic by excluding the full git history
-  CIRRUS_CLONE_DEPTH: 1
-
 task:
+  environment:
+    CACHIX_SIGNING_KEY: ENCRYPTED[!cec502ed813cbcd0237697d2031f750186ff20eed5815b1ad950ad2f2d701702ae6ba2f0cb4cb1985687a696c8ee492c!]
+    # Save some traffic by excluding the full git history
+    CIRRUS_CLONE_DEPTH: 1
+
   # Use the maximum timeout. Needed when rebuilding packages on a channel update.
   timeout_in: 120m
 
-  name: modules_test
-  environment:
-    nixpkgs: nixpkgs
-  container:
-    # A maximum of 16 CPUs is shared among all concurrent tasks.
-    # https://cirrus-ci.org/faq/#are-there-any-limits
-    cpu: 4
   matrix:
-    - environment:
-        scenario: default
-    - environment:
-        scenario: netns
-    - environment:
-        scenario: netnsRegtest
+    - name: modules_test
+      container:
+        image: nixos/nix
+        # Besides virtualization, this also enables privileged containers which are required for
+        # sandboxed builds
+        kvm: true
+        # Needed for package builds
+        memory: 8G
+        # A maximum of 16 CPUs is shared among all concurrent tasks.
+        # https://cirrus-ci.org/faq/#are-there-any-limits
+        cpu: 4
+      environment:
+        matrix:
+          - scenario: default
+          - scenario: netns
+          - scenario: netnsRegtest
+      # This script is run as root
+      build_script:
+        - echo "sandbox = true" >> /etc/nix/nix.conf
+        - export NIX_PATH="nixpkgs=$(nix eval --raw -f pkgs/nixpkgs-pinned.nix nixpkgs)"
+        - nix run -f '<nixpkgs>' bash coreutils cachix -c ./test/ci/build.sh
 
-  # This script is run as root
-  build_script:
-    - echo "sandbox = true" >> /etc/nix/nix.conf
-    - export NIX_PATH="nixpkgs=$(nix eval --raw -f pkgs/nixpkgs-pinned.nix $nixpkgs)"
-    - nix run -f '<nixpkgs>' bash coreutils cachix -c ./ci/build.sh
+    - name: flake
+      container:
+        image: nixpkgs/nix-flakes
+      build_script:
+        - nix flake check
+        - ./test/nixos-search/ci-test.sh

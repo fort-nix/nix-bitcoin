@@ -28,7 +28,7 @@ let
       default = [];
       description = ''
         Services that can access their onion address via file
-        /var/lib/onion-addresses/<service>
+        `/var/lib/onion-addresses/$service`
         The file is readable only by the service user.
       '';
     };

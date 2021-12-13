@@ -17,6 +17,7 @@ let cfg = config.services.clightning.plugins.clboss; in
     package = mkOption {
       type = types.package;
       default = config.nix-bitcoin.pkgs.clboss;
+      defaultText = "config.nix-bitcoin.pkgs.clboss";
       description = "The package providing clboss binaries.";
     };
   };

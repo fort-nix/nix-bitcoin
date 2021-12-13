@@ -69,6 +69,7 @@ let
       default = pkgs.writeScriptBin "lightning-cli" ''
         ${nbPkgs.clightning}/bin/lightning-cli --lightning-dir='${cfg.dataDir}' "$@"
       '';
+      defaultText = "(See source)";
       description = "Binary to connect with the clightning instance.";
     };
     getPublicAddressCmd = mkOption {

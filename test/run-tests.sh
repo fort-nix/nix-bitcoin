@@ -199,7 +199,7 @@ doBuild() {
     name=$1
     shift
     if [[ $ciBuild ]]; then
-        "$scriptDir/../ci/build-to-cachix.sh" "$@"
+        "$scriptDir/ci/build-to-cachix.sh" "$@"
     else
         if [[ $outLinkPrefix ]]; then
             outLink="--out-link $outLinkPrefix-$name"
@@ -246,6 +246,39 @@ vmTestNixExpr() {
 EOF
 }
 
+checkFlakeSupport() {
+    testName=$1
+    if [[ ! -v hasFlakes ]]; then
+        if [[ $(nix flake 2>&1) == *"requires a sub-command"* ]]; then
+            hasFlakes=1
+        else
+            hasFlakes=
+        fi
+    fi
+    if [[ ! $hasFlakes ]]; then
+        echo "Skipping test '$testName'. Nix flake support is not enabled."
+        return 1
+    fi
+}
+
+flake() {
+    if ! checkFlakeSupport "flake"; then return; fi
+
+    nix flake check "$scriptDir/.."
+}
+
+# Test generating module documentation for search.nixos.org
+nixosSearch() {
+    if ! checkFlakeSupport "nixosSearch"; then return; fi
+
+    if [[ $outLinkPrefix ]]; then
+        # Add gcroots for flake-info
+        nix build $scriptDir/nixos-search#flake-info -o "$outLinkPrefix-flake-info"
+    fi
+    echo "Running flake-info (nixos-search)"
+    nix run $scriptDir/nixos-search#flake-info -- flake ../.
+}
+
 # A basic subset of tests to keep the total runtime within
 # manageable bounds (<4 min on desktop systems).
 # These are also run on the CI server.
@@ -275,18 +308,11 @@ examples() {
     (cd "$scriptDir/../examples" && nix-shell --run "$script")
 }
 
-flake() {
-    if [[ $(nix flake 2>&1) != *"requires a sub-command"* ]]; then
-        echo "Skipping flake test. Nix flake support is not enabled."
-    else
-        nix flake check "$scriptDir/.."
-    fi
-}
-
 all() {
     buildable
     examples
     flake
+    nixosSearch
 }
 
 # An alias for buildTest

@@ -57,6 +57,7 @@ let
       package = mkOption {
         type = types.package;
         default = config.nix-bitcoin.pkgs.bitcoind;
+        defaultText = "config.nix-bitcoin.pkgs.bitcoind";
         description = "The package providing bitcoin binaries.";
       };
       extraConfig = mkOption {
@@ -119,7 +120,7 @@ let
                 example = "f7efda5c189b999524f151318c0c86$d5b51b3beffbc02b724e5d095828e0bc8b2456e9ac8757ae3211a5d9b16a22ae";
                 description = ''
                   Password HMAC-SHA-256 for JSON-RPC connections. Must be a string of the
-                  format <SALT-HEX>$<HMAC-HEX>.
+                  format `salt-hex$hmac-hex`.
                 '';
               };
               passwordHMACFromFile = mkOption {
@@ -265,6 +266,7 @@ let
         default = pkgs.writeScriptBin "bitcoin-cli" ''
           exec ${cfg.package}/bin/bitcoin-cli -datadir='${cfg.dataDir}' "$@"
         '';
+        defaultText = "(See source)";
         description = "Binary to connect with the bitcoind instance.";
       };
       tor = nbLib.tor;
