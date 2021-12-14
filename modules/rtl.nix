@@ -3,7 +3,7 @@
 with lib;
 let
   options.services.rtl = {
-    enable = mkEnableOption "rtl";
+    enable = mkEnableOption "Ride The Lightning, a web interface for lnd and clightning ";
     address = mkOption {
       type = types.str;
       default = "127.0.0.1";

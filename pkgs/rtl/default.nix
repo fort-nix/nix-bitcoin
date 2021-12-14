@@ -1,4 +1,4 @@
-{ pkgs, makeWrapper }:
+{ pkgs, lib, makeWrapper }:
 let
   inherit (pkgs) nodejs;
   nodePackages = import ./composition.nix { inherit pkgs nodejs; };
@@ -12,4 +12,12 @@ nodePackages.package.overrideAttrs (old: {
     makeWrapper ${nodejs}/bin/node $out/bin/rtl \
       --add-flags $out/lib/node_modules/rtl/rtl
   '';
+
+  meta = with lib; {
+    description = "A web interface for LND, c-lightning and Eclair";
+    homepage = "https://github.com/Ride-The-Lightning/RTL";
+    license = licenses.mit;
+    maintainers = with maintainers; [ nixbitcoin earvstedt ];
+    platforms = platforms.unix;
+  };
 })

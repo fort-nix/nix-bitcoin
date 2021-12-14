@@ -3,7 +3,7 @@
 with lib;
 let
   options.services.clightning = {
-    enable = mkEnableOption "clightning";
+    enable = mkEnableOption "clightning, a Lightning Network implementation in C";
     address = mkOption {
       type = types.str;
       default = "127.0.0.1";

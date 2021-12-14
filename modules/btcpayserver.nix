@@ -4,7 +4,7 @@ with lib;
 let
   options.services = {
     btcpayserver = {
-      enable = mkEnableOption "btcpayserver";
+      enable = mkEnableOption "btcpayserver, a self-hosted Bitcoin payment processor";
       address = mkOption {
         type = types.str;
         default = "127.0.0.1";

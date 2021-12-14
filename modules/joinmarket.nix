@@ -3,7 +3,7 @@
 with lib;
 let
   options.services.joinmarket = {
-    enable = mkEnableOption "JoinMarket";
+    enable = mkEnableOption "JoinMarket, a Bitcoin CoinJoin implementation";
     payjoinAddress = mkOption {
       type = types.str;
       default = "127.0.0.1";
@@ -58,7 +58,7 @@ let
     inherit (nbLib) cliExec;
 
     yieldgenerator = {
-      enable = mkEnableOption "yield generator bot";
+      enable = mkEnableOption "JoinMarket yield generator bot";
       ordertype = mkOption {
         type = types.enum [ "reloffer" "absoffer" ];
         default = "reloffer";

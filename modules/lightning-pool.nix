@@ -3,7 +3,7 @@
 with lib;
 let
   options.services.lightning-pool = {
-    enable = mkEnableOption "lightning-pool";
+    enable = mkEnableOption "Lightning Pool, a marketplace for inbound lightning liquidity ";
     rpcAddress = mkOption {
        type = types.str;
        default = "localhost";

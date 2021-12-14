@@ -4,7 +4,7 @@ with lib;
 let
   options = {
     services.liquidd = {
-      enable = mkEnableOption "Liquid sidechain";
+      enable = mkEnableOption "Liquid Bitcoin sidechain daemon";
       address = mkOption {
         type = types.str;
         default = "127.0.0.1";

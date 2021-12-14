@@ -3,7 +3,7 @@
 with lib;
 let
   options.services.lnd = {
-    enable = mkEnableOption "Lightning Network Daemon";
+    enable = mkEnableOption "Lightning Network daemon, a Lightning Network implementation in Go";
     address = mkOption {
       type = types.str;
       default = "localhost";
