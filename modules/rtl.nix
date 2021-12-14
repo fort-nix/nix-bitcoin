@@ -105,6 +105,7 @@ let
 
   cfg = config.services.rtl;
   nbLib = config.nix-bitcoin.lib;
+  nbPkgs = config.nix-bitcoin.pkgs;
   secretsDir = config.nix-bitcoin.secretsDir;
 
   node = { isLnd, index }: ''
@@ -223,7 +224,7 @@ in {
             install -D -o ${cfg.user} -g ${cfg.group} ${lnd.networkDir}/admin.macaroon \
               '${cfg.dataDir}/macaroons/admin.macaroon'
           '');
-        ExecStart = "${pkgs.nodejs}/bin/node ${config.nix-bitcoin.pkgs.rtl}/lib/node_modules/rtl/rtl";
+        ExecStart = "${nbPkgs.rtl}/bin/rtl";
         # Show "rtl" instead of "node" in the journal
         SyslogIdentifier = "rtl";
         User = cfg.user;
@@ -247,7 +248,7 @@ in {
         StateDirectory = "cl-rest";
         # cl-rest reads the config file from the working directory
         WorkingDirectory = cl-rest.dataDir;
-        ExecStart = "${pkgs.nodejs}/bin/node ${config.nix-bitcoin.pkgs.cl-rest}/lib/node_modules/c-lightning-rest/cl-rest";
+        ExecStart = "${nbPkgs.cl-rest}/bin/cl-rest";
         # Show "cl-rest" instead of "node" in the journal
         SyslogIdentifier = "cl-rest";
         User = cfg.user;

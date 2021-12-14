@@ -1,5 +1,15 @@
-{ pkgs }:
+{ pkgs, makeWrapper }:
 let
-  nodePackages = import ./composition.nix { inherit pkgs; inherit (pkgs) nodejs; };
+  inherit (pkgs) nodejs;
+  nodePackages = import ./composition.nix { inherit pkgs nodejs; };
 in
-nodePackages.package
+nodePackages.package.overrideAttrs (old: {
+  nativeBuildInputs = (old.nativeBuildInputs or []) ++ [
+    makeWrapper
+  ];
+
+  postInstall = ''
+    makeWrapper ${nodejs}/bin/node $out/bin/rtl \
+      --add-flags $out/lib/node_modules/rtl/rtl
+  '';
+})
