@@ -1,5 +1,5 @@
-{ stdenv, pkgs, lib }:
-lib.head (builtins.attrValues (import ./composition.nix {
-    inherit pkgs;
-    inherit (stdenv.hostPlatform) system;
-}))
+{ pkgs }:
+let
+  nodePackages = import ./composition.nix { inherit pkgs; inherit (pkgs) nodejs; };
+in
+nodePackages.package
