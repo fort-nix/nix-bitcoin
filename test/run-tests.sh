@@ -95,7 +95,7 @@ while :; do
             ;;
         --copy-src|-c)
             shift
-            if [[ ! $_nixBitcoinInCopySrc ]]; then
+            if [[ ! $_nixBitcoinInCopiedSrc ]]; then
                 . "$scriptDir/lib/copy-src.sh"
                 exit
             fi
@@ -271,12 +271,17 @@ flake() {
 nixosSearch() {
     if ! checkFlakeSupport "nixosSearch"; then return; fi
 
+    if [[ $_nixBitcoinInCopiedSrc ]]; then
+      # flake-info requires that its target flake is under version control
+      . "$scriptDir/lib/create-git-repo.sh"
+    fi
+
     if [[ $outLinkPrefix ]]; then
         # Add gcroots for flake-info
         nix build $scriptDir/nixos-search#flake-info -o "$outLinkPrefix-flake-info"
     fi
     echo "Running flake-info (nixos-search)"
-    nix run $scriptDir/nixos-search#flake-info -- flake ../.
+    nix run $scriptDir/nixos-search#flake-info -- flake "$scriptDir/.."
 }
 
 # A basic subset of tests to keep the total runtime within
