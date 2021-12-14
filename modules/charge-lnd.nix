@@ -37,7 +37,7 @@ let
     policies = mkOption {
       type = types.lines;
       default = "";
-      example = literalExample ''
+      example = ''
         [discourage-routing-out-of-balance]
         chan.max_ratio = 0.1
         chan.min_capacity = 250000
