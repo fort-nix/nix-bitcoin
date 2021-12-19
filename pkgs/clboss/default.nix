@@ -19,8 +19,8 @@ stdenv.mkDerivation rec {
   meta = with lib; {
     description = "Automated C-Lightning Node Manager";
     homepage = "https://github.com/ZmnSCPxj/clboss";
-    maintainers = with maintainers; [ nixbitcoin ];
     license = licenses.mit;
+    maintainers = with maintainers; [ nixbitcoin ];
     platforms = platforms.linux;
   };
 }

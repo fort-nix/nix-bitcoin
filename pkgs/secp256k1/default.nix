@@ -19,8 +19,8 @@ stdenv.mkDerivation {
   meta = with lib; {
     description = "Optimized C library for EC operations on curve secp256k1";
     homepage = "https://github.com/bitcoin-core/secp256k1";
-    license = with licenses; [ mit ];
+    license = licenses.mit;
     maintainers = with maintainers; [ nixbitcoin ];
-    platforms = with platforms; unix;
+    platforms = platforms.unix;
   };
 }

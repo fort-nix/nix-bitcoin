@@ -15,4 +15,4 @@ trap "atExit" EXIT
 
 rsync -a --delete --exclude='.git*' "$scriptDir/../" $tmp/src
 echo "Copied src"
-_nixBitcoinInCopySrc=1 $tmp/src/test/run-tests.sh "${args[@]}"
+_nixBitcoinInCopiedSrc=1 $tmp/src/test/run-tests.sh "${args[@]}"

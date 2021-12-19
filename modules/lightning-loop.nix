@@ -3,7 +3,7 @@
 with lib;
 let
   options.services.lightning-loop = {
-    enable = mkEnableOption "lightning-loop";
+    enable = mkEnableOption "Lightning Loop, a non-custodial off/on chain bridge";
     rpcAddress = mkOption {
        type = types.str;
        default = "localhost";

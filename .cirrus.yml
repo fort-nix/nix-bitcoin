@@ -10,7 +10,8 @@ task:
   matrix:
     - name: modules_test
       container:
-        image: nixos/nix
+        # Use Nix release 2.3.x, the default on NixOS stable
+        image: nixos/nix:2.3.12
         # Besides virtualization, this also enables privileged containers which are required for
         # sandboxed builds
         kvm: true

@@ -14,5 +14,12 @@ buildPythonPackage rec {
   installFlags = [ ".[CLI]" ];
   # The tests unfortunately seem to require the PyQt for the GUI
   doCheck = false;
-}
 
+  meta = with lib; {
+    description = "Swap issued assets on the Liquid network using confidential transactions";
+    homepage = "https://github.com/Blockstream/liquid-swap";
+    license = licenses.gpl3Only;
+    maintainers = with maintainers; [ nixbitcoin ];
+    platforms = platforms.unix;
+  };
+}

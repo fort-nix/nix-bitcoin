@@ -54,4 +54,12 @@ stdenv.mkDerivation {
     # These files must be placed in the same dir as ob-watcher
     cp -r scripts/obwatch/{orderbook.html,sybil_attack_calculations.py,vendor} $obw
   '';
+
+  meta = with lib; {
+    description = "Bitcoin CoinJoin implementation";
+    homepage = "https://github.com/JoinMarket-Org/joinmarket-clientserver";
+    license = licenses.gpl3Only;
+    maintainers = with maintainers; [ nixbitcoin ];
+    platforms = platforms.unix;
+  };
 }
