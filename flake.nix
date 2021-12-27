@@ -15,22 +15,24 @@
       supportedSystems = [ "x86_64-linux" "i686-linux" "aarch64-linux" ];
     in
     rec {
-      mkNbPkgs = {
-        system
-        , pkgs ? import nixpkgs { inherit system; }
-        , pkgsUnstable ? import nixpkgsUnstable { inherit system; }
-      }:
-        import ./pkgs { inherit pkgs pkgsUnstable; };
+      lib = {
+        mkNbPkgs = {
+          system
+          , pkgs ? import nixpkgs { inherit system; }
+          , pkgsUnstable ? import nixpkgsUnstable { inherit system; }
+        }:
+          import ./pkgs { inherit pkgs pkgsUnstable; };
+      };
 
       overlay = final: prev: let
-        nbPkgs = mkNbPkgs { inherit (final) system; pkgs = final; };
+        nbPkgs = lib.mkNbPkgs { inherit (final) system; pkgs = final; };
       in removeAttrs nbPkgs [ "pinned" "nixops19_09" "krops" ];
 
       nixosModules = {
         # Uses the default system pkgs for nix-bitcoin.pkgs
         withSystemPkgs =  { pkgs, ... }: {
           imports = [ ./modules/modules.nix ];
-          nix-bitcoin.pkgs = (mkNbPkgs { inherit (pkgs) system; inherit pkgs; }).modulesPkgs;
+          nix-bitcoin.pkgs = (lib.mkNbPkgs { inherit (pkgs) system; inherit pkgs; }).modulesPkgs;
         };
 
         # Uses the nixpkgs version locked by this flake for nix-bitcoin.pkgs.
@@ -38,7 +40,7 @@
         # locked and the system nixpkgs versions differ.
         withLockedPkgs =  { config, ... }: {
           imports = [ ./modules/modules.nix ];
-          nix-bitcoin.pkgs = (mkNbPkgs { inherit (config.nixpkgs) system; }).modulesPkgs;
+          nix-bitcoin.pkgs = (lib.mkNbPkgs { inherit (config.nixpkgs) system; }).modulesPkgs;
         };
       };
 
@@ -51,6 +53,8 @@
       let
         pkgs = import nixpkgs { inherit system; };
 
+        nbPkgs = self.lib.mkNbPkgs { inherit system pkgs; };
+
         mkVMScript = vm: pkgs.writers.writeBash "run-vm" ''
           set -euo pipefail
           export TMPDIR=$(mktemp -d /tmp/nix-bitcoin-vm.XXX)
@@ -59,8 +63,6 @@
           QEMU_OPTS="-smp $(nproc) -m 1500" ${vm}/bin/run-*-vm
         '';
       in rec {
-        nbPkgs = self.mkNbPkgs { inherit system pkgs; };
-
         packages = flake-utils.lib.flattenTree (removeAttrs nbPkgs [
           "pinned" "modulesPkgs" "nixops19_09" "krops" "generate-secrets" "netns-exec"
         ]) // {
@@ -91,6 +93,11 @@
               };
             }).vm;
         };
+
+        # Allow accessing the whole nested `nbPkgs` attrset (including `modulesPkgs`)
+        # via this flake.
+        # `packages` is not allowed to contain nested pkgs attrsets.
+        legacyPackages = { inherit nbPkgs; };
 
         defaultApp = apps.vm;
 
