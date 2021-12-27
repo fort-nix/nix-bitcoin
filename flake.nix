@@ -15,30 +15,46 @@
       supportedSystems = [ "x86_64-linux" "i686-linux" "aarch64-linux" ];
     in
     rec {
-      mkNbPkgs = {
-        system
-        , pkgs ? import nixpkgs { inherit system; }
-        , pkgsUnstable ? import nixpkgsUnstable { inherit system; }
-      }:
-        import ./pkgs { inherit pkgs pkgsUnstable; };
+      lib = {
+        mkNbPkgs = {
+          system
+          , pkgs ? import nixpkgs { inherit system; }
+          , pkgsUnstable ? import nixpkgsUnstable { inherit system; }
+        }:
+          import ./pkgs { inherit pkgs pkgsUnstable; };
+      };
 
       overlay = final: prev: let
-        nbPkgs = mkNbPkgs { inherit (final) system; pkgs = final; };
+        nbPkgs = lib.mkNbPkgs { inherit (final) system; pkgs = final; };
       in removeAttrs nbPkgs [ "pinned" "nixops19_09" "krops" ];
 
-      nixosModules = {
-        # Uses the default system pkgs for nix-bitcoin.pkgs
-        withSystemPkgs =  { pkgs, ... }: {
-          imports = [ ./modules/modules.nix ];
-          nix-bitcoin.pkgs = (mkNbPkgs { inherit (pkgs) system; inherit pkgs; }).modulesPkgs;
+      nixosModule = { config, pkgs, lib, ... }: {
+        imports = [ ./modules/modules.nix ];
+
+        options = with lib; {
+          nix-bitcoin.useVersionLockedPkgs = mkOption {
+            type = types.bool;
+            default = false;
+            description = ''
+              Use the nixpkgs version locked by this flake for `nix-bitcoin.pkgs`.
+              Only relevant if you are using a nixpkgs version for evaluating your system
+              that differs from the one that is locked by this flake (via input `nixpkgs`).
+              If this is the case, enabling this option may result in a more stable system
+              because the nix-bitcoin services use the exact pkgs versions that are tested
+              by nix-bitcoin.
+              The downsides are increased evaluation times and increased system
+              closure size.
+
+              If `false`, the default system pkgs are used.
+            '';
+          };
         };
 
-        # Uses the nixpkgs version locked by this flake for nix-bitcoin.pkgs.
-        # More stable, but slightly slower to evaluate and needs more space if the
-        # locked and the system nixpkgs versions differ.
-        withLockedPkgs =  { config, ... }: {
-          imports = [ ./modules/modules.nix ];
-          nix-bitcoin.pkgs = (mkNbPkgs { inherit (config.nixpkgs) system; }).modulesPkgs;
+        config = {
+          nix-bitcoin.pkgs =
+            if config.nix-bitcoin.useVersionLockedPkgs
+            then (self.lib.mkNbPkgs { inherit (config.nixpkgs) system; }).modulesPkgs
+            else (self.lib.mkNbPkgs { inherit (pkgs) system; inherit pkgs; }).modulesPkgs;
         };
       };
 
@@ -51,6 +67,8 @@
       let
         pkgs = import nixpkgs { inherit system; };
 
+        nbPkgs = self.lib.mkNbPkgs { inherit system pkgs; };
+
         mkVMScript = vm: pkgs.writers.writeBash "run-vm" ''
           set -euo pipefail
           export TMPDIR=$(mktemp -d /tmp/nix-bitcoin-vm.XXX)
@@ -59,8 +77,6 @@
           QEMU_OPTS="-smp $(nproc) -m 1500" ${vm}/bin/run-*-vm
         '';
       in rec {
-        nbPkgs = self.mkNbPkgs { inherit system pkgs; };
-
         packages = flake-utils.lib.flattenTree (removeAttrs nbPkgs [
           "pinned" "modulesPkgs" "nixops19_09" "krops" "generate-secrets" "netns-exec"
         ]) // {
@@ -75,7 +91,7 @@
               inherit system;
               configuration = {
                 imports = [
-                  nix-bitcoin.nixosModules.withSystemPkgs
+                  nix-bitcoin.nixosModule
                   "${nix-bitcoin}/modules/presets/secure-node.nix"
                 ];
 
@@ -91,6 +107,11 @@
               };
             }).vm;
         };
+
+        # Allow accessing the whole nested `nbPkgs` attrset (including `modulesPkgs`)
+        # via this flake.
+        # `packages` is not allowed to contain nested pkgs attrsets.
+        legacyPackages = { inherit nbPkgs; };
 
         defaultApp = apps.vm;
 
