@@ -8,19 +8,11 @@
     nixosConfigurations.mynode = nix-bitcoin.inputs.nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [
-        ## Note:
-        ## If you use a custom nixpkgs version for evaluating your system,
-        ## consider using `withLockedPkgs` instead of `withSystemPkgs` to use the exact
-        ## pkgs versions for nix-bitcoin services that are tested by nix-bitcoin.
-        ## The downsides are increased evaluation times and increased system
-        ## closure size.
-        #
-        # nix-bitcoin.nixosModules.withLockedPkgs
-        nix-bitcoin.nixosModules.withSystemPkgs
+        nix-bitcoin.nixosModule
 
-        ## Optional:
-        ## Import the secure-node preset, an opinionated config to enhance security
-        ## and privacy.
+        # Optional:
+        # Import the secure-node preset, an opinionated config to enhance security
+        # and privacy.
         #
         # "${nix-bitcoin}/modules/presets/secure-node.nix"
 
@@ -46,6 +38,15 @@
             isNormalUser = true;
             password = "a";
           };
+
+          # If you use a custom nixpkgs version for evaluating your system
+          # (instead of `nix-bitcoin.inputs.nixpkgs` like in this example),
+          # consider setting `useVersionLockedPkgs = true` to use the exact pkgs
+          # versions for nix-bitcoin services that are tested by nix-bitcoin.
+          # The downsides are increased evaluation times and increased system
+          # closure size.
+          #
+          # nix-bitcoin.useVersionLockedPkgs = true;
         }
       ];
     };

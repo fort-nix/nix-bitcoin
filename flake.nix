@@ -28,19 +28,33 @@
         nbPkgs = lib.mkNbPkgs { inherit (final) system; pkgs = final; };
       in removeAttrs nbPkgs [ "pinned" "nixops19_09" "krops" ];
 
-      nixosModules = {
-        # Uses the default system pkgs for nix-bitcoin.pkgs
-        withSystemPkgs =  { pkgs, ... }: {
-          imports = [ ./modules/modules.nix ];
-          nix-bitcoin.pkgs = (lib.mkNbPkgs { inherit (pkgs) system; inherit pkgs; }).modulesPkgs;
+      nixosModule = { config, pkgs, lib, ... }: {
+        imports = [ ./modules/modules.nix ];
+
+        options = with lib; {
+          nix-bitcoin.useVersionLockedPkgs = mkOption {
+            type = types.bool;
+            default = false;
+            description = ''
+              Use the nixpkgs version locked by this flake for `nix-bitcoin.pkgs`.
+              Only relevant if you are using a nixpkgs version for evaluating your system
+              that differs from the one that is locked by this flake (via input `nixpkgs`).
+              If this is the case, enabling this option may result in a more stable system
+              because the nix-bitcoin services use the exact pkgs versions that are tested
+              by nix-bitcoin.
+              The downsides are increased evaluation times and increased system
+              closure size.
+
+              If `false`, the default system pkgs are used.
+            '';
+          };
         };
 
-        # Uses the nixpkgs version locked by this flake for nix-bitcoin.pkgs.
-        # More stable, but slightly slower to evaluate and needs more space if the
-        # locked and the system nixpkgs versions differ.
-        withLockedPkgs =  { config, ... }: {
-          imports = [ ./modules/modules.nix ];
-          nix-bitcoin.pkgs = (lib.mkNbPkgs { inherit (config.nixpkgs) system; }).modulesPkgs;
+        config = {
+          nix-bitcoin.pkgs =
+            if config.nix-bitcoin.useVersionLockedPkgs
+            then (self.lib.mkNbPkgs { inherit (config.nixpkgs) system; }).modulesPkgs
+            else (self.lib.mkNbPkgs { inherit (pkgs) system; inherit pkgs; }).modulesPkgs;
         };
       };
 
@@ -77,7 +91,7 @@
               inherit system;
               configuration = {
                 imports = [
-                  nix-bitcoin.nixosModules.withSystemPkgs
+                  nix-bitcoin.nixosModule
                   "${nix-bitcoin}/modules/presets/secure-node.nix"
                 ];
 
