@@ -46,4 +46,11 @@ fetchurl {
       hash = "$hash";
     };
 EOF
-sed -i "s|src = .*/src;|src = ${fetchurl//$'\n'/\\n}|" node-packages.nix
+
+sed -i "
+  s|src = .*/src;|src = ${fetchurl//$'\n'/\\n}|
+  # Use https instead of git ssh
+  s|git+ssh://git@|https://|
+  s|ssh://git@|https://|
+  s|\.git#|#|
+" node-packages.nix
