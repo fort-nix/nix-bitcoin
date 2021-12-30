@@ -1279,8 +1279,8 @@ let
     packageName = "c-lightning-rest";
     version = "0.6.0";
     src = fetchurl {
-      url = "https://github.com/Ride-The-Lightning/c-lightning-REST/archive/refs/tags/v0.6.0.tar.gz";
-      hash = "sha256-f8wxULhPdk6OmUdC0P+qRRHgUpZOcb3djkwUIFMf2qE=";
+      url = "https://github.com/Ride-The-Lightning/c-lightning-REST/archive/refs/tags/v0.6.1.tar.gz";
+      hash = "sha256-4IaNeuuIf2hOVWpjEwFzQgY97B7ON4AoRBKReDGvvf0=";
     };
     dependencies = [
       sources."accepts-1.3.7"
