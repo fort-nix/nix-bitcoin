@@ -46,4 +46,13 @@ fetchurl {
       hash = "$hash";
     };
 EOF
-sed -i "s|src = .*/src;|src = ${fetchurl//$'\n'/\\n}|" node-packages.nix
+
+sed -i "
+  # Use the verified package src
+  s|src = .*/src;|src = ${fetchurl//$'\n'/\\n}|
+
+  # github: use HTTPS instead of SSH, which requires user authentication
+  s|git+ssh://git@|https://|
+  s|ssh://git@|https://|
+  s|\.git#|#|
+" node-packages.nix
