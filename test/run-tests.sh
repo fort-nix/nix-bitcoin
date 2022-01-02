@@ -185,13 +185,11 @@ vm() {
     nix-build --out-link $TMPDIR/vm -E "((import \"$scriptDir/tests.nix\" {}).getTest \"$scenario\").vmWithoutTests"
 
     echo "VM stats: CPUs: $numCPUs, memory: $memoryMiB MiB"
-    extraNetOpts=
-    [[ $NB_TEST_ENABLE_NETWORK ]] || extraNetOpts='restrict=on'
+    [[ $NB_TEST_ENABLE_NETWORK ]] || export QEMU_NET_OPTS="restrict=on,$QEMU_NET_OPTS"
 
     USE_TMPDIR=1 \
     NIX_DISK_IMAGE=$TMPDIR/img.qcow2 \
     QEMU_OPTS="-smp $numCPUs -m $memoryMiB -nographic $QEMU_OPTS"  \
-    QEMU_NET_OPTS="$extraNetOpts $QEMU_NET_OPTS" \
       $TMPDIR/vm/bin/run-*-vm
 }
 
