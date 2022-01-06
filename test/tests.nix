@@ -49,6 +49,8 @@ let
       };
 
       tests.clightning = cfg.clightning.enable;
+      test.data.clightning-replication = cfg.clightning.replication.enable;
+
       # When WAN is disabled, DNS bootstrapping slows down service startup by ~15 s.
       services.clightning.extraConfig = mkIf config.test.noConnections "disable-dns";
       test.data.clightning-plugins = let
@@ -186,6 +188,11 @@ let
       tests.security = true;
 
       services.clightning.enable = true;
+      services.clightning.replication = {
+        enable = true;
+        encrypt = true;
+        local.directory = "/var/backup/clightning";
+      };
       test.features.clightningPlugins = true;
       services.rtl.enable = true;
       services.spark-wallet.enable = true;
@@ -354,7 +361,12 @@ let
     };
   makeTest' = import ./lib/make-test.nix pkgs;
 
-  tests = builtins.mapAttrs makeTest allScenarios;
+  tests = builtins.mapAttrs makeTest allScenarios // {
+    clightningReplication.vm = import ./clightning-replication.nix {
+      inherit pkgs;
+      inherit (pkgs.stdenv) system;
+    };
+  };
 
   getTest = name: tests.${name} or (makeTest name {
     services.${name}.enable = true;

@@ -295,10 +295,11 @@ basic() {
 # All tests that only consist of building a nix derivation.
 # Their output is cached in /nix/store.
 buildable() {
-    basic
+    basic "$@"
     scenario=full buildTest "$@"
     scenario=regtest buildTest "$@"
     scenario=hardened buildTest "$@"
+    scenario=clightningReplication buildTest "$@"
 }
 
 examples() {

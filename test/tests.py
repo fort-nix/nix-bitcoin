@@ -153,6 +153,14 @@ def _():
             # This is a one-shot service, so this command only succeeds if the service succeeds
             succeed("systemctl start clightning-feeadjuster")
 
+    if test_data["clightning-replication"]:
+        replica_db = "/var/cache/clightning-replication/plaintext/lightningd.sqlite3"
+        succeed(f"runuser -u clightning -- ls {replica_db}")
+        # No other user should be able to read the unencrypted files
+        machine.fail(f"runuser -u bitcoin -- ls {replica_db}")
+        # A gocryptfs has been created
+        succeed("ls /var/backup/clightning/lightningd-db/gocryptfs.conf")
+
 @test("lnd")
 def _():
     assert_running("lnd")
