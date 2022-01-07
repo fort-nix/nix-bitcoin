@@ -318,7 +318,7 @@ let
     ${optionalString (cfg.rpc.threads != null) "rpcthreads=${toString cfg.rpc.threads}"}
     rpcwhitelistdefault=0
     ${concatMapStrings (user: ''
-        ${optionalString (!user.passwordHMACFromFile) "rpcauth=${user.name}:${passwordHMAC}"}
+        ${optionalString (!user.passwordHMACFromFile) "rpcauth=${user.name}:${user.passwordHMAC}"}
         ${optionalString (user.rpcwhitelist != [])
           "rpcwhitelist=${user.name}:${lib.strings.concatStringsSep "," user.rpcwhitelist}"}
       '') (builtins.attrValues cfg.rpc.users)
