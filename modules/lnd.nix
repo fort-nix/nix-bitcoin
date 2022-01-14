@@ -207,30 +207,25 @@ in {
         } >> '${cfg.dataDir}/lnd.conf'
       '';
       serviceConfig = nbLib.defaultHardening // {
+        Type = "notify";
         RuntimeDirectory = "lnd"; # Only used to store custom macaroons
         RuntimeDirectoryMode = "711";
-        ExecStart = "${cfg.package}/bin/lnd --configfile=${cfg.dataDir}/lnd.conf";
+        ExecStart = ''
+          ${cfg.package}/bin/lnd \
+            --configfile="${cfg.dataDir}/lnd.conf" \
+            --wallet-unlock-password-file="${secretsDir}/lnd-wallet-password" \
+            --wallet-unlock-allow-create
+        '';
         User = cfg.user;
         TimeoutSec = "15min";
         Restart = "on-failure";
         RestartSec = "10s";
         ReadWritePaths = cfg.dataDir;
         ExecStartPost = let
-          # Retrying is necessary because it can happen that the lnd socket is
-          # existing, but the RPC service isn't yet, which results in error
-          # "waiting to start, RPC services not available".
-          curl = "${pkgs.curl}/bin/curl -s --show-error --retry 10 --cacert ${cfg.certPath}";
+          curl = "${pkgs.curl}/bin/curl -s --show-error --cacert ${cfg.certPath}";
           restUrl = "https://${nbLib.addressWithPort cfg.restAddress cfg.restPort}/v1";
         in [
           (nbLib.script "lnd-create-wallet" ''
-            attempts=250
-            while ! {
-              exec 3>/dev/tcp/${nbLib.address cfg.restAddress}/${toString cfg.restPort} && exec 3>&-
-            } &>/dev/null; do
-              ((attempts-- == 0)) && { echo "lnd REST service unreachable"; exit 1; }
-              sleep 0.1
-            done
-
             if [[ ! -f ${networkDir}/wallet.db ]]; then
               mnemonic="${cfg.dataDir}/lnd-seed-mnemonic"
               if [[ ! -f "$mnemonic" ]]; then
@@ -245,25 +240,16 @@ in {
                 \"cipher_seed_mnemonic\": $(cat "$mnemonic" | tr -d '\n')}" \
                 ${restUrl}/initwallet
 
-              # Guarantees that RPC calls with cfg.cli succeed after the service is started
               echo "Wait until wallet is created"
-              while [[ ! -f ${networkDir}/admin.macaroon ]]; do
+              getStatus() {
+                /run/current-system/systemd/bin/systemctl show -p StatusText lnd | cut -f 2 -d=
+              }
+              while [[ $(getStatus) == "Wallet locked" ]]; do
                 sleep 0.1
               done
-            else
-              echo "Unlock lnd wallet"
-              ${curl} \
-                -H "Grpc-Metadata-macaroon: $(${pkgs.xxd}/bin/xxd -ps -u -c 99999 '${networkDir}/admin.macaroon')" \
-                -X POST \
-                -d "{\"wallet_password\": \"$(cat ${secretsDir}/lnd-wallet-password | tr -d '\n' | base64 -w0)\"}" \
-                ${restUrl}/unlockwallet
             fi
-            # Wait until the wallet has been unlocked and RPC is fully active
-            while [[ $(${curl} -d '{}' -X POST ${restUrl}/state | ${pkgs.jq}/bin/jq -r '.state') != RPC_ACTIVE ]]; do
-              sleep 0.1
-            done
           '')
-          # Setting macaroon permission for other users needs root permissions
+          # Setting macaroon permissions for other users needs root permissions
           (nbLib.rootScript "lnd-create-macaroons" ''
             umask ug=r,o=
             ${lib.concatMapStrings (macaroon: ''
