@@ -29,7 +29,7 @@ jq '.dependencies["qrcode-terminal"] = .optionalDependencies["qrcode-terminal"]'
 
 # Generate nix pkg
 node2nix \
-  --nodejs-10 \
+  --nodejs-12 \
   --input $src/package.json \
   --lock $src/npm-shrinkwrap.json \
   --composition composition.nix \
