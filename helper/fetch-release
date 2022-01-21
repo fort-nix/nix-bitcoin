@@ -20,7 +20,7 @@ mkdir -p -m 700 "$GPG_HOME"
 # Import key
 gpg --homedir $GPG_HOME --import "$scriptDir/key-jonasnick.bin" &> /dev/null
 # Check that exactly one key was imported
-(($(gpg --list-keys --with-colons | grep -c pub) == 1))
+(($(gpg --homedir $GPG_HOME --list-keys --with-colons | grep -c pub) == 1))
 # Verify key fingerprint
 gpg --homedir $GPG_HOME --list-keys "36C7 1A37 C9D9 88BD E825 08D9 B1A7 0E4F 8DCD 0366" > /dev/null
 
