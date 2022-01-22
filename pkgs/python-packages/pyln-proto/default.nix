@@ -4,6 +4,7 @@
 , coincurve
 , base58
 , mypy
+, pycparser
 , setuptools-scm
 }:
 
@@ -17,6 +18,7 @@ buildPythonPackage rec {
     bitstring
     cryptography
     coincurve
+    pycparser
     base58
     mypy
     setuptools-scm
