@@ -3590,10 +3590,10 @@ let
   args = {
     name = "rtl";
     packageName = "rtl";
-    version = "0.12.0-beta";
+    version = "0.12.1-beta";
     src = fetchurl {
-      url = "https://github.com/Ride-The-Lightning/RTL/archive/refs/tags/v0.12.0.tar.gz";
-      hash = "sha256-1exj96hDQllyirE7uqjVAOB00TzspOI4/QdAKDOmFQM=";
+      url = "https://github.com/Ride-The-Lightning/RTL/archive/refs/tags/v0.12.1.tar.gz";
+      hash = "sha256-PNv4kipeaTKrk+LjBzaUjOiEdYeB7P463ojXsUmlgc0=";
     };
     dependencies = [
       sources."@angular/animations-13.0.3"
