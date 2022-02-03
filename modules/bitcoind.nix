@@ -101,9 +101,14 @@ let
         };
         users = mkOption {
           default = {};
+          description = ''
+            Allowed users for JSON-RPC connections.
+          '';
           example = {
-            alice.passwordHMAC = "f7efda5c189b999524f151318c0c86$d5b51b3beffbc02b724e5d095828e0bc8b2456e9ac8757ae3211a5d9b16a22ae";
-            bob.passwordHMAC = "b2dd077cb54591a2f3139e69a897ac$4e71f08d48b4347cf8eff3815c0e25ae2e9a4340474079f55705f40574f4ec99";
+            alice = {
+              passwordHMAC = "f7efda5c189b999524f151318c0c86$d5b51b3beffbc02b724e5d095828e0bc8b2456e9ac8757ae3211a5d9b16a22ae";
+              rpcwhitelist = [ "getnetworkinfo" "getpeerinfo" ];
+            };
           };
           type = with types; attrsOf (submodule ({ name, ... }: {
             options = {
@@ -138,9 +143,6 @@ let
               };
             };
           }));
-          description = ''
-            RPC user information for JSON-RPC connections.
-          '';
         };
       };
       regtest = mkOption {
