@@ -111,7 +111,7 @@
         # Allow accessing the whole nested `nbPkgs` attrset (including `modulesPkgs`)
         # via this flake.
         # `packages` is not allowed to contain nested pkgs attrsets.
-        legacyPackages = { inherit nbPkgs; };
+        legacyPackages = nbPkgs;
 
         defaultApp = apps.vm;
 
