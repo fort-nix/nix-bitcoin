@@ -367,7 +367,6 @@ in {
 
     systemd.tmpfiles.rules = [
       "d '${cfg.dataDir}' 0770 ${cfg.user} ${cfg.group} - -"
-      "d '${cfg.dataDir}/blocks' 0770 ${cfg.user} ${cfg.group} - -"
     ];
 
     systemd.services.bitcoind = {
@@ -387,7 +386,12 @@ in {
           ''
         ) (builtins.attrNames cfg.rpc.users);
       in ''
-        ${optionalString cfg.dataDirReadableByGroup "chmod -R g+rX '${cfg.dataDir}/blocks'"}
+        ${optionalString cfg.dataDirReadableByGroup ''
+          if [[ -e '${cfg.dataDir}/blocks' ]]; then
+            chmod -R g+rX '${cfg.dataDir}/blocks'
+          fi
+        ''}
+
         cfg=$(
           cat ${configFile}
           ${extraRpcauth}
