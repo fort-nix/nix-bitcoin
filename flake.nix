@@ -18,8 +18,8 @@
       lib = {
         mkNbPkgs = {
           system
-          , pkgs ? import nixpkgs { inherit system; }
-          , pkgsUnstable ? import nixpkgsUnstable { inherit system; }
+          , pkgs ? nixpkgs.legacyPackages.${system}
+          , pkgsUnstable ? nixpkgsUnstable.legacyPackages.${system}
         }:
           import ./pkgs { inherit pkgs pkgsUnstable; };
       };
@@ -65,7 +65,7 @@
 
     } // (flake-utils.lib.eachSystem supportedSystems (system:
       let
-        pkgs = import nixpkgs { inherit system; };
+        pkgs = nixpkgs.legacyPackages.${system};
 
         nbPkgs = self.lib.mkNbPkgs { inherit system pkgs; };
 
