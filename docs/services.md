@@ -41,7 +41,8 @@ ssh -L 3000:169.254.1.29:3000 root@bitcoin-node
 
 Otherwise, you can access it via Tor Browser at `http://<onion-address>`.
 You can find the `<onion-address>` with command `nodeinfo`.
-The default password location is `/secrets/rtl-password`.
+The default password location is `$secretsDir/rtl-password`.
+See: [Secrets dir](./configuration.md#secrets-dir)
 
 # Connect to spark-wallet
 ### Requirements
@@ -305,9 +306,10 @@ If you want to manually initialize your wallet instead, follow these steps:
     Follow the on-screen instructions and write down your seed.
 
     In order to use nix-bitcoin's `joinmarket.yieldgenerator`, use the password
-    from `/secrets/jm-wallet-password` and use the suggested default wallet name
+    from `$secretsDir/jm-wallet-password` and use the suggested default wallet name
     `wallet.jmdat`. If you want to use your own `jm-wallet-password`, simply
     replace the password string in your local secrets directory.
+    See: [Secrets dir](./configuration.md#secrets-dir)
 
 ## Run the tumbler
 
