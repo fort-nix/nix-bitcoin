@@ -51,7 +51,7 @@
   # nix-bitcoin.onionServices.clightning.public = true;
   #
   # == Plugins
-  # See ../docs/usage.md for the list of available plugins.
+  # See ../docs/services.md for the list of available plugins.
   # services.clightning.plugins.prometheus.enable = true;
 
   ### LND
@@ -154,7 +154,7 @@
   # services.hardware-wallets.ledger = true;
   #
   # Trezor can be initialized with the trezorctl command in nix-bitcoin. More information in
-  # `docs/usage.md`.
+  # `../docs/services.md`.
   # services.hardware-wallets.trezor = true;
 
   ### lightning-loop
