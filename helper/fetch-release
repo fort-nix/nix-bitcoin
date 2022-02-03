@@ -14,15 +14,15 @@ fi
 TMPDIR=$(mktemp -d)
 trap "rm -rf $TMPDIR" EXIT
 
-GPG_HOME=$TMPDIR/gpg-home
-mkdir -p -m 700 "$GPG_HOME"
+export GNUPGHOME=$TMPDIR/gpg-home
+mkdir -p -m 700 "$GNUPGHOME"
 
 # Import key
-gpg --homedir $GPG_HOME --import "$scriptDir/key-jonasnick.bin" &> /dev/null
+gpg --import "$scriptDir/key-jonasnick.bin" &> /dev/null
 # Check that exactly one key was imported
-(($(gpg --homedir $GPG_HOME --list-keys --with-colons | grep -c pub) == 1))
+(($(gpg --list-keys --with-colons | grep -c pub) == 1))
 # Verify key fingerprint
-gpg --homedir $GPG_HOME --list-keys "36C7 1A37 C9D9 88BD E825 08D9 B1A7 0E4F 8DCD 0366" > /dev/null
+gpg --list-keys "36C7 1A37 C9D9 88BD E825 08D9 B1A7 0E4F 8DCD 0366" > /dev/null
 
 # Fetch nar-hash of release
 cd $TMPDIR
@@ -31,7 +31,7 @@ curl -s --show-error -L -O $baseUrl/nar-hash.txt
 curl -s --show-error -L -O $baseUrl/nar-hash.txt.asc
 
 # Verify signature for nar-hash
-gpg --homedir $GPG_HOME --verify nar-hash.txt.asc &> /dev/null || {
+gpg --verify nar-hash.txt.asc &> /dev/null || {
     >&2 echo "Error: Signature verification failed. Please open an issue in the project repository."
     exit 1
 }
