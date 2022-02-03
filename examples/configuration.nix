@@ -234,10 +234,15 @@
   networking.hostName = "host";
   time.timeZone = "UTC";
 
-  # FIXME: Add your SSH pubkey
-  services.openssh.enable = true;
+  services.openssh = {
+    enable = true;
+    passwordAuthentication = false;
+  };
   users.users.root = {
-    openssh.authorizedKeys.keys = [ "" ];
+    openssh.authorizedKeys.keys = [
+      # FIXME: Replace this with your SSH pubkey
+      "ssh-ed25519 AAAAC3..."
+    ];
   };
 
   # FIXME: Uncomment this to allow the operator user to run
