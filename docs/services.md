@@ -391,15 +391,10 @@ See [here](https://github.com/JoinMarket-Org/joinmarket-clientserver/blob/master
 # clightning
 
 ## Plugins
+There is a number of [plugins](https://github.com/lightningd/plugins) available for clightning.
+See [`Readme: Features → clightning`](../README.md#features) or [search.nixos.org][1] for a complete list.
 
-There are a number of [plugins](https://github.com/lightningd/plugins) available for clightning. Currently `nix-bitcoin` supports:
-
-- helpme
-- monitor
-- prometheus
-- rebalance
-- summary
-- zmq
+[1]: https://search.nixos.org/flakes?channel=unstable&from=0&size=30&sort=relevance&type=options&query=services.clightning.plugins
 
 You can activate and configure these plugins like so:
 

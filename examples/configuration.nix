@@ -51,7 +51,7 @@
   # nix-bitcoin.onionServices.clightning.public = true;
   #
   # == Plugins
-  # See ../docs/services.md for the list of available plugins.
+  # See ../README.md (Features → clightning) for the list of available plugins.
   # services.clightning.plugins.prometheus.enable = true;
 
   ### LND
