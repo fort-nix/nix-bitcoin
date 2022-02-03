@@ -282,6 +282,7 @@ let
   configFile = builtins.toFile "bitcoin.conf" ''
     # We're already logging via journald
     nodebuglogfile=1
+    logtimestamps=0
 
     startupnotify=/run/current-system/systemd/bin/systemd-notify --ready
 
