@@ -161,9 +161,6 @@ in {
 
   config = mkIf cfg.enable {
     assertions = [
-      { assertion = bitcoind.prune == 0;
-        message = "lnd does not support bitcoind pruning.";
-      }
       { assertion =
           !(config.services ? clightning)
           || !config.services.clightning.enable
