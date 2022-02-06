@@ -101,9 +101,14 @@ let
         };
         users = mkOption {
           default = {};
+          description = ''
+            Allowed users for JSON-RPC connections.
+          '';
           example = {
-            alice.passwordHMAC = "f7efda5c189b999524f151318c0c86$d5b51b3beffbc02b724e5d095828e0bc8b2456e9ac8757ae3211a5d9b16a22ae";
-            bob.passwordHMAC = "b2dd077cb54591a2f3139e69a897ac$4e71f08d48b4347cf8eff3815c0e25ae2e9a4340474079f55705f40574f4ec99";
+            alice = {
+              passwordHMAC = "f7efda5c189b999524f151318c0c86$d5b51b3beffbc02b724e5d095828e0bc8b2456e9ac8757ae3211a5d9b16a22ae";
+              rpcwhitelist = [ "getnetworkinfo" "getpeerinfo" ];
+            };
           };
           type = with types; attrsOf (submodule ({ name, ... }: {
             options = {
@@ -138,9 +143,6 @@ let
               };
             };
           }));
-          description = ''
-            RPC user information for JSON-RPC connections.
-          '';
         };
       };
       regtest = mkOption {
@@ -282,6 +284,7 @@ let
   configFile = builtins.toFile "bitcoin.conf" ''
     # We're already logging via journald
     nodebuglogfile=1
+    logtimestamps=0
 
     startupnotify=/run/current-system/systemd/bin/systemd-notify --ready
 
@@ -366,7 +369,6 @@ in {
 
     systemd.tmpfiles.rules = [
       "d '${cfg.dataDir}' 0770 ${cfg.user} ${cfg.group} - -"
-      "d '${cfg.dataDir}/blocks' 0770 ${cfg.user} ${cfg.group} - -"
     ];
 
     systemd.services.bitcoind = {
@@ -386,7 +388,12 @@ in {
           ''
         ) (builtins.attrNames cfg.rpc.users);
       in ''
-        ${optionalString cfg.dataDirReadableByGroup "chmod -R g+rX '${cfg.dataDir}/blocks'"}
+        ${optionalString cfg.dataDirReadableByGroup ''
+          if [[ -e '${cfg.dataDir}/blocks' ]]; then
+            chmod -R g+rX '${cfg.dataDir}/blocks'
+          fi
+        ''}
+
         cfg=$(
           cat ${configFile}
           ${extraRpcauth}

@@ -18,9 +18,6 @@ in {
   };
 
   config =  {
-    # For backwards compatibility only
-    nix-bitcoin.secretsDir = mkDefault "/secrets";
-
     networking.firewall.enable = true;
 
     nix-bitcoin.security.dbusHideProcessInformation = true;

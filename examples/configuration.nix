@@ -51,7 +51,7 @@
   # nix-bitcoin.onionServices.clightning.public = true;
   #
   # == Plugins
-  # See ../docs/usage.md for the list of available plugins.
+  # See ../README.md (Features → clightning) for the list of available plugins.
   # services.clightning.plugins.prometheus.enable = true;
 
   ### LND
@@ -154,7 +154,7 @@
   # services.hardware-wallets.ledger = true;
   #
   # Trezor can be initialized with the trezorctl command in nix-bitcoin. More information in
-  # `docs/usage.md`.
+  # `../docs/services.md`.
   # services.hardware-wallets.trezor = true;
 
   ### lightning-loop
@@ -234,10 +234,15 @@
   networking.hostName = "host";
   time.timeZone = "UTC";
 
-  # FIXME: Add your SSH pubkey
-  services.openssh.enable = true;
+  services.openssh = {
+    enable = true;
+    passwordAuthentication = false;
+  };
   users.users.root = {
-    openssh.authorizedKeys.keys = [ "" ];
+    openssh.authorizedKeys.keys = [
+      # FIXME: Replace this with your SSH pubkey
+      "ssh-ed25519 AAAAC3..."
+    ];
   };
 
   # FIXME: Uncomment this to allow the operator user to run
@@ -261,5 +266,5 @@
   # The nix-bitcoin release version that your config is compatible with.
   # When upgrading to a backwards-incompatible release, nix-bitcoin will display an
   # an error and provide hints for migrating your config to the new release.
-  nix-bitcoin.configVersion = "0.0.57";
+  nix-bitcoin.configVersion = "0.0.65";
 }

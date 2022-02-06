@@ -250,9 +250,4 @@ following default values:
 
 - If you're using the krops deployment method: `/var/src/secrets`
 
-- Otherwise:
-  - `/secrets` (if you're using the `secure-node.nix` template)
-  - `/etc/nix-bitcoin-secrets` (otherwise)
-
-  `/secrets` only exists to provide backwards compatibility for users of the
-  `secure-node.nix` template.
+- Otherwise: `/etc/nix-bitcoin-secrets`
