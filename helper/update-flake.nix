@@ -11,7 +11,7 @@ in rec {
   # A pinned pkg is added to `stable` if the stable and unstable pkg versions
   # are identical.
   versions = let
-    pinned = flake.legacyPackages.x86_64-linux.nbPkgs.pinned;
+    pinned = flake.legacyPackages.x86_64-linux.pinned;
     pinnedPkgs = lib.filterAttrs (n: v: lib.isDerivation v) pinned;
     stable = pinned.pkgs;
     unstable = pinned.pkgsUnstable;
