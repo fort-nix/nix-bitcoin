@@ -193,7 +193,7 @@ def _():
     wait_for_open_port(ip("nbxplorer"), 24444)
 
     assert_running("btcpayserver")
-    machine.wait_until_succeeds(log_has_string("btcpayserver", "Listening on"))
+    machine.wait_until_succeeds(log_has_string("btcpayserver", "Now listening on"))
     wait_for_open_port(ip("btcpayserver"), 23000)
     # test lnd custom macaroon
     assert_matches(
