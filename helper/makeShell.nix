@@ -77,7 +77,11 @@ pkgs.stdenv.mkDerivation {
 
     generate-secrets() {(
       set -euo pipefail
-      genSecrets=$(nix-build --no-out-link -I nixos-config="${cfgDir}/configuration.nix" \
+      config="${cfgDir}/krops/krops-configuration.nix"
+      if [[ ! -e $config ]]; then
+        config="${cfgDir}/configuration.nix"
+      fi
+      genSecrets=$(nix-build --no-out-link -I nixos-config="$config" \
                    '<nixpkgs/nixos>' -A config.nix-bitcoin.generateSecretsScript)
       mkdir -p "${cfgDir}/secrets"
       (cd "${cfgDir}/secrets"; $genSecrets)
