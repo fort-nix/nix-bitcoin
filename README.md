@@ -72,7 +72,7 @@ NixOS modules ([src](modules/modules.nix))
     * [rebalance](https://github.com/lightningd/plugins/tree/master/rebalance): keeps your channels balanced
     * [summary](https://github.com/lightningd/plugins/tree/master/summary): print a nice summary of the node status
     * [zmq](https://github.com/lightningd/plugins/tree/master/zmq): publishes notifications via ZeroMQ to configured endpoints
-  * [lnd](https://github.com/lightningnetwork/lnd) with support for announcing an onion service
+  * [lnd](https://github.com/lightningnetwork/lnd) with support for announcing an onion service and [static channel backups](https://github.com/lightningnetwork/lnd/blob/master/docs/recovery.md)
     * [Lightning Loop](https://github.com/lightninglabs/loop)
     * [Lightning Pool](https://github.com/lightninglabs/pool)
     * [charge-lnd](https://github.com/accumulator/charge-lnd): policy-based channel fee manager
