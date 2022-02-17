@@ -34,6 +34,7 @@ let
     liquidd = mkInfo "";
     joinmarket-ob-watcher = mkInfo "";
     rtl = mkInfo "";
+    mempool = mkInfo "";
     # Only add sshd when it has an onion service
     sshd = name: cfg: mkIfOnionPort "sshd" (onionPort: ''
       add_service("sshd", """set_onion_address(info, "sshd", ${onionPort})""")

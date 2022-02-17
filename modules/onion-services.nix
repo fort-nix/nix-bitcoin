@@ -120,6 +120,9 @@ in {
         rtl = {
           externalPort = 80;
         };
+        mempool = {
+          externalPort = 80;
+        };
       };
     }
   ];

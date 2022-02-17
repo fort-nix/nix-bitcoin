@@ -78,6 +78,8 @@ let
         echo a > rtl-password
       '');
 
+      tests.mempool = cfg.mempool.enable;
+
       tests.spark-wallet = cfg.spark-wallet.enable;
 
       tests.lnd = cfg.lnd.enable;
@@ -221,6 +223,7 @@ let
       services.clightning-rest.enable = true;
       services.liquidd.enable = true;
       services.rtl.enable = true;
+      services.mempool.enable = true;
       services.spark-wallet.enable = true;
       services.lnd.enable = true;
       services.lightning-loop.enable = true;

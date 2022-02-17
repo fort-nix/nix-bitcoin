@@ -20,6 +20,7 @@
     ./charge-lnd.nix
     ./lndconnect-onion.nix # Requires onion-addresses.nix
     ./rtl.nix
+    ./mempool.nix
     ./electrs.nix
     ./fulcrum.nix
     ./liquid.nix

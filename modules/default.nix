@@ -7,6 +7,7 @@
   liquid = ./liquid.nix;
   presets.secure-node = ./presets/secure-node.nix;
   rtl = ./rtl.nix;
+  mempool = ./mempool.nix;
   spark-wallet = ./spark-wallet.nix;
   lnd = ./lnd.nix;
   charge-lnd = ./charge-lnd.nix;

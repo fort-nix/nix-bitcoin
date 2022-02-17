@@ -293,8 +293,15 @@ in {
       clightning-rest = {
         id = 30;
       };
-      fulcrum = {
+      mempool = {
+        id = 31;
+        connections = [ "bitcoind" "electrs" "fulcrum" "nginx" "mysql" ];
+      };
+      mysql = {
         id = 32;
+      };
+      fulcrum = {
+        id = 33;
         connections = [ "bitcoind" ];
       };
     };
@@ -355,6 +362,8 @@ in {
     services.rtl.address = netns.rtl.address;
 
     services.clightning-rest.address = netns.clightning-rest.address;
+
+    services.mempool.backendAddress = netns.mempool.address;
   }
   ]);
 }
