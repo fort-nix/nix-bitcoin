@@ -1,0 +1,8 @@
+--- a/backend/src/config.ts
++++ b/backend/src/config.ts
+@@ -1,4 +1,4 @@
+-const configFile = require('../mempool-config.json');
++const configFile = require('/var/lib/mempool/config.json');
+
+ interface IConfig {
+   MEMPOOL: {
