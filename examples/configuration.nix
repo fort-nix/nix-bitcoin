@@ -83,6 +83,8 @@
   # You should also backup your channel state after opening new channels.
   # This will allow you to recover off-chain funds, by force-closing channels.
   #   scp bitcoin-node:/var/lib/lnd/chain/bitcoin/mainnet/channel.backup ./backups/lnd/
+  #
+  # Alternatively, you can have these files backed up by services.backups below.
 
   ### RIDE THE LIGHTNING
   # Set this to enable RTL, a web interface for lnd and clightning.
