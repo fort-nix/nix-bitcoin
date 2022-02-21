@@ -23,6 +23,10 @@ let
         + " --replace pyln-client~=0.9.3 pyln-client~=0.10.1";
     };
     rebalance = { description = "Keeps your channels balanced"; };
+    commando = {
+      description = "Enable RPC over lightning";
+      extraPkgs = [ nbPython3Packages.runes ];
+    };
     summary = {
       description = "Prints a summary of the node status";
       extraPkgs = [ packaging requests ];
