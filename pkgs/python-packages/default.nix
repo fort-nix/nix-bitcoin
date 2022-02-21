@@ -11,6 +11,7 @@ in {
   urldecode = callPackage ./urldecode {};
   chromalog = callPackage ./chromalog {};
   txzmq = callPackage ./txzmq {};
+  sha256 = callPackage ./sha256 {};
   runes = callPackage ./runes {};
 
   joinmarketbase = joinmarketPkg ./jmbase;
