@@ -108,10 +108,6 @@ let
         txfee = 200;
       };
 
-      # Disable restarting joinmarket-ob-watcher because it always fails
-      # on non-synced mainnet nodes
-      systemd.services.joinmarket-ob-watcher.serviceConfig.Restart = mkForce "no";
-
       tests.nodeinfo = config.nix-bitcoin.nodeinfo.enable;
 
       tests.backups = cfg.backups.enable;
