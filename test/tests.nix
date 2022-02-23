@@ -132,6 +132,11 @@ let
         prometheus.enable = true;
         rebalance.enable = true;
         summary.enable = true;
+        commando = {
+          enable = true;
+          readers = [ "0266e4598d1d3c415f572a8488830b60f7e744ed9235eb0b1ba93283b315c03518" ];
+          writers = [ "0336efaa22b8ba77ae721a25d589e1c5f2486073dd2f041add32a23316150e8b62" ];
+        };
         zmq = let tcpEndpoint = "tcp://127.0.0.1:5501"; in {
           enable = true;
           channel-opened = tcpEndpoint;
