@@ -293,6 +293,10 @@ in {
       clightning-rest = {
         id = 30;
       };
+      fulcrum = {
+        id = 32;
+        connections = [ "bitcoind" ];
+      };
     };
 
     services.bitcoind = {
@@ -323,6 +327,8 @@ in {
     };
 
     services.electrs.address = netns.electrs.address;
+
+    services.fulcrum.address = netns.fulcrum.address;
 
     services.spark-wallet = {
       address = netns.spark-wallet.address;
