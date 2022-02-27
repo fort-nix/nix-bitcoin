@@ -13,6 +13,7 @@ let
 in {
   imports = [
     ./clboss.nix
+    ./commando.nix
     ./prometheus.nix
     ./summary.nix
     ./zmq.nix

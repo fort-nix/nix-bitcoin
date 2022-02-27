@@ -6,8 +6,8 @@ let
   src = pkgs.fetchFromGitHub {
     owner = "lightningd";
     repo = "plugins";
-    rev = "1f6f701bf1e60882b8fa61cb735e7033c8c29e3c";
-    sha256 = "088h0yxs0fbrr7r6mi4xmznf0a294i45fbc792xrmwchlay0k7jj";
+    rev = "b88c9278102ea9bffddce8143d31e939b31e835c";
+    sha256 = "sha256-qf4MYqP2Bwlqqn2y2LCIYuFq71r2m6IFT/w4noW6ePU=";
   };
 
   version = builtins.substring 0 7 src.rev;
@@ -23,6 +23,10 @@ let
         + " --replace pyln-client~=0.9.3 pyln-client~=0.10.1";
     };
     rebalance = { description = "Keeps your channels balanced"; };
+    commando = {
+      description = "Enable RPC over lightning";
+      extraPkgs = [ nbPython3Packages.runes ];
+    };
     summary = {
       description = "Prints a summary of the node status";
       extraPkgs = [ packaging requests ];

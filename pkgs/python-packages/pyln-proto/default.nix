@@ -4,6 +4,7 @@
 , coincurve
 , base58
 , mypy
+, pycparser
 , setuptools-scm
 }:
 
@@ -17,6 +18,7 @@ buildPythonPackage rec {
     bitstring
     cryptography
     coincurve
+    pycparser
     base58
     mypy
     setuptools-scm
@@ -27,6 +29,7 @@ buildPythonPackage rec {
   postUnpack = "sourceRoot=$sourceRoot/contrib/pyln-proto";
   postPatch = ''
     sed -i '
+      s|pycparser==2.20|pycparser~=2.20|
       s|coincurve ~= 13.0|coincurve == 15.0.0|
       s|base58 ~= 2.0.1|base58 == 2.1.0|
       s|mypy==0.790|mypy == 0.812|

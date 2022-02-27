@@ -66,8 +66,9 @@ NixOS modules ([src](modules/modules.nix))
   * [clightning](https://github.com/ElementsProject/lightning) with support for announcing an onion service\
     Available plugins:
     * [clboss](https://github.com/ZmnSCPxj/clboss): automated C-Lightning Node Manager
+    * [commando](https://github.com/lightningd/plugins/tree/master/commando): control your node over lightning
     * [helpme](https://github.com/lightningd/plugins/tree/master/helpme): walks you through setting up a fresh c-lightning node
-    * [monitor](https://github.com/renepickhardt/plugins/tree/master/monitor): helps you analyze the health of your peers and channels
+    * [monitor](https://github.com/lightningd/plugins/tree/master/monitor): helps you analyze the health of your peers and channels
     * [prometheus](https://github.com/lightningd/plugins/tree/master/prometheus): lightning node exporter for the prometheus timeseries server
     * [rebalance](https://github.com/lightningd/plugins/tree/master/rebalance): keeps your channels balanced
     * [summary](https://github.com/lightningd/plugins/tree/master/summary): print a nice summary of the node status
