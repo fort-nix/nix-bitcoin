@@ -12,6 +12,7 @@ let self = {
   joinmarket = pkgs.callPackage ./joinmarket { inherit (self) nbPython3Packages; };
   liquid-swap = pkgs.python3Packages.callPackage ./liquid-swap { };
   rtl = pkgs.callPackage ./rtl { };
+  # The secp256k1 version used by joinmarket
   secp256k1 = pkgs.callPackage ./secp256k1 { };
   spark-wallet = pkgs.callPackage ./spark-wallet { };
 
