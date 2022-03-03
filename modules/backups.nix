@@ -3,7 +3,16 @@
 with lib;
 let
   options.services.backups = {
-    enable = mkEnableOption "Backups service";
+    enable = mkOption {
+      type = types.bool;
+      default = false;
+      description = ''
+        Enable backups of node data.
+        This uses the NixOS duplicity service.
+        To further configure the backup, you can set NixOS options `services.duplicity.*`.
+        The `services.duplicity.cleanup.*` options are particularly useful.
+      '';
+    };
     with-bulk-data = mkOption {
       type = types.bool;
       default = false;
@@ -87,8 +96,8 @@ in {
         enable = true;
         extraFlags = [
           "--include-filelist" "${filelist}"
-          "--full-if-older-than" "1M"
         ];
+        fullIfOlderThan = mkDefault "1M";
         targetUrl = cfg.destination;
         frequency = cfg.frequency;
         secretFile = "${config.nix-bitcoin.secretsDir}/backup-encryption-env";
