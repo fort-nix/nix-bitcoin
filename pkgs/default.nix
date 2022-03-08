@@ -15,7 +15,8 @@ let self = {
   # The secp256k1 version used by joinmarket
   secp256k1 = pkgs.callPackage ./secp256k1 { };
   spark-wallet = pkgs.callPackage ./spark-wallet { };
-
+  peerswap-lnd = pkgs.callPackage ./peerswap { goSubPackages = ["cmd/peerswaplnd/peerswapd" "cmd/peerswaplnd/pscli" ]; };
+  peerswap-cln = pkgs.callPackage ./peerswap { goSubPackages = ["cmd/peerswap" ]; };
   nbPython3Packages = (pkgs.python3.override {
     packageOverrides = import ./python-packages self;
   }).pkgs;
