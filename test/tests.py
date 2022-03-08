@@ -184,6 +184,14 @@ def _():
     succeed("systemctl start charge-lnd")
     assert_no_failure("charge-lnd")
 
+@test("peerswap-lnd")
+def _():
+    assert_running("peerswap-lnd")
+    machine.wait_until_succeeds(
+        log_has_string("peerswap-lnd", "peerswapd listening on")
+    )
+    assert_matches("pscli reloadpolicy", "policy")
+
 @test("btcpayserver")
 def _():
     assert_running("nbxplorer")
