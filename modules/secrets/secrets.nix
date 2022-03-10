@@ -66,7 +66,7 @@ let
     };
 
     secretsSetupMethod = mkOption {
-      type = types.str;
+      type = with types; nullOr str;
       default = null;
     };
 
