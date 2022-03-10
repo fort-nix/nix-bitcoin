@@ -5,7 +5,7 @@ set -euo pipefail
 TMPDIR="$(mktemp -d -p /tmp)"
 trap "rm -rf $TMPDIR" EXIT
 
-version="0.12.1"
+version="0.12.2"
 repo=https://github.com/Ride-The-Lightning/RTL
 
 # Fetch and verify source tarball
