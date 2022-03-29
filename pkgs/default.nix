@@ -10,6 +10,7 @@ let self = {
   clboss = pkgs.callPackage ./clboss { };
   clightning-plugins = pkgs.recurseIntoAttrs (import ./clightning-plugins pkgs self.nbPython3Packages);
   joinmarket = pkgs.callPackage ./joinmarket { inherit (self) nbPython3Packages; };
+  lndinit = pkgs.callPackage ./lndinit { };
   liquid-swap = pkgs.python3Packages.callPackage ./liquid-swap { };
   rtl = pkgs.callPackage ./rtl { };
   # The secp256k1 version used by joinmarket
