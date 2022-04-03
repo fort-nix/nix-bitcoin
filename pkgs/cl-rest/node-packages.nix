@@ -625,13 +625,13 @@ let
         sha1 = "a5e654c2e5a2deb5f201d96cefbca80c0ef2f513";
       };
     };
-    "json-schema-0.2.3" = {
+    "json-schema-0.4.0" = {
       name = "json-schema";
       packageName = "json-schema";
-      version = "0.2.3";
+      version = "0.4.0";
       src = fetchurl {
-        url = "https://registry.npmjs.org/json-schema/-/json-schema-0.2.3.tgz";
-        sha1 = "b480c892e59a2f05954ce727bd3f2a4e882f9e13";
+        url = "https://registry.npmjs.org/json-schema/-/json-schema-0.4.0.tgz";
+        sha512 = "es94M3nTIfsEPisRafak+HDLfHXnKBhV3vU5eqPcS3flIWqcxJWgXHXiey3YrpaNsanY5ei1VoYEbOzijuq9BA==";
       };
     };
     "json-schema-ref-parser-7.1.2" = {
@@ -670,13 +670,13 @@ let
         sha1 = "3f4dae4a91fac315f71062f8521cc239f1366280";
       };
     };
-    "jsprim-1.4.1" = {
+    "jsprim-1.4.2" = {
       name = "jsprim";
       packageName = "jsprim";
-      version = "1.4.1";
+      version = "1.4.2";
       src = fetchurl {
-        url = "https://registry.npmjs.org/jsprim/-/jsprim-1.4.1.tgz";
-        sha1 = "313e66bc1e5cc06e438bc1b7499c2e5c56acb6a2";
+        url = "https://registry.npmjs.org/jsprim/-/jsprim-1.4.2.tgz";
+        sha512 = "P2bSOMAc/ciLz6DzgjVlGJP9+BrJWu5UDGK70C2iweC5QBIeFf0ZXRvGjEj2uYgrY2MkAAhsSWHDWlFtEroZWw==";
       };
     };
     "lodash.get-4.4.2" = {
@@ -1093,22 +1093,22 @@ let
         sha512 = "zk6ig8J2B4OqCnBSIqO67/Ui96NTjuoX10YGa4YVlIlQzLpHUZbLFZaO+zSubQoqAiJxmpvlbUplEcFIsPCESA==";
       };
     };
-    "swagger-ui-dist-3.24.0" = {
+    "swagger-ui-dist-4.9.1" = {
       name = "swagger-ui-dist";
       packageName = "swagger-ui-dist";
-      version = "3.24.0";
+      version = "4.9.1";
       src = fetchurl {
-        url = "https://registry.npmjs.org/swagger-ui-dist/-/swagger-ui-dist-3.24.0.tgz";
-        sha512 = "5uAjeEqV+zbtalBDXAIrkqUZwsUHYwvBSeGYlFcLj1ERS3jfprL4OPLSSriDoeXCtNmWzpz5aooV2qJW+DqdUQ==";
+        url = "https://registry.npmjs.org/swagger-ui-dist/-/swagger-ui-dist-4.9.1.tgz";
+        sha512 = "hYo/kt/wXYd/4WOUm2NLyDa3tR3lCfHbjVa1wSvvSL8AKbYoJsBkc4Va7VJ1uv/JO89xM1736pp1tzJkrVsBxA==";
       };
     };
-    "swagger-ui-express-4.1.2" = {
+    "swagger-ui-express-4.3.0" = {
       name = "swagger-ui-express";
       packageName = "swagger-ui-express";
-      version = "4.1.2";
+      version = "4.3.0";
       src = fetchurl {
-        url = "https://registry.npmjs.org/swagger-ui-express/-/swagger-ui-express-4.1.2.tgz";
-        sha512 = "bVT16qj6WdNlEKFkSLOoTeGuqEm2lfOFRq6mVHAx+viA/ikORE+n4CS3WpVcYmQzM4HE6+DUFgAWcMRBJNpjcw==";
+        url = "https://registry.npmjs.org/swagger-ui-express/-/swagger-ui-express-4.3.0.tgz";
+        sha512 = "jN46SEEe9EoXa3ZgZoKgnSF6z0w3tnM1yqhO4Y+Q4iZVc8JOQB960EZpIAz6rNROrDApVDwcMHR0mhlnc/5Omw==";
       };
     };
     "toidentifier-1.0.0" = {
@@ -1277,10 +1277,10 @@ let
   args = {
     name = "c-lightning-rest";
     packageName = "c-lightning-rest";
-    version = "0.6.0";
+    version = "0.7.0";
     src = fetchurl {
-      url = "https://github.com/Ride-The-Lightning/c-lightning-REST/archive/refs/tags/v0.6.1.tar.gz";
-      hash = "sha256-4IaNeuuIf2hOVWpjEwFzQgY97B7ON4AoRBKReDGvvf0=";
+      url = "https://github.com/Ride-The-Lightning/c-lightning-REST/archive/refs/tags/v0.7.0.tar.gz";
+      hash = "sha256-NeeG4WyXWPZv5u5HuMwVhIgDgHStgah3YNtk4bKvNoY=";
     };
     dependencies = [
       sources."accepts-1.3.7"
@@ -1363,12 +1363,12 @@ let
       sources."isstream-0.1.2"
       sources."js-yaml-3.13.1"
       sources."jsbn-0.1.1"
-      sources."json-schema-0.2.3"
+      sources."json-schema-0.4.0"
       sources."json-schema-ref-parser-7.1.2"
       sources."json-schema-traverse-0.4.1"
       sources."json-stringify-safe-5.0.1"
       sources."jsonparse-1.3.1"
-      sources."jsprim-1.4.1"
+      sources."jsprim-1.4.2"
       sources."lodash.get-4.4.2"
       sources."lodash.isequal-4.5.0"
       (sources."macaroon-3.0.4" // {
@@ -1425,8 +1425,8 @@ let
       sources."swagger-jsdoc-3.4.0"
       sources."swagger-methods-2.0.2"
       sources."swagger-parser-8.0.0"
-      sources."swagger-ui-dist-3.24.0"
-      sources."swagger-ui-express-4.1.2"
+      sources."swagger-ui-dist-4.9.1"
+      sources."swagger-ui-express-4.3.0"
       sources."toidentifier-1.0.0"
       sources."tough-cookie-2.5.0"
       sources."tunnel-agent-0.6.0"
