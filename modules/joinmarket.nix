@@ -150,16 +150,8 @@ let
     usessl = false
     ${socks5Settings}
 
-    # agora.anarplex.net
-    [MESSAGING:server3]
-    host = vxecvd6lc4giwtasjhgbrr3eop6pzq6i5rveracktioneunalgqlwfad.onion
-    channel = joinmarket-pit
-    port = 6667
-    usessl = false
-    ${socks5Settings}
-
     # ilita
-    [MESSAGING:server4]
+    [MESSAGING:server3]
     host = ilitafrzzgxymv6umx2ux7kbz3imyeko6cnqkvy4nisjjj4qpqkrptid.onion
     channel = joinmarket-pit
     port = 6667

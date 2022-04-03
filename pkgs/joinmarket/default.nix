@@ -1,10 +1,20 @@
-{ stdenv, lib, fetchurl, python3, nbPython3Packages, pkgs }:
+{ stdenv, lib, fetchurl, applyPatches, fetchpatch, python3, nbPython3Packages, pkgs }:
 
 let
-  version = "0.9.4";
-  src = fetchurl {
-    url = "https://github.com/JoinMarket-Org/joinmarket-clientserver/archive/v${version}.tar.gz";
-    sha256 = "1xkz274g9lv5yif77h0mci1fsgam56sdc8m281q3a8hij9nmzmq1";
+  version = "0.9.5";
+  src = applyPatches {
+    src = fetchurl {
+      url = "https://github.com/JoinMarket-Org/joinmarket-clientserver/archive/v${version}.tar.gz";
+      sha256 = "0q8hfq4y7az5ly97brq1khhhvhnq6irzw0ginmz20fwn7w3yc5sn";
+    };
+    patches = [
+      (fetchpatch {
+        # https://github.com/JoinMarket-Org/joinmarket-clientserver/pull/1206
+        name = "ob-export-fix";
+        url = "https://patch-diff.githubusercontent.com/raw/JoinMarket-Org/joinmarket-clientserver/pull/1206.patch";
+        sha256 = "0532gixjyc8r11sfmlf32v5iwy0rhkpa8rbvm4b7h509hnyycvhx";
+      })
+    ];
   };
 
   runtimePackages = with nbPython3Packages; [

@@ -2,11 +2,11 @@
 
 buildPythonPackage rec {
   pname = "python-bitcointx";
-  version = "1.1.1.post0";
+  version = "1.1.3";
 
   src = fetchurl {
     url = "https://github.com/Simplexum/${pname}/archive/${pname}-v${version}.tar.gz";
-    sha256 = "d12593b09785a7a4ce08cb1928815c2366e9f6e4fab317267462857bf83904b0";
+    sha256 = "f0f487c29619df0e94a04f6deb3dc950ff9954c072017bd3eda90f73c24f0953";
   };
 
   patchPhase = ''
