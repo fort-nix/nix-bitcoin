@@ -49,5 +49,6 @@ in {
     spark-wallet.enable = defaultTrue;
     joinmarket-ob-watcher.enable = defaultTrue;
     rtl.enable = defaultTrue;
+    monit-nb.enable = defaultTrue;
   };
 }

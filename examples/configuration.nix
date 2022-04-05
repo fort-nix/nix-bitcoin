@@ -236,6 +236,13 @@
   # and electrs data directory, enable
   # services.backups.with-bulk-data = true;
 
+  ### Monitoring
+  # Set this to enable monit-nb, nix-bitcoin's own monitoring service. It will
+  # create a user `monitmail` with password $secretsDir/monitmail-password,
+  # which you can use to connect over IMAP using the monit-nb onion service and
+  # your favorite mail client with Tor proxy support.
+  # services.monit-nb.enable = true;
+
   ### netns-isolation (EXPERIMENTAL)
   # Enable this module to use Network Namespace Isolation. This feature places
   # every service in its own network namespace and only allows truly necessary
