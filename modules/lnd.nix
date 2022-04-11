@@ -126,6 +126,7 @@ let
   nbLib = config.nix-bitcoin.lib;
   secretsDir = config.nix-bitcoin.secretsDir;
   runAsUser = config.nix-bitcoin.runAsUserCmd;
+  lndinit = "${config.nix-bitcoin.pkgs.lndinit}/bin/lndinit";
 
   bitcoind = config.services.bitcoind;
 
@@ -202,6 +203,21 @@ in {
             echo "externalip=$(${cfg.getPublicAddressCmd})"
           ''}
         } >> '${cfg.dataDir}/lnd.conf'
+
+        if [[ ! -f ${networkDir}/wallet.db ]]; then
+          mnemonic='${cfg.dataDir}/lnd-seed-mnemonic'
+
+          if [[ ! -f "$mnemonic" ]]; then
+            echo "Create lnd seed"
+            (umask u=r,go=; ${lndinit} gen-seed > "$mnemonic")
+          fi
+
+          echo "Create lnd wallet"
+          ${lndinit} -v init-wallet \
+            --file.seed="$mnemonic" \
+            --file.wallet-password='${secretsDir}/lnd-wallet-password' \
+            --init-file.output-wallet-dir='${cfg.networkDir}'
+        fi
       '';
       serviceConfig = nbLib.defaultHardening // {
         Type = "notify";
@@ -210,8 +226,7 @@ in {
         ExecStart = ''
           ${cfg.package}/bin/lnd \
             --configfile="${cfg.dataDir}/lnd.conf" \
-            --wallet-unlock-password-file="${secretsDir}/lnd-wallet-password" \
-            --wallet-unlock-allow-create
+            --wallet-unlock-password-file="${secretsDir}/lnd-wallet-password"
         '';
         User = cfg.user;
         TimeoutSec = "15min";
@@ -221,33 +236,9 @@ in {
         ExecStartPost = let
           curl = "${pkgs.curl}/bin/curl -s --show-error --cacert ${cfg.certPath}";
           restUrl = "https://${nbLib.addressWithPort cfg.restAddress cfg.restPort}/v1";
-        in [
-          (nbLib.script "lnd-create-wallet" ''
-            if [[ ! -f ${networkDir}/wallet.db ]]; then
-              mnemonic="${cfg.dataDir}/lnd-seed-mnemonic"
-              if [[ ! -f "$mnemonic" ]]; then
-                echo "Create lnd seed"
-                umask u=r,go=
-                ${curl} -X GET ${restUrl}/genseed | ${pkgs.jq}/bin/jq -c '.cipher_seed_mnemonic' > "$mnemonic"
-              fi
-
-              echo "Create lnd wallet"
-              ${curl} --output /dev/null \
-                -X POST -d "{\"wallet_password\": \"$(cat ${secretsDir}/lnd-wallet-password | tr -d '\n' | base64 -w0)\", \
-                \"cipher_seed_mnemonic\": $(cat "$mnemonic" | tr -d '\n')}" \
-                ${restUrl}/initwallet
-
-              echo "Wait until wallet is created"
-              getStatus() {
-                /run/current-system/systemd/bin/systemctl show -p StatusText lnd | cut -f 2 -d=
-              }
-              while [[ $(getStatus) == "Wallet locked" ]]; do
-                sleep 0.1
-              done
-            fi
-          '')
+        in
           # Setting macaroon permissions for other users needs root permissions
-          (nbLib.rootScript "lnd-create-macaroons" ''
+          nbLib.rootScript "lnd-create-macaroons" ''
             umask ug=r,o=
             ${lib.concatMapStrings (macaroon: ''
               echo "Create custom macaroon ${macaroon}"
@@ -260,8 +251,7 @@ in {
                 ${pkgs.jq}/bin/jq -c '.macaroon' | ${pkgs.xxd}/bin/xxd -p -r > "$macaroonPath"
               chown ${cfg.macaroons.${macaroon}.user}: "$macaroonPath"
             '') (attrNames cfg.macaroons)}
-          '')
-        ];
+          '';
       } // nbLib.allowedIPAddresses cfg.tor.enforce;
     };
 
