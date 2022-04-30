@@ -95,6 +95,7 @@ let
       };
       # Needed to test macaroon creation
       environment.systemPackages = mkIfTest "btcpayserver" (with pkgs; [ openssl xxd ]);
+      test.data.btcpayserver-lbtc = config.services.btcpayserver.lbtc;
 
       tests.joinmarket = cfg.joinmarket.enable;
       tests.joinmarket-yieldgenerator = cfg.joinmarket.yieldgenerator.enable;
@@ -264,6 +265,21 @@ let
 
       # `validatepegin` is incompatible with regtest
       services.liquidd.validatepegin = mkForce false;
+
+      # TODO-EXTERNAL:
+      # Reenable `btcpayserver.lbtc` in regtest (and add test in tests.py)
+      # when nbxplorer can parse liquidd regtest blocks.
+      #
+      # When `btcpayserver.lbtc` is enabled in regtest, nxbplorer tries to
+      # generate regtest blocks, which fails because no liquidd wallet exists.
+      # When blocks are pre-generated via `liquidd.postStart`, nbxplorer
+      # fails to parse the blocks:
+      #   info: NBXplorer.Indexer.LBTC: Full node version detected: 210002
+      #   info: NBXplorer.Indexer.LBTC: NBXplorer is correctly whitelisted by the node
+      #     fail: NBXplorer.Indexer.LBTC: Unhandled exception in the indexer, retrying in 10 seconds
+      #       System.IO.EndOfStreamException: No more byte to read
+      #         at NBitcoin.BitcoinStream.ReadWriteBytes(Span`1 data)
+      services.btcpayserver.lbtc = mkForce false;
     };
 
     ## Examples / debug helper

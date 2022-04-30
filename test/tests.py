@@ -188,7 +188,7 @@ def _():
 def _():
     assert_running("nbxplorer")
     machine.wait_until_succeeds(log_has_string("nbxplorer", "BTC: RPC connection successful"))
-    if "liquidd" in enabled_tests:
+    if test_data["btcpayserver-lbtc"]:
         machine.wait_until_succeeds(log_has_string("nbxplorer", "LBTC: RPC connection successful"))
     wait_for_open_port(ip("nbxplorer"), 24444)
 
@@ -399,12 +399,6 @@ def _():
         succeed("runuser -u operator -- pool orders list")
     if enabled("btcpayserver"):
         machine.wait_until_succeeds(log_has_string("nbxplorer", f"BTC: Starting scan at block {num_blocks}"))
-        # TODO-EXTERNAL:
-        # nbxplorer 2.2.16 currently fails with with lbtc (liquidd) on regtest
-        # LBTC: Full node version detected: 210000
-        # LBTC: RPC connection successful
-        # LBTC: Failed to connect to RPC
-        # System.IO.EndOfStreamException: No more byte to read
 
 if "netns-isolation" in enabled_tests:
     def ip(name):
