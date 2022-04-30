@@ -398,7 +398,7 @@ def _():
         )
         succeed("runuser -u operator -- pool orders list")
     if enabled("btcpayserver"):
-        machine.wait_until_succeeds(log_has_string("nbxplorer", f"BTC: Starting scan at block {num_blocks}"))
+        machine.wait_until_succeeds(log_has_string("nbxplorer", f"At height: {num_blocks}"))
 
 if "netns-isolation" in enabled_tests:
     def ip(name):
