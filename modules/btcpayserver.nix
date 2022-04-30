@@ -136,11 +136,17 @@ in {
     };
     services.postgresql = {
       enable = true;
-      ensureDatabases = [ "btcpaydb" ];
-      ensureUsers = [{
-        name = cfg.btcpayserver.user;
-        ensurePermissions."DATABASE btcpaydb" = "ALL PRIVILEGES";
-      }];
+      ensureDatabases = [ "btcpaydb" "nbxplorer" ];
+      ensureUsers = [
+        {
+          name = cfg.btcpayserver.user;
+          ensurePermissions."DATABASE btcpaydb" = "ALL PRIVILEGES";
+        }
+        {
+          name = cfg.nbxplorer.user;
+          ensurePermissions."DATABASE nbxplorer" = "ALL PRIVILEGES";
+        }
+      ];
     };
 
     systemd.tmpfiles.rules = [
@@ -162,10 +168,12 @@ in {
           lbtcrpcurl=http://${nbLib.addressWithPort liquidd.rpc.address liquidd.rpc.port}
           lbtcnodeendpoint=${nbLib.addressWithPort liquidd.address liquidd.whitelistedPort}
         ''}
+        postgres=User ID=${cfg.nbxplorer.user};Host=/run/postgresql;Database=nbxplorer
+        automigrate=1
       '';
     in rec {
       wantedBy = [ "multi-user.target" ];
-      requires = [ "bitcoind.service" ] ++ optional cfg.btcpayserver.lbtc "liquidd.service";
+      requires = [ "bitcoind.service" "postgresql.service" ] ++ optional cfg.btcpayserver.lbtc "liquidd.service";
       after = requires;
       preStart = ''
         install -m 600 ${configFile} '${cfg.nbxplorer.dataDir}/settings.config'
