@@ -33,7 +33,7 @@ let self = {
       # @system-service whitelist and docker seccomp blacklist (except for "clone"
       # which is a core requirement for systemd services)
       # @system-service is defined in src/shared/seccomp-util.c (systemd source)
-      SystemCallFilter = [ "@system-service" "~add_key clone3  kcmp keyctl mbind move_pages name_to_handle_at personality process_vm_readv process_vm_writev request_key set_mempolicy setns unshare userfaultfd" ];
+      SystemCallFilter = [ "@system-service" "~add_key kcmp keyctl mbind move_pages name_to_handle_at personality process_vm_readv process_vm_writev request_key set_mempolicy setns unshare userfaultfd" ];
       SystemCallArchitectures = "native";
   };
 
