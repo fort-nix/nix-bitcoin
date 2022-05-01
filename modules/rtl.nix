@@ -248,7 +248,7 @@ in {
         StateDirectory = "cl-rest";
         # cl-rest reads the config file from the working directory
         WorkingDirectory = cl-rest.dataDir;
-        ExecStart = "${nbPkgs.cl-rest}/bin/cl-rest";
+        ExecStart = "${nbPkgs.clightning-rest}/bin/cl-rest";
         # Show "cl-rest" instead of "node" in the journal
         SyslogIdentifier = "cl-rest";
         User = cfg.user;

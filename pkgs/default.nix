@@ -6,7 +6,7 @@ in
 , pkgsUnstable ? import nixpkgsPinned.nixpkgs-unstable { config = {}; overlays = []; }
 }:
 let self = {
-  cl-rest = pkgs.callPackage ./cl-rest { };
+  clightning-rest = pkgs.callPackage ./clightning-rest { };
   clboss = pkgs.callPackage ./clboss { };
   clightning-plugins = pkgs.recurseIntoAttrs (import ./clightning-plugins pkgs self.nbPython3Packages);
   joinmarket = pkgs.callPackage ./joinmarket { nbPythonPackageOverrides = import ./python-packages self; };
