@@ -30,13 +30,15 @@ in {
   base58 = callPackage ./specific-versions/base58.nix {};
 
   # cryptography 3.3.2, required by joinmarketdaemon
-  cryptography = callPackage ./specific-versions/cryptography {};
-  cryptography_vectors = callPackage ./specific-versions/cryptography/vectors.nix {};
+  # Used in the private python package set for joinmarket (../joinmarket/default.nix)
+  cryptography_3_3_2 = callPackage ./specific-versions/cryptography {
+    cryptography_vectors = callPackage ./specific-versions/cryptography/vectors.nix {};
+  };
 
   # autobahn 20.12.3, required by joinmarketclient
   autobahn = callPackage ./specific-versions/autobahn.nix {};
 
-  # tubes 0.2.0, required by klein
+  # tubes 0.2.0, required by jmclient (via pkg `klein`)
   tubes = callPackage ./specific-versions/tubes.nix {};
 
   # recommonmark 0.7.1, required by pyln-client

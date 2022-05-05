@@ -1,4 +1,4 @@
-{ stdenv, lib, fetchurl, applyPatches, fetchpatch, python3, nbPython3Packages, pkgs }:
+{ stdenv, lib, fetchurl, applyPatches, fetchpatch, python3, nbPythonPackageOverrides, pkgs }:
 
 let
   version = "0.9.5";
@@ -17,7 +17,17 @@ let
     ];
   };
 
-  runtimePackages = with nbPython3Packages; [
+  pyPkgs = (python3.override {
+    packageOverrides = (self: super: let
+      overrides = nbPythonPackageOverrides self super;
+    in
+      overrides // {
+        cryptography = overrides.cryptography_3_3_2;
+      }
+    );
+  }).pkgs;
+
+  runtimePackages = with pyPkgs; [
     joinmarketbase
     joinmarketclient
     joinmarketbitcoin

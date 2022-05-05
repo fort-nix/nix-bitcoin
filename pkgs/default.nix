@@ -9,7 +9,7 @@ let self = {
   cl-rest = pkgs.callPackage ./cl-rest { };
   clboss = pkgs.callPackage ./clboss { };
   clightning-plugins = pkgs.recurseIntoAttrs (import ./clightning-plugins pkgs self.nbPython3Packages);
-  joinmarket = pkgs.callPackage ./joinmarket { inherit (self) nbPython3Packages; };
+  joinmarket = pkgs.callPackage ./joinmarket { nbPythonPackageOverrides = import ./python-packages self; };
   lndinit = pkgs.callPackage ./lndinit { };
   liquid-swap = pkgs.python3Packages.callPackage ./liquid-swap { };
   rtl = pkgs.callPackage ./rtl { };
