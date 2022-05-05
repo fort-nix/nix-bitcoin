@@ -4,6 +4,8 @@ let
 
   joinmarketPkg = pkg: callPackage pkg { inherit (nbPkgs.joinmarket) version src; };
   clightningPkg = pkg: callPackage pkg { inherit (nbPkgs.pinned) clightning; };
+
+  unstable = (import ../nixpkgs-pinned.nix).nixpkgs-unstable;
 in {
   bencoderpyx = callPackage ./bencoderpyx {};
   coincurve = callPackage ./coincurve {};
@@ -26,13 +28,15 @@ in {
 
   ## Specific versions of packages that already exist in nixpkgs
 
-  # base58 2.1.0, required by pyln-proto
-  base58 = callPackage ./specific-versions/base58.nix {};
-
   # cryptography 3.3.2, required by joinmarketdaemon
   # Used in the private python package set for joinmarket (../joinmarket/default.nix)
   cryptography_3_3_2 = callPackage ./specific-versions/cryptography {
     cryptography_vectors = callPackage ./specific-versions/cryptography/vectors.nix {};
+  };
+
+  # cryptography 36.0.0, required by pyln-proto.
+  cryptography = callPackage "${unstable}/pkgs/development/python-modules/cryptography" {
+    Security = self.darwin.apple_sdk.frameworks.Security;
   };
 
   # autobahn 20.12.3, required by joinmarketclient

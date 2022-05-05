@@ -3,11 +3,11 @@ autoconf, automake, libtool, libffi, requests }:
 
 buildPythonPackage rec {
   pname = "coincurve";
-  version = "15.0.0";
+  version = "17.0.0";
 
   src = fetchPypi {
     inherit pname version;
-    sha256 = "0ras7qb4ib9sik703fcb9f3jrgq7nx5wvdgx9k1pshmrxl8lnlh6";
+    hash = "sha256-aNpVr/iYcClS/aPuBP1u1gu2uR+RnGknB4btdmtUi5M";
   };
 
   doCheck = false;
