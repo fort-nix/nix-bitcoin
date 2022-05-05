@@ -1,4 +1,4 @@
-{ version, src, lib, buildPythonPackage, fetchurl, future, coincurve, urldecode, pyaes, python-bitcointx, joinmarketbase }:
+{ version, src, lib, buildPythonPackage, fetchurl, urldecode, pyaes, python-bitcointx, joinmarketbase }:
 
 buildPythonPackage rec {
   pname = "joinmarketbitcoin";
@@ -6,7 +6,7 @@ buildPythonPackage rec {
 
   postUnpack = "sourceRoot=$sourceRoot/jmbitcoin";
 
-  propagatedBuildInputs = [ future coincurve urldecode pyaes python-bitcointx ];
+  propagatedBuildInputs = [ urldecode pyaes python-bitcointx ];
 
   checkInputs = [ joinmarketbase ];
 

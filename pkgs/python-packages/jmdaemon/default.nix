@@ -1,4 +1,4 @@
-{ version, src, lib, buildPythonPackage, fetchurl, future, txtorcon, cryptography, pyopenssl, libnacl, joinmarketbase }:
+{ version, src, lib, buildPythonPackage, fetchurl, txtorcon, cryptography, pyopenssl, libnacl, joinmarketbase }:
 
 buildPythonPackage rec {
   pname = "joinmarketdaemon";
@@ -6,7 +6,7 @@ buildPythonPackage rec {
 
   postUnpack = "sourceRoot=$sourceRoot/jmdaemon";
 
-  propagatedBuildInputs = [ future txtorcon cryptography pyopenssl libnacl joinmarketbase ];
+  propagatedBuildInputs = [ txtorcon cryptography pyopenssl libnacl joinmarketbase ];
 
   meta = with lib; {
     description = "Client library for Bitcoin coinjoins";
