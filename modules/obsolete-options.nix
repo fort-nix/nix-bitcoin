@@ -33,6 +33,7 @@ in {
     (mkRenamedOptionModule [ "services" "liquidd" "rpcbind" ] [ "services" "liquidd" "rpc" "address" ])
     # 0.0.70
     (mkRenamedOptionModule [ "services" "rtl" "cl-rest" ] [ "services" "clightning-rest" ])
+    (mkRenamedOptionModule [ "services" "lnd" "restOnionService" "enable" ] [ "services" "lnd" "lndconnectOnion" "enable" ])
 
     (mkRenamedOptionModule [ "nix-bitcoin" "setup-secrets" ] [ "nix-bitcoin" "setupSecrets" ])
 

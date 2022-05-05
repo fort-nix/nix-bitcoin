@@ -148,9 +148,15 @@ def _():
     assert_matches("runuser -u operator -- lncli getinfo | jq", '"version"')
     assert_no_failure("lnd")
 
-@test("lnd-rest-onion-service")
+@test("lndconnect-onion-lnd")
 def _():
-    assert_matches("runuser -u operator -- lndconnect-rest-onion -j", ".onion")
+    assert_running("lnd")
+    assert_matches("runuser -u operator -- lndconnect-onion --url", ".onion")
+
+@test("lndconnect-onion-clightning")
+def _():
+    assert_running("clightning-rest")
+    assert_matches("runuser -u operator -- lndconnect-onion-clightning --url", ".onion")
 
 @test("lightning-loop")
 def _():
