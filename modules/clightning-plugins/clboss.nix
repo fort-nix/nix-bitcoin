@@ -6,7 +6,7 @@ let cfg = config.services.clightning.plugins.clboss; in
   options.services.clightning.plugins.clboss = {
     enable = mkOption {
       type = types.bool;
-      default = true;
+      default = false;
       description = ''
         Whether to enable CLBOSS (clightning plugin).
         See also: https://github.com/ZmnSCPxj/clboss#operating
