@@ -290,6 +290,7 @@ in {
             echo "Create watch-only wallet ${cfg.rpcWalletFile}"
             if ! output=$(${bitcoind.cli}/bin/bitcoin-cli -named createwallet \
                             wallet_name="${cfg.rpcWalletFile}" \
+                            descriptors=false \
                             ${optionalString (!bitcoind.regtest) "disable_private_keys=true"} 2>&1
                          ); then
               # Ignore error if bitcoind wallet already exists
