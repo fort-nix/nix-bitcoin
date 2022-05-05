@@ -49,6 +49,9 @@ Get started
 
 Docs
 ---
+Hint: To show a table of contents, click the button (![Github TOC button](docs/img/github-table-of-contents.svg)) in the
+top left corner of the documents.
+
 * [Hardware requirements](docs/hardware.md)
 * [Installation](docs/install.md)
 * [Configuration and maintenance](docs/configuration.md)
