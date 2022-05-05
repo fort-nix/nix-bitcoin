@@ -62,6 +62,7 @@ let
     ''}
     ${config.services.bitcoind.dataDir}
     ${config.services.clightning.dataDir}
+    ${config.services.clightning-rest.dataDir}
     ${config.services.lnd.dataDir}
     ${optionalString (!cfg.with-bulk-data) ''
       - ${config.services.liquidd.dataDir}/*/blocks

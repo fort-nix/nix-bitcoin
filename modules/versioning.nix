@@ -213,6 +213,17 @@ let
         See also: https://github.com/dgarage/NBXplorer/blob/master/docs/Postgres-Migration.md
       '';
     }
+    {
+      version = "0.0.70";
+      condition = config.services.clightning-rest.enable;
+      message = ''
+        The `cl-rest` service has been renamed to `clightning-rest`.
+        and is now available as a standalone service (`services.clightning-rest`).
+        Its data dir has moved to `${config.services.clightning-rest.dataDir}`,
+        and the service now runs under the clightning user and group.
+        The data dir migration happens automatically after deploying.
+      '';
+    }
   ];
 
   mkOnionServiceChange = service: {

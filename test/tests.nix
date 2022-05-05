@@ -59,6 +59,8 @@ let
       systemd.services.clightning.serviceConfig.TimeoutStopSec =
         mkIf config.services.clightning.plugins.clboss.enable "500ms";
 
+      tests.clightning-rest = cfg.clightning-rest.enable;
+
       tests.rtl = cfg.rtl.enable;
       services.rtl.nodes.lnd = mkDefault true;
       services.rtl.nodes.clightning = mkDefault true;
@@ -163,6 +165,7 @@ let
       test.features.clightningPlugins = true;
       services.rtl.enable = true;
       services.spark-wallet.enable = true;
+      services.clightning-rest.enable = true;
       services.lnd.enable = true;
       services.lnd.restOnionService.enable = true;
       services.lightning-loop.enable = true;
@@ -206,6 +209,7 @@ let
       imports = [ scenarios.regtestBase ];
       services.clightning.enable = true;
       test.features.clightningPlugins = true;
+      services.clightning-rest.enable = true;
       services.liquidd.enable = true;
       services.rtl.enable = true;
       services.spark-wallet.enable = true;

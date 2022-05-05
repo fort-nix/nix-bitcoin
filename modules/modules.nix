@@ -12,6 +12,7 @@
     ./bitcoind.nix
     ./clightning.nix
     ./clightning-plugins
+    ./clightning-rest.nix
     ./spark-wallet.nix
     ./lnd.nix
     ./lnd-rest-onion-service.nix # Requires onion-addresses.nix

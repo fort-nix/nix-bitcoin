@@ -27,6 +27,7 @@ let
     lnd = mkInfo ''
       info["nodeid"] = shell("lncli getinfo | jq -r '.identity_pubkey'")
     '';
+    clightning-rest = mkInfo "";
     electrs = mkInfo "";
     spark-wallet = mkInfo "";
     btcpayserver = mkInfo "";

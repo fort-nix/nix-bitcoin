@@ -1,4 +1,4 @@
-{ lib, ... }:
+{ lib, config, ... }:
 
 with lib;
 let
@@ -31,6 +31,8 @@ in {
     (mkRenamedOptionModule [ "services" "btcpayserver" "bind" ] [ "services" "btcpayserver" "address" ])
     (mkRenamedOptionModule [ "services" "liquidd" "bind" ] [ "services" "liquidd" "address" ])
     (mkRenamedOptionModule [ "services" "liquidd" "rpcbind" ] [ "services" "liquidd" "rpc" "address" ])
+    # 0.0.70
+    (mkRenamedOptionModule [ "services" "rtl" "cl-rest" ] [ "services" "clightning-rest" ])
 
     (mkRenamedOptionModule [ "nix-bitcoin" "setup-secrets" ] [ "nix-bitcoin" "setupSecrets" ])
 
@@ -59,4 +61,22 @@ in {
     "rtl"
     "electrs"
   ]);
+
+  config = {
+    # Migrate old clightning-rest datadir from nix-bitcoin versions < 0.0.70
+    systemd.services.clightning-rest-migrate-datadir = let
+      inherit (config.services) clightning-rest clightning;
+    in mkIf config.services.clightning-rest.enable {
+      requiredBy = [ "clightning-rest.service" ];
+      before = [ "clightning-rest.service" ];
+      script = ''
+        if [[ -e /var/lib/cl-rest/certs ]]; then
+          mv /var/lib/cl-rest/* '${clightning-rest.dataDir}'
+          chown -R ${clightning.user}: '${clightning-rest.dataDir}'
+          rm -r /var/lib/cl-rest
+        fi
+      '';
+      serviceConfig.Type = "oneshot";
+    };
+  };
 }
