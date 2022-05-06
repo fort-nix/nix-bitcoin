@@ -121,6 +121,8 @@ in {
         fi
       '';
 
-      services.backups.postgresqlDatabases = mkIf config.services.btcpayserver.enable [ "btcpaydb" ];
+      services.backups.postgresqlDatabases = mkIf config.services.btcpayserver.enable (
+        [ "btcpaydb" ] ++ optional cfg.with-bulk-data "nbxplorer"
+      );
     };
 }

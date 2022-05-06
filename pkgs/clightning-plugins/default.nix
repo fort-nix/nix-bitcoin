@@ -14,7 +14,10 @@ let
 
   plugins = with nbPython3Packages; {
     helpme = { description = "Walks you through setting up a c-lightning node, offering advice for common problems"; };
-    monitor = { description = "Helps you analyze the health of your peers and channels"; };
+    monitor = {
+      description = "Helps you analyze the health of your peers and channels";
+      extraPkgs = [ packaging ];
+    };
     prometheus = {
       description = "Lightning node exporter for the prometheus timeseries server";
       extraPkgs = [ prometheus_client ];
