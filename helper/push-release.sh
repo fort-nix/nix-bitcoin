@@ -3,6 +3,7 @@ set -euo pipefail
 
 REPO=fort-nix/nix-bitcoin
 BRANCH=master
+GIT_REMOTE=origin
 OAUTH_TOKEN=
 DRY_RUN=
 TAG_NAME=
@@ -88,4 +89,7 @@ post_asset nar-hash.txt.asc
 post_asset $ARCHIVE
 post_asset $SHA256SUMS
 post_asset $SHA256SUMS.asc
+
+git push $GIT_REMOTE $BRANCH:release
+
 echo "Successfully created" $(echo $POST_DATA | jq -r .tag_name)
