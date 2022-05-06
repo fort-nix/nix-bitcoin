@@ -59,6 +59,8 @@ let
       systemd.services.clightning.serviceConfig.TimeoutStopSec =
         mkIf config.services.clightning.plugins.clboss.enable "500ms";
 
+      tests.clightning-rest = cfg.clightning-rest.enable;
+
       tests.rtl = cfg.rtl.enable;
       services.rtl.nodes.lnd = mkDefault true;
       services.rtl.nodes.clightning = mkDefault true;
@@ -74,7 +76,8 @@ let
       tests.lnd = cfg.lnd.enable;
       services.lnd.port = 9736;
 
-      tests.lnd-rest-onion-service = cfg.lnd.restOnionService.enable;
+      tests.lndconnect-onion-lnd = cfg.lnd.lndconnectOnion.enable;
+      tests.lndconnect-onion-clightning = cfg.clightning-rest.lndconnectOnion.enable;
 
       tests.lightning-loop = cfg.lightning-loop.enable;
 
@@ -163,8 +166,10 @@ let
       test.features.clightningPlugins = true;
       services.rtl.enable = true;
       services.spark-wallet.enable = true;
+      services.clightning-rest.enable = true;
+      services.clightning-rest.lndconnectOnion.enable = true;
       services.lnd.enable = true;
-      services.lnd.restOnionService.enable = true;
+      services.lnd.lndconnectOnion.enable = true;
       services.lightning-loop.enable = true;
       services.lightning-pool.enable = true;
       services.charge-lnd.enable = true;
@@ -206,6 +211,7 @@ let
       imports = [ scenarios.regtestBase ];
       services.clightning.enable = true;
       test.features.clightningPlugins = true;
+      services.clightning-rest.enable = true;
       services.liquidd.enable = true;
       services.rtl.enable = true;
       services.spark-wallet.enable = true;

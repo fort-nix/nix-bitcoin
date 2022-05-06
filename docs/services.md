@@ -44,6 +44,61 @@ You can find the `<onion-address>` with command `nodeinfo`.
 The default password location is `$secretsDir/rtl-password`.
 See: [Secrets dir](./configuration.md#secrets-dir)
 
+# Use LND or clightning with Zeus (smartphone wallet) via Tor
+1. Install [Zeus](https://zeusln.app)
+
+2. Edit your `configuration.nix`
+
+   ##### For lnd
+
+   Add the following config:
+   ```
+   services.lnd.lndconnectOnion.enable = true;
+   ```
+
+   ##### For clightning
+
+   Add the following config:
+   ```
+   services.clightning-rest = {
+     enable = true;
+     lndconnectOnion.enable = true;
+   };
+   ```
+
+3. Deploy your configuration
+
+3. Run the following command on your node (as user `operator`) to create a QR code
+   with address and authentication information:
+
+   ##### For lnd
+   ```
+   lndconnect-onion
+   ```
+
+   ##### For clightning
+   ```
+   lndconnect-onion-clightning
+   ```
+
+4. Configure Zeus
+   - Add a new node
+   - Select `Scan lndconnect config` (at the bottom) and scan the QR code
+   - For clightning: Set `Node interface` to `c-lightning-REST`
+   - Click `Save node config`
+   - Start sending sats privately
+
+### Additional lndconnect features
+Create plain text URLs or QR code images:
+```
+lndconnect-onion --url
+lndconnect-onion --image
+``````
+Create a QR code for a custom hostname:
+```
+lndconnect-onion --host=mynode.org
+```
+
 # Connect to spark-wallet
 ### Requirements
 * Android phone
@@ -86,42 +141,6 @@ See: [Secrets dir](./configuration.md#secrets-dir)
     Scan QR
     Done
     ```
-
-# Connect to LND with Zeus
-### Requirements
-* Android phone
-* [Orbot](https://guardianproject.info/apps/orbot/) installed from
-  [F-Droid](https://guardianproject.info/fdroid) (recommended) or
-  [Google Play](https://play.google.com/store/apps/details?id=org.torproject.android&hl=en)
-* [Zeus](https://zeusln.app/) installed from
-  [F-Droid](https://f-droid.org/en/packages/app.zeusln.zeus/) (recommended) or
-  [Google Play](https://play.google.com/store/apps/details?id=app.zeusln.zeus)
-
-1. Enable `restOnionService` in `configuration.nix`
-
-    Change
-    ```
-    # services.lnd.restOnionService.enable = true;
-    ```
-    to
-    ```
-    services.lnd.restOnionService.enable = true;
-    ```
-
-2. Deploy new `configuration.nix`
-
-3. Run command `lndconnect-rest-onion` (under `operator` user) to create a QR code for
-   connecting to LND via the REST onion service.
-
-4. Enable Orbot VPN for Zeus
-    ```
-    Open Orbot app
-    Turn on "VPN Mode"
-    Select Gear icon under "Tor-Enabled Apps"
-    Toggle checkbox under Zeus icon
-    ```
-
-5. Scan the QR code with your Zeus wallet and start sending Satoshis privately
 
 # Connect to electrs
 ### Requirements Android

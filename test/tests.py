@@ -148,9 +148,15 @@ def _():
     assert_matches("runuser -u operator -- lncli getinfo | jq", '"version"')
     assert_no_failure("lnd")
 
-@test("lnd-rest-onion-service")
+@test("lndconnect-onion-lnd")
 def _():
-    assert_matches("runuser -u operator -- lndconnect-rest-onion -j", ".onion")
+    assert_running("lnd")
+    assert_matches("runuser -u operator -- lndconnect-onion --url", ".onion")
+
+@test("lndconnect-onion-clightning")
+def _():
+    assert_running("clightning-rest")
+    assert_matches("runuser -u operator -- lndconnect-onion-clightning --url", ".onion")
 
 @test("lightning-loop")
 def _():
@@ -211,9 +217,12 @@ def _():
     machine.wait_until_succeeds(
         log_has_string("rtl", "Server is up and running")
     )
-    assert_running("cl-rest")
+
+@test("clightning-rest")
+def _():
+    assert_running("clightning-rest")
     machine.wait_until_succeeds(
-        log_has_string("cl-rest", "cl-rest api server is ready and listening on port: 3001")
+        log_has_string("clightning-rest", "cl-rest api server is ready and listening on port: 3001")
     )
 
 @test("spark-wallet")

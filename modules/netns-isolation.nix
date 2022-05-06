@@ -283,9 +283,13 @@ in {
       };
       rtl = {
         id = 29;
-        connections = []
-                      ++ optional (config.services.rtl.nodes.lnd) "lnd"
-                      ++ optional config.services.rtl.loop "lightning-loop";
+        connections =
+          optional config.services.rtl.nodes.lnd "lnd" ++
+          optional config.services.rtl.loop "lightning-loop" ++
+          optional config.services.rtl.nodes.clightning "clightning-rest";
+      };
+      clightning-rest = {
+        id = 30;
       };
     };
 
@@ -341,11 +345,8 @@ in {
     services.lightning-pool.rpcAddress = netns.lightning-pool.address;
 
     services.rtl.address = netns.rtl.address;
-    systemd.services.cl-rest = mkIf config.services.rtl.cl-rest.enable {
-      serviceConfig.NetworkNamespacePath = "/var/run/netns/nb-rtl";
-      requires = [ "netns-rtl.service" ] ;
-      after = [ "netns-rtl.service" ];
-    };
+
+    services.clightning-rest.address = netns.clightning-rest.address;
   }
   ]);
 }

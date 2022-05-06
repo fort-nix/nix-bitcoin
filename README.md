@@ -49,6 +49,9 @@ Get started
 
 Docs
 ---
+Hint: To show a table of contents, click the button (![Github TOC button](docs/img/github-table-of-contents.svg)) in the
+top left corner of the documents.
+
 * [Hardware requirements](docs/hardware.md)
 * [Installation](docs/install.md)
 * [Configuration and maintenance](docs/configuration.md)
@@ -73,11 +76,12 @@ NixOS modules ([src](modules/modules.nix))
     * [rebalance](https://github.com/lightningd/plugins/tree/master/rebalance): keeps your channels balanced
     * [summary](https://github.com/lightningd/plugins/tree/master/summary): print a nice summary of the node status
     * [zmq](https://github.com/lightningd/plugins/tree/master/zmq): publishes notifications via ZeroMQ to configured endpoints
+  * [clightning-rest](https://github.com/Ride-The-Lightning/c-lightning-REST): REST server for clightning
   * [lnd](https://github.com/lightningnetwork/lnd) with support for announcing an onion service and [static channel backups](https://github.com/lightningnetwork/lnd/blob/master/docs/recovery.md)
     * [Lightning Loop](https://github.com/lightninglabs/loop)
     * [Lightning Pool](https://github.com/lightninglabs/pool)
     * [charge-lnd](https://github.com/accumulator/charge-lnd): policy-based channel fee manager
-    * [lndconnect](https://github.com/LN-Zap/lndconnect) via a REST onion service
+  * [lndconnect](https://github.com/LN-Zap/lndconnect): connect your wallet to lnd or clightning via a REST onion service
   * [Ride The Lightning](https://github.com/Ride-The-Lightning/RTL): web interface for `lnd` and `clightning`
   * [spark-wallet](https://github.com/shesek/spark-wallet)
   * [electrs](https://github.com/romanz/electrs)

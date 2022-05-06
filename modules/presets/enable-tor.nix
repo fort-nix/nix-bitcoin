@@ -38,6 +38,7 @@ in {
     rtl = defaultEnforceTor;
     joinmarket = defaultEnforceTor;
     joinmarket-ob-watcher = defaultEnforceTor;
+    clightning-rest = defaultEnforceTor;
   };
 
   # Add onion services for incoming connections
