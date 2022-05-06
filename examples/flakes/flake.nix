@@ -1,7 +1,7 @@
 {
   description = "A basic nix-bitcoin node";
 
-  inputs.nix-bitcoin.url = "github:fort-nix/nix-bitcoin";
+  inputs.nix-bitcoin.url = "github:fort-nix/nix-bitcoin/release";
 
   outputs = { self, nix-bitcoin }: {
 
