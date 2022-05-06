@@ -44,7 +44,7 @@ You can find the `<onion-address>` with command `nodeinfo`.
 The default password location is `$secretsDir/rtl-password`.
 See: [Secrets dir](./configuration.md#secrets-dir)
 
-# Use LND or clightning with Zeus (smartphone wallet) via Tor
+# Use LND or clightning with Zeus (mobile wallet) via Tor
 1. Install [Zeus](https://zeusln.app)
 
 2. Edit your `configuration.nix`
@@ -86,7 +86,7 @@ See: [Secrets dir](./configuration.md#secrets-dir)
    - Select `Scan lndconnect config` (at the bottom) and scan the QR code
    - For clightning: Set `Node interface` to `c-lightning-REST`
    - Click `Save node config`
-   - Start sending sats privately
+   - Start sending and stacking sats privately
 
 ### Additional lndconnect features
 Create plain text URLs or QR code images:
