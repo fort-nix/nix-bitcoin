@@ -92,7 +92,7 @@ in {
         Group = cfg.group;
         Restart = "on-failure";
         RestartSec = "10s";
-        ReadWritePaths = cfg.dataDir;
+        ReadWritePaths = [ cfg.dataDir ];
       } // nbLib.allowedIPAddresses cfg.tor.enforce;
     };
 

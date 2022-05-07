@@ -192,7 +192,7 @@ in {
         User = cfg.nbxplorer.user;
         Restart = "on-failure";
         RestartSec = "10s";
-        ReadWritePaths = cfg.nbxplorer.dataDir;
+        ReadWritePaths = [ cfg.nbxplorer.dataDir ];
         MemoryDenyWriteExecute = "false";
       } // nbLib.allowedIPAddresses cfg.nbxplorer.tor.enforce;
     };
@@ -245,7 +245,7 @@ in {
         User = cfg.btcpayserver.user;
         Restart = "on-failure";
         RestartSec = "10s";
-        ReadWritePaths = cfg.btcpayserver.dataDir;
+        ReadWritePaths = [ cfg.btcpayserver.dataDir ];
         MemoryDenyWriteExecute = "false";
       } // nbLib.allowedIPAddresses cfg.btcpayserver.tor.enforce;
     }; in self;

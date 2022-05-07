@@ -274,7 +274,7 @@ in {
         TimeoutStopSec = "10min";
         ExecStart = "${nbPkgs.elementsd}/bin/elementsd -datadir='${cfg.dataDir}'";
         Restart = "on-failure";
-        ReadWritePaths = cfg.dataDir;
+        ReadWritePaths = [ cfg.dataDir ];
       } // nbLib.allowedIPAddresses cfg.tor.enforce;
     };
 

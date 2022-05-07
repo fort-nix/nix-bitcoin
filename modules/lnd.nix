@@ -232,7 +232,7 @@ in {
         TimeoutSec = "15min";
         Restart = "on-failure";
         RestartSec = "10s";
-        ReadWritePaths = cfg.dataDir;
+        ReadWritePaths = [ cfg.dataDir ];
         ExecStartPost = let
           curl = "${pkgs.curl}/bin/curl -s --show-error --cacert ${cfg.certPath}";
           restUrl = "https://${nbLib.addressWithPort cfg.restAddress cfg.restPort}/v1";

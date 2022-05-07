@@ -148,7 +148,7 @@ in {
         User = cfg.user;
         Restart = "on-failure";
         RestartSec = "10s";
-        ReadWritePaths = cfg.dataDir;
+        ReadWritePaths = [ cfg.dataDir ];
       } // nbLib.allowedIPAddresses cfg.tor.enforce;
       # Wait until the rpc socket appears
       postStart = ''
