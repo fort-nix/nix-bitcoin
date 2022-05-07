@@ -46,7 +46,11 @@ let self = {
 
   # Allow takes precedence over Deny.
   allowLocalIPAddresses = {
-    IPAddressAllow = "127.0.0.1/32 ::1/128 169.254.0.0/16";
+    IPAddressAllow = [
+      "127.0.0.1/32"
+      "::1/128"
+      "169.254.0.0/16"
+    ];
   };
   allowAllIPAddresses = { IPAddressAllow = "any"; };
   allowTor = self.allowLocalIPAddresses;

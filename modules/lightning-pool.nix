@@ -103,7 +103,7 @@ in {
         User = "lnd";
         Restart = "on-failure";
         RestartSec = "10s";
-        ReadWritePaths = cfg.dataDir;
+        ReadWritePaths = [ cfg.dataDir ];
       } // (nbLib.allowedIPAddresses cfg.tor.enforce)
         // nbLib.allowNetlink; # required by gRPC-Go
     };

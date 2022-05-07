@@ -423,7 +423,7 @@ in {
         ExecStart = "${cfg.package}/bin/bitcoind -datadir='${cfg.dataDir}'";
         Restart = "on-failure";
         UMask = mkIf cfg.dataDirReadableByGroup "0027";
-        ReadWritePaths = cfg.dataDir;
+        ReadWritePaths = [ cfg.dataDir ];
       } // nbLib.allowedIPAddresses cfg.tor.enforce
         // optionalAttrs zmqServerEnabled nbLib.allowNetlink;
     };
@@ -449,7 +449,7 @@ in {
       serviceConfig = nbLib.defaultHardening // {
         User = cfg.user;
         Group = cfg.group;
-        ReadWritePaths = cfg.dataDir;
+        ReadWritePaths = [ cfg.dataDir ];
       } // nbLib.allowLocalIPAddresses;
     };
 
