@@ -3,7 +3,11 @@ let
 in
 # Set default values for use without flakes
 { pkgs ? import <nixpkgs> { config = {}; overlays = []; }
-, pkgsUnstable ? import nixpkgsPinned.nixpkgs-unstable { config = {}; overlays = []; }
+, pkgsUnstable ? import nixpkgsPinned.nixpkgs-unstable {
+    inherit (pkgs) system;
+    config = {};
+    overlays = [];
+  }
 }:
 let self = {
   clightning-rest = pkgs.callPackage ./clightning-rest { };
