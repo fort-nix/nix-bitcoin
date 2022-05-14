@@ -26,6 +26,19 @@ let
           default = false;
           description = "Enable the clightning node interface.";
         };
+        extraConfig = mkOption {
+          type = types.attrs;
+          default = {};
+          example = {
+            Settings.userPersona = "MERCHANT";
+            Settings.logLevel = "DEBUG";
+          };
+          description = ''
+            Extra clightning node configuration.
+            See here for all available options:
+            https://github.com/Ride-The-Lightning/RTL/blob/master/.github/docs/Application_configurations.md
+          '';
+        };
       };
       lnd = {
         enable = mkOption {
@@ -37,6 +50,19 @@ let
           type = types.bool;
           default = false;
           description = "Enable swaps with lightning-loop.";
+        };
+        extraConfig = mkOption {
+          type = types.attrs;
+          default = {};
+          example = {
+            Settings.userPersona = "MERCHANT";
+            Settings.logLevel = "DEBUG";
+          };
+          description = ''
+            Extra lnd node configuration.
+            See here for all available options:
+            https://github.com/Ride-The-Lightning/RTL/blob/master/.github/docs/Application_configurations.md
+          '';
         };
       };
       reverseOrder = mkOption {
@@ -82,62 +108,53 @@ let
   nbPkgs = config.nix-bitcoin.pkgs;
   secretsDir = config.nix-bitcoin.secretsDir;
 
-  node = { isLnd, index }: ''
-    {
-      "index": ${toString index},
-      "lnNode": "Node",
-      "lnImplementation": "${if isLnd then "LND" else "CLT"}",
-      "Authentication": {
-        ${optionalString (isLnd && lndLoopEnabled)
-          ''"swapMacaroonPath": "${lightning-loop.dataDir}/${bitcoind.network}",''
-         }
-        "macaroonPath": "${if isLnd
-                           then "${cfg.dataDir}/macaroons"
-                           else "${clightning-rest.dataDir}/certs"
-                          }"
-      },
-      "Settings": {
-        "userPersona": "OPERATOR",
-        "themeMode": "${if cfg.nightTheme then "NIGHT" else "DAY"}",
-        "themeColor": "PURPLE",
-        ${optionalString isLnd
-          ''"channelBackupPath": "${cfg.dataDir}/backup/lnd",''
-         }
-        "logLevel": "INFO",
-        "fiatConversion": ${if cfg.extraCurrency == null then "false" else "true"},
-        ${optionalString (cfg.extraCurrency != null)
-          ''"currencyUnit": "${cfg.extraCurrency}",''
-         }
-        ${optionalString (isLnd && lndLoopEnabled)
-          ''"swapServerUrl": "https://${nbLib.addressWithPort lightning-loop.restAddress lightning-loop.restPort}",''
-         }
-        "lnServerUrl": "https://${
-          if isLnd
-          then nbLib.addressWithPort lnd.restAddress lnd.restPort
-          else nbLib.addressWithPort clightning-rest.address clightning-rest.port
-        }"
-      }
-    }
-  '';
+  inherit (nbLib) optionalAttr;
 
-  nodes' = optional cfg.nodes.clightning.enable (node { isLnd = false; index = 1; }) ++
-           optional cfg.nodes.lnd.enable        (node { isLnd = true;  index = 2; });
+  node = { isLnd, index }: {
+    inherit index;
+    lnNode = "Node";
+    lnImplementation = if isLnd then "LND" else "CLT";
+    Authentication = {
+      ${optionalAttr (isLnd && lndLoopEnabled) "swapMacaroonPath"} = "${lightning-loop.dataDir}/${bitcoind.network}";
+      macaroonPath = if isLnd
+                     then "${cfg.dataDir}/macaroons"
+                     else "${clightning-rest.dataDir}/certs";
+    };
+    Settings = {
+      userPersona = "OPERATOR";
+      themeMode = if cfg.nightTheme then "NIGHT" else "DAY";
+      themeColor = "PURPLE";
+      ${optionalAttr isLnd "channelBackupPath"} = "${cfg.dataDir}/backup/lnd";
+      logLevel = "INFO";
+      fiatConversion = cfg.extraCurrency != null;
+      ${optionalAttr (cfg.extraCurrency != null) "currencyUnit"} = cfg.extraCurrency;
+      ${optionalAttr (isLnd && lndLoopEnabled) "swapServerUrl"} =
+        "https://${nbLib.addressWithPort lightning-loop.restAddress lightning-loop.restPort}";
+      lnServerUrl = "https://${
+        if isLnd
+        then nbLib.addressWithPort lnd.restAddress lnd.restPort
+        else nbLib.addressWithPort clightning-rest.address clightning-rest.port
+      }";
+    };
+  };
+
+  nodes' =
+    optional cfg.nodes.clightning.enable
+      (recursiveUpdate (node { isLnd = false; index = 1; }) cfg.nodes.clightning.extraConfig) ++
+    optional cfg.nodes.lnd.enable
+      (recursiveUpdate (node { isLnd = true;  index = 2; }) cfg.nodes.lnd.extraConfig);
 
   nodes = if cfg.nodes.reverseOrder then reverseList nodes' else nodes';
 
-  configFile = builtins.toFile "config" ''
-    {
-      "multiPass": "@multiPass@",
-      "host": "${cfg.address}",
-      "port": "${toString cfg.port}",
-      "SSO": {
-        "rtlSSO": 0
-      },
-      "nodes": [
-        ${builtins.concatStringsSep ",\n" nodes}
-      ]
-    }
-  '';
+  rtlConfig = {
+    multiPass = "@multiPass@";
+    host = cfg.address;
+    port = cfg.port;
+    SSO.rtlSSO = 0;
+    inherit nodes;
+  };
+
+  configFile = builtins.toFile "config" (builtins.toJSON rtlConfig);
 
   inherit (config.services)
     bitcoind

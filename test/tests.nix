@@ -67,6 +67,7 @@ let
           lnd = {
             enable = mkDefault true;
             loop = mkDefault true;
+            extraConfig.Settings.userPersona = "MERCHANT";
           };
           clightning.enable = mkDefault true;
         };

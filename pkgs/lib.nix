@@ -107,4 +107,6 @@ let self = {
 
   addressWithPort = addr: port: "${self.address addr}:${toString port}";
 
+  optionalAttr = cond: name: if cond then name else null;
+
 }; in self
