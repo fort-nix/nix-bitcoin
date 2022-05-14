@@ -20,15 +20,24 @@ let
       description = "The data directory for RTL.";
     };
     nodes = {
-      clightning = mkOption {
-        type = types.bool;
-        default = false;
-        description = "Enable the clightning node interface.";
+      clightning = {
+        enable = mkOption {
+          type = types.bool;
+          default = false;
+          description = "Enable the clightning node interface.";
+        };
       };
-      lnd = mkOption {
-        type = types.bool;
-        default = false;
-        description = "Enable the lnd node interface.";
+      lnd = {
+        enable = mkOption {
+          type = types.bool;
+          default = false;
+          description = "Enable the lnd node interface.";
+        };
+        loop = mkOption {
+          type = types.bool;
+          default = false;
+          description = "Enable swaps with lightning-loop.";
+        };
       };
       reverseOrder = mkOption {
         type = types.bool;
@@ -38,11 +47,6 @@ let
           By default, clightning is shown before lnd.
         '';
       };
-    };
-    loop = mkOption {
-      type = types.bool;
-      default = false;
-      description = "Whether to enable swaps with lightning-loop.";
     };
     nightTheme = mkOption {
       type = types.bool;
@@ -84,7 +88,7 @@ let
       "lnNode": "Node",
       "lnImplementation": "${if isLnd then "LND" else "CLT"}",
       "Authentication": {
-        ${optionalString (isLnd && cfg.loop)
+        ${optionalString (isLnd && lndLoopEnabled)
           ''"swapMacaroonPath": "${lightning-loop.dataDir}/${bitcoind.network}",''
          }
         "macaroonPath": "${if isLnd
@@ -104,7 +108,7 @@ let
         ${optionalString (cfg.extraCurrency != null)
           ''"currencyUnit": "${cfg.extraCurrency}",''
          }
-        ${optionalString (isLnd && cfg.loop)
+        ${optionalString (isLnd && lndLoopEnabled)
           ''"swapServerUrl": "https://${nbLib.addressWithPort lightning-loop.restAddress lightning-loop.restPort}",''
          }
         "lnServerUrl": "https://${
@@ -116,8 +120,8 @@ let
     }
   '';
 
-  nodes' = optional cfg.nodes.clightning (node { isLnd = false; index = 1; }) ++
-           optional cfg.nodes.lnd        (node { isLnd = true;  index = 2; });
+  nodes' = optional cfg.nodes.clightning.enable (node { isLnd = false; index = 1; }) ++
+           optional cfg.nodes.lnd.enable        (node { isLnd = true;  index = 2; });
 
   nodes = if cfg.nodes.reverseOrder then reverseList nodes' else nodes';
 
@@ -140,21 +144,23 @@ let
     lnd
     clightning-rest
     lightning-loop;
+
+  lndLoopEnabled = cfg.nodes.lnd.enable && cfg.nodes.lnd.loop;
 in {
   inherit options;
 
   config = mkIf cfg.enable {
     assertions = [
-      { assertion = cfg.nodes.clightning || cfg.nodes.lnd;
+      { assertion = cfg.nodes.clightning.enable || cfg.nodes.lnd.enable;
         message = ''
-          RTL: At least one of `nodes.lnd` or `nodes.clightning` must be `true`.
+          RTL: At least one of `nodes.lnd.enable` or `nodes.clightning.enable` must be `true`.
         '';
       }
     ];
 
-    services.lnd.enable = mkIf cfg.nodes.lnd true;
-    services.lightning-loop.enable = mkIf cfg.loop true;
-    services.clightning-rest.enable = mkIf cfg.nodes.clightning true;
+    services.lnd.enable = mkIf cfg.nodes.lnd.enable true;
+    services.lightning-loop.enable = mkIf lndLoopEnabled true;
+    services.clightning-rest.enable = mkIf cfg.nodes.clightning.enable true;
 
     systemd.tmpfiles.rules = [
       "d '${cfg.dataDir}' 0770 ${cfg.user} ${cfg.group} - -"
@@ -164,8 +170,8 @@ in {
 
     systemd.services.rtl = rec {
       wantedBy = [ "multi-user.target" ];
-      requires = optional cfg.nodes.clightning "clightning-rest.service" ++
-                 optional cfg.nodes.lnd "lnd.service";
+      requires = optional cfg.nodes.clightning.enable "clightning-rest.service" ++
+                 optional cfg.nodes.lnd.enable "lnd.service";
       after = requires;
       environment.RTL_CONFIG_PATH = cfg.dataDir;
       serviceConfig = nbLib.defaultHardening // {
@@ -174,7 +180,7 @@ in {
             <${configFile} sed "s|@multiPass@|$(cat ${secretsDir}/rtl-password)|" \
               > '${cfg.dataDir}/RTL-Config.json'
           '')
-        ] ++ optional cfg.nodes.lnd
+        ] ++ optional cfg.nodes.lnd.enable
           (nbLib.rootScript "rtl-copy-macaroon" ''
             install -D -o ${cfg.user} -g ${cfg.group} ${lnd.networkDir}/admin.macaroon \
               '${cfg.dataDir}/macaroons/admin.macaroon'
@@ -195,8 +201,8 @@ in {
       group = cfg.group;
       extraGroups =
         # Reads cert and macaroon from the clightning-rest datadir
-        optional cfg.nodes.clightning clightning-rest.group ++
-        optional cfg.loop lnd.group;
+        optional cfg.nodes.clightning.enable clightning-rest.group ++
+        optional lndLoopEnabled lnd.group;
     };
     users.groups.${cfg.group} = {};
 

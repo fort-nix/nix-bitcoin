@@ -62,14 +62,20 @@ let
       tests.clightning-rest = cfg.clightning-rest.enable;
 
       tests.rtl = cfg.rtl.enable;
-      services.rtl.nodes.lnd = mkDefault true;
-      services.rtl.nodes.clightning = mkDefault true;
-      services.rtl.loop = mkIf cfg.rtl.nodes.lnd (mkDefault true);
+      services.rtl = {
+        nodes = {
+          lnd = {
+            enable = mkDefault true;
+            loop = mkDefault true;
+          };
+          clightning.enable = mkDefault true;
+        };
+        extraCurrency = mkDefault "CHF";
+      };
       # Use a simple, non-random password for manual web interface tests
       nix-bitcoin.generateSecretsCmds.rtl = mkIf cfg.rtl.enable (mkForce ''
         echo a > rtl-password
       '');
-      services.rtl.extraCurrency = mkDefault "CHF";
 
       tests.spark-wallet = cfg.spark-wallet.enable;
 

@@ -283,10 +283,12 @@ in {
       };
       rtl = {
         id = 29;
-        connections =
-          optional config.services.rtl.nodes.lnd "lnd" ++
-          optional config.services.rtl.loop "lightning-loop" ++
-          optional config.services.rtl.nodes.clightning "clightning-rest";
+        connections = let
+          nodes = config.services.rtl.nodes;
+        in
+          optional nodes.lnd.enable "lnd" ++
+          optional (nodes.lnd.enable && nodes.lnd.loop) "lightning-loop" ++
+          optional nodes.clightning.enable "clightning-rest";
       };
       clightning-rest = {
         id = 30;
