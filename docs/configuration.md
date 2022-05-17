@@ -22,8 +22,7 @@ This fetches the latest release, verifies its signatures and updates `nix-bitcoi
 ## Get started with Nix
 
 See [Nix - A One Pager](https://github.com/tazjin/nix-1p) for a short guide
-to Nix, the language used in `configuration.nix`.
-
+to Nix, the language used in `configuration.nix`.\
 You can follow along this guide by running command `nix repl` which allows you to interactively
 evaluate Nix expressions.
 
