@@ -8,7 +8,7 @@ trap 'echo "Error at ${BASH_SOURCE[0]}, line $LINENO"' ERR
 
 repo=fort-nix/nix-bitcoin
 if [[ ! -v version ]]; then
-    version=$(curl -s --show-error "https://api.github.com/repos/$repo/releases/latest" | jq -r '.tag_name' | tail -c +2)
+    version=$(curl -fsS "https://api.github.com/repos/$repo/releases/latest" | jq -r '.tag_name' | tail -c +2)
 fi
 
 TMPDIR=$(mktemp -d)
@@ -27,8 +27,8 @@ gpg --list-keys "36C7 1A37 C9D9 88BD E825 08D9 B1A7 0E4F 8DCD 0366" > /dev/null
 # Fetch nar-hash of release
 cd $TMPDIR
 baseUrl=https://github.com/$repo/releases/download/v$version
-curl -s --show-error -L -O $baseUrl/nar-hash.txt
-curl -s --show-error -L -O $baseUrl/nar-hash.txt.asc
+curl -fsS -L -O $baseUrl/nar-hash.txt
+curl -fsS -L -O $baseUrl/nar-hash.txt.asc
 
 # Verify signature for nar-hash
 gpg --verify nar-hash.txt.asc &> /dev/null || {

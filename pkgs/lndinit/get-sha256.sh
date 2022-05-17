@@ -8,7 +8,7 @@ cd $TMPDIR
 
 echo "Fetching latest release"
 repo=lightninglabs/lndinit
-latest=$(curl -s --show-error https://api.github.com/repos/$repo/releases/latest | jq -r .tag_name)
+latest=$(curl -fsS https://api.github.com/repos/$repo/releases/latest | jq -r .tag_name)
 echo "Latest release is $latest"
 git clone --depth 1 --branch $latest https://github.com/lightninglabs/lndinit 2>/dev/null
 cd lndinit

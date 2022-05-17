@@ -203,13 +203,13 @@ def _():
     wait_for_open_port(ip("btcpayserver"), 23000)
     # test lnd custom macaroon
     assert_matches(
-        "runuser -u btcpayserver -- curl -s --cacert /secrets/lnd-cert "
+        "runuser -u btcpayserver -- curl -fsS --cacert /secrets/lnd-cert "
         '--header "Grpc-Metadata-macaroon: $(xxd -ps -u -c 1000 /run/lnd/btcpayserver.macaroon)" '
         f"-X GET https://{ip('lnd')}:8080/v1/getinfo | jq",
         '"version"',
     )
     # Test web server response
-    assert_matches(f"curl -L {ip('btcpayserver')}:23000", "Welcome to your BTCPay&nbsp;Server")
+    assert_matches(f"curl -fsS -L {ip('btcpayserver')}:23000", "Welcome to your BTCPay&nbsp;Server")
 
 @test("rtl")
 def _():
@@ -230,7 +230,7 @@ def _():
     assert_running("spark-wallet")
     wait_for_open_port(ip("spark-wallet"), 9737)
     spark_auth = re.search("login=(.*)", succeed("cat /secrets/spark-wallet-login"))[1]
-    assert_matches(f"curl -s {spark_auth}@{ip('spark-wallet')}:9737", "Spark")
+    assert_matches(f"curl -fsS {spark_auth}@{ip('spark-wallet')}:9737", "Spark")
 
 @test("joinmarket")
 def _():
