@@ -226,7 +226,7 @@ $secretsDir/bitcoin-rpcpassword-public
 ```
 See: [Secrets dir](#secrets-dir)
 
-Restart `bitcoind` after updating the secrets: `systemctl restart bitcoind`.
+Afterwards, restart `bitcoind`: `systemctl restart bitcoind`.
 
 # Temporarily disable a service
 
