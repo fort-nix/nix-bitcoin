@@ -205,16 +205,16 @@ in {
         } >> '${cfg.dataDir}/lnd.conf'
 
         if [[ ! -f ${networkDir}/wallet.db ]]; then
-          mnemonic='${cfg.dataDir}/lnd-seed-mnemonic'
+          seed='${cfg.dataDir}/lnd-seed-mnemonic'
 
-          if [[ ! -f "$mnemonic" ]]; then
+          if [[ ! -f "$seed" ]]; then
             echo "Create lnd seed"
-            (umask u=r,go=; ${lndinit} gen-seed > "$mnemonic")
+            (umask u=r,go=; ${lndinit} gen-seed > "$seed")
           fi
 
           echo "Create lnd wallet"
           ${lndinit} -v init-wallet \
-            --file.seed="$mnemonic" \
+            --file.seed="$seed" \
             --file.wallet-password='${secretsDir}/lnd-wallet-password' \
             --init-file.output-wallet-dir='${cfg.networkDir}'
         fi
