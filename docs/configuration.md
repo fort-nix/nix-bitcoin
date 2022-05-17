@@ -178,7 +178,7 @@ Some services require extra steps:
 
 # Use bitcoind from another node
 
-Use a bitcoind instance running on another node within a nix-bitcoin config.
+Here's how to use a bitcoind instance running on another node within a nix-bitcoin config:
 
 ```nix
 imports = [ <nix-bitcoin/modules/presets/bitcoind-remote.nix> ];
