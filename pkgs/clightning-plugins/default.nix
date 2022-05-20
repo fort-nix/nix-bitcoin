@@ -39,6 +39,9 @@ let
       scriptName = "cl-zmq";
       extraPkgs = [ twisted txzmq ];
     };
+    feeadjuster = {
+      description = "Dynamically changes channel fees to keep your channels more balanced";
+    };
   };
 
   basePkgs = [ nbPython3Packages.pyln-client ];
