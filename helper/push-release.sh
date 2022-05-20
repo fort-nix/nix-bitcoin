@@ -8,6 +8,8 @@ OAUTH_TOKEN=
 DRY_RUN=
 TAG_NAME=
 
+trap 'echo "Error at ${BASH_SOURCE[0]}:$LINENO"' ERR
+
 for arg in "$@"; do
     case $arg in
         --dry-run|-n)
@@ -32,6 +34,8 @@ else
     fi
 fi
 
+cd "${BASH_SOURCE[0]%/*}"
+
 RESPONSE=$(curl https://api.github.com/repos/$REPO/releases/latest 2> /dev/null)
 echo "Latest release" $(echo $RESPONSE | jq -r '.tag_name' | tail -c +2)
 
@@ -51,16 +55,17 @@ if [[ ! $DRY_RUN ]]; then trap "rm -rf $TMPDIR" EXIT; fi
 ARCHIVE_NAME=nix-bitcoin-$TAG_NAME.tar.gz
 ARCHIVE=$TMPDIR/$ARCHIVE_NAME
 
-# Need to be in the repositories root directory for archiving
+# Need to be in the repo root directory for archiving
 (cd $(git rev-parse --show-toplevel); git archive --format=tar.gz -o $ARCHIVE $BRANCH)
 
 SHA256SUMS=$TMPDIR/SHA256SUMS.txt
-# Want to use relative path with sha256sums because it'll output the first
+# Use relative path with sha256sums because it'll output the first
 # argument
 (cd $TMPDIR; sha256sum $ARCHIVE_NAME > $SHA256SUMS)
 gpg -o $SHA256SUMS.asc -a --detach-sig $SHA256SUMS
 
-cd $TMPDIR
+pushd $TMPDIR >/dev/null
+
 nix hash to-sri --type sha256 $(nix-prefetch-url --unpack file://$ARCHIVE 2> /dev/null) > nar-hash.txt
 gpg -o nar-hash.txt.asc -a --detach-sig nar-hash.txt
 
@@ -90,6 +95,10 @@ post_asset $ARCHIVE
 post_asset $SHA256SUMS
 post_asset $SHA256SUMS.asc
 
-git push $GIT_REMOTE $BRANCH:release
+popd >/dev/null
+
+if [[ ! $DRY_RUN ]]; then
+    git push $GIT_REMOTE $BRANCH:release
+fi
 
 echo "Successfully created" $(echo $POST_DATA | jq -r .tag_name)

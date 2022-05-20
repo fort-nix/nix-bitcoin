@@ -22,8 +22,7 @@ This fetches the latest release, verifies its signatures and updates `nix-bitcoi
 ## Get started with Nix
 
 See [Nix - A One Pager](https://github.com/tazjin/nix-1p) for a short guide
-to Nix, the language used in `configuration.nix`.
-
+to Nix, the language used in `configuration.nix`.\
 You can follow along this guide by running command `nix repl` which allows you to interactively
 evaluate Nix expressions.
 
@@ -178,7 +177,7 @@ Some services require extra steps:
 
 # Use bitcoind from another node
 
-Use a bitcoind instance running on another node within a nix-bitcoin config.
+Here's how to use a bitcoind instance running on another node within a nix-bitcoin config:
 
 ```nix
 imports = [ <nix-bitcoin/modules/presets/bitcoind-remote.nix> ];
@@ -226,7 +225,7 @@ $secretsDir/bitcoin-rpcpassword-public
 ```
 See: [Secrets dir](#secrets-dir)
 
-Restart `bitcoind` after updating the secrets: `systemctl restart bitcoind`.
+Afterwards, restart `bitcoind`: `systemctl restart bitcoind`.
 
 # Temporarily disable a service
 
