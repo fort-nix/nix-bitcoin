@@ -64,10 +64,16 @@ let
       default = cfg.user;
       description = "The group as which to run clightning.";
     };
+    package = mkOption {
+      type = types.package;
+      default = nbPkgs.clightning;
+      defaultText = "config.nix-bitcoin.pkgs.clightning";
+      description = "The package providing clightning binaries.";
+    };
     cli = mkOption {
       readOnly = true;
       default = pkgs.writeScriptBin "lightning-cli" ''
-        ${nbPkgs.clightning}/bin/lightning-cli --lightning-dir='${cfg.dataDir}' "$@"
+        ${cfg.package}/bin/lightning-cli --lightning-dir='${cfg.dataDir}' "$@"
       '';
       defaultText = "(See source)";
       description = "Binary to connect with the clightning instance.";
@@ -120,7 +126,7 @@ in {
       rpc.threads = 16;
     };
 
-    environment.systemPackages = [ nbPkgs.clightning (hiPrio cfg.cli) ];
+    environment.systemPackages = [ cfg.package (hiPrio cfg.cli) ];
 
     systemd.tmpfiles.rules = [
       "d '${cfg.dataDir}' 0770 ${cfg.user} ${cfg.group} - -"
@@ -144,7 +150,7 @@ in {
         } > '${cfg.dataDir}/config'
       '';
       serviceConfig = nbLib.defaultHardening // {
-        ExecStart = "${nbPkgs.clightning}/bin/lightningd --lightning-dir=${cfg.dataDir}";
+        ExecStart = "${cfg.package}/bin/lightningd --lightning-dir=${cfg.dataDir}";
         User = cfg.user;
         Restart = "on-failure";
         RestartSec = "10s";
