@@ -2389,13 +2389,13 @@ let
         sha512 = "6cP692WwGIs9XXdOO4++N+7qjqv0rqxxVvJ3VHPh/Sc9mVZcQP+ZGhkKiTvWMQRr2tbHkJP/Yn7Y0npb3ZBs4A==";
       };
     };
-    "minimist-1.2.5" = {
+    "minimist-1.2.6" = {
       name = "minimist";
       packageName = "minimist";
-      version = "1.2.5";
+      version = "1.2.6";
       src = fetchurl {
-        url = "https://registry.npmjs.org/minimist/-/minimist-1.2.5.tgz";
-        sha512 = "FM9nNUYrRBAELZQT3xeZQ7fmMOBg6nWNmJKTcgsJeaLstP/UODVpGsr5OhXhhXg6f+qtJ8uiZ+PUxkDWcgIXLw==";
+        url = "https://registry.npmjs.org/minimist/-/minimist-1.2.6.tgz";
+        sha512 = "Jsjnk4bw3YJqYzbdyBiNsPWHPfO++UGG749Cxs6peCu5Xg4nrena6OVxOYxrQTqww0Jmwt+Ref8rggumkTLz9Q==";
       };
     };
     "ms-2.0.0" = {
@@ -3590,10 +3590,10 @@ let
   args = {
     name = "rtl";
     packageName = "rtl";
-    version = "0.12.2-beta";
+    version = "0.12.3-beta";
     src = fetchurl {
-      url = "https://github.com/Ride-The-Lightning/RTL/archive/refs/tags/v0.12.2.tar.gz";
-      hash = "sha256-xvW6zq/mBsuRy8AwoAPJ2RR7iqhKrC57SVWyFTjq6aw=";
+      url = "https://github.com/Ride-The-Lightning/RTL/archive/refs/tags/v0.12.3.tar.gz";
+      hash = "sha256-2X5Bf9rniiN/NNEqnNJYF/YQ0v+EwnwQHB5VXVfS9to=";
     };
     dependencies = [
       sources."@angular/animations-13.0.3"
@@ -3943,7 +3943,7 @@ let
       sources."methods-1.1.2"
       sources."mime-db-1.51.0"
       sources."mime-types-2.1.34"
-      sources."minimist-1.2.5"
+      sources."minimist-1.2.6"
       sources."ms-2.1.2"
       sources."negotiator-0.6.2"
       sources."next-tick-1.0.0"

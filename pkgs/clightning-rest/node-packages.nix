@@ -175,13 +175,13 @@ let
         sha1 = "1b681c21ff84033c826543090689420d187151dc";
       };
     };
-    "clightningjs-0.1.1" = {
+    "clightningjs-0.2.2" = {
       name = "clightningjs";
       packageName = "clightningjs";
-      version = "0.1.1";
+      version = "0.2.2";
       src = fetchurl {
-        url = "https://registry.npmjs.org/clightningjs/-/clightningjs-0.1.1.tgz";
-        sha512 = "r/poNODgYDJQZVU1X3lMirDCOD2Bw9XyPdjRXcOXAnHtSihf4OnO1c7iB82ots+2aExQnKuBk9JOE3QwY6FHOw==";
+        url = "https://registry.npmjs.org/clightningjs/-/clightningjs-0.2.2.tgz";
+        sha512 = "9fdWYNxe/IUe0uG0b1XdxWGlev1IPlWZpN6Hrsr3uTOZe1kSR+ySBMzdsgD73Rc3LeX7DfdKhT3uuT8B77HIqg==";
       };
     };
     "combined-stream-1.0.8" = {
@@ -1277,10 +1277,10 @@ let
   args = {
     name = "c-lightning-rest";
     packageName = "c-lightning-rest";
-    version = "0.7.0";
+    version = "0.7.2";
     src = fetchurl {
-      url = "https://github.com/Ride-The-Lightning/c-lightning-REST/archive/refs/tags/v0.7.0.tar.gz";
-      hash = "sha256-NeeG4WyXWPZv5u5HuMwVhIgDgHStgah3YNtk4bKvNoY=";
+      url = "https://github.com/Ride-The-Lightning/c-lightning-REST/archive/refs/tags/v0.7.2.tar.gz";
+      hash = "sha256-G3PWoOW69B+so7sDiAcZNgaAWtmp/H5U9I6vh5YeUEQ=";
     };
     dependencies = [
       sources."accepts-1.3.7"
@@ -1300,7 +1300,7 @@ let
       sources."bytes-3.1.0"
       sources."call-me-maybe-1.0.1"
       sources."caseless-0.12.0"
-      sources."clightningjs-0.1.1"
+      sources."clightningjs-0.2.2"
       sources."combined-stream-1.0.8"
       sources."commander-2.20.0"
       sources."concat-map-0.0.1"

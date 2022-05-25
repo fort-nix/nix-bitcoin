@@ -103,17 +103,17 @@
   #
   # Set this to add a clightning node interface.
   # Automatically enables clightning.
-  # services.rtl.nodes.clightning = true;
+  # services.rtl.nodes.clightning.enable = true;
   #
   # Set this to add a lnd node interface.
   # Automatically enables lnd.
-  # services.rtl.nodes.lnd = true;
+  # services.rtl.nodes.lnd.enable = true;
   #
   # You can enable both nodes simultaneously.
   #
   # Set this option to enable swaps with lightning-loop.
   # Automatically enables lightning-loop.
-  # services.rtl.loop = true;
+  # services.rtl.nodes.lnd.loop = true;
 
   ### SPARK WALLET
   # Set this to enable spark-wallet, a minimalistic wallet GUI for
