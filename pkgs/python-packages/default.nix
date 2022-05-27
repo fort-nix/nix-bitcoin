@@ -13,6 +13,7 @@ in {
   python-bitcointx = callPackage ./python-bitcointx { inherit (nbPkgs) secp256k1; };
   runes = callPackage ./runes {};
   sha256 = callPackage ./sha256 {};
+  twisted = callPackage ./twisted {};
   txzmq = callPackage ./txzmq {};
   urldecode = callPackage ./urldecode {};
 
