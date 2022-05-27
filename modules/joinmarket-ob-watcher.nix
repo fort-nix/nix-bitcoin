@@ -49,7 +49,7 @@ let
     rpc_port = ${toString bitcoind.rpc.port}
     rpc_user = ${bitcoind.rpc.users.joinmarket-ob-watcher.name}
 
-    ${joinmarket.ircServers}
+    ${joinmarket.messagingConfig}
   '';
 in {
   inherit options;
