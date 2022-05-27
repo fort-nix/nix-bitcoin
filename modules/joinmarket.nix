@@ -20,6 +20,16 @@ let
       default = 64180; # A random private port
       description = "The port corresponding to option `payjoinAddress`.";
     };
+    messagingAddress = mkOption {
+      type = types.str;
+      default = "127.0.0.1";
+      description = ''
+        The address where messaging onion connections are forwarded to.
+        This address is never used directly, it only serves as the internal endpoint
+        for the messaging onion service.
+        The onion service is automatically setup by joinmarket.
+      '';
+    };
     dataDir = mkOption {
       type = types.path;
       default = "/var/lib/joinmarket";
@@ -47,9 +57,9 @@ let
       defaultText = "(See source)";
     };
     # Used by ./joinmarket-ob-watcher.nix
-    ircServers = mkOption {
+    messagingConfig = mkOption {
       readOnly = true;
-      default = ircServers;
+      default = messagingConfig;
       defaultText = "(See source)";
     };
     # This option is only used by netns-isolation.
@@ -133,7 +143,18 @@ let
     socks5_port = ${toString torAddress.port}
   '';
 
-  ircServers = ''
+  messagingConfig = ''
+    [MESSAGING:onion]
+    type = onion
+    ${socks5Settings}
+    tor_control_host = unix:/run/tor/control
+    # required option, but ignored for unix socket host
+    tor_control_port = 9051
+    onion_serving_host = ${cfg.messagingAddress}
+    onion_serving_port = 8080
+    hidden_service_dir =
+    directory_nodes = 3kxw6lf5vf6y26emzwgibzhrzhmhqiw6ekrek3nqfjjmhwznb2moonad.onion:5222,jmdirjmioywe2s5jad7ts6kgcqg66rj6wujj6q77n6wbdrgocqwexzid.onion:5222,bqlpq6ak24mwvuixixitift4yu42nxchlilrcqwk2ugn45tdclg42qid.onion:5222
+
     # irc.darkscience.net
     [MESSAGING:server1]
     host = darkirc6tqgpnwd3blln3yfv5ckl47eg7llfxkmtovrv7c7iwohhb6ad.onion
@@ -142,17 +163,17 @@ let
     usessl = true
     ${socks5Settings}
 
-    # irc.hackint.org
+    # ilita
     [MESSAGING:server2]
-    host = ncwkrwxpq2ikcngxq3dy2xctuheniggtqeibvgofixpzvrwpa77tozqd.onion
+    host = ilitafrzzgxymv6umx2ux7kbz3imyeko6cnqkvy4nisjjj4qpqkrptid.onion
     channel = joinmarket-pit
     port = 6667
     usessl = false
     ${socks5Settings}
 
-    # ilita
+    # irc.hackint.org
     [MESSAGING:server3]
-    host = ilitafrzzgxymv6umx2ux7kbz3imyeko6cnqkvy4nisjjj4qpqkrptid.onion
+    host = ncwkrwxpq2ikcngxq3dy2xctuheniggtqeibvgofixpzvrwpa77tozqd.onion
     channel = joinmarket-pit
     port = 6667
     usessl = false
@@ -176,7 +197,7 @@ let
     rpc_user = ${bitcoind.rpc.users.privileged.name}
     ${optionalString (cfg.rpcWalletFile != null) "rpc_wallet_file = ${cfg.rpcWalletFile}"}
 
-    ${ircServers}
+    ${messagingConfig}
 
     [LOGGING]
     console_log_level = INFO
@@ -195,11 +216,13 @@ let
     max_sats_freeze_reuse = -1
     interest_rate = 0.015
     bondless_makers_allowance = 0.125
+    bond_value_exponent = 1.3
     taker_utxo_retries = 3
     taker_utxo_age = 5
     taker_utxo_amtpercent = 20
     accept_commitment_broadcasts = 1
     commit_file_location = cmtdata/commitments.json
+    commitment_list_location = cmtdata/commitmentlist
 
     [PAYJOIN]
     payjoin_version = 1
@@ -209,6 +232,8 @@ let
     onion_socks5_host = ${torAddress.addr}
     onion_socks5_port = ${toString torAddress.port}
     tor_control_host = unix:/run/tor/control
+    # required option, but ignored for unix socket host
+    tor_control_port = 9051
     onion_serving_host = ${cfg.payjoinAddress}
     onion_serving_port = ${toString cfg.payjoinPort}
     hidden_service_ssl = false
