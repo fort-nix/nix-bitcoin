@@ -8,13 +8,13 @@ let
   unstable = (import ../nixpkgs-pinned.nix).nixpkgs-unstable;
 in {
   bencoderpyx = callPackage ./bencoderpyx {};
+  chromalog = callPackage ./chromalog {};
   coincurve = callPackage ./coincurve {};
   python-bitcointx = callPackage ./python-bitcointx { inherit (nbPkgs) secp256k1; };
-  urldecode = callPackage ./urldecode {};
-  chromalog = callPackage ./chromalog {};
-  txzmq = callPackage ./txzmq {};
-  sha256 = callPackage ./sha256 {};
   runes = callPackage ./runes {};
+  sha256 = callPackage ./sha256 {};
+  txzmq = callPackage ./txzmq {};
+  urldecode = callPackage ./urldecode {};
 
   joinmarketbase = joinmarketPkg ./jmbase;
   joinmarketclient = joinmarketPkg ./jmclient;
