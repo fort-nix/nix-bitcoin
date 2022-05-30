@@ -14,6 +14,7 @@ in {
   imports = [
     ./clboss.nix
     ./commando.nix
+    ./feeadjuster.nix
     ./prometheus.nix
     ./summary.nix
     ./zmq.nix

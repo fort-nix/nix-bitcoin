@@ -127,20 +127,24 @@ def _():
 def _():
     assert_running("clightning")
     assert_matches("runuser -u operator -- lightning-cli getinfo | jq", '"id"')
-    if test_data["clightning-plugins"]:
+
+    enabled_plugins = test_data["clightning-plugins"]
+    if enabled_plugins:
         plugin_list = succeed("lightning-cli plugin list")
         plugins = json.loads(plugin_list)["plugins"]
         active = set(plugin["name"] for plugin in plugins if plugin["active"])
-        failed = set(test_data["clightning-plugins"]).difference(active)
+        failed = set(enabled_plugins).difference(active)
         if failed:
             raise Exception(
                 f"The following clightning plugins are inactive:\n{failed}.\n\n"
                 f"Output of 'lightning-cli plugin list':\n{plugin_list}"
             )
-        else:
-            machine.log("Active clightning plugins:")
-            for p in test_data["clightning-plugins"]:
-                machine.log(os.path.basename(p))
+        active = [os.path.splitext(os.path.basename(p))[0] for p in enabled_plugins]
+        machine.log("\n".join(["Active clightning plugins:", *active]))
+
+        if "feeadjuster" in active:
+            # This is a one-shot service, so this command only succeeds if the service succeeds
+            succeed("systemctl start clightning-feeadjuster")
 
 @test("lnd")
 def _():
