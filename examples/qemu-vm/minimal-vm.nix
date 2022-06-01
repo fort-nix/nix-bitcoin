@@ -13,7 +13,7 @@ rec {
 
   vm = (import "${nixpkgs}/nixos" {
     inherit system;
-    configuration = {
+    configuration = { lib, ... }: {
       imports = [
         nix-bitcoin.nixosModules.default
         "${nix-bitcoin}/modules/presets/secure-node.nix"
@@ -28,6 +28,20 @@ rec {
       virtualisation.graphics = false;
       services.getty.autologinUser = "root";
       nix.nixPath = [ "nixpkgs=${nixpkgs}" ];
+
+      services.getty.helpLine = lib.mkAfter ''
+
+        Welcome to nix-bitcoin!
+        To explore running services, try the following commands:
+        - nodeinfo
+        - systemctl status bitcoind
+        - systemctl status clightning
+      '';
+
+      # Power off VM when the user exits the shell
+      systemd.services."serial-getty@".preStop = ''
+        echo o >/proc/sysrq-trigger
+      '';
     };
   }).vm;
 
