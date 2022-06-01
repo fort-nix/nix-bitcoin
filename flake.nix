@@ -24,11 +24,11 @@
           import ./pkgs { inherit pkgs pkgsUnstable; };
       };
 
-      overlay = final: prev: let
+      overlays.default = final: prev: let
         nbPkgs = lib.mkNbPkgs { inherit (final) system; pkgs = final; };
       in removeAttrs nbPkgs [ "pinned" "nixops19_09" "krops" ];
 
-      nixosModule = { config, pkgs, lib, ... }: {
+      nixosModules.default = { config, pkgs, lib, ... }: {
         imports = [ ./modules/modules.nix ];
 
         options = with lib; {
@@ -58,7 +58,7 @@
         };
       };
 
-      defaultTemplate = {
+      templates.default = {
         description = "Basic node template";
         path = ./examples/flakes;
       };
@@ -91,7 +91,7 @@
               inherit system;
               configuration = {
                 imports = [
-                  nix-bitcoin.nixosModule
+                  nix-bitcoin.nixosModules.default
                   "${nix-bitcoin}/modules/presets/secure-node.nix"
                 ];
 
@@ -113,9 +113,9 @@
         # `packages` is not allowed to contain nested pkgs attrsets.
         legacyPackages = nbPkgs;
 
-        defaultApp = apps.vm;
+        apps = rec {
+          default = vm;
 
-        apps = {
           # Run a basic nix-bitcoin node in a VM
           vm = {
             type = "app";

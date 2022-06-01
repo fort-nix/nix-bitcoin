@@ -8,7 +8,7 @@
     nixosConfigurations.mynode = nix-bitcoin.inputs.nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [
-        nix-bitcoin.nixosModule
+        nix-bitcoin.nixosModules.default
 
         # Optional:
         # Import the secure-node preset, an opinionated config to enhance security
