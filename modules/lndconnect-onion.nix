@@ -70,6 +70,8 @@ let
      --adminmacaroonpath='${macaroonPath}' \
      --configfile=/dev/null "$@"
   '';
+
+  operatorName = config.nix-bitcoin.operator.name;
 in {
   inherit options;
 
@@ -108,12 +110,12 @@ in {
         };
       };
       # This also allows nodeinfo to show the clightning-rest onion address
-      nix-bitcoin.onionAddresses.access.operator = [ "clightning-rest" ];
+      nix-bitcoin.onionAddresses.access.${operatorName} = [ "clightning-rest" ];
 
       environment.systemPackages = [(
         mkLndconnect {
           name = "lndconnect-onion-clightning";
-          onionService = "operator/clightning-rest";
+          onionService = "${operatorName}/clightning-rest";
           port = clightning-rest.port;
           certPath = "${clightning-rest.dataDir}/certs/certificate.pem";
           macaroonPath = "${clightning-rest.dataDir}/certs/access.macaroon";
