@@ -336,6 +336,7 @@ in {
 
     services.joinmarket = {
       payjoinAddress = netns.joinmarket.address;
+      messagingAddress = netns.joinmarket.address;
       cliExec = mkCliExec "joinmarket";
     };
     systemd.services.joinmarket-yieldgenerator = mkIf config.services.joinmarket.yieldgenerator.enable {

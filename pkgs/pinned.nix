@@ -3,8 +3,7 @@ pkgs: pkgsUnstable:
 {
   inherit (pkgs)
     charge-lnd
-    extra-container
-    lndconnect;
+    extra-container;
 
   inherit (pkgsUnstable)
     bitcoin
@@ -17,6 +16,7 @@ pkgs: pkgsUnstable:
     lightning-loop
     lightning-pool
     lnd
+    lndconnect
     nbxplorer;
 
   inherit pkgs pkgsUnstable;

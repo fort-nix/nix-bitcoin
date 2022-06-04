@@ -1,18 +1,18 @@
 { stdenv, lib, fetchurl, applyPatches, fetchpatch, python3, nbPythonPackageOverrides, pkgs }:
 
 let
-  version = "0.9.5";
+  version = "0.9.6";
   src = applyPatches {
     src = fetchurl {
       url = "https://github.com/JoinMarket-Org/joinmarket-clientserver/archive/v${version}.tar.gz";
-      sha256 = "0q8hfq4y7az5ly97brq1khhhvhnq6irzw0ginmz20fwn7w3yc5sn";
+      sha256 = "040qj3abqkk74zyi5yav1ijlh5cmd49wlymald2lzk35adnx804g";
     };
     patches = [
       (fetchpatch {
-        # https://github.com/JoinMarket-Org/joinmarket-clientserver/pull/1206
-        name = "ob-export-fix";
-        url = "https://patch-diff.githubusercontent.com/raw/JoinMarket-Org/joinmarket-clientserver/pull/1206.patch";
-        sha256 = "0532gixjyc8r11sfmlf32v5iwy0rhkpa8rbvm4b7h509hnyycvhx";
+        # https://github.com/JoinMarket-Org/joinmarket-clientserver/pull/1264
+        name = "use-twisted-22.4.0";
+        url = "https://patch-diff.githubusercontent.com/raw/JoinMarket-Org/joinmarket-clientserver/pull/1264.patch";
+        sha256 = "1nlyhc5myph9239d5zczsl4jan4qj4ggy0l1f39jv0ihjbjhcks5";
       })
     ];
   };
