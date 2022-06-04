@@ -211,7 +211,7 @@ in {
       '' + optionalString (cfg.btcpayserver.rootpath != null) ''
         rootpath=${cfg.btcpayserver.rootpath}
       '' + optionalString (cfg.btcpayserver.lightningBackend == "clightning") ''
-        btclightning=type=clightning;server=unix:///${cfg.clightning.dataDir}/bitcoin/lightning-rpc
+        btclightning=type=clightning;server=unix:///${cfg.clightning.dataDir}/${bitcoind.makeNetworkName "bitcoin" "regtest"}/lightning-rpc
       '' + optionalString cfg.btcpayserver.lbtc ''
         chains=btc,lbtc
         lbtcexplorerurl=${nbExplorerUrl}
