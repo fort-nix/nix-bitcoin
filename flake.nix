@@ -24,11 +24,11 @@
           import ./pkgs { inherit pkgs pkgsUnstable; };
       };
 
-      overlay = final: prev: let
+      overlays.default = final: prev: let
         nbPkgs = lib.mkNbPkgs { inherit (final) system; pkgs = final; };
       in removeAttrs nbPkgs [ "pinned" "nixops19_09" "krops" ];
 
-      nixosModule = { config, pkgs, lib, ... }: {
+      nixosModules.default = { config, pkgs, lib, ... }: {
         imports = [ ./modules/modules.nix ];
 
         options = with lib; {
@@ -58,7 +58,7 @@
         };
       };
 
-      defaultTemplate = {
+      templates.default = {
         description = "Basic node template";
         path = ./examples/flakes;
       };
@@ -66,46 +66,16 @@
     } // (flake-utils.lib.eachSystem supportedSystems (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
-
         nbPkgs = self.lib.mkNbPkgs { inherit system pkgs; };
-
-        mkVMScript = vm: pkgs.writers.writeBash "run-vm" ''
-          set -euo pipefail
-          export TMPDIR=$(mktemp -d /tmp/nix-bitcoin-vm.XXX)
-          trap "rm -rf $TMPDIR" EXIT
-          export NIX_DISK_IMAGE=$TMPDIR/nixos.qcow2
-          QEMU_OPTS="-smp $(nproc) -m 1500" ${vm}/bin/run-*-vm
-        '';
       in rec {
         packages = flake-utils.lib.flattenTree (removeAttrs nbPkgs [
           "pinned" "modulesPkgs" "nixops19_09" "krops" "generate-secrets" "netns-exec"
         ]) // {
-          runVM = mkVMScript packages.vm;
-
-          # This is a simple demo VM.
-          # See ./examples/flakes/flake.nix on how to use nix-bitcoin with flakes.
-          vm = let
-            nix-bitcoin = self;
-          in
-            (import "${nixpkgs}/nixos" {
-              inherit system;
-              configuration = {
-                imports = [
-                  nix-bitcoin.nixosModule
-                  "${nix-bitcoin}/modules/presets/secure-node.nix"
-                ];
-
-                nix-bitcoin.generateSecrets = true;
-                services.clightning.enable = true;
-                # For faster startup in offline VMs
-                services.clightning.extraConfig = "disable-dns";
-
-                nixpkgs.pkgs = pkgs;
-                virtualisation.graphics = false;
-                services.getty.autologinUser = "root";
-                nix.nixPath = [ "nixpkgs=${nixpkgs}" ];
-              };
-            }).vm;
+          inherit (import ./examples/qemu-vm/minimal-vm.nix self pkgs system)
+            # A simple demo VM.
+            # See ./examples/flakes/flake.nix on how to use nix-bitcoin with flakes.
+            runVM
+            vm;
         };
 
         # Allow accessing the whole nested `nbPkgs` attrset (including `modulesPkgs`)
@@ -113,9 +83,9 @@
         # `packages` is not allowed to contain nested pkgs attrsets.
         legacyPackages = nbPkgs;
 
-        defaultApp = apps.vm;
+        apps = rec {
+          default = vm;
 
-        apps = {
           # Run a basic nix-bitcoin node in a VM
           vm = {
             type = "app";
