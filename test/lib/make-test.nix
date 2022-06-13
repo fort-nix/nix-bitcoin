@@ -9,7 +9,7 @@ name: testConfig:
   vm = makeVM {
     name = "nix-bitcoin-${name}";
 
-    machine = {
+    nodes.machine = {
       imports = [ testConfig ];
       virtualisation = {
         # Needed because duplicity requires 270 MB of free temp space, regardless of backup size
