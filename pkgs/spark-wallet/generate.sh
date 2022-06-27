@@ -27,10 +27,6 @@ tar xvf $TMPDIR/$file -C $src --strip-components 1 >/dev/null
 # Make qrcode-terminal a strict dependency so that node2nix includes it in the package derivation.
 jq '.dependencies["qrcode-terminal"] = .optionalDependencies["qrcode-terminal"]' $src/package.json | sponge $src/package.json
 
-# Generate nix pkg
-# TODO-EXTERNAL: remove --nodejs-14 option once
-# https://github.com/svanderburg/node2nix/pull/296 has made its way into a
-# node2nix release.
 node2nix \
   --nodejs-14 \
   --input $src/package.json \
