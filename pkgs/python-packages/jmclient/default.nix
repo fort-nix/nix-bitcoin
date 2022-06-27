@@ -13,6 +13,8 @@ buildPythonPackage rec {
   patchPhase = ''
     substituteInPlace setup.py \
       --replace "'klein==20.6.0'" "'klein==21.8.0'"
+    substituteInPlace setup.py \
+      --replace "'pyjwt==2.1.0'" "'pyjwt==2.3.0'"
   '';
 
   meta = with lib; {

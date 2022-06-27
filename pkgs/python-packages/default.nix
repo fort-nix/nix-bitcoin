@@ -26,6 +26,12 @@ in {
   pyln-bolt7 = clightningPkg ./pyln-bolt7;
   pylightning = clightningPkg ./pylightning;
 
+  # Don't mark `klein` as broken.
+  # `klein` is fixed by using werkzeug 2.1.0 (see below)
+  klein = super.klein.overrideAttrs (old: {
+    meta = builtins.removeAttrs old.meta [ "broken" ];
+  });
+
   ## Specific versions of packages that already exist in nixpkgs
 
   # cryptography 3.3.2, required by joinmarketdaemon
@@ -34,17 +40,12 @@ in {
     cryptography_vectors = callPackage ./specific-versions/cryptography/vectors.nix {};
   };
 
-  # cryptography 36.0.0, required by pyln-proto.
-  cryptography = callPackage "${unstable}/pkgs/development/python-modules/cryptography" {
-    Security = self.darwin.apple_sdk.frameworks.Security;
-  };
-
   # autobahn 20.12.3, required by joinmarketclient
   autobahn = callPackage ./specific-versions/autobahn.nix {};
 
-  # tubes 0.2.0, required by jmclient (via pkg `klein`)
-  tubes = callPackage ./specific-versions/tubes.nix {};
+  # werkzeug 2.1.0, required by jmclient (via pkg `klein`)
+  werkzeug = callPackage ./specific-versions/werkzeug.nix {};
 
-  # recommonmark 0.7.1, required by pyln-client
-  recommonmark = callPackage ./specific-versions/recommonmark.nix { inherit (super) recommonmark; };
+  # pyopenssl 20.0.1, required by joinmarketdaemon
+  pyopenssl = callPackage ./specific-versions/pyopenssl.nix {};
 }
