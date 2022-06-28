@@ -31,7 +31,7 @@ nix-build --out-link $tmpDir/vm - <<'EOF'
     ];
     nix-bitcoin.generateSecrets = true;
   };
-}).vm
+}).config.system.build.vm
 EOF
 
 vmNumCPUs=4

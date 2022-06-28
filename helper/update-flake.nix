@@ -8,8 +8,8 @@ in rec {
   #   stable = { bitcoind = "0.21.1"; ... };
   #   unstable = { btcpayserver = "1.2.1"; ... };
   # }
-  # A pinned pkg is added to `stable` if the stable and unstable pkg versions
-  # are identical.
+  # A pinned pkg is added to `stable` if its stable version is newer or
+  # identical to the unstable version.
   versions = let
     pinned = flake.legacyPackages.x86_64-linux.pinned;
     pinnedPkgs = lib.filterAttrs (n: v: lib.isDerivation v) pinned;
@@ -17,7 +17,8 @@ in rec {
     unstable = pinned.pkgsUnstable;
     isStable = builtins.partition (pkgName:
       !(unstable ? "${pkgName}") ||
-      ((stable ? "${pkgName}") && stable.${pkgName}.version == unstable.${pkgName}.version)
+      ((stable ? "${pkgName}")
+       && (builtins.compareVersions stable.${pkgName}.version unstable.${pkgName}.version >= 0))
     ) (builtins.attrNames pinnedPkgs);
   in {
     stable   = lib.genAttrs isStable.right (pkgName: stable.${pkgName}.version);

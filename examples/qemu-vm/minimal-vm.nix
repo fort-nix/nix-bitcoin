@@ -13,11 +13,14 @@ rec {
 
   vm = (import "${nixpkgs}/nixos" {
     inherit system;
-    configuration = { lib, ... }: {
+    configuration = { config, lib, modulesPath, ... }: {
       imports = [
         nix-bitcoin.nixosModules.default
         "${nix-bitcoin}/modules/presets/secure-node.nix"
+        "${modulesPath}/virtualisation/qemu-vm.nix"
       ];
+
+      virtualisation.graphics = false;
 
       nix-bitcoin.generateSecrets = true;
       services.clightning.enable = true;
@@ -25,7 +28,6 @@ rec {
       services.clightning.extraConfig = "disable-dns";
 
       nixpkgs.pkgs = pkgs;
-      virtualisation.graphics = false;
       services.getty.autologinUser = "root";
       nix.nixPath = [ "nixpkgs=${nixpkgs}" ];
 
@@ -42,8 +44,10 @@ rec {
       systemd.services."serial-getty@".preStop = ''
         echo o >/proc/sysrq-trigger
       '';
+
+      system.stateVersion = config.system.nixos.release;
     };
-  }).vm;
+  }).config.system.build.vm;
 
   runVM = mkVMScript vm;
 }

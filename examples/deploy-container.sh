@@ -53,7 +53,7 @@ echo "lightning-cli state:"
 c lightning-cli getinfo
 echo
 echo "Bitcoind data dir:"
-sudo ls -al /var/lib/containers/demo-node/var/lib/bitcoind
+sudo ls -al /var/lib/*containers/demo-node/var/lib/bitcoind
 '
 nodeInfoCmd='
 echo
