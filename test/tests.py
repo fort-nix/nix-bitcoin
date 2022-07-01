@@ -266,6 +266,17 @@ def _():
     info = json.loads(json_info)
     assert info["bitcoind"]["local_address"]
 
+@test("monit-nb")
+def _():
+    assert_running("monit-nb")
+    machine.wait_until_succeeds(
+      log_has_string("monit-nb", "Monit 5.29.0 started")
+    )
+    assert_matches(
+      "runuser -u monitmail -- mail -H",
+      "monit alert",
+    )
+
 @test("secure-node")
 def _():
     assert_running("onion-addresses")

@@ -23,7 +23,7 @@ let
         nix-bitcoin.secretsDir = "/secrets";
         nix-bitcoin.generateSecrets = true;
         nix-bitcoin.operator.enable = true;
-        environment.systemPackages = with pkgs; [ jq ];
+        environment.systemPackages = with pkgs; [ jq mailutils ];
       }
     ];
 
@@ -123,6 +123,8 @@ let
 
       tests.backups = cfg.backups.enable;
 
+      tests.monit-nb = cfg.monit-nb.enable;
+
       # To test that unused secrets are made inaccessible by 'setup-secrets'
       systemd.services.setup-secrets.preStart = mkIfTest "security" ''
         install -D -o nobody -g nogroup -m777 <(:) /secrets/dummy
@@ -187,6 +189,7 @@ let
       services.joinmarket.enable = true;
       services.joinmarket-ob-watcher.enable = true;
       services.backups.enable = true;
+      services.monit-nb.enable = true;
 
       nix-bitcoin.nodeinfo.enable = true;
 

@@ -94,6 +94,7 @@ NixOS modules ([src](modules/modules.nix))
   * [netns-isolation](modules/netns-isolation.nix): isolates applications on the network-level via network namespaces
   * [nodeinfo](modules/nodeinfo.nix): script which prints info about the node's services
   * [backups](modules/backups.nix): duplicity backups of all your node's important files
+  * [monitoring](modules/monit-nb.nix): pro-active monitoring for nix-bitcoin
   * [operator](modules/operator.nix): adds non-root user `operator` who has access to client tools (e.g. `bitcoin-cli`, `lightning-cli`)
 
 Security

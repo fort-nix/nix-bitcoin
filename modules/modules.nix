@@ -35,6 +35,7 @@
     ./netns-isolation.nix
     ./nodeinfo.nix
     ./backups.nix
+    ./monit-nb.nix
   ];
 
   disabledModules = [ "services/networking/bitcoind.nix" ];
