@@ -5,18 +5,18 @@ pkgs: pkgsUnstable:
     bitcoin
     bitcoind
     charge-lnd
-    clightning
     electrs
     elementsd
     extra-container
     lightning-pool
-    lnd
     lndconnect;
 
   inherit (pkgsUnstable)
     btcpayserver
+    clightning
     hwi
     lightning-loop
+    lnd
     nbxplorer;
 
   inherit pkgs pkgsUnstable;
