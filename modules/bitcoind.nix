@@ -310,6 +310,10 @@ let
     ${optionalString (cfg.proxy != null) "proxy=${cfg.proxy}"}
     ${optionalString (cfg.i2p != false) "i2psam=${nbLib.addressWithPort i2pSAM.address i2pSAM.port}"}
     ${optionalString (cfg.i2p == "only-outgoing") "i2pacceptincoming=0"}
+    ${optionalString cfg.tor.enforce ''
+      onlynet=tor
+      ${optionalString (cfg.i2p != false) "onlynet=i2p"}
+    ''}
 
     ${optionalString (cfg.discover != null) "discover=${if cfg.discover then "1" else "0"}"}
     ${lib.concatMapStrings (node: "addnode=${node}\n") cfg.addnodes}
