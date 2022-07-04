@@ -95,6 +95,9 @@ let
 
       tests.electrs = cfg.electrs.enable;
 
+      services.fulcrum.port = 50002;
+      tests.fulcrum = cfg.fulcrum.enable;
+
       tests.liquidd = cfg.liquidd.enable;
       services.liquidd.extraConfig = mkIf config.test.noConnections "connect=0";
 
@@ -182,6 +185,7 @@ let
       services.lightning-pool.enable = true;
       services.charge-lnd.enable = true;
       services.electrs.enable = true;
+      services.fulcrum.enable = true;
       services.liquidd.enable = true;
       services.btcpayserver.enable = true;
       services.joinmarket.enable = true;
@@ -228,6 +232,7 @@ let
       services.lightning-pool.enable = true;
       services.charge-lnd.enable = true;
       services.electrs.enable = true;
+      services.fulcrum.enable = true;
       services.btcpayserver.enable = true;
       services.joinmarket.enable = true;
     };
