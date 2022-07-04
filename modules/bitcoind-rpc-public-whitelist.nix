@@ -2,6 +2,8 @@
 [
   "echo"
   "getinfo"
+  "help"
+  "ping"
   "uptime"
   # Blockchain
   "getbestblockhash"
