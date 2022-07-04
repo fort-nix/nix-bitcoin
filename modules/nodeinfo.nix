@@ -5,40 +5,37 @@ let
   options = {
     nix-bitcoin.nodeinfo = {
       enable = mkEnableOption "nodeinfo";
+
       program = mkOption {
         readOnly = true;
         default = script;
         defaultText = "(See source)";
+      };
+
+      services = mkOption {
+        internal = true;
+        type = types.attrs;
+        default = {};
+        defaultText = "(See source)";
+        description = ''
+          Nodeinfo service definitions.
+        '';
+      };
+
+      nodeinfoLib = mkOption {
+        internal = true;
+        readOnly = true;
+        default = nodeinfoLib;
+        defaultText = "(See source)";
+        description = ''
+          Helper functions for defining nodeinfo services.
+        '';
       };
     };
   };
 
   cfg = config.nix-bitcoin.nodeinfo;
   nbLib = config.nix-bitcoin.lib;
-
-  # Services included in the output
-  services = {
-    bitcoind = mkInfo "";
-    clightning = mkInfo ''
-      info["nodeid"] = shell("lightning-cli getinfo | jq -r '.id'")
-      if 'onion_address' in info:
-          info["id"] = f"{info['nodeid']}@{info['onion_address']}"
-    '';
-    lnd = mkInfo ''
-      info["nodeid"] = shell("lncli getinfo | jq -r '.identity_pubkey'")
-    '';
-    clightning-rest = mkInfo "";
-    electrs = mkInfo "";
-    spark-wallet = mkInfo "";
-    btcpayserver = mkInfo "";
-    liquidd = mkInfo "";
-    joinmarket-ob-watcher = mkInfo "";
-    rtl = mkInfo "";
-    # Only add sshd when it has an onion service
-    sshd = name: cfg: mkIfOnionPort "sshd" (onionPort: ''
-      add_service("sshd", """set_onion_address(info, "sshd", ${onionPort})""")
-    '');
-  };
 
   script = pkgs.writeScriptBin "nodeinfo" ''
     #!${pkgs.python3}/bin/python
@@ -93,13 +90,13 @@ let
     print(json.dumps(infos, indent=2))
   '';
 
-  infos = map (service:
-    let cfg = config.services.${service};
-    in optionalString cfg.enable (services.${service} service cfg)
-  ) (builtins.attrNames services);
+  infos = map (serviceName:
+    let serviceCfg = config.services.${serviceName};
+    in optionalString serviceCfg.enable (cfg.services.${serviceName} serviceName serviceCfg)
+  ) (builtins.attrNames cfg.services);
 
-  mkInfo = extraCode: name: cfg:
-    ''
+  nodeinfoLib = rec {
+    mkInfo = extraCode: name: cfg: ''
       add_service("${name}", """
       info["local_address"] = "${nbLib.addressWithPort cfg.address cfg.port}"
     '' + mkIfOnionPort name (onionPort: ''
@@ -109,11 +106,12 @@ let
       """)
     '';
 
-  mkIfOnionPort = name: fn:
-    if onionServices ? ${name} then
-      fn (toString (builtins.elemAt onionServices.${name}.map 0).port)
-    else
-      "";
+    mkIfOnionPort = name: fn:
+      if onionServices ? ${name} then
+        fn (toString (builtins.elemAt onionServices.${name}.map 0).port)
+      else
+        "";
+  };
 
   inherit (config.services.tor.relay) onionServices;
 in {
@@ -121,5 +119,28 @@ in {
 
   config = {
     environment.systemPackages = optional cfg.enable script;
+
+    nix-bitcoin.nodeinfo.services = with nodeinfoLib; {
+      bitcoind = mkInfo "";
+      clightning = mkInfo ''
+        info["nodeid"] = shell("lightning-cli getinfo | jq -r '.id'")
+        if 'onion_address' in info:
+            info["id"] = f"{info['nodeid']}@{info['onion_address']}"
+      '';
+      lnd = mkInfo ''
+        info["nodeid"] = shell("lncli getinfo | jq -r '.identity_pubkey'")
+      '';
+      clightning-rest = mkInfo "";
+      electrs = mkInfo "";
+      spark-wallet = mkInfo "";
+      btcpayserver = mkInfo "";
+      liquidd = mkInfo "";
+      joinmarket-ob-watcher = mkInfo "";
+      rtl = mkInfo "";
+      # Only add sshd when it has an onion service
+      sshd = name: cfg: mkIfOnionPort "sshd" (onionPort: ''
+        add_service("sshd", """set_onion_address(info, "sshd", ${onionPort})""")
+      '');
+    };
   };
 }
