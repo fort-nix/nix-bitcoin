@@ -135,15 +135,17 @@ run() {
         echo "Running interactive testing environment"
         tests=$(
             echo 'is_interactive = True'
-            echo 'exec(os.environ["testScript"])'
+            echo 'exec(open(os.environ["testScript"]).read())'
             # Start VM
             echo 'start_all()'
-            # Start REPL
+            # Start REPL.
+            # Use `code.interact` for the REPL instead of the builtin test driver REPL
+            # because it supports low featured terminals like Emacs' shell-mode.
             echo 'import code'
             echo 'code.interact(local=globals())'
         )
     else
-        tests='exec(os.environ["testScript"])'
+        tests='exec(open(os.environ["testScript"]).read())'
     fi
 
     echo "VM stats: CPUs: $numCPUs, memory: $memoryMiB MiB"
@@ -154,10 +156,9 @@ run() {
         TMPDIR="$TMPDIR" \
         USE_TMPDIR=1 \
         NIX_DISK_IMAGE=$TMPDIR/img.qcow2 \
-        tests="$tests" \
         QEMU_OPTS="-smp $numCPUs -m $memoryMiB -nographic $QEMU_OPTS"  \
         QEMU_NET_OPTS="$QEMU_NET_OPTS" \
-        $TMPDIR/driver/bin/nixos-test-driver
+        $TMPDIR/driver/bin/nixos-test-driver <(echo "$tests")
 }
 
 debug() {
