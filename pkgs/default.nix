@@ -27,7 +27,7 @@ let self = {
 
   # Internal pkgs
   netns-exec = pkgs.callPackage ./netns-exec { };
-  krops = import ./krops { };
+  krops = import ./krops { inherit pkgs; };
 
   # Deprecated pkgs
   generate-secrets = import ./generate-secrets-deprecated.nix;

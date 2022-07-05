@@ -8,5 +8,8 @@ let
   };
 in {
   lib = import "${src}/lib";
-  pkgs = import "${src}/pkgs" {};
+  pkgs = rec {
+    krops = pkgs.callPackage "${src}/pkgs/krops" { inherit populate; };
+    populate = pkgs.callPackage "${src}/pkgs/populate" {};
+  };
 }
