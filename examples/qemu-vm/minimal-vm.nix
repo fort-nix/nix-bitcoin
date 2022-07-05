@@ -45,7 +45,7 @@ rec {
         echo o >/proc/sysrq-trigger
       '';
 
-      system.stateVersion = config.system.nixos.release;
+      system.stateVersion = lib.mkDefault config.system.nixos.release;
     };
   }).config.system.build.vm;
 
