@@ -64,7 +64,7 @@ name: testConfig:
 
   # This allows running a test scenario in a regular NixOS VM.
   # No tests are executed.
-  vmWithoutTests = (pkgs.nixos {
+  vmWithoutTests = (pkgs.nixos ({ config, ... }: {
     imports = [
       testConfig
       "${toString pkgs.path}/nixos/modules/virtualisation/qemu-vm.nix"
@@ -78,7 +78,9 @@ name: testConfig:
          echo o >/proc/sysrq-trigger
        ''))
     ];
-  }).vm;
+
+    system.stateVersion = config.system.nixos.release;
+  })).config.system.build.vm;
 
   config = testConfig;
 }
