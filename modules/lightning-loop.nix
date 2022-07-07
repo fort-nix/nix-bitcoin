@@ -46,7 +46,11 @@ let
       example = ''
         debuglevel=trace
       '';
-      description = "Extra lines appended to the configuration file.";
+      description = ''
+        Extra lines appended to the configuration file.
+        See here for all available options:
+        https://github.com/lightninglabs/loop/blob/11ab596080e9d36f1df43edbeba0702b25aa7457/loopd/config.go#L119
+      '';
     };
     cli = mkOption {
       default = pkgs.writeScriptBin "loop" ''

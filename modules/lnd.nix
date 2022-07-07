@@ -76,7 +76,11 @@ let
       example = ''
         autopilot.active=1
       '';
-      description = "Extra lines appended to <filename>lnd.conf</filename>.";
+      description = ''
+        Extra lines appended to `lnd.conf`.
+        See here for all available options:
+        https://github.com/lightningnetwork/lnd/blob/master/sample-lnd.conf
+      '';
     };
     package = mkOption {
       type = types.package;
