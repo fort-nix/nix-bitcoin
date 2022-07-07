@@ -40,6 +40,26 @@ let
       default = if cfg.tor.proxy then config.nix-bitcoin.torClientAddressWithPort else null;
       description = "host:port of SOCKS5 proxy for connnecting to the loop server.";
     };
+    certificate = {
+      extraIPs = mkOption {
+        type = with types; listOf str;
+        default = [];
+        example = [ "60.100.0.1" ];
+        description = ''
+          Extra `subjectAltName` IPs added to the certificate.
+          This works the same as loop option `tlsextraip`.
+        '';
+      };
+      extraDomains = mkOption {
+        type = with types; listOf str;
+        default = [];
+        example = [ "example.com" ];
+        description = ''
+          Extra `subjectAltName` domain names added to the certificate.
+          This works the same as loop option `tlsextradomain`.
+        '';
+      };
+    };
     extraConfig = mkOption {
       type = types.lines;
       default = "";
@@ -101,6 +121,8 @@ in {
       "d '${cfg.dataDir}' 0770 ${lnd.user} ${lnd.group} - -"
     ];
 
+    services.lightning-loop.certificate.extraIPs = mkIf (cfg.rpcAddress != "localhost") [ "${cfg.rpcAddress}" ];
+
     systemd.services.lightning-loop = {
       wantedBy = [ "multi-user.target" ];
       requires = [ "lnd.service" ];
@@ -119,7 +141,7 @@ in {
        loop-cert.user = lnd.user;
      };
      nix-bitcoin.generateSecretsCmds.lightning-loop = ''
-       makeCert loop '${optionalString (cfg.rpcAddress != "localhost") "IP:${cfg.rpcAddress}"}'
+       makeCert loop '${nbLib.mkCertExtraAltNames cfg.certificate}'
     '';
   };
 }

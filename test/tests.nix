@@ -100,6 +100,7 @@ let
       tests.lndconnect-onion-clightning = cfg.clightning-rest.lndconnectOnion.enable;
 
       tests.lightning-loop = cfg.lightning-loop.enable;
+      services.lightning-loop.certificate.extraIPs = [ "20.0.0.1" ];
 
       tests.lightning-pool = cfg.lightning-pool.enable;
       nix-bitcoin.onionServices.lnd.public = true;
