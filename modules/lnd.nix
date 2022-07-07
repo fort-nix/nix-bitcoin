@@ -70,6 +70,26 @@ let
         Extra macaroon definitions.
       '';
     };
+    certificate = {
+      extraIPs = mkOption {
+        type = with types; listOf str;
+        default = [];
+        example = [ "60.100.0.1" ];
+        description = ''
+          Extra `subjectAltName` IPs added to the certificate.
+          This works the same as lnd option `tlsextraip`.
+        '';
+      };
+      extraDomains = mkOption {
+        type = with types; listOf str;
+        default = [];
+        example = [ "example.com" ];
+        description = ''
+          Extra `subjectAltName` domain names added to the certificate.
+          This works the same as lnd option `tlsextradomain`.
+        '';
+      };
+    };
     extraConfig = mkOption {
       type = types.lines;
       default = "";
@@ -195,6 +215,8 @@ in {
       "d '${cfg.dataDir}' 0770 ${cfg.user} ${cfg.group} - -"
     ];
 
+    services.lnd.certificate.extraIPs = mkIf (cfg.rpcAddress != "localhost") [ "${cfg.rpcAddress}" ];
+
     systemd.services.lnd = {
       wantedBy = [ "multi-user.target" ];
       requires = [ "bitcoind.service" ];
@@ -282,7 +304,7 @@ in {
     # - Enables deployment of a mesh of server plus client nodes with predefined certs
     nix-bitcoin.generateSecretsCmds.lnd = ''
       makePasswordSecret lnd-wallet-password
-      makeCert lnd '${optionalString (cfg.rpcAddress != "localhost") "IP:${cfg.rpcAddress}"}'
+      makeCert lnd '${nbLib.mkCertExtraAltNames cfg.certificate}'
     '';
   };
 }

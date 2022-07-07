@@ -35,6 +35,13 @@ let
       # Share the same pkgs instance among tests
       nixpkgs.pkgs = mkDefault globalPkgs;
 
+      environment.systemPackages = mkMerge (with pkgs; [
+        # Needed to test macaroon creation
+        (mkIfTest "btcpayserver" [ openssl xxd ])
+        # Needed to test certificate creation
+        (mkIfTest "lnd" [ openssl ])
+      ]);
+
       tests.bitcoind = cfg.bitcoind.enable;
       services.bitcoind = {
         enable = true;
@@ -81,7 +88,13 @@ let
       tests.spark-wallet = cfg.spark-wallet.enable;
 
       tests.lnd = cfg.lnd.enable;
-      services.lnd.port = 9736;
+      services.lnd = {
+        port = 9736;
+        certificate = {
+          extraIPs = [ "10.0.0.1" "20.0.0.1" ];
+          extraDomains = [ "example.com" ];
+        };
+      };
 
       tests.lndconnect-onion-lnd = cfg.lnd.lndconnectOnion.enable;
       tests.lndconnect-onion-clightning = cfg.clightning-rest.lndconnectOnion.enable;
@@ -103,8 +116,6 @@ let
         lightningBackend = mkDefault "lnd";
         lbtc = mkDefault true;
       };
-      # Needed to test macaroon creation
-      environment.systemPackages = mkIfTest "btcpayserver" (with pkgs; [ openssl xxd ]);
       test.data.btcpayserver-lbtc = config.services.btcpayserver.lbtc;
 
       tests.joinmarket = cfg.joinmarket.enable;
