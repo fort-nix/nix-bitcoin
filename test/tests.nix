@@ -129,7 +129,7 @@ let
       '';
 
       # Avoid timeout failures on slow CI nodes
-      systemd.services.postgresql.serviceConfig.TimeoutStartSec = "3min";
+      systemd.services.postgresql.serviceConfig.TimeoutStartSec = "5min";
     }
     (mkIf config.test.features.clightningPlugins {
       services.clightning.plugins = {
