@@ -109,4 +109,10 @@ let self = {
 
   optionalAttr = cond: name: if cond then name else null;
 
+  mkCertExtraAltNames = cert:
+    builtins.concatStringsSep "," (
+      (map (domain: "DNS:${domain}") cert.extraDomains) ++
+      (map (ip: "IP:${ip}") cert.extraIPs)
+    );
+
 }; in self

@@ -7,9 +7,11 @@ def succeed(*cmds):
     return machine.succeed(*cmds)
 
 def assert_matches(cmd, regexp):
-    out = succeed(cmd)
-    if not re.search(regexp, out):
-        raise Exception(f"Pattern '{regexp}' not found in '{out}'")
+    assert_str_matches(succeed(cmd), regexp)
+
+def assert_str_matches(str, regexp):
+    if not re.search(regexp, str):
+        raise Exception(f"Pattern '{regexp}' not found in '{str}'")
 
 def assert_full_match(cmd, regexp):
     out = succeed(cmd)
@@ -151,6 +153,12 @@ def _():
     assert_running("lnd")
     assert_matches("runuser -u operator -- lncli getinfo | jq", '"version"')
     assert_no_failure("lnd")
+
+    # Test certificate generation
+    cert_alt_names = succeed("</secrets/lnd-cert openssl x509 -noout -ext subjectAltName")
+    assert_str_matches(cert_alt_names, '10.0.0.1')
+    assert_str_matches(cert_alt_names, '20.0.0.1')
+    assert_str_matches(cert_alt_names, 'example.com')
 
 @test("lndconnect-onion-lnd")
 def _():
