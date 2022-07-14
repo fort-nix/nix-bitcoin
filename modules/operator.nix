@@ -1,24 +1,29 @@
-# Define an operator user for convenient interactive access to nix-bitcoin
-# features and services.
-#
-# When using nix-bitcoin as part of a larger system config, set
-# `nix-bitcoin.operator.name` to your main user name.
-
 { config, lib, pkgs, ... }:
 
 with lib;
 let
   options.nix-bitcoin.operator = {
-    enable = mkEnableOption "operator user";
+    enable = mkOption {
+      type = types.bool;
+      default = false;
+      description = ''
+        Whether to define a user named `operator` for convenient interactive access
+        to nix-bitcoin features (like `bitcoin-cli`).
+
+        When using nix-bitcoin as part of a larger system config, it makes sense
+        to set your main system user as the operator, by setting option
+        `nix-bitcoin.operator.name = "<main user name>";`.
+      '';
+    };
     name = mkOption {
       type = types.str;
       default = "operator";
-      description = "User name.";
+      description = "Name of the operator user.";
     };
     groups = mkOption {
       type = with types; listOf str;
       default = [];
-      description = "Extra groups.";
+      description = "Extra groups of the operatur user.";
     };
     allowRunAsUsers = mkOption {
       type = with types; listOf str;
