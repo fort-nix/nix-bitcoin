@@ -10,7 +10,7 @@ let
         Enable feeaduster (clightning plugin).
         This plugin auto-updates channel fees to keep channels balanced.
 
-        See here for for all available options:
+        See here for all available options:
         https://github.com/lightningd/plugins/blob/master/feeadjuster/feeadjuster.py
         Extra options can be set via `services.clightning.extraConfig`.
       '';
