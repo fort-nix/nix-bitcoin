@@ -178,6 +178,8 @@ let
     bitcoind.zmqpubrawblock=${bitcoind.zmqpubrawblock}
     bitcoind.zmqpubrawtx=${bitcoind.zmqpubrawtx}
 
+    wallet-unlock-password-file=${secretsDir}/lnd-wallet-password
+
     ${cfg.extraConfig}
   '';
 in {
@@ -249,11 +251,7 @@ in {
         Type = "notify";
         RuntimeDirectory = "lnd"; # Only used to store custom macaroons
         RuntimeDirectoryMode = "711";
-        ExecStart = ''
-          ${cfg.package}/bin/lnd \
-            --configfile="${cfg.dataDir}/lnd.conf" \
-            --wallet-unlock-password-file="${secretsDir}/lnd-wallet-password"
-        '';
+        ExecStart = "${cfg.package}/bin/lnd --configfile='${cfg.dataDir}/lnd.conf'";
         User = cfg.user;
         TimeoutSec = "15min";
         Restart = "on-failure";
