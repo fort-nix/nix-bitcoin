@@ -303,7 +303,6 @@ in {
         netns.bitcoind.address
       ] ++ map (n: netns.${n}.address) netns.bitcoind.availableNetns;
     };
-    systemd.services.bitcoind-import-banlist.serviceConfig.NetworkNamespacePath = "/var/run/netns/nb-bitcoind";
 
     services.clightning.address = netns.clightning.address;
 
