@@ -13,7 +13,7 @@ in {
 
   systemd.services.bitcoind = {
     preStart = lib.mkAfter ''
-      echo "rpcpassword=$(cat ${secretsDir}/bitcoin-rpcpassword-privileged)" >> '${cfg.dataDir}'/bitcoin.conf
+      echo "rpcpassword=$(cat ${secretsDir}/bitcoin-rpcpassword-privileged)" >> '${cfg.dataDir}/bitcoin.conf'
     '';
     postStart = lib.mkForce "";
     serviceConfig = {
