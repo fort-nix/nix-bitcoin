@@ -13,8 +13,7 @@
   outputs = { self, nixpkgs, nixpkgsUnstable, flake-utils }:
     let
       supportedSystems = [ "x86_64-linux" "i686-linux" "aarch64-linux" ];
-    in
-    rec {
+    in {
       lib = {
         mkNbPkgs = {
           system
@@ -25,7 +24,7 @@
       };
 
       overlays.default = final: prev: let
-        nbPkgs = lib.mkNbPkgs { inherit (final) system; pkgs = final; };
+        nbPkgs = self.lib.mkNbPkgs { inherit (final) system; pkgs = final; };
       in removeAttrs nbPkgs [ "pinned" "nixops19_09" "krops" ];
 
       nixosModules.default = { config, pkgs, lib, ... }: {
