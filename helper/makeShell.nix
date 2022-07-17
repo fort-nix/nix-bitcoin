@@ -29,6 +29,9 @@ pkgs.stdenv.mkDerivation {
     eval-config
       Evaluate your node system configuration
 
+    build-config
+       Build your node system on your local machine
+
     generate-secrets
       Create secrets required by your node configuration.
       Secrets are written to ./secrets/
@@ -115,6 +118,13 @@ pkgs.stdenv.mkDerivation {
       NIXOS_CONFIG="${cfgDir}/krops/krops-configuration.nix" \
         nix-instantiate --eval ${nixpkgs}/nixos $system -A system.outPath | tr -d '"'
       echo
+    )}
+
+    build-config() {(
+      set -euo pipefail
+      system=$(getNodeSystem)
+      NIXOS_CONFIG="${cfgDir}/krops/krops-configuration.nix" \
+        nix-build --no-out-link ${nixpkgs}/nixos $system -A system
     )}
 
     getNodeSystem() {
