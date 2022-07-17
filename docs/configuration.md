@@ -214,6 +214,21 @@ services.bitcoind = {
 };
 ```
 
+If a `secure-node.nix` or `tor-enable.nix` preset is imported in your
+configuration or a `tor.enforce` option is explicitly enabled, you also need to
+allow remote connections for **every** service which needs to connect to the
+remote bitcoind:
+
+```
+systemd.services.<service>.serviceConfig = {
+  IPAddressAllow = [ ${services.bitcoind.rpc.address} ];
+};
+```
+
+> Please note that configuration above applies only if the remote bitcoind **is
+> not** accessed via Tor.
+
+
 Now save the password of the RPC user to the following files on your nix-bitcoin node:
 ```shell
 $secretsDir/bitcoin-rpcpassword-privileged
