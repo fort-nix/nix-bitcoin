@@ -13,7 +13,16 @@ let
   version = builtins.substring 0 7 src.rev;
 
   plugins = with nbPython3Packages; {
-    helpme = { description = "Walks you through setting up a c-lightning node, offering advice for common problems"; };
+    commando = {
+      description = "Enable RPC over lightning";
+      extraPkgs = [ nbPython3Packages.runes ];
+    };
+    feeadjuster = {
+      description = "Dynamically changes channel fees to keep your channels more balanced";
+    };
+    helpme = {
+      description = "Walks you through setting up a c-lightning node, offering advice for common problems";
+    };
     monitor = {
       description = "Helps you analyze the health of your peers and channels";
       extraPkgs = [ packaging ];
@@ -25,10 +34,8 @@ let
         "--replace prometheus-client==0.6.0 prometheus-client==0.13.1"
         + " --replace pyln-client~=0.9.3 pyln-client~=0.10.1";
     };
-    rebalance = { description = "Keeps your channels balanced"; };
-    commando = {
-      description = "Enable RPC over lightning";
-      extraPkgs = [ nbPython3Packages.runes ];
+    rebalance = {
+      description = "Keeps your channels balanced";
     };
     summary = {
       description = "Prints a summary of the node status";
@@ -38,9 +45,6 @@ let
       description = "Publishes notifications via ZeroMQ to configured endpoints";
       scriptName = "cl-zmq";
       extraPkgs = [ twisted txzmq ];
-    };
-    feeadjuster = {
-      description = "Dynamically changes channel fees to keep your channels more balanced";
     };
   };
 

@@ -41,7 +41,7 @@ let self = {
     RestrictAddressFamilies = self.defaultHardening.RestrictAddressFamilies + " AF_NETLINK";
   };
 
-  # nodejs applications apparently rely on memory write execute
+  # nodejs applications require memory write execute for JIT compilation
   nodejs = { MemoryDenyWriteExecute = "false"; };
 
   # Allow takes precedence over Deny.
@@ -69,7 +69,7 @@ let self = {
       type = types.bool;
       default = false;
       description = ''
-        Whether to enforce Tor on a service by only allowing connections
+        Whether to enforce Tor on this service by only allowing connections
         from and to localhost and link-local addresses.
       '';
     };

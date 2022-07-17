@@ -30,7 +30,7 @@ in {
       jq
     ];
 
-    # sshd
+    # Add a SSH onion service
     services.tor.relay.onionServices.sshd = nbLib.mkOnionService { port = 22; };
     nix-bitcoin.onionAddresses.access.${operatorName} = [ "sshd" ];
 

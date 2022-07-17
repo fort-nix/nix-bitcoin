@@ -16,8 +16,8 @@ let
         compatible with.
 
         When upgrading to a backwards-incompatible release, nix-bitcoin will throw an
-        error during evaluation and provide hints for migrating your config to the
-        new release.
+        error during evaluation and provide instructions for migrating your config to
+        the new release.
       '';
     };
   };
