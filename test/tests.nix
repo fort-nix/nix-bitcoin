@@ -214,7 +214,7 @@ let
         ../modules/presets/secure-node.nix
       ];
       tests.secure-node = true;
-      tests.banlist-and-restart = true;
+      tests.restart-bitcoind = true;
 
       # Stop electrs from spamming the test log with 'WARN - wait until IBD is over' messages
       tests.stop-electrs = true;

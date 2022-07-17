@@ -361,31 +361,18 @@ def _():
     assert_file_exists("secrets/lnd-wallet-password")
 
 # Impure: restarts services
-@test("banlist-and-restart")
+@test("restart-bitcoind")
 def _():
-    machine.wait_until_succeeds(log_has_string("bitcoind-import-banlist", "Importing node banlist"))
-    assert_no_failure("bitcoind-import-banlist")
-
-    # Current time in µs
-    pre_restart = succeed("date +%s.%6N").rstrip()
-
     # Sanity-check system by restarting bitcoind.
     # This also restarts all services depending on bitcoind.
     succeed("systemctl restart bitcoind")
-
-    # Now that the bitcoind restart triggered a banlist import restart, check that
-    # re-importing already banned addresses works
-    machine.wait_until_succeeds(
-        log_has_string(f"bitcoind-import-banlist --since=@{pre_restart}", "Importing node banlist")
-    )
-    assert_no_failure("bitcoind-import-banlist")
 
 @test("regtest")
 def _():
     def enabled(unit):
         if unit in enabled_tests:
             # Wait because the unit might have been restarted in the preceding
-            # 'banlist-and-restart' test
+            # 'restart-bitcoind' test
             machine.wait_for_unit(unit)
             return True
         else:

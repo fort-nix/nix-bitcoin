@@ -65,7 +65,7 @@ A [configuration preset](modules/presets/secure-node.nix) for setting up a secur
 
 NixOS modules ([src](modules/modules.nix))
 * Application services
-  * [bitcoind](https://github.com/bitcoin/bitcoin), with a default banlist against spy nodes
+  * [bitcoind](https://github.com/bitcoin/bitcoin)
   * [clightning](https://github.com/ElementsProject/lightning) with support for announcing an onion service\
     Available plugins:
     * [clboss](https://github.com/ZmnSCPxj/clboss): automated C-Lightning Node Manager
