@@ -29,6 +29,9 @@ pkgs.stdenv.mkDerivation {
     eval-config
       Evaluate your node system configuration
 
+    build-config
+       Build your node system on your local machine
+
     generate-secrets
       Create secrets required by your node configuration.
       Secrets are written to ./secrets/
@@ -109,11 +112,32 @@ pkgs.stdenv.mkDerivation {
       $(nix-build --no-out-link "${cfgDir}/krops/deploy.nix")
     )}
 
-    eval-config() {
+    eval-config() {(
+      set -euo pipefail
+      system=$(getNodeSystem)
       NIXOS_CONFIG="${cfgDir}/krops/krops-configuration.nix" \
-        nix-instantiate --eval ${nixpkgs}/nixos -A system.outPath | tr -d '"'
+        nix-instantiate --eval ${nixpkgs}/nixos $system -A system.outPath | tr -d '"'
       echo
-    }
+    )}
+
+    build-config() {(
+      set -euo pipefail
+      system=$(getNodeSystem)
+      NIXOS_CONFIG="${cfgDir}/krops/krops-configuration.nix" \
+        nix-build --no-out-link ${nixpkgs}/nixos $system -A system
+    )}
+
+    getNodeSystem() {
+      if [[ -e '${cfgDir}/krops/system' ]]; then
+        echo -n "--argstr system "; cat '${cfgDir}/krops/system'
+      elif [[ $OSTYPE == darwin* ]]; then
+        # On macOS, `builtins.currentSystem` (`*-darwin`) can never equal
+        # the node system (`*-linux`), so we can always provide a helpful error message:
+        >&2 echo "Error, node system not set. See here how to fix this:"
+        >&2 echo "https://github.com/fort-nix/nix-bitcoin/blob/master/docs/install.md#optional-specify-the-system-of-your-node"
+        return 1
+      fi
+    };
 
     pidClosure() {
       echo "$1"

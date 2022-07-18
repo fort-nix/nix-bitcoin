@@ -12,7 +12,12 @@
 
   outputs = { self, nixpkgs, nixpkgsUnstable, flake-utils }:
     let
-      supportedSystems = [ "x86_64-linux" "i686-linux" "aarch64-linux" ];
+      supportedSystems = [
+        "x86_64-linux"
+        "i686-linux"
+        "aarch64-linux"
+        "armv7l-linux"
+      ];
     in {
       lib = {
         mkNbPkgs = {

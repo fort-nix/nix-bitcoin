@@ -238,6 +238,24 @@ You can also build Nix from source by following the instructions at https://nixo
     cp -r ../nix-bitcoin/examples/{nix-bitcoin-release.nix,configuration.nix,shell.nix,krops,.gitignore} .
     ```
 
+#### Optional: Specify the system of your node
+   This enables evaluating your node config on a machine that has a different system platform
+   than your node.\
+   Examples: Deploying from macOS or deploying from a x86 desktop PC to a Raspberry Pi.
+
+    ```
+    # Run this when your node has a 64-Bit x86 CPU (e.g., an Intel or AMD CPU)
+    echo "x86_64-linux" > krops/system
+
+    # Run this when your node has a 64-Bit ARM CPU (e.g., Raspberry Pi 4 B, Pine64)
+    echo "aarch64-linux" > krops/system
+    ```
+    Other available systems:
+    - `i686-linux` (`x86`)
+    - `armv7l-linux` (`ARMv7`)\
+      This platform is untested and has no binary caches.
+      [See here](https://nixos.wiki/wiki/NixOS_on_ARM) for details.
+
 ## 4. Deploy with krops
 
 1. Edit your ssh config
