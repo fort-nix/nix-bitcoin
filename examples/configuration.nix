@@ -136,6 +136,11 @@
   #
   # services.fulcrum.enable = true;
 
+  ### LNDHUB.GO
+  # Set this to enable LndHub.go, an accounting wrapper for the Lightning Network.
+  #
+  # services.lndhub-go.enable = true;
+
   ### BTCPayServer
   # Set this to enable BTCPayServer, a self-hosted, open-source
   # cryptocurrency payment processor.

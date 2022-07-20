@@ -123,6 +123,12 @@ def _():
 def _():
     succeed("systemctl stop electrs")
 
+@test("lndhub-go")
+def _():
+    assert_running("lndhub-go")
+    wait_for_open_port(ip("lndhub-go"), 8082)
+    machine.wait_until_succeeds(log_has_string("lndhub-go", "Connected to LND"))
+
 @test("liquidd")
 def _():
     assert_running("liquidd")
