@@ -122,8 +122,19 @@
   # services.spark-wallet.enable = true;
 
   ### ELECTRS
-  # Set this to enable electrs, an efficient Electrum server implemented in Rust.
+  # Set this to enable electrs, an Electrum server implemented in Rust.
   # services.electrs.enable = true;
+
+  ### FULCRUM
+  # Set this to enable fulcrum, an Electrum server implemented in C++.
+  #
+  # Compared to electrs, fulcrum has higher storage demands but
+  # can serve arbitrary address queries instantly.
+  #
+  # Before enabling fulcrum, and for more info on storage demands,
+  # see the description of option `enable` in ../modules/fulcrum.nix
+  #
+  # services.fulcrum.enable = true;
 
   ### BTCPayServer
   # Set this to enable BTCPayServer, a self-hosted, open-source

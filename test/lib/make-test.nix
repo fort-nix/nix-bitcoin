@@ -79,7 +79,7 @@ name: testConfig:
        ''))
     ];
 
-    system.stateVersion = config.system.nixos.release;
+    system.stateVersion = lib.mkDefault config.system.nixos.release;
   })).config.system.build.vm;
 
   config = testConfig;

@@ -34,7 +34,7 @@ nix-build --out-link $tmpDir/vm - <<'EOF'
     # warning: Nix search path entry '/nix/var/nix/profiles/per-user/root/channels' does not exist, ignoring
     nix.nixPath = lib.mkForce [];
 
-    system.stateVersion = config.system.nixos.release;
+    system.stateVersion = lib.mkDefault config.system.nixos.release;
   };
 }).config.system.build.vm
 EOF

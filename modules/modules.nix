@@ -21,6 +21,7 @@
     ./lndconnect-onion.nix # Requires onion-addresses.nix
     ./rtl.nix
     ./electrs.nix
+    ./fulcrum.nix
     ./liquid.nix
     ./btcpayserver.nix
     ./joinmarket.nix
