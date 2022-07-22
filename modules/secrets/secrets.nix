@@ -173,6 +173,10 @@ in {
          RemainAfterExit = true;
       };
       script = ''
+        # Use the same sort order for globbing and sorting as in Nix attrsets.
+        # Required for `comm` below.
+        export LC_COLLATE=C
+
         ${optionalString cfg.generateSecrets ''
           mkdir -p "${cfg.secretsDir}"
           cd "${cfg.secretsDir}"
