@@ -21,16 +21,17 @@ You can import a GPG key by running the following command with that individualâ€
 
 ## nix-bitcoin security fund
 
-The nix-bitcoin security fund is a collection of funds held on the following 2/3
-bitcoin multisig address which is used to reward security researchers who
-discover and report vulnerabilities in nix-bitcoin or its upstream dependencies.
-Rewards are paid out as percentages of the total fund, rather than as fixed
-amounts.
-
+The nix-bitcoin security fund rewards security researchers who discover and
+report vulnerabilities in nix-bitcoin or its upstream dependencies.\
+It is held on a 2 of 3 bitcoin multisig address and is open for donations:
 ```
 bc1qrpnz05n0yznaj6yw82wy8dhwuqz86s87vdlhq4cu92fus9qal25s555wsy
 ```
 ([View balance](https://mempool.nixbitcoin.org/address/bc1qrpnz05n0yznaj6yw82wy8dhwuqz86s87vdlhq4cu92fus9qal25s555wsy))
+
+
+Rewards are paid out as percentages of the total fund, rather than as fixed
+amounts.
 
 The nix-bitcoin developers [listed above](#reporting-a-vulnerability) each hold
 one key to the multisig address and collectively form the nix-bitcoin developer
