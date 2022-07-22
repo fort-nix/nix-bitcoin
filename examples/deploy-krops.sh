@@ -101,6 +101,10 @@ vmWaitForSSH
 c "nix-store --load-db < $(realpath $tmpDir/store-paths)/registration"
 
 echo
+echo "Generate secrets"
+nix-shell --run generate-secrets
+
+echo
 echo "Deploy with krops"
 $tmpDir/krops-deploy
 
