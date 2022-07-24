@@ -12,7 +12,7 @@ let
 
         When using nix-bitcoin as part of a larger system config, it makes sense
         to set your main system user as the operator, by setting option
-        `nix-bitcoin.operator.name = "<main user name>";`.
+        `nix-bitcoin.operator.name = "MAIN_USER_NAME";`.
       '';
     };
     name = mkOption {

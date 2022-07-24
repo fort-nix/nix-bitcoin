@@ -17,7 +17,5 @@ if [[ ${CACHIX_SIGNING_KEY:-} ]]; then
     cachix push $cachixCache $(type -P flake-info);
 fi
 
-# flake-info requires '<nixpkgs>'
-export NIX_PATH=nixpkgs=$(nix eval --raw .#nixpkgsPath)
 echo "Running flake-info (nixos-search)"
-flake-info flake ./.
+flake-info flake ../..
