@@ -17,6 +17,10 @@ let
       description = "Enable RPC over lightning";
       extraPkgs = [ nbPython3Packages.runes ];
     };
+    currencyrate = {
+      description = "Currency rate fetcher and converter";
+      extraPkgs = [ requests cachetools ];
+    };
     feeadjuster = {
       description = "Dynamically changes channel fees to keep your channels more balanced";
     };
