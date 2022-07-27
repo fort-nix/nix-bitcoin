@@ -3,6 +3,7 @@
 with lib;
 let
   options.services.clightning.plugins = {
+    currencyrate.enable = mkEnableOption "Currencyrate (clightning plugin)";
     helpme.enable = mkEnableOption "Help me (clightning plugin)";
     monitor.enable = mkEnableOption "Monitor (clightning plugin)";
     rebalance.enable = mkEnableOption "Rebalance (clightning plugin)";
@@ -24,6 +25,7 @@ in {
 
   config = {
     services.clightning.extraConfig = mkMerge [
+      (mkIf cfg.currencyrate.enable "plugin=${pluginPkgs.currencyrate.path}")
       (mkIf cfg.helpme.enable "plugin=${pluginPkgs.helpme.path}")
       (mkIf cfg.monitor.enable "plugin=${pluginPkgs.monitor.path}")
       (mkIf cfg.rebalance.enable "plugin=${pluginPkgs.rebalance.path}")

@@ -70,6 +70,7 @@ NixOS modules ([src](modules/modules.nix))
     Available plugins:
     * [clboss](https://github.com/ZmnSCPxj/clboss): automated C-Lightning Node Manager
     * [commando](https://github.com/lightningd/plugins/tree/master/commando): control your node over lightning
+    * [currencyrate](https://github.com/lightningd/plugins/tree/master/currencyrate): currency converter
     * [helpme](https://github.com/lightningd/plugins/tree/master/helpme): walks you through setting up a fresh c-lightning node
     * [monitor](https://github.com/lightningd/plugins/tree/master/monitor): helps you analyze the health of your peers and channels
     * [prometheus](https://github.com/lightningd/plugins/tree/master/prometheus): lightning node exporter for the prometheus timeseries server
