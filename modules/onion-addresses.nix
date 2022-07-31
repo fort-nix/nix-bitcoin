@@ -74,7 +74,7 @@ in {
         waitForFile /var/lib/tor/state
 
         cd ${cfg.dataDir}
-        rm -rf *
+        rm -rf ./*
 
         ${concatMapStrings
           (user: ''
@@ -82,10 +82,10 @@ in {
             chown ${user} ${user}
             ${concatMapStrings
               (service: ''
-                onionFile=/var/lib/tor/onion/${service}/hostname
-                waitForFile $onionFile
-                cp $onionFile ${user}/${service}
-                chown ${user} ${user}/${service}
+                onionFile='/var/lib/tor/onion/${service}/hostname'
+                waitForFile "$onionFile"
+                cp "$onionFile" '${user}/${service}'
+                chown '${user}' '${user}/${service}'
               '')
               cfg.access.${user}
              }
@@ -95,8 +95,8 @@ in {
 
         ${concatMapStrings (service: ''
           onionFile=/var/lib/tor/onion/${service}/hostname
-          waitForFile $onionFile
-          install -D -o ${config.systemd.services.${service}.serviceConfig.User} -m 400 $onionFile services/${service}
+          waitForFile "$onionFile"
+          install -D -o ${config.systemd.services.${service}.serviceConfig.User} -m 400 "$onionFile" services/${service}
         '') cfg.services}
       '';
     };
