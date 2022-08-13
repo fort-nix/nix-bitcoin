@@ -80,7 +80,9 @@ in {
       systemd.services = let
         onionAddresses = [ "onion-addresses.service" ];
       in genAttrs publicServices (service: {
-        requires = onionAddresses;
+        # TODO-EXTERNAL: Instead of `wants`, use a future systemd dependency type
+        # that propagates initial start failures but no restarts
+        wants = onionAddresses;
         after = onionAddresses;
       });
     })

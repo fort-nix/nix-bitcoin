@@ -376,6 +376,9 @@ in {
       # are not restarted when the secrets target restarts.
       # The secrets target always restarts when deploying with one of the methods
       # in ./deployment.
+      #
+      # TODO-EXTERNAL: Instead of `wants`, use a future systemd dependency type
+      # that propagates initial start failures but no restarts
       wants = [ "nix-bitcoin-secrets.target" ];
       after = [ "network.target" "nix-bitcoin-secrets.target" ];
       wantedBy = [ "multi-user.target" ];
