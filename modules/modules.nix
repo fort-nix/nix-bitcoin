@@ -13,6 +13,7 @@
     ./clightning.nix
     ./clightning-plugins
     ./clightning-rest.nix
+    ./clightning-replication.nix
     ./spark-wallet.nix
     ./lnd.nix
     ./lightning-loop.nix

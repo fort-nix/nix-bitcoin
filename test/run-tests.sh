@@ -137,7 +137,7 @@ run() {
             echo 'is_interactive = True'
             echo 'exec(open(os.environ["testScript"]).read())'
             # Start VM
-            echo 'start_all()'
+            echo 'if "machine" in vars(): machine.start()'
             # Start REPL.
             # Use `code.interact` for the REPL instead of the builtin test driver REPL
             # because it supports low featured terminals like Emacs' shell-mode.
@@ -155,7 +155,6 @@ run() {
         NIX_PATH="$NIX_PATH" \
         TMPDIR="$TMPDIR" \
         USE_TMPDIR=1 \
-        NIX_DISK_IMAGE=$TMPDIR/img.qcow2 \
         QEMU_OPTS="-smp $numCPUs -m $memoryMiB -nographic $QEMU_OPTS"  \
         QEMU_NET_OPTS="$QEMU_NET_OPTS" \
         $TMPDIR/driver/bin/nixos-test-driver <(echo "$tests")
@@ -295,10 +294,11 @@ basic() {
 # All tests that only consist of building a nix derivation.
 # Their output is cached in /nix/store.
 buildable() {
-    basic
+    basic "$@"
     scenario=full buildTest "$@"
     scenario=regtest buildTest "$@"
     scenario=hardened buildTest "$@"
+    scenario=clightningReplication buildTest "$@"
 }
 
 examples() {

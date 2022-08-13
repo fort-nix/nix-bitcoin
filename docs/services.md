@@ -26,6 +26,104 @@ systemctl cat bitcoind
 systemctl show bitcoind
 ```
 
+# clightning database replication
+
+The clightning database can be replicated to a local path
+or to a remote SSH target.\
+When remote replication is enabled, nix-bitcoin mounts a SSHFS to a local path.\
+Optionally, backups can be encrypted via `gocryptfs`.
+
+Note: You should also backup the static file `hsm_secret` (located at
+`/var/lib/clightning/bitcoin/hsm_secret` by default), either manually
+or via the `services.backups` module.
+
+## Remote target via SSHFS
+
+1. Add this to your `configuration.nix`:
+   ```nix
+   services.clightning.replication = {
+     enable = true;
+     sshfs.destination = "user@hostname:directory";
+     # This is optional
+     encrypt = true;
+   };
+   programs.ssh.knownHosts."hostname".publicKey = "<ssh public key from running `ssh-keyscan` on the host>";
+   ```
+
+   Leave out the `encrypt` line if you want to store data on your destination
+   in plaintext.\
+   Adjust `user`, `hostname` and `directory` as necessary.
+
+2. Deploy
+
+3. To allow SSH access from the nix-bitcoin node to the target node, either
+   use the remote node config below, or copy the contents of `$secretsDir/clightning-replication-ssh.pub`
+   to the `authorized_keys` file of `user` (or use `ssh-copy-id`).
+
+4. You can restrict the nix-bitcoin node's capabilities on the SSHFS target
+   using OpenSSH's builtin features, as detailed
+   [here](https://serverfault.com/questions/354615/allow-sftp-but-disallow-ssh).
+
+   To implement this on NixOS, add the following to the NixOS configuration of
+   the SSHFS target node:
+   ```nix
+   systemd.tmpfiles.rules = [
+     # Because this directory is chrooted by sshd, it must only be writable by user/group root
+     "d /var/backup/nb-replication 0755 root root - -"
+     "d /var/backup/nb-replication/writable 0700 nb-replication - - -"
+   ];
+
+   services.openssh = {
+     extraConfig = ''
+       Match user nb-replication
+         ChrootDirectory /var/backup/nb-replication
+         AllowTcpForwarding no
+         AllowAgentForwarding no
+         ForceCommand internal-sftp
+         PasswordAuthentication no
+         X11Forwarding no
+     '';
+   };
+
+   users.users.nb-replication = {
+     isSystemUser = true;
+     group = "nb-replication";
+     shell = "${pkgs.coreutils}/bin/false";
+     openssh.authorizedKeys.keys = [ "<contents of $secretsDir/clightning-replication-ssh.pub>" ];
+   };
+   users.groups.nb-replication = {};
+   ```
+
+   With this setup, the corresponding `sshfs.destination` on the nix-bitcoin
+   node is `"nb-replication@hostname:writable"`.
+
+## Local directory target
+
+1. Add this to your `configuration.nix`
+   ```nix
+   services.clightning.replication = {
+     enable = true;
+     local.directory = "/var/backup/clightning";
+     encrypt = true;
+   };
+   ```
+
+   Leave out the `encrypt` line if you want to store data in
+   `local.directory` in plaintext.
+
+2. Deploy
+
+clightning will now replicate database files to `local.directory`. This
+can be used to replicate to an external HDD by mounting it at path
+`local.directory`.
+
+## Custom remote destination
+
+Follow the steps in section "Local directory target" above and mount a custom remote
+destination (e.g., a NFS or SMB share) to `local.directory`.\
+You might want to disable `local.setupDirectory` in order to create the mount directory
+yourself with custom permissions.
+
 # Connect to RTL
 Normally you would connect to RTL via SSH tunneling with a command like this
 
@@ -221,7 +319,6 @@ lndconnect-onion --host=mynode.org
 
 5. Edit your deployment tool's configuration and change the node's address to `localhost` and the ssh port to `<random port of your choosing>`.
    If you use krops as described in the [installation tutorial](./install.md), set `target = "localhost:<random port of your choosing>";` in `krops/deploy.nix`.
-
 
 6. After deploying the new configuration, it will connect through the SSH tunnel you established in step iv. This also allows you to do more complex SSH setups that some deployment tools don't support. An example would be authenticating with [Trezor's SSH agent](https://github.com/romanz/trezor-agent), which provides extra security.
 
