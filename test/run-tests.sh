@@ -109,6 +109,7 @@ numCPUs=${numCPUs:-$(nproc)}
 # Min. 800 MiB needed to avoid 'out of memory' errors
 memoryMiB=${memoryMiB:-2048}
 
+export NIXPKGS_ALLOW_INSECURE=1
 export NIX_PATH=nixpkgs=$(nix eval --raw -f "$scriptDir/../pkgs/nixpkgs-pinned.nix" nixpkgs):nix-bitcoin=$(realpath "$scriptDir/..")
 
 runAtExit=
