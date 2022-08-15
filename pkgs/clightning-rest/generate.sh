@@ -5,7 +5,7 @@ set -euo pipefail
 TMPDIR="$(mktemp -d -p /tmp)"
 trap "rm -rf $TMPDIR" EXIT
 
-version="0.7.2"
+version="0.8.0"
 repo=https://github.com/Ride-The-Lightning/c-lightning-REST
 
 # Fetch and verify source tarball
