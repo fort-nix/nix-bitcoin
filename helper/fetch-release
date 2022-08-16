@@ -12,10 +12,10 @@ if [[ ! -v version ]]; then
 fi
 
 TMPDIR=$(mktemp -d)
-trap "rm -rf $TMPDIR" EXIT
+trap 'rm -rf $TMPDIR' EXIT
 
 export GNUPGHOME=$TMPDIR/gpg-home
-mkdir -p -m 700 "$GNUPGHOME"
+mkdir -m 700 "$GNUPGHOME"
 
 # Import key
 gpg --import "$scriptDir/key-jonasnick.bin" &> /dev/null
@@ -25,10 +25,10 @@ gpg --import "$scriptDir/key-jonasnick.bin" &> /dev/null
 gpg --list-keys "36C7 1A37 C9D9 88BD E825 08D9 B1A7 0E4F 8DCD 0366" > /dev/null
 
 # Fetch nar-hash of release
-cd $TMPDIR
+cd "$TMPDIR"
 baseUrl=https://github.com/$repo/releases/download/v$version
-curl -fsS -L -O $baseUrl/nar-hash.txt
-curl -fsS -L -O $baseUrl/nar-hash.txt.asc
+curl -fsS -L -O "$baseUrl/nar-hash.txt"
+curl -fsS -L -O "$baseUrl/nar-hash.txt.asc"
 
 # Verify signature for nar-hash
 gpg --verify nar-hash.txt.asc &> /dev/null || {
