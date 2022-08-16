@@ -11,4 +11,4 @@ archive_hash () {
 echo "Fetching latest lightningd/plugins release"
 latest=$(git ls-remote https://github.com/lightningd/plugins master | cut -f 1)
 echo "rev = \"${latest}\";"
-echo "sha256 = \"$(archive_hash lightningd/plugins $latest)\";"
+echo "sha256 = \"$(archive_hash lightningd/plugins "$latest")\";"
