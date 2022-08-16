@@ -75,7 +75,7 @@ fi
 # Build container.
 # Learn more: https://github.com/erikarvstedt/extra-container
 #
-read -d '' src <<EOF || true
+read -rd '' src <<EOF || true
 { pkgs, lib, ... }: {
   containers.demo-node = {
     extra.addressPrefix = "10.250.0";

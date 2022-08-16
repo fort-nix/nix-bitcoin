@@ -16,9 +16,9 @@ let
   fixedTest = test.overrideAttrs (_: {
     # See `runTests` in nixpkgs/nixos/lib/testing-python.nix for the original definition of `buildCommand`
     buildCommand = ''
-      mkdir $out
+      mkdir "$out"
       LOGFILE=$out/output.xml tests='exec(os.environ["testScript"])' ${test.driver}/bin/nixos-test-driver
-      ln -s ${test.driver} $out/driver
+      ln -s ${test.driver} "$out/driver"
     '';
   });
 in

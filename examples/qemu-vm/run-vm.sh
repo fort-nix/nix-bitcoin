@@ -1,22 +1,23 @@
 qemuDir=$(cd "${BASH_SOURCE[0]%/*}" && pwd)
 
+# shellcheck disable=SC1091
 source "$qemuDir/wait-until.sh"
 
 tmpDir=/tmp/nix-bitcoin-qemu-vm
-mkdir -p $tmpDir
+mkdir -p "$tmpDir"
 
 # Cleanup on exit
 cleanup() {
     set +eu
     if [[ $qemuPID ]]; then
-        kill -9 $qemuPID
+        kill -9 "$qemuPID"
     fi
-    rm -rf $tmpDir
+    rm -rf "$tmpDir"
 }
 trap "cleanup" EXIT
 
 identityFile=$qemuDir/id-vm
-chmod 0600 $identityFile
+chmod 0600 "$identityFile"
 
 runVM() {
     vm=$1
@@ -24,9 +25,10 @@ runVM() {
     vmMemoryMiB=$3
     sshPort=$4
 
-    export NIX_DISK_IMAGE=$tmpDir/img
-    export QEMU_NET_OPTS=hostfwd=tcp::$sshPort-:22
-    </dev/null $vm/bin/run-*-vm -m $vmMemoryMiB -smp $vmNumCPUs &>/dev/null &
+    export NIX_DISK_IMAGE="$tmpDir/img"
+    export QEMU_NET_OPTS="hostfwd=tcp::${sshPort}-:22"
+    # shellcheck disable=SC2211
+    </dev/null "$vm"/bin/run-*-vm -m "$vmMemoryMiB" -smp "$vmNumCPUs" &>/dev/null &
     qemuPID=$!
 }
 
@@ -39,7 +41,7 @@ vmWaitForSSH() {
 
 # Run command in VM
 c() {
-    ssh -p $sshPort -i $identityFile -o ConnectTimeout=1 \
+    ssh -p "$sshPort" -i "$identityFile" -o ConnectTimeout=1 \
         -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR \
         -o ControlMaster=auto -o ControlPath=$tmpDir/ssh-connection -o ControlPersist=60 \
         root@127.0.0.1 "$@"

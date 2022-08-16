@@ -24,7 +24,7 @@ source qemu-vm/run-vm.sh
 
 echo "Building the target VM"
 # Build the initial VM to which the nix-bitcoin node is deployed via krops
-nix-build --out-link $tmpDir/vm - <<'EOF'
+nix-build --out-link "$tmpDir/vm" - <<'EOF'
 (import <nixpkgs/nixos> {
   configuration = { config, lib, ... }: {
     imports = [ <qemu-vm/vm-config.nix>  ];
@@ -43,11 +43,11 @@ vmNumCPUs=4
 vmMemoryMiB=2048
 sshPort=60734
 # Start the VM in the background
-runVM $tmpDir/vm $vmNumCPUs $vmMemoryMiB $sshPort
+runVM "$tmpDir/vm" "$vmNumCPUs" "$vmMemoryMiB" "$sshPort"
 
 # Build the krops deploy script
 export sshPort
-nix-build --out-link $tmpDir/krops-deploy - <<'EOF'
+nix-build --out-link "$tmpDir/krops-deploy" - <<'EOF'
 let
   krops = (import <nix-bitcoin> {}).krops;
 
@@ -85,7 +85,7 @@ EOF
 
 echo "Building the nix-bitcoin node"
 # Pre-build the nix-bitcoin node outside of the VM to save some time
-nix-build --out-link $tmpDir/store-paths -E '
+nix-build --out-link "$tmpDir/store-paths" -E '
 let
   system = (import <nixpkgs/nixos> { configuration = <krops-vm-configuration.nix>; }).system;
   pkgsUnstable = (import <nix-bitcoin/pkgs/nixpkgs-pinned.nix>).nixpkgs-unstable;
@@ -98,7 +98,7 @@ vmWaitForSSH
 
 # Add the store paths that include the nix-bitcoin node
 # to the nix store db in the VM
-c "nix-store --load-db < $(realpath $tmpDir/store-paths)/registration"
+c "nix-store --load-db < $(realpath "$tmpDir/store-paths")/registration"
 
 echo
 echo "Generate secrets"
@@ -106,7 +106,7 @@ nix-shell --run generate-secrets
 
 echo
 echo "Deploy with krops"
-$tmpDir/krops-deploy
+"$tmpDir/krops-deploy"
 
 echo
 echo "Bitcoind service:"

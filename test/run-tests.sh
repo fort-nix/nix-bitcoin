@@ -109,14 +109,18 @@ numCPUs=${numCPUs:-$(nproc)}
 # Min. 800 MiB needed to avoid 'out of memory' errors
 memoryMiB=${memoryMiB:-2048}
 
-export NIX_PATH=nixpkgs=$(nix eval --raw -f "$scriptDir/../pkgs/nixpkgs-pinned.nix" nixpkgs):nix-bitcoin=$(realpath "$scriptDir/..")
+NIX_PATH=nixpkgs=$(nix eval --raw -f "$scriptDir/../pkgs/nixpkgs-pinned.nix" nixpkgs):nix-bitcoin=$(realpath "$scriptDir/..")
+export NIX_PATH
 
 runAtExit=
 trap 'eval "$runAtExit"' EXIT
 
 # Support explicit scenario definitions
 if [[ $scenario = *' '* ]]; then
-    export scenarioOverridesFile=$(mktemp ${XDG_RUNTIME_DIR:-/tmp}/nb-scenario.XXX)
+    scenarioOverridesFile=$(mktemp "${XDG_RUNTIME_DIR:-/tmp}/nb-scenario.XXX")
+    export scenarioOverridesFile
+
+    # shellcheck disable=SC2016
     runAtExit+='rm -f "$scenarioOverridesFile";'
     echo "{ scenarios, pkgs, lib }: with lib; { tmp = $scenario; }" > "$scenarioOverridesFile"
     scenario=tmp
@@ -125,10 +129,11 @@ fi
 # Run the test. No temporary files are left on the host system.
 run() {
     # TMPDIR is also used by the test driver for VM tmp files
-    export TMPDIR=$(mktemp -d /tmp/nix-bitcoin-test.XXX)
-    runAtExit+="rm -rf $TMPDIR;"
+    TMPDIR=$(mktemp -d /tmp/nix-bitcoin-test.XXX)
+    export TMPDIR
+    runAtExit+="rm -rf ${TMPDIR};"
 
-    nix-build --out-link $TMPDIR/driver -E "((import \"$scriptDir/tests.nix\" {}).getTest \"$scenario\").vm" -A driver
+    nix-build --out-link "$TMPDIR/driver" -E "((import \"$scriptDir/tests.nix\" {}).getTest \"$scenario\").vm" -A driver
 
     # Variable 'tests' contains the Python code that is executed by the driver on startup
     if [[ $1 == --interactive ]]; then
@@ -150,14 +155,14 @@ run() {
 
     echo "VM stats: CPUs: $numCPUs, memory: $memoryMiB MiB"
     [[ $NB_TEST_ENABLE_NETWORK ]] || QEMU_NET_OPTS='restrict=on'
-    cd $TMPDIR # The VM creates a VDE control socket in $PWD
+    cd "$TMPDIR" # The VM creates a VDE control socket in $PWD
     env -i \
         NIX_PATH="$NIX_PATH" \
         TMPDIR="$TMPDIR" \
         USE_TMPDIR=1 \
         QEMU_OPTS="-smp $numCPUs -m $memoryMiB -nographic $QEMU_OPTS"  \
         QEMU_NET_OPTS="$QEMU_NET_OPTS" \
-        $TMPDIR/driver/bin/nixos-test-driver <(echo "$tests")
+        "$TMPDIR/driver/bin/nixos-test-driver" <(echo "$tests")
 }
 
 debug() {
@@ -179,18 +184,20 @@ container() {
 
 # Run a regular NixOS VM
 vm() {
-    export TMPDIR=$(mktemp -d /tmp/nix-bitcoin-vm.XXX)
+    TMPDIR=$(mktemp -d /tmp/nix-bitcoin-vm.XXX)
+    export TMPDIR
     runAtExit+="rm -rf $TMPDIR;"
 
-    nix-build --out-link $TMPDIR/vm -E "((import \"$scriptDir/tests.nix\" {}).getTest \"$scenario\").vmWithoutTests"
+    nix-build --out-link "$TMPDIR/vm" -E "((import \"$scriptDir/tests.nix\" {}).getTest \"$scenario\").vmWithoutTests"
 
     echo "VM stats: CPUs: $numCPUs, memory: $memoryMiB MiB"
     [[ $NB_TEST_ENABLE_NETWORK ]] || export QEMU_NET_OPTS="restrict=on,$QEMU_NET_OPTS"
 
+    # shellcheck disable=SC2211
     USE_TMPDIR=1 \
     NIX_DISK_IMAGE=$TMPDIR/img.qcow2 \
     QEMU_OPTS="-smp $numCPUs -m $memoryMiB -nographic $QEMU_OPTS"  \
-      $TMPDIR/vm/bin/run-*-vm
+      "$TMPDIR"/vm/bin/run-*-vm
 }
 
 doBuild() {
@@ -223,6 +230,7 @@ vmTestNixExpr() {
         memTotalKiB=$(awk '/MemTotal/ { print $2 }' /proc/meminfo)
         memAvailableKiB=$(awk '/MemAvailable/ { print $2 }' /proc/meminfo)
         # Round down to nearest multiple of 50 MiB for improved test build caching
+        # shellcheck disable=SC2017
         ((memAvailableMiB = memAvailableKiB / (1024 * 50) * 50))
         ((memAvailableMiB < memoryMiB)) && memoryMiB=$memAvailableMiB
         >&2 echo "VM stats: CPUs: $numCPUs, memory: $memoryMiB MiB"
@@ -276,10 +284,10 @@ nixosSearch() {
 
     if [[ $outLinkPrefix ]]; then
         # Add gcroots for flake-info
-        nix build $scriptDir/nixos-search#flake-info -o "$outLinkPrefix-flake-info"
+        nix build "$scriptDir/nixos-search#flake-info" -o "$outLinkPrefix-flake-info"
     fi
     echo "Running flake-info (nixos-search)"
-    nix run $scriptDir/nixos-search#flake-info -- flake "$scriptDir/.."
+    nix run "$scriptDir/nixos-search#flake-info" -- flake "$scriptDir/.."
 }
 
 # A basic subset of tests to keep the total runtime within
@@ -330,7 +338,7 @@ build() {
     buildTest "$@"
 }
 
-if [[ $# > 0 && $1 != -* ]]; then
+if [[ $# -gt 0 && $1 != -* ]]; then
     # An explicit command was provided
     command=$1
     shift

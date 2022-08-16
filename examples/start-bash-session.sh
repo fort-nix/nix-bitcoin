@@ -11,6 +11,8 @@ c systemctl status bitcoind
 
 # BASH_ENVIRONMENT contains definitions of read-only variables like 'BASHOPTS' that
 # cause warnings on evaluation. Suppress these warnings while sourcing.
+#
+# shellcheck disable=SC2016
 BASH_ENVIRONMENT=<(declare -p; declare -pf) \
 USAGE_INFO="$USAGE_INFO" \
   bash --rcfile <(echo '
