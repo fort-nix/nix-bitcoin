@@ -36,3 +36,7 @@ task:
       build_script:
         - nix flake check
         - ./test/nixos-search/ci-test.sh
+
+    - name: shellcheck
+      build_script:
+        - nix shell --inputs-from . nixpkgs#{shellcheck,findutils,gnugrep} -c ./test/shellcheck.sh

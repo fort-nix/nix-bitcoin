@@ -312,8 +312,14 @@ examples() {
     (cd "$scriptDir/../examples" && nix-shell --run "$script")
 }
 
+shellcheck() {
+    if ! checkFlakeSupport "shellcheck"; then return; fi
+    nix shell --inputs-from "$scriptDir/.." nixpkgs#shellcheck -c "$scriptDir/shellcheck.sh"
+}
+
 all() {
-    buildable
+    buildable "$@"
+    shellcheck
     examples
     flake
     nixosSearch
