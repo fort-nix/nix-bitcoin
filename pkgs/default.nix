@@ -25,6 +25,8 @@ let self = {
     packageOverrides = import ./python-packages self;
   }).pkgs;
 
+  fetchNodeModules = pkgs.callPackage ./build-support/fetch-node-modules.nix { };
+
   # Fix clightning build by using python package mistune 0.8.4, which is a
   # strict requirement. This version is affected by CVE-2022-34749, but this
   # is irrelevant in this context.

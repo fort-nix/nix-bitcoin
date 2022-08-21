@@ -73,7 +73,13 @@
         nbPkgs = self.lib.mkNbPkgs { inherit system pkgs; };
       in rec {
         packages = flake-utils.lib.flattenTree (removeAttrs nbPkgs [
-          "pinned" "modulesPkgs" "nixops19_09" "krops" "generate-secrets" "netns-exec"
+          "fetchNodeModules"
+          "krops"
+          "modulesPkgs"
+          "netns-exec"
+          "nixops19_09"
+          "pinned"
+          "generate-secrets"
         ]) // {
           inherit (import ./examples/qemu-vm/minimal-vm.nix self pkgs system)
             # A simple demo VM.
