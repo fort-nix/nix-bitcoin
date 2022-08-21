@@ -10,7 +10,7 @@ in
   }
 }:
 let self = {
-  clightning-rest = pkgs.callPackage ./clightning-rest { };
+  clightning-rest = pkgs.callPackage ./clightning-rest { inherit (self) fetchNodeModules; };
   clboss = pkgs.callPackage ./clboss { };
   clightning-plugins = pkgs.recurseIntoAttrs (import ./clightning-plugins pkgs self.nbPython3Packages);
   joinmarket = pkgs.callPackage ./joinmarket { nbPythonPackageOverrides = import ./python-packages self; };
