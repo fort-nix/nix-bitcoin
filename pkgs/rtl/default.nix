@@ -1,6 +1,6 @@
 { pkgs, lib, makeWrapper }:
 let
-  inherit (pkgs) nodejs;
+  nodejs = pkgs.nodejs-14_x;
   nodePackages = import ./composition.nix { inherit pkgs nodejs; };
 in
 nodePackages.package.overrideAttrs (old: {
