@@ -1,16 +1,48 @@
-{ pkgs, lib, makeWrapper }:
-let
-  inherit (pkgs) nodejs;
-  nodePackages = import ./composition.nix { inherit pkgs nodejs; };
-in
-nodePackages.package.overrideAttrs (old: {
-  nativeBuildInputs = (old.nativeBuildInputs or []) ++ [
+{ lib
+, stdenvNoCC
+, nodejs-16_x
+, nodejs-slim-16_x
+, fetchNodeModules
+, fetchurl
+, makeWrapper
+, rsync
+}:
+let self = stdenvNoCC.mkDerivation {
+  pname = "clightning-rest";
+  version = "0.8.0";
+
+  src = fetchurl {
+    url = "https://github.com/Ride-The-Lightning/c-lightning-REST/archive/refs/tags/v${self.version}.tar.gz";
+    hash = "sha256-Rg0/lN7exNFlsMj+HQcFwVqNRzCd1ztu56q5VIkglko=";
+  };
+
+  passthru = {
+    nodejs = nodejs-16_x;
+    nodejsRuntime = nodejs-slim-16_x;
+
+    nodeModules = fetchNodeModules {
+      inherit (self) src nodejs;
+      hash = "sha256-aG60RANqmWQ4sbm450MS2DWEoRksjj9/z6PoKBLtDB4=";
+    };
+  };
+
+  nativeBuildInputs = [
     makeWrapper
   ];
 
-  postInstall = ''
-    makeWrapper ${nodejs}/bin/node $out/bin/cl-rest \
-      --add-flags $out/lib/node_modules/c-lightning-rest/cl-rest
+  phases = "unpackPhase patchPhase installPhase";
+
+  installPhase = ''
+    dest=$out/lib/node_modules/clightning-rest
+    mkdir -p $dest
+    ${rsync}/bin/rsync -a --inplace * ${self.nodeModules}/lib/node_modules \
+      --exclude=/{screenshots,'*.Dockerfile'} \
+      $dest
+
+    makeWrapper ${self.nodejsRuntime}/bin/node $out/bin/cl-rest \
+      --add-flags $dest/cl-rest.js
+
+    runHook postInstall
   '';
 
   meta = with lib; {
@@ -20,4 +52,4 @@ nodePackages.package.overrideAttrs (old: {
     maintainers = with maintainers; [ nixbitcoin earvstedt ];
     platforms = platforms.unix;
   };
-})
+}; in self
