@@ -143,8 +143,11 @@ in {
         # We can't simply set `destDir` here because it might point to
         # a FUSE mount.
         # FUSE mounts can only be set up as `ReadWritePaths` by systemd when they
-        # are accessible by root. This would require FUSE-mounting with option
-        # `allow_other`.
+        # are accessible by root.
+        # But FUSE mounts are only accessible by the mounting user and
+        # not by root.
+        # (This could be circumvented by FUSE-mounting `destDir` with option `allow_other`,
+        # but this would grant access to all users.)
         (if useMounts then mountsDir else localDir)
       ];
     };
