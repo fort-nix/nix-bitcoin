@@ -214,18 +214,15 @@ services.bitcoind = {
 };
 ```
 
-If a `secure-node.nix` or `tor-enable.nix` preset is imported in your
-configuration or a `tor.enforce` option is explicitly enabled, you also need to
-allow remote connections for **every** service which needs to connect to the
-remote bitcoind:
-
-```
-systemd.services.<service>.serviceConfig = {
-  IPAddressAllow = [ ${services.bitcoind.rpc.address} ];
-};
+For each service that connects to bitcoind and has option
+`services.<service>.tor.enforce` enabled (either explicitly or by importing
+`secure-node.nix` or `enable-tor.nix`), you need to
+allow the remote bitcoind connection:
+```nix
+systemd.services.<service>.serviceConfig.IPAddressAllow = [ ${services.bitcoind.rpc.address} ];
 ```
 
-> Please note that configuration above applies only if the remote bitcoind **is
+> The above configuration is only required if the remote bitcoind **is
 > not** accessed via Tor.
 
 
