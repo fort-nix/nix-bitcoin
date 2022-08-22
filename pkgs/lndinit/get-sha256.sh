@@ -1,6 +1,6 @@
-#! /usr/bin/env nix-shell
-#! nix-shell -i bash -p git gnupg curl jq
+#!/usr/bin/env bash
 set -euo pipefail
+. "${BASH_SOURCE[0]%/*}/../../helper/run-in-nix-env" "git gnupg curl jq" "$@"
 
 TMPDIR=$(mktemp -d -p /tmp)
 trap 'rm -rf $TMPDIR' EXIT

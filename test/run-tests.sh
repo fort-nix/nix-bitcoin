@@ -322,7 +322,7 @@ examples() {
 
 shellcheck() {
     if ! checkFlakeSupport "shellcheck"; then return; fi
-    nix shell --inputs-from "$scriptDir/.." nixpkgs#shellcheck -c "$scriptDir/shellcheck.sh"
+    "$scriptDir/shellcheck.sh"
 }
 
 all() {

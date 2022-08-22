@@ -39,4 +39,4 @@ task:
 
     - name: shellcheck
       build_script:
-        - nix shell --inputs-from . nixpkgs#{shellcheck,findutils,gnugrep} -c ./test/shellcheck.sh
+        - ./test/shellcheck.sh

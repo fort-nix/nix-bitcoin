@@ -1,6 +1,6 @@
-#!/usr/bin/env nix-shell
-#! nix-shell -i bash -p gnupg wget gnused
+#!/usr/bin/env bash
 set -euo pipefail
+. "${BASH_SOURCE[0]%/*}/../../helper/run-in-nix-env" "gnupg wget gnused" "$@"
 
 version="0.13.1"
 repo=https://github.com/Ride-The-Lightning/RTL

@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+. "${BASH_SOURCE[0]%/*}/../helper/run-in-nix-env" "shellcheck findutils gnugrep" "$@"
 
 cd "${BASH_SOURCE[0]%/*}/.."
 {
