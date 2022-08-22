@@ -54,7 +54,7 @@ top left corner of the documents.
 
 <!-- TODO-EXTERNAL: -->
 <!-- Change query to `nix-bitcoin` when upstream search has been fixed -->
-* [NixOS Options Search](https://search.nixos.org/flakes?channel=unstable&sort=relevance&type=options&query=bitcoin)
+* [NixOS options search](https://search.nixos.org/flakes?channel=unstable&sort=relevance&type=options&query=bitcoin)
 * [Hardware requirements](docs/hardware.md)
 * [Installation](docs/install.md)
 * [Configuration and maintenance](docs/configuration.md)
