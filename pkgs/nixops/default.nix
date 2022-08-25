@@ -34,8 +34,8 @@ let
   };
 
   src = runCommand "src" {} ''
-    cp --no-preserve=mode -r ${origSrc} $out
-    cd $out
+    cp --no-preserve=mode -r '${origSrc}' "$out"
+    cd "$out"
     patch -p1 < ${./release.nix.patch}
   '';
 

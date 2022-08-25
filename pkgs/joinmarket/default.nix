@@ -34,14 +34,14 @@ stdenv.mkDerivation {
   buildInputs = [ pythonEnv ];
 
   installPhase = ''
-    mkdir -p $out/bin
+    mkdir -p "$out/bin"
 
     # add-utxo.py -> bin/jm-add-utxo
     cpBin() {
-      cp scripts/$1 $out/bin/jm-''${1%.py}
+      cp "scripts/$1" "$out/bin/jm-''${1%.py}"
     }
 
-    cp scripts/joinmarketd.py $out/bin/joinmarketd
+    cp scripts/joinmarketd.py "$out/bin/joinmarketd"
     cpBin add-utxo.py
     cpBin convert_old_wallet.py
     cpBin receive-payjoin.py
@@ -52,17 +52,17 @@ stdenv.mkDerivation {
     cpBin yg-privacyenhanced.py
     cpBin genwallet.py
 
-    chmod +x -R $out/bin
-    patchShebangs $out/bin
+    chmod +x -R "$out/bin"
+    patchShebangs "$out/bin"
 
     ## ob-watcher
     obw=$out/libexec/joinmarket-ob-watcher
-    install -D scripts/obwatch/ob-watcher.py $obw/ob-watcher
-    patchShebangs $obw/ob-watcher
-    ln -s $obw/ob-watcher $out/bin/jm-ob-watcher
+    install -D scripts/obwatch/ob-watcher.py "$obw/ob-watcher"
+    patchShebangs "$obw/ob-watcher"
+    ln -s "$obw/ob-watcher" "$out/bin/jm-ob-watcher"
 
     # These files must be placed in the same dir as ob-watcher
-    cp -r scripts/obwatch/{orderbook.html,sybil_attack_calculations.py,vendor} $obw
+    cp -r scripts/obwatch/{orderbook.html,sybil_attack_calculations.py,vendor} "$obw"
   '';
 
   meta = with lib; {

@@ -39,8 +39,8 @@ let self = stdenvNoCC.mkDerivation {
       --exclude=/{screenshots,'*.Dockerfile'} \
       $dest
 
-    makeWrapper ${self.nodejsRuntime}/bin/node $out/bin/cl-rest \
-      --add-flags $dest/cl-rest.js
+    makeWrapper ${self.nodejsRuntime}/bin/node "$out/bin/cl-rest" \
+      --add-flags "$dest/cl-rest.js"
 
     runHook postInstall
   '';
