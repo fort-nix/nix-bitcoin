@@ -17,6 +17,7 @@ in {
     ./feeadjuster.nix
     ./prometheus.nix
     ./summary.nix
+    ./trustedcoin.nix
     ./zmq.nix
   ];
 

@@ -9,7 +9,11 @@ let cfg = config.services.clightning.plugins.trustedcoin; in
       type = types.package;
       default = config.nix-bitcoin.pkgs.trustedcoin;
       defaultText = "config.nix-bitcoin.pkgs.trustedcoin";
-      description = "The package providing trustedcoin binaries.";
+      description = ''
+        The package providing trustedcoin binaries. Trustedcoin will try to
+        use a bitcoind as a trusted source for getting block data. If this
+        fails, it will use a trustedcoin providers instead.
+      '';
     };
   };
 
