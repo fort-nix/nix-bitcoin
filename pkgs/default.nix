@@ -20,6 +20,7 @@ let self = {
   # The secp256k1 version used by joinmarket
   secp256k1 = pkgs.callPackage ./secp256k1 { };
   spark-wallet = pkgs.callPackage ./spark-wallet { };
+  trustedcoin = pkgs.callPackage ./trustedcoin { };
 
   pyPkgs = import ./python-packages self pkgs.python3;
   inherit (self.pyPkgs)
