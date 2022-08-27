@@ -2,7 +2,7 @@
 #! nix-shell -i bash -p gnupg wget gnused
 set -euo pipefail
 
-version="0.13.0"
+version="0.13.1"
 repo=https://github.com/Ride-The-Lightning/RTL
 
 scriptDir=$(cd "${BASH_SOURCE[0]%/*}" && pwd)
