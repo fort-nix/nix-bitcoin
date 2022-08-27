@@ -8,6 +8,5 @@
 
     # Used by ./ci-test.sh
     inherit (nixos-search.inputs.nixpkgs) legacyPackages;
-    nixpkgsPath = toString nixos-search.inputs.nixpkgs;
   };
 }
