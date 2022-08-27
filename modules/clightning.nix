@@ -30,6 +30,14 @@ let
         This also disables all DNS lookups, to avoid leaking address information.
       '';
     };
+    useBcli = mkOption {
+      type = types.bool;
+      default = true;
+      description = ''
+        If clightning should use the bcli plugin for getting on-chain block data.
+        Disable this to use other providers such as trustedcoin.
+      '';
+    };
     dataDir = mkOption {
       type = types.path;
       default = "/var/lib/clightning";
@@ -105,7 +113,8 @@ let
   network = config.services.bitcoind.makeNetworkName "bitcoin" "regtest";
   configFile = pkgs.writeText "config" ''
     network=${network}
-    bitcoin-datadir=${config.services.bitcoind.dataDir}
+    ${optionalString (!cfg.useBcli) "disable-plugin=bcli"}
+    ${optionalString (cfg.useBcli) "bitcoin-datadir=${config.services.bitcoind.dataDir}"}
     ${optionalString (cfg.proxy != null) "proxy=${cfg.proxy}"}
     always-use-proxy=${boolToString cfg.always-use-proxy}
     bind-addr=${cfg.address}:${toString cfg.port}
