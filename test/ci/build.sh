@@ -16,6 +16,5 @@ if [[ -v CIRRUS_CI ]]; then
     chmod o+rw /dev/kvm
 fi
 
-echo "$NIX_PATH ($(nix eval --raw nixpkgs.lib.version))"
-
-"${BASH_SOURCE[0]%/*}/../run-tests.sh" --ci --scenario $scenario
+# shellcheck disable=SC2154
+"${BASH_SOURCE[0]%/*}/../run-tests.sh" --ci --scenario "$scenario"

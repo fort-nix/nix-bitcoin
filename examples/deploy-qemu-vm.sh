@@ -22,7 +22,7 @@ fi
 source qemu-vm/run-vm.sh
 
 echo "Building VM"
-nix-build --out-link $tmpDir/vm - <<'EOF'
+nix-build --out-link "$tmpDir/vm" - <<'EOF'
 (import <nixpkgs/nixos> {
   configuration = {
     imports = [
@@ -37,7 +37,7 @@ EOF
 vmNumCPUs=4
 vmMemoryMiB=2048
 sshPort=60734
-runVM $tmpDir/vm $vmNumCPUs $vmMemoryMiB $sshPort
+runVM "$tmpDir/vm" "$vmNumCPUs" "$vmMemoryMiB" "$sshPort"
 
 vmWaitForSSH
 printf "Waiting until services are ready"

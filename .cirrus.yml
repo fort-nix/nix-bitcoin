@@ -7,11 +7,13 @@ task:
   # Use the maximum timeout. Needed when rebuilding packages on a channel update.
   timeout_in: 120m
 
+  container:
+    # Defined in https://github.com/nix-community/docker-nixpkgs
+    image: nixpkgs/nix-flakes:nixos-22.05
+
   matrix:
     - name: modules_test
       container:
-        # Use Nix release 2.3.x, the default on NixOS stable
-        image: nixos/nix:2.3.12
         # Besides virtualization, this also enables privileged containers which are required for
         # sandboxed builds
         kvm: true
@@ -28,12 +30,13 @@ task:
       # This script is run as root
       build_script:
         - echo "sandbox = true" >> /etc/nix/nix.conf
-        - export NIX_PATH="nixpkgs=$(nix eval --raw -f pkgs/nixpkgs-pinned.nix nixpkgs)"
-        - nix run -f '<nixpkgs>' bash coreutils cachix -c ./test/ci/build.sh
+        - nix shell --inputs-from . nixpkgs#{bash,coreutils,gawk,cachix} -c ./test/ci/build.sh
 
     - name: flake
-      container:
-        image: nixpkgs/nix-flakes
       build_script:
         - nix flake check
         - ./test/nixos-search/ci-test.sh
+
+    - name: shellcheck
+      build_script:
+        - nix shell --inputs-from . nixpkgs#{shellcheck,findutils,gnugrep} -c ./test/shellcheck.sh
