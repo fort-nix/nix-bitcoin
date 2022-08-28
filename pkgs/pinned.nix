@@ -11,6 +11,8 @@ pkgs: pkgsUnstable:
     hwi
     lightning-loop
     lightning-pool
+    teos
+    teos-watchtower-plugin
     lndconnect;
 
   inherit (pkgsUnstable)
