@@ -10,12 +10,12 @@
 }:
 let self = stdenvNoCC.mkDerivation {
   pname = "rtl";
-  version = "0.13.0";
+  version = "0.13.1";
 
   src = applyPatches {
     src = fetchurl {
       url = "https://github.com/Ride-The-Lightning/RTL/archive/refs/tags/v${self.version}.tar.gz";
-      hash = "sha256-6eopIO5ge6+vkNvZomjAB6e5Qi2kkhXpnSOWQQm53R0=";
+      hash = "sha256-k40xwDDJxny1nPN2xz60WfbinxMNM0QPdglibO2anZw=";
     };
 
     patches = [
@@ -34,7 +34,7 @@ let self = stdenvNoCC.mkDerivation {
 
     nodeModules = fetchNodeModules {
       inherit (self) src nodejs;
-      hash = "sha256-LmCrf+lIXz9i9NVALYk9IOBUoPbW8fj+fUsyVJgAANI=";
+      hash = "sha256-bYZ6snfXhDZ3MMga45EHVrPZxC0/Q0e3AgCgMBire64=";
     };
   };
 

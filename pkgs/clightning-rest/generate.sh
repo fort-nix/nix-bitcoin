@@ -2,7 +2,7 @@
 #! nix-shell -i bash -p gnupg wget gnused
 set -euo pipefail
 
-version="0.8.0"
+version="0.9.0"
 repo=https://github.com/Ride-The-Lightning/c-lightning-REST
 
 scriptDir=$(cd "${BASH_SOURCE[0]%/*}" && pwd)
