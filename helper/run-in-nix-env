@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+# Usage:
+# source "path/to/run-in-nix-env" "pkg1 pkg2 ..." "$@"
+#
+# Runs the calling script with pkgs1, pkg2, ... in PATH.
+# The packages are sourced from the nixpkgs input of the nix-bitcoin root flake.
+
+if [[ ${_NIX_BITCOIN_ENV_PKGS:-} != "$1" ]]; then
+    export _NIX_BITCOIN_ENV_PKGS=$1
+    shift
+
+    _shell_pkgs=()
+    for _pkg in $_NIX_BITCOIN_ENV_PKGS; do
+      _shell_pkgs+=("nixpkgs#$_pkg")
+    done
+    # BASH_SOURCE[0] is this file
+    # BASH_SOURCE[-1] is the root src file
+    exec nix shell --inputs-from "${BASH_SOURCE[0]%/*}/.." "${_shell_pkgs[@]}" -c "${BASH_SOURCE[-1]}" "$@"
+fi

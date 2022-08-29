@@ -4,7 +4,7 @@
   cd "$scriptDir/.."
   amend=--amend
 
-  if [[ ! -e .git ]]; then
+  if [[ ! -e .git ]] || ! git rev-parse HEAD 2>/dev/null; then
     git init
     amend=
   fi

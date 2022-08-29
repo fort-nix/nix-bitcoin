@@ -1,6 +1,6 @@
-#! /usr/bin/env nix-shell
-#! nix-shell -i bash -p git
+#!/usr/bin/env bash
 set -euo pipefail
+. "${BASH_SOURCE[0]%/*}/../../helper/run-in-nix-env" "git" "$@"
 
 archive_hash () {
     repo=$1

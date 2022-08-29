@@ -35,7 +35,7 @@ amounts.
 
 The nix-bitcoin developers [listed above](#reporting-a-vulnerability) each hold
 one key to the multisig address and collectively form the nix-bitcoin developer
-quorum:
+quorum.
 
 ### Eligible Vulnerabilities
 

@@ -73,7 +73,7 @@ let
     generateSecretsScript = mkOption {
       internal = true;
       default = let
-        rpcauthSrc = builtins.fetchurl {
+        rpcauthSrc = pkgs.fetchurl {
           url = "https://raw.githubusercontent.com/bitcoin/bitcoin/d6cde007db9d3e6ee93bd98a9bbfdce9bfa9b15b/share/rpcauth/rpcauth.py";
           sha256 = "189mpplam6yzizssrgiyv70c9899ggh8cac76j4n7v0xqzfip07n";
         };
