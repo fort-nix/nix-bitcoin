@@ -116,6 +116,8 @@ let
       services.fulcrum.port = 50002;
       tests.fulcrum = cfg.fulcrum.enable;
 
+      tests.teos = cfg.teos.enable;
+
       tests.liquidd = cfg.liquidd.enable;
       services.liquidd.extraConfig = mkIf config.test.noConnections "connect=0";
 
@@ -173,6 +175,7 @@ let
           sendpay-success = tcpEndpoint;
           sendpay-failure = tcpEndpoint;
         };
+        teos-watchtower-plugin.enable = true;
       };
     })
     ];
@@ -218,6 +221,11 @@ let
         trezor = true;
         ledger = true;
       };
+
+      # The TEoS mainnet test cannot be enabled due to an unreachable network.
+      # The height of blockchain must not be 0 (genesis block). Please, use
+      # regtest instead.
+      #services.teos.enable = true;
     };
 
     secureNode = {
@@ -257,6 +265,7 @@ let
       services.fulcrum.enable = true;
       services.btcpayserver.enable = true;
       services.joinmarket.enable = true;
+      services.teos.enable = true;
     };
 
     # netns and regtest, without secure-node.nix
