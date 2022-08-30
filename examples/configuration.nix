@@ -236,6 +236,12 @@
   # services.charge-lnd.policies = ''
   # '';
 
+  ### TEoS - The Eye of Satoshi
+  # Set this to enable teos, a Lightning watchtower compliant with BOLT13,
+  # written in Rust.
+  #
+  # services.teos.enable = true;
+
   ### JOINMARKET
   # Set this to enable the JoinMarket service, including its command-line scripts.
   # These scripts have prefix 'jm-', like 'jm-tumbler'.

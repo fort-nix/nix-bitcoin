@@ -145,6 +145,7 @@ in {
       clightning-rest = mkInfo "";
       electrs = mkInfo "";
       fulcrum = mkInfo "";
+      teos = mkInfo "";
       btcpayserver = mkInfo "";
       liquidd = mkInfo "";
       joinmarket-ob-watcher = mkInfo "";
