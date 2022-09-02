@@ -1,20 +1,10 @@
-{ stdenv, lib, fetchurl, applyPatches, fetchpatch, python3, nbPythonPackageOverrides, pkgs }:
+{ stdenv, lib, fetchurl, python3, nbPythonPackageOverrides, pkgs }:
 
 let
-  version = "0.9.6";
-  src = applyPatches {
-    src = fetchurl {
-      url = "https://github.com/JoinMarket-Org/joinmarket-clientserver/archive/v${version}.tar.gz";
-      sha256 = "040qj3abqkk74zyi5yav1ijlh5cmd49wlymald2lzk35adnx804g";
-    };
-    patches = [
-      (fetchpatch {
-        # https://github.com/JoinMarket-Org/joinmarket-clientserver/pull/1264
-        name = "use-twisted-22.4.0";
-        url = "https://patch-diff.githubusercontent.com/raw/JoinMarket-Org/joinmarket-clientserver/pull/1264.patch";
-        sha256 = "1nlyhc5myph9239d5zczsl4jan4qj4ggy0l1f39jv0ihjbjhcks5";
-      })
-    ];
+  version = "0.9.7";
+  src = fetchurl {
+    url = "https://github.com/JoinMarket-Org/joinmarket-clientserver/archive/v${version}.tar.gz";
+    sha256 = "13bfr8ha6bka8wiai8m79ki43dn2r311lrfffr39ni2wy1v12l93";
   };
 
   pyPkgs = (python3.override {
