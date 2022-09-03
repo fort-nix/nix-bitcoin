@@ -14,6 +14,7 @@ pkgs: pkgsUnstable:
   inherit (pkgsUnstable)
     btcpayserver
     charge-lnd
+    clightning
     fulcrum
     hwi
     lightning-loop
