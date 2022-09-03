@@ -13,10 +13,6 @@ let
   version = builtins.substring 0 7 src.rev;
 
   plugins = with nbPython3Packages; {
-    commando = {
-      description = "Enable RPC over lightning";
-      extraPkgs = [ nbPython3Packages.runes ];
-    };
     currencyrate = {
       description = "Currency rate fetcher and converter";
       extraPkgs = [ requests cachetools ];

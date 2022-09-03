@@ -61,6 +61,21 @@ in {
     "btcpayserver"
     "rtl"
     "electrs"
+  ]) ++
+  # 0.0.77
+  (
+    let
+      optionName = [ "services" "clightning" "plugins" "commando" ];
+    in [
+      (mkRemovedOptionModule (optionName ++ [ "enable" ]) ''
+        clightning 0.12.0 ships with a reimplementation of the commando plugin
+        that is incompatible with the commando module that existed in
+        nix-bitcoin. The new built-in commando plugin is always enabled. For
+        information on how to use it, run `lightning-cli help commando` and
+        `lightning-cli help commando-rune`.
+      '')
+      (mkRemovedOptionModule (optionName ++ [ "readers" ]) "")
+      (mkRemovedOptionModule (optionName ++ [ "writers" ]) "")
   ]);
 
   config = {
