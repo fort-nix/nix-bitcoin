@@ -51,14 +51,14 @@ let
   torRateProvider = "--rate-provider wasabi --proxy socks5h://${config.nix-bitcoin.torClientAddressWithPort}";
   startScript = ''
     ${optionalString (cfg.getPublicAddressCmd != "") ''
-      publicURL="--public-url http://$(${cfg.getPublicAddressCmd})"
+      publicURL=(--public-url "http://$(${cfg.getPublicAddressCmd})")
     ''}
     exec ${config.nix-bitcoin.pkgs.spark-wallet}/bin/spark-wallet \
       --ln-path '${clightning.networkDir}'  \
       --host ${cfg.address} --port ${toString cfg.port} \
       --config '${config.nix-bitcoin.secretsDir}/spark-wallet-login' \
       ${optionalString cfg.tor.proxy torRateProvider} \
-      $publicURL \
+      ${optionalString (cfg.getPublicAddressCmd != "") ''"''${publicURL[@]}"''} \
       --pairing-qr --print-key ${cfg.extraArgs}
   '';
 in {
