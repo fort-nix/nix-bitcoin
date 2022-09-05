@@ -35,7 +35,6 @@ task:
     - name: flake
       build_script:
         - nix flake check
-        - ./test/nixos-search/ci-test.sh
 
     - name: shellcheck
       build_script:
