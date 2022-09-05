@@ -1,6 +1,10 @@
 { config, lib, ... }:
 with lib;
 {
+  imports = [
+    ./shellcheck-services.nix
+  ];
+
   options = {
     test = {
       noConnections = mkOption {
