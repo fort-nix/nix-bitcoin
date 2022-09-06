@@ -16,5 +16,13 @@ buildPythonPackage rec {
 
   checkInputs = [ pytestCheckHook ];
 
+  # TODO-EXTERNAL:
+  # This patch is a variant (fixed relative path) of
+  # https://github.com/ElementsProject/lightning/pull/5574. This is already
+  # fixed upstream. Remove this after the next clightning release.
+  patches = [
+    ./msat-null.patch
+  ];
+
   postUnpack = "sourceRoot=$sourceRoot/contrib/${pname}";
 }
