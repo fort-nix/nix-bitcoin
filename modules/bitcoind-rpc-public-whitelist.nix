@@ -16,6 +16,7 @@
   "getblockstats"
   "getchaintips"
   "getchaintxstats"
+  "getdeploymentinfo"
   "getdifficulty"
   "getmempoolancestors"
   "getmempooldescendants"

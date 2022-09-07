@@ -27,14 +27,6 @@ let self = {
 
   fetchNodeModules = pkgs.callPackage ./build-support/fetch-node-modules.nix { };
 
-  # Fix clightning build by using python package mistune 0.8.4, which is a
-  # strict requirement. This version is affected by CVE-2022-34749, but this
-  # is irrelevant in this context.
-  #
-  # TODO-EXTERNAL:
-  # Remove this when the clightning build is fixed upstream.
-  clightning = pkgs.callPackage ./clightning-mistune-workaround { inherit (pkgs) clightning; };
-
   # Internal pkgs
   netns-exec = pkgs.callPackage ./netns-exec { };
   krops = import ./krops { inherit pkgs; };
