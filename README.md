@@ -53,8 +53,6 @@ Hint: To show a table of contents, click the button (![Github TOC button](docs/i
 top left corner of the documents.
 
 <!-- TODO-EXTERNAL: -->
-<!-- Change query to `nix-bitcoin` when upstream search has been fixed -->
-* [NixOS options search](https://search.nixos.org/flakes?channel=unstable&sort=relevance&type=options&query=bitcoin)
 * [Hardware requirements](docs/hardware.md)
 * [Installation](docs/install.md)
 * [Configuration and maintenance](docs/configuration.md)
