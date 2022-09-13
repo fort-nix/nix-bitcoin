@@ -210,7 +210,7 @@ in {
         processedFiles=()
         ${
           concatStrings (mapAttrsToList (n: v: ''
-            setupSecret ${n} ${v.user} ${v.group} ${v.permissions} }
+            setupSecret ${n} ${v.user} ${v.group} ${v.permissions}
           '') cfg.secrets)
         }
 
@@ -220,7 +220,9 @@ in {
         )
         if [[ $unprocessedFiles ]]; then
           IFS=$'\n'
+          # shellcheck disable=SC2086
           chown root: $unprocessedFiles
+          # shellcheck disable=SC2086
           chmod 0440 $unprocessedFiles
         fi
 

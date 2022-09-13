@@ -60,18 +60,18 @@ let
       buildInputs = [ python ];
 
       buildCommand = ''
-        cp --no-preserve=mode -r ${src}/${name} $out
-        cd $out
+        cp --no-preserve=mode -r '${src}/${name}' "$out"
+        cd "$out"
         ${lib.optionalString (plugin ? patchRequirements) ''
           substituteInPlace requirements.txt ${plugin.patchRequirements}
         ''}
 
         # Check that requirements are met
-        PYTHONPATH=${toString python}/${python.sitePackages} \
+        PYTHONPATH='${toString python}/${python.sitePackages}' \
           ${pkgs.python3Packages.pip}/bin/pip install -r requirements.txt --no-cache --no-index
 
-        chmod +x ${script}
-        patchShebangs ${script}
+        chmod +x '${script}'
+        patchShebangs '${script}'
       '';
 
       passthru.path = "${drv}/${script}";

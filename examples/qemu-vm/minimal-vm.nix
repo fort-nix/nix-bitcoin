@@ -6,8 +6,10 @@ rec {
   mkVMScript = vm: pkgs.writers.writeBash "run-vm" ''
     set -euo pipefail
     export TMPDIR=$(mktemp -d /tmp/nix-bitcoin-vm.XXX)
-    trap "rm -rf $TMPDIR" EXIT
+    trap 'rm -rf $TMPDIR' EXIT
     export NIX_DISK_IMAGE=$TMPDIR/nixos.qcow2
+
+    # shellcheck disable=SC2211
     QEMU_OPTS="-smp $(nproc) -m 1500" ${vm}/bin/run-*-vm
   '';
 

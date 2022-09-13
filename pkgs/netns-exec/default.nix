@@ -5,6 +5,6 @@ stdenv.mkDerivation {
   buildInputs = [ pkgs.libcap ];
   src = ./src;
   installPhase = ''
-    cp main $out
+    cp main "$out"
   '';
 }

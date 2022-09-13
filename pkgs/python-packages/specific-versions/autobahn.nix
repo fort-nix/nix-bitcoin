@@ -19,7 +19,7 @@ buildPythonPackage rec {
   checkInputs = [ mock pytest ];
   checkPhase = ''
     runHook preCheck
-    USE_TWISTED=true py.test $out
+    USE_TWISTED=true py.test "$out"
     runHook postCheck
   '';
 

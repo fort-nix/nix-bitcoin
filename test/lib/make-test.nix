@@ -9,8 +9,9 @@ name: testConfig:
   vm = makeVM {
     name = "nix-bitcoin-${name}";
 
-    nodes.machine = {
+    nodes.machine = { config, ... }: {
       imports = [ testConfig ];
+
       virtualisation = {
         # Needed because duplicity requires 270 MB of free temp space, regardless of backup size
         diskSize = 1024;
@@ -20,6 +21,9 @@ name: testConfig:
 
         cores = lib.mkDefault 2;
       };
+
+      # Run shellcheck on all nix-bitcoin services during machine build time
+      system.extraDependencies = [ config.test.shellcheckServices ];
     };
 
     testScript = nodes: let

@@ -2,6 +2,8 @@
 set -euo pipefail
 . "${BASH_SOURCE[0]%/*}/../helper/run-in-nix-env" "shellcheck findutils gnugrep" "$@"
 
+# Shellcheck all bash sources in this repo
+
 cd "${BASH_SOURCE[0]%/*}/.."
 {
     # Skip .git dir in all find commands

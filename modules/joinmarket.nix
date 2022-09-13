@@ -264,16 +264,16 @@ let
    # The jm scripts create a 'logs' dir in the working dir,
    # so run them inside dataDir.
    cli = pkgs.runCommand "joinmarket-cli" {} ''
-     mkdir -p $out/bin
+     mkdir -p "$out/bin"
      jm=${nbPkgs.joinmarket}/bin
-     cd $jm
+     cd "$jm"
      for bin in jm-*; do
        {
          echo "#!${pkgs.bash}/bin/bash";
-         echo "cd '${cfg.dataDir}' && ${cfg.cliExec} ${runAsUser} ${cfg.user} $jm/$bin --datadir='${cfg.dataDir}' \"\$@\"";
-       } > $out/bin/$bin
+         echo "cd '${cfg.dataDir}' && ${cfg.cliExec} ${runAsUser} ${cfg.user} "$jm/$bin" --datadir='${cfg.dataDir}' \"\$@\"";
+       } > "$out/bin/$bin"
      done
-     chmod -R +x $out/bin
+     chmod -R +x "$out/bin"
    '';
 in {
   inherit options;
@@ -314,7 +314,7 @@ in {
       '';
       postStart = ''
         walletname=wallet.jmdat
-        wallet=${cfg.dataDir}/wallets/$walletname
+        wallet="${cfg.dataDir}/wallets/$walletname"
         if [[ ! -f $wallet ]]; then
           ${optionalString (cfg.rpcWalletFile != null) ''
             echo "Create watch-only wallet ${cfg.rpcWalletFile}"
@@ -330,17 +330,19 @@ in {
               fi
             fi
           ''}
+
           # Restore wallet from seed if available
-          seed=
+          seed=()
           if [[ -e jm-wallet-seed ]]; then
-            seed="--recovery-seed-file jm-wallet-seed"
+            seed=(--recovery-seed-file jm-wallet-seed)
           fi
-          cd ${cfg.dataDir}
+          cd "${cfg.dataDir}"
+
           # Strip trailing newline from password file
-          if ! tr -d "\n" <"${secretsDir}/jm-wallet-password" \
+          if ! tr -d '\n' < '${secretsDir}/jm-wallet-password' \
                | ${nbPkgs.joinmarket}/bin/jm-genwallet \
-                   --datadir=${cfg.dataDir} --wallet-password-stdin $seed $walletname \
-               | (if [[ ! $seed ]]; then
+                   --datadir="${cfg.dataDir}" --wallet-password-stdin "''${seed[@]}" "$walletname" \
+               | (if ((! ''${#seed[@]})); then
                     umask u=r,go=
                     grep -ohP '(?<=recovery_seed:).*' > jm-wallet-seed
                   else

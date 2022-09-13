@@ -58,8 +58,8 @@ let self = stdenvNoCC.mkDerivation {
       ${self.nodeModules}/lib/node_modules \
       $dest
 
-    makeWrapper ${self.nodejsRuntime}/bin/node $out/bin/rtl \
-      --add-flags $dest/rtl.js
+    makeWrapper ${self.nodejsRuntime}/bin/node "$out/bin/rtl" \
+      --add-flags "$dest/rtl.js"
 
     runHook postInstall
   '';
