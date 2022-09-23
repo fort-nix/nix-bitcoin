@@ -286,8 +286,7 @@ nixosSearch() {
         # Add gcroots for flake-info
         nix build "$scriptDir/nixos-search#flake-info" -o "$outLinkPrefix-flake-info"
     fi
-    echo "Running flake-info (nixos-search)"
-    nix run "$scriptDir/nixos-search#flake-info" -- flake "$scriptDir/.."
+    "$scriptDir/nixos-search/flake-info-sandboxed.sh"
 }
 
 # A basic subset of tests to keep the total runtime within
