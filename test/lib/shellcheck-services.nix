@@ -1,4 +1,4 @@
-{ config, pkgs, lib, extendModules, ... }:
+{ config, pkgs, lib, extendModules, ... }@args:
 with lib;
 let
   options = {
@@ -12,65 +12,31 @@ let
     };
   };
 
-  # TODO-EXTERNAL:
-  # This can be removed when https://github.com/NixOS/nixpkgs/pull/189836 is merged.
-  #
-  # A list of all systemd service definitions and their locations, with format
-  # [
-  #   {
-  #     file = ...;
-  #     value = { postgresql = ...; };
-  #   }
-  #   ...
-  # ]
-  systemdServiceDefs =
-    (extendModules {
-      modules = [
-        {
-          # Currently, NixOS modules only allow accessing option definition locations
-          # via type.merge.
-          # Override option `systemd.services` and use it to return the list of service defs.
-          options.systemd.services = lib.mkOption {
-            type = lib.types.anything // {
-              merge = loc: defs: defs;
-            };
-          };
-
-          # Disable all modules that define options.systemd.services so that these
-          # defs don't collide with our definition
-          disabledModules = [
-            "system/boot/systemd.nix"
-            # These files amend option systemd.services
-            "testing/service-runner.nix"
-            "security/systemd-confinement.nix"
-          ];
-
-          config._module.check = false;
-        }
-      ];
-    }).config.systemd.services;
-
   # A list of all service names that are defined by nix-bitcoin.
   # [ "bitcoind", "clightning", ... ]
   #
-  # Algorithm: Parse `systemdServiceDefs` and return all services that
-  # only have definitions located in the nix-bitcoin source.
+  # Algorithm: Parse defintions of `systemd.services` and return all services
+  # that only have definitions located in the nix-bitcoin source.
   nix-bitcoin-services = let
+    systemdServices = args.options.systemd.services;
     nix-bitcoin-source = toString ../..;
     nbServices = collectServices true;
     nonNbServices = collectServices false;
     # Return set of services ({ service1 = true; service2 = true; ... })
     # which are either defined or not defined by nix-bitcoin, depending
     # on `fromNixBitcoin`.
-    collectServices = fromNixBitcoin: lib.listToAttrs (builtins.concatLists (map (def:
+    collectServices = fromNixBitcoin: lib.listToAttrs (builtins.concatLists (zipListsWith (services: file:
       let
-        isNbSource = lib.hasPrefix nix-bitcoin-source def.file;
+        isNbSource = lib.hasPrefix nix-bitcoin-source file;
       in
-        # Nix has nor boolean XOR, so use `if`
+        # Nix has no boolean XOR, so use `if`
         lib.optionals (if fromNixBitcoin then isNbSource else !isNbSource) (
-          (map (service: { name = service; value = true; }) (builtins.attrNames def.value))
+          (map (service: { name = service; value = true; }) (builtins.attrNames services))
         )
-    ) systemdServiceDefs));
+    # TODO-EXTERNAL:
+    # Use `systemdServices.definitionsWithLocations` when https://github.com/NixOS/nixpkgs/pull/189836
+    # is included in nixpkgs stable.
+    ) systemdServices.definitions systemdServices.files));
   in
     # Set difference: nbServices - nonNbServices
     builtins.filter (nbService: ! nonNbServices ? ${nbService}) (builtins.attrNames nbServices);
