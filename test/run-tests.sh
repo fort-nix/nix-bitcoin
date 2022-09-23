@@ -275,11 +275,6 @@ flake() {
 
 # Test generating module documentation for search.nixos.org
 nixosSearch() {
-    # TODO-EXTERNAL:
-    # Remove this when nixos-search has been fixed
-    echo "Skipping test nixosSearch"
-    return
-
     if ! checkFlakeSupport "nixosSearch"; then return; fi
 
     if [[ $_nixBitcoinInCopiedSrc ]]; then
