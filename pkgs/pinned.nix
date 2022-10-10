@@ -17,8 +17,7 @@ pkgs: pkgsUnstable:
     elementsd
     fulcrum
     hwi
-    lightning-loop
-    lnd;
+    lightning-loop;
 
   inherit pkgs pkgsUnstable;
 }
