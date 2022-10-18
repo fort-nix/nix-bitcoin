@@ -56,6 +56,7 @@ let
         pluginPkgs = nbPkgs.clightning-plugins // {
           clboss.path = "${plugins.clboss.package}/bin/clboss";
           trustedcoin.path = "${plugins.trustedcoin.package}/bin/trustedcoin";
+          teos-watchtower-plugin.path = "${nbPkgs.teos-watchtower-plugin}/bin/watchtower-client";
         };
       in map (plugin: pluginPkgs.${plugin}.path) enabled;
 
