@@ -26,6 +26,8 @@
           , pkgsUnstable ? nixpkgs-unstable.legacyPackages.${system}
         }:
           import ./pkgs { inherit pkgs pkgsUnstable; };
+
+        inherit supportedSystems;
       };
 
       overlays.default = final: prev: let
