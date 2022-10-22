@@ -22,8 +22,7 @@ name: testConfig:
         cores = lib.mkDefault 2;
       };
 
-      # Run shellcheck on all nix-bitcoin services during machine build time
-      system.extraDependencies = [ config.test.shellcheckServices ];
+      test.shellcheckServices.enable = true;
     };
 
     testScript = nodes: let
