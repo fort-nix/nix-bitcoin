@@ -5,7 +5,7 @@
   }, system ? builtins.currentSystem, nodejs ? pkgs."nodejs-14_x"}:
 
 let
-  nodeEnv = import "${toString pkgs.path}/pkgs/development/node-packages/node-env.nix" {
+  nodeEnv = import (pkgs.path + "/pkgs/development/node-packages/node-env.nix") {
     inherit (pkgs) stdenv lib python2 runCommand writeTextFile writeShellScript;
     inherit pkgs nodejs;
     libtool = if pkgs.stdenv.isDarwin then pkgs.darwin.cctools else null;

@@ -89,7 +89,7 @@ name: testConfig:
   vmWithoutTests = (pkgs.nixos ({ config, ... }: {
     imports = [
       testConfig
-      "${toString pkgs.path}/nixos/modules/virtualisation/qemu-vm.nix"
+      (pkgs.path + "/nixos/modules/virtualisation/qemu-vm.nix")
     ];
     virtualisation.graphics = false;
     services.getty.autologinUser = "root";

@@ -6,12 +6,12 @@ in
 import "${nixpkgs}/nixos/tests/make-test-python.nix" ({ pkgs, ... }:
 with pkgs.lib;
 let
-  keyDir = "${nixpkgs}/nixos/tests/initrd-network-ssh";
+  keyDir = nixpkgs + "/nixos/tests/initrd-network-ssh";
   keys = {
-    server = "${keyDir}/ssh_host_ed25519_key";
-    client = "${keyDir}/id_ed25519";
-    serverPub = readFile "${keys.server}.pub";
-    clientPub = readFile "${keys.client}.pub";
+    server = keyDir + "/ssh_host_ed25519_key";
+    client = keyDir + "/id_ed25519";
+    serverPub = readFile (keys.server + ".pub");
+    clientPub = readFile (keys.client + ".pub");
   };
 
   clientBaseConfig = {

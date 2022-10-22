@@ -14,7 +14,7 @@
         # Import the secure-node preset, an opinionated config to enhance security
         # and privacy.
         #
-        # "${nix-bitcoin}/modules/presets/secure-node.nix"
+        # (nix-bitcoin + "/modules/presets/secure-node.nix")
 
         {
           # Automatically generate all secrets required by services.
