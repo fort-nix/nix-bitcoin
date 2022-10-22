@@ -53,16 +53,6 @@
 
 set -euo pipefail
 
-if [[ $EUID != 0 ]]; then
-    # NixOS containers require root permissions.
-    # By using sudo here and not at the user's call-site extra-container can detect if it is running
-    # inside an existing shell session (by checking an internal environment variable).
-    #
-    # shellcheck disable=SC2154
-    exec sudo scenario="$scenario" scriptDir="$scriptDir" NIX_PATH="$NIX_PATH" PATH="$PATH" \
-         scenarioOverridesFile="${scenarioOverridesFile:-}" "$scriptDir/lib/make-container.sh" "$@"
-fi
-
 export containerName=nb-test
 containerCommand=shell
 
@@ -80,9 +70,16 @@ done
 
 containerBin=$(type -P extra-container) || true
 if [[ ! ($containerBin && $(realpath "$containerBin") == *extra-container-0.10*) ]]; then
+    echo
     echo "Building extra-container. Skip this step by adding extra-container 0.10 to PATH."
     nix-build --out-link /tmp/extra-container "$scriptDir"/../pkgs \
       -A pinned.extra-container >/dev/null
+    # When this script is run as root, e.g. when run in an extra-container shell,
+    # chown the gcroot symlink to the regular (login) user so that the symlink can be
+    # overwritten when this script is run without root.
+    if [[ $EUID == 0 ]]; then
+        chown "$(logname):" --no-dereference /tmp/extra-container
+    fi
     export PATH="/tmp/extra-container/bin${PATH:+:}$PATH"
 fi
 
