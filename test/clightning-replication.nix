@@ -1,12 +1,9 @@
 # You can run this test via `run-tests.sh -s clightningReplication`
 
-let
-  nixpkgs = (import ../pkgs/nixpkgs-pinned.nix).nixpkgs;
-in
-import "${nixpkgs}/nixos/tests/make-test-python.nix" ({ pkgs, ... }:
+makeTestVM: pkgs:
 with pkgs.lib;
 let
-  keyDir = nixpkgs + "/nixos/tests/initrd-network-ssh";
+  keyDir = pkgs.path + "/nixos/tests/initrd-network-ssh";
   keys = {
     server = keyDir + "/ssh_host_ed25519_key";
     client = keyDir + "/id_ed25519";
@@ -29,7 +26,7 @@ let
     };
   };
 in
-{
+makeTestVM {
   name = "clightning-replication";
 
   nodes = let nodes = {
@@ -150,4 +147,4 @@ in
           # A gocryptfs has been created on the server
           server.succeed("ls /var/backup/nb-replication/writable/lightningd-db/gocryptfs.conf")
   '';
-})
+}

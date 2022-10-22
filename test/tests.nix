@@ -1,17 +1,9 @@
 # Integration tests, can be run without internet access.
 
+lib:
 let
-  nixpkgs = (import ../pkgs/nixpkgs-pinned.nix).nixpkgs;
-in
-
-{ extraScenarios ? { ... }: {}
-, pkgs ? import nixpkgs { config = {}; overlays = []; }
-}:
-with pkgs.lib;
-let
-  globalPkgs = pkgs;
-
-  baseConfig = { pkgs, config, ... }: let
+  # Included in all scenarios
+  baseConfig = { config, pkgs, ... }: with lib; let
     cfg = config.services;
     inherit (config.nix-bitcoin.lib.test) mkIfTest;
   in {
@@ -32,9 +24,6 @@ let
     };
 
     config = mkMerge [{
-      # Share the same pkgs instance among tests
-      nixpkgs.pkgs = mkDefault globalPkgs;
-
       environment.systemPackages = mkMerge (with pkgs; [
         # Needed to test macaroon creation
         (mkIfTest "btcpayserver" [ openssl xxd ])
@@ -176,8 +165,9 @@ let
     ];
   };
 
-  scenarios = {
-    base = baseConfig; # Included in all scenarios
+  scenarios = with lib; {
+    # Included in all scenarios by ./lib/make-test.nix
+    base = baseConfig;
 
     default = scenarios.secureNode;
 
@@ -273,7 +263,7 @@ let
       environment.systemPackages = [ pkgs.fping ];
     };
 
-    regtestBase = { config, ... }: {
+    regtestBase = { config, pkgs, ... }: {
       tests.regtest = true;
       test.data.num_blocks = 100;
 
@@ -323,9 +313,10 @@ let
       services.lnd.enable = true;
       services.bitcoind.prune = 1000;
     };
+  };
 
-    ## Examples / debug helper
-
+  ## Example scenarios that showcase extra features
+  exampleScenarios = with lib; {
     # Run a selection of tests in scenario 'netns'
     selectedTests = {
       imports = [ scenarios.netns ];
@@ -342,40 +333,82 @@ let
       # See ./lib/test-lib.nix for a description
       test.container.exposeLocalhost = true;
     };
-
-    adhoc = {
-      # <Add your config here>
-      # You can also set the env var `scenarioOverridesFile` (used below) to define custom scenarios.
-    };
   };
+in {
+  inherit scenarios;
 
-  overrides = builtins.getEnv "scenarioOverridesFile";
-  extraScenarios' = (if (overrides != "") then import overrides else extraScenarios) {
-    inherit scenarios pkgs;
-    inherit (pkgs) lib;
+  pkgs = flake: pkgs: rec {
+    # A basic test using the nix-bitcoin test framework
+    makeTestBasic = import ./lib/make-test.nix flake pkgs makeTestVM;
+
+    # Wraps `makeTest` in NixOS' testing-python.nix so that the drv includes the
+    # log output and the test driver
+    makeTestVM = import ./lib/make-test-vm.nix pkgs;
+
+    # A test using the nix-bitcoin test framework, with some helpful defaults
+    makeTest = { name ? "nix-bitcoin-test", config }:
+      makeTestBasic {
+        inherit name;
+        config = {
+          imports = [
+            scenarios.base
+            config
+          ];
+          # Share the same pkgs instance among tests
+          nixpkgs.pkgs = pkgs.lib.mkDefault pkgs;
+        };
+      };
+
+    # A test using the nix-bitcoin test framework, with defaults specific to nix-bitcoin
+    makeTestNixBitcoin = { name, config }:
+      makeTest {
+        name = "nix-bitcoin-${name}";
+        config = {
+          imports = [ config ];
+          test.shellcheckServices.sourcePrefix = toString ./..;
+        };
+      };
+
+    makeTests = scenarios: let
+      mainTests = builtins.mapAttrs (name: config:
+        makeTestNixBitcoin { inherit name config; }
+      ) scenarios;
+    in
+      {
+        clightningReplication = import ./clightning-replication.nix makeTestVM pkgs;
+      } // mainTests;
+
+    tests = makeTests scenarios;
+
+    ## Helper for ./run-tests.sh
+
+    getTest = { name, extraScenariosFile ? null }:
+      let
+        tests = makeTests (scenarios // (
+          lib.optionalAttrs (extraScenariosFile != null)
+            (import extraScenariosFile {
+              inherit scenarios lib pkgs;
+              nix-bitcoin = flake;
+            })
+        ));
+      in
+        tests.${name} or (makeTestNixBitcoin {
+          inherit name;
+          config = {
+            services.${name}.enable = true;
+          };
+        });
+
+    instantiateTests = testNames:
+      let
+        testNames' = lib.splitString " " testNames;
+      in
+        map (name:
+          let
+            test = tests.${name};
+          in
+            builtins.seq (builtins.trace "Evaluating test '${name}'" test.outPath)
+              test
+        ) testNames';
   };
-  allScenarios = scenarios // extraScenarios';
-
-  makeTest = name: config:
-    makeTest' name {
-      imports = [
-        allScenarios.base
-        config
-      ];
-    };
-  makeTest' = import ./lib/make-test.nix pkgs;
-
-  tests = builtins.mapAttrs makeTest allScenarios // {
-    clightningReplication.vm = import ./clightning-replication.nix {
-      inherit pkgs;
-      inherit (pkgs.stdenv) system;
-    };
-  };
-
-  getTest = name: tests.${name} or (makeTest name {
-    services.${name}.enable = true;
-  });
-in
-  tests // {
-    inherit getTest;
-  }
+}

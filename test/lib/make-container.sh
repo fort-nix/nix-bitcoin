@@ -53,7 +53,10 @@
 
 set -euo pipefail
 
-export containerName=nb-test
+# These vars are set by ../run-tests.sh
+: "${container:=}"
+: "${scriptDir:=}"
+
 containerCommand=shell
 
 while [[ $# -gt 0 ]]; do
@@ -69,11 +72,10 @@ while [[ $# -gt 0 ]]; do
 done
 
 containerBin=$(type -P extra-container) || true
-if [[ ! ($containerBin && $(realpath "$containerBin") == *extra-container-0.10*) ]]; then
+if [[ ! ($containerBin && $(realpath "$containerBin") == *extra-container-0.11*) ]]; then
     echo
-    echo "Building extra-container. Skip this step by adding extra-container 0.10 to PATH."
-    nix-build --out-link /tmp/extra-container "$scriptDir"/../pkgs \
-      -A pinned.extra-container >/dev/null
+    echo "Building extra-container. Skip this step by adding extra-container 0.11 to PATH."
+    nix build --out-link /tmp/extra-container "$scriptDir"/..#extra-container
     # When this script is run as root, e.g. when run in an extra-container shell,
     # chown the gcroot symlink to the regular (login) user so that the symlink can be
     # overwritten when this script is run without root.
@@ -83,7 +85,4 @@ if [[ ! ($containerBin && $(realpath "$containerBin") == *extra-container-0.10*)
     export PATH="/tmp/extra-container/bin${PATH:+:}$PATH"
 fi
 
-read -rd '' src <<EOF || true
-((import "$scriptDir/tests.nix" {}).getTest "$scenario").container
-EOF
-exec extra-container "$containerCommand" -E "$src" "$@"
+exec "$container"/bin/container "$containerCommand" "$@"

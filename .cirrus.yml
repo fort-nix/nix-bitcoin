@@ -30,7 +30,7 @@ task:
       # This script is run as root
       build_script:
         - echo "sandbox = true" >> /etc/nix/nix.conf
-        - nix shell --inputs-from . nixpkgs#{bash,coreutils,gawk,cachix} -c ./test/ci/build.sh
+        - nix shell --inputs-from . nixpkgs#{bash,coreutils,cachix} -c ./test/ci/build.sh $scenario
 
     - name: flake
       build_script:

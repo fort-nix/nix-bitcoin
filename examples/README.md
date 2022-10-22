@@ -55,6 +55,8 @@ The internal test suite is also useful for exploring features.\
 The following `run-tests.sh` commands leave no traces (outside of `/nix/store`) on
 the host system.
 
+`run-tests.sh` requires Nix >= 2.10.
+
 ```bash
 git clone https://github.com/fort-nix/nix-bitcoin
 cd nix-bitcoin/test
@@ -82,6 +84,27 @@ c systemctl status bitcoind
 }' container --run c nodeinfo
 ```
 See [`run-tests.sh`](../test/run-tests.sh) for a complete documentation.
+
+#### Flakes
+Tests can also be directly accessed via Flakes:
+```bash
+# Build test
+nix build --no-link ..#tests.default
+
+# Run a node in a VM. No tests are executed.
+nix run ..#tests.default.vm
+
+# Run a Python test shell inside a VM node
+nix run ..#tests.default.run -- --debug
+
+# Run a node in a container. Requires extra-container, systemd and root privileges
+nix run ..#tests.default.container
+nix run ..#tests.default.containerLegacy # For NixOS with `system.stateVersion` <22.05
+
+# Run a command in a container
+nix run ..#tests.default.container -- --run c nodeinfo
+nix run ..#tests.default.containerLegacy -- --run c nodeinfo # For NixOS with `system.stateVersion` <22.05
+```
 
 ### Real-world example
 Check the [server repo](https://github.com/fort-nix/nixbitcoin.org) for https://nixbitcoin.org

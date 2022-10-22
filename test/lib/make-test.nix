@@ -1,26 +1,23 @@
-pkgs:
+flake: pkgs: makeTestVM:
 let
-  makeVM = import ./make-test-vm.nix pkgs;
-  inherit (pkgs) lib;
+  inherit (flake.inputs) extra-container;
+  inherit (pkgs.stdenv.hostPlatform) system;
 in
 
-name: testConfig:
-{
-  vm = makeVM {
-    name = "nix-bitcoin-${name}";
+{ name ? "nix-bitcoin-test", config }:
+let
+  inherit (pkgs) lib;
+
+  testConfig = config;
+
+  test = makeTestVM {
+    inherit name;
 
     nodes.machine = { config, ... }: {
-      imports = [ testConfig ];
-
-      virtualisation = {
-        # Needed because duplicity requires 270 MB of free temp space, regardless of backup size
-        diskSize = 1024;
-
-        # Min. 800 MiB needed to avoid 'out of memory' errors
-        memorySize = lib.mkDefault 2048;
-
-        cores = lib.mkDefault 2;
-      };
+      imports = [
+        testConfig
+        commonVmConfig
+      ];
 
       test.shellcheckServices.enable = true;
     };
@@ -47,7 +44,7 @@ name: testConfig:
         (builtins.readFile ./../tests.py)
         cfg.test.extraTestScript
         # Don't run tests in interactive mode.
-        # is_interactive is set in ../run-tests.sh
+        # is_interactive is set in ./run-vm.sh
         ''
           if not "is_interactive" in vars():
               run_tests()
@@ -55,40 +52,53 @@ name: testConfig:
       ];
   };
 
-  container = {
-    # The container name has a 11 char length limit
-    containers.nb-test = { config, ... }: {
-      imports = [
-        {
-          config = {
-            extra = config.config.test.container;
-            config = testConfig;
-          };
-        }
+  # A VM runner for interactive use
+  run = pkgs.writers.writeBashBin "run-vm" ''
+    . ${./run-vm.sh} ${test.driver} "$@"
+  '';
 
-        # Enable FUSE inside the container when clightning replication
-        # is enabled.
-        # TODO-EXTERNAL: Remove this when
-        # https://github.com/systemd/systemd/issues/17607
-        # has been resolved. This will also improve security.
-        (
-          let
-            s = config.config.services;
-          in
-            lib.mkIf (s ? clightning && s.clightning.enable && s.clightning.replication.enable) {
-              bindMounts."/dev/fuse" = { hostPath = "/dev/fuse"; };
-              allowedDevices = [ { node = "/dev/fuse"; modifier = "rw"; } ];
+  mkContainer = legacyInstallDirs:
+    extra-container.lib.buildContainers {
+      inherit system legacyInstallDirs;
+      config = {
+        # The container name has a 11 char length limit
+        containers.nb-test = { config, ... }: {
+          imports = [
+            {
+              config = {
+                extra = config.config.test.container;
+                config = testConfig;
+              };
             }
-        )
-      ];
+
+            # Enable FUSE inside the container when clightning replication
+            # is enabled.
+            # TODO-EXTERNAL: Remove this when
+            # https://github.com/systemd/systemd/issues/17607
+            # has been resolved. This will also improve security.
+            (
+              let
+                s = config.config.services;
+              in
+                lib.mkIf (s ? clightning && s.clightning.enable && s.clightning.replication.enable) {
+                  bindMounts."/dev/fuse" = { hostPath = "/dev/fuse"; };
+                  allowedDevices = [ { node = "/dev/fuse"; modifier = "rw"; } ];
+                }
+            )
+          ];
+        };
+      };
     };
-  };
+
+  container = mkContainer false;
+  containerLegacy = mkContainer true;
 
   # This allows running a test scenario in a regular NixOS VM.
   # No tests are executed.
-  vmWithoutTests = (pkgs.nixos ({ config, ... }: {
+  vm = (pkgs.nixos ({ config, ... }: {
     imports = [
       testConfig
+      commonVmConfig
       (pkgs.path + "/nixos/modules/virtualisation/qemu-vm.nix")
     ];
     virtualisation.graphics = false;
@@ -103,7 +113,37 @@ name: testConfig:
     '';
 
     system.stateVersion = lib.mkDefault config.system.nixos.release;
-  })).config.system.build.vm;
+  })).config.system.build.vm.overrideAttrs (old: {
+    meta = old.meta // { mainProgram = "run-vm-in-tmpdir"; };
+    buildCommand =  old.buildCommand + "\n" + ''
+      install -m 700 ${./run-vm-without-tests.sh} $out/bin/run-vm-in-tmpdir
+      patchShebangs $out/bin/run-vm-in-tmpdir
+    '';
+  });
+
+  commonVmConfig = {
+    virtualisation = {
+      # Needed because duplicity requires 270 MB of free temp space, regardless of backup size
+      diskSize = 1024;
+
+      # Min. 800 MiB needed to avoid 'out of memory' errors
+      memorySize = lib.mkDefault 2048;
+
+      # There are no perf gains beyond 3 cores.
+      # Benchmark: Ryzen 7 2700 (8 cores), VM test `default` as of 34f6eb90.
+      # Num. Cores    | 1   | 2  | 3  | 4  | 6
+      # Runtime (sec) | 125 | 95 | 89 | 89 | 90
+      cores = lib.mkDefault 3;
+    };
+  };
+in
+test // {
+  inherit
+    run
+    vm
+    container
+    # For NixOS with `system.stateVersion` <22.05
+    containerLegacy;
 
   config = testConfig;
 }
