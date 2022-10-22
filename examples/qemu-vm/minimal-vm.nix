@@ -29,6 +29,9 @@ rec {
       # For faster startup in offline VMs
       services.clightning.extraConfig = "disable-dns";
 
+      # Avoid lengthy build of the nixos manual
+      documentation.nixos.enable = false;
+
       nixpkgs.pkgs = pkgs;
       services.getty.autologinUser = "root";
       nix.nixPath = [ "nixpkgs=${nixpkgs}" ];

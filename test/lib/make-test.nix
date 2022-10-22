@@ -94,6 +94,9 @@ name: testConfig:
     virtualisation.graphics = false;
     services.getty.autologinUser = "root";
 
+    # Avoid lengthy build of the nixos manual
+    documentation.nixos.enable = false;
+
     # Provide a shortcut for instant poweroff from within the machine
     environment.systemPackages = with pkgs; [
       (lowPrio (writeScriptBin "q" ''
