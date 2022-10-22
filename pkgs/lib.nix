@@ -1,4 +1,4 @@
-lib: pkgs:
+lib: pkgs: config:
 
 with lib;
 
@@ -114,5 +114,9 @@ let self = {
       (map (domain: "DNS:${domain}") cert.extraDomains) ++
       (map (ip: "IP:${ip}") cert.extraIPs)
     );
+
+  test = {
+    mkIfTest = test: mkIf (config.tests.${test} or false);
+  };
 
 }; in self

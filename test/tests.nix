@@ -13,7 +13,7 @@ let
 
   baseConfig = { pkgs, config, ... }: let
     cfg = config.services;
-    mkIfTest = test: mkIf (config.tests.${test} or false);
+    inherit (config.nix-bitcoin.lib.test) mkIfTest;
   in {
     imports = [
       ./lib/test-lib.nix
