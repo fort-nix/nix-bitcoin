@@ -1,7 +1,8 @@
-{
+{ modulesPath, ... }: {
   imports = [
-    # Source: https://github.com/NixOS/nixpkgs/blob/master/nixos/modules/profiles/hardened.nix
-    <nixpkgs/nixos/modules/profiles/hardened.nix>
+    # Source:
+    # https://github.com/NixOS/nixpkgs/blob/master/nixos/modules/profiles/hardened.nix
+    (modulesPath + "/profiles/hardened.nix")
   ];
 
   ## Reset some options set by the hardened profile
