@@ -97,12 +97,10 @@ name: testConfig:
     # Avoid lengthy build of the nixos manual
     documentation.nixos.enable = false;
 
-    # Provide a shortcut for instant poweroff from within the machine
-    environment.systemPackages = with pkgs; [
-      (lowPrio (writeScriptBin "q" ''
-         echo o >/proc/sysrq-trigger
-       ''))
-    ];
+    # Power off VM when the user exits the shell
+    systemd.services."serial-getty@".preStop = ''
+      echo o >/proc/sysrq-trigger
+    '';
 
     system.stateVersion = lib.mkDefault config.system.nixos.release;
   })).config.system.build.vm;
