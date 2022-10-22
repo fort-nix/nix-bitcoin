@@ -73,9 +73,9 @@ name: testConfig:
         # has been resolved. This will also improve security.
         (
           let
-            clightning = config.config.services.clightning;
+            s = config.config.services;
           in
-            lib.mkIf (clightning.enable && clightning.replication.enable) {
+            lib.mkIf (s ? clightning && s.clightning.enable && s.clightning.replication.enable) {
               bindMounts."/dev/fuse" = { hostPath = "/dev/fuse"; };
               allowedDevices = [ { node = "/dev/fuse"; modifier = "rw"; } ];
             }
