@@ -277,11 +277,6 @@ flake() {
 nixosSearch() {
     if ! checkFlakeSupport "nixosSearch"; then return; fi
 
-    if [[ $_nixBitcoinInCopiedSrc ]]; then
-      # flake-info requires that its target flake is under version control
-      . "$scriptDir/lib/create-git-repo.sh"
-    fi
-
     if [[ $outLinkPrefix ]]; then
         # Add gcroots for flake-info
         nix build "$scriptDir/nixos-search#flake-info" -o "$outLinkPrefix-flake-info"

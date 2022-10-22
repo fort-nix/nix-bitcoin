@@ -14,7 +14,7 @@ atExit() {
 trap "atExit" EXIT
 
 # shellcheck disable=SC2154
-rsync -a --delete --exclude='.git*' "$scriptDir/../" "$tmp/src"
+rsync -a --delete "$scriptDir/../" "$tmp/src"
 echo "Copied src"
 
 # shellcheck disable=SC2154
