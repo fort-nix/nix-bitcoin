@@ -305,13 +305,14 @@ buildable() {
 }
 
 examples() {
-    script="
+    script='
       set -e
-      ./deploy-container.sh
-      ./deploy-container-minimal.sh
-      ./deploy-qemu-vm.sh
-      ./deploy-krops.sh
-    "
+      runExample() { echo; echo Running example $1; ./$1; }
+      runExample deploy-container.sh
+      runExample deploy-container-minimal.sh
+      runExample deploy-qemu-vm.sh
+      runExample deploy-krops.sh
+    '
     (cd "$scriptDir/../examples" && nix-shell --run "$script")
 }
 
