@@ -22,7 +22,7 @@ let
         '';
       };
 
-      nodeinfoLib = mkOption {
+      lib = mkOption {
         internal = true;
         readOnly = true;
         default = nodeinfoLib;
