@@ -6,11 +6,11 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-22.05";
-    nixpkgsUnstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { self, nixpkgs, nixpkgsUnstable, flake-utils }:
+  outputs = { self, nixpkgs, nixpkgs-unstable, flake-utils }:
     let
       supportedSystems = [
         "x86_64-linux"
@@ -23,7 +23,7 @@
         mkNbPkgs = {
           system
           , pkgs ? nixpkgs.legacyPackages.${system}
-          , pkgsUnstable ? nixpkgsUnstable.legacyPackages.${system}
+          , pkgsUnstable ? nixpkgs-unstable.legacyPackages.${system}
         }:
           import ./pkgs { inherit pkgs pkgsUnstable; };
       };

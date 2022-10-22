@@ -31,7 +31,7 @@
         "type": "github"
       }
     },
-    "nixpkgsUnstable": {
+    "nixpkgs-unstable": {
       "locked": {
         "lastModified": 1666570118,
         "narHash": "sha256-MTXmIYowHM1wyIYyqPdBLia5SjGnxETv0YkIbDsbkx4=",
@@ -51,7 +51,7 @@
       "inputs": {
         "flake-utils": "flake-utils",
         "nixpkgs": "nixpkgs",
-        "nixpkgsUnstable": "nixpkgsUnstable"
+        "nixpkgs-unstable": "nixpkgs-unstable"
       }
     }
   },
