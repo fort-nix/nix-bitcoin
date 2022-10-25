@@ -19,6 +19,7 @@ let
   # that only have definitions located in the nix-bitcoin source.
   nix-bitcoin-services = let
     systemdServices = args.options.systemd.services;
+    configSystemdServices = args.config.systemd.services;
     nix-bitcoin-source = toString ../..;
     nbServices = collectServices true;
     nonNbServices = collectServices false;
@@ -38,8 +39,11 @@ let
     # is included in nixpkgs stable.
     ) systemdServices.definitions systemdServices.files));
   in
-    # Set difference: nbServices - nonNbServices
-    builtins.filter (nbService: ! nonNbServices ? ${nbService}) (builtins.attrNames nbServices);
+    # Calculate set difference: nbServices - nonNbServices
+    # and exclude unavailable services (defined via `mkIf false ...`) by checking `configSystemdServices`.
+    builtins.filter (nbService:
+      configSystemdServices ? ${nbService} && (! nonNbServices ? ${nbService})
+    ) (builtins.attrNames nbServices);
 
   # The concatenated list of values of ExecStart, ExecStop, ... (`scriptAttrs`) of all `nix-bitcoin-services`.
   serviceCmds = let
