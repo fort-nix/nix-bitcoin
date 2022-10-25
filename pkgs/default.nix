@@ -37,10 +37,5 @@ let self = {
 
   pinned = import ./pinned.nix pkgs pkgsUnstable;
 
-  # TODO-EXTERNAL:
-  # Remove this when https://github.com/NixOS/nixpkgs/pull/195337 is available in the
-  # nixpkgs-unstable channel
-  lnd = pkgsUnstable.callPackage ./lnd-0.15.2.nix {};
-
   modulesPkgs = self // self.pinned;
 }; in self

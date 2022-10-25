@@ -200,7 +200,7 @@ in {
     systemd.services.btcpayserver = let
       nbExplorerUrl = "http://${nbLib.addressWithPort cfg.nbxplorer.address cfg.nbxplorer.port}/";
       nbExplorerCookie = "${cfg.nbxplorer.dataDir}/${bitcoind.makeNetworkName "Main" "RegTest"}/.cookie";
-      configFile = builtins.toFile "config" (''
+      configFile = builtins.toFile "btcpayserver-config" (''
         network=${bitcoind.network}
         bind=${cfg.btcpayserver.address}
         port=${toString cfg.btcpayserver.port}
@@ -212,34 +212,27 @@ in {
         rootpath=${cfg.btcpayserver.rootpath}
       '' + optionalString (cfg.btcpayserver.lightningBackend == "clightning") ''
         btclightning=type=clightning;server=unix:///${cfg.clightning.dataDir}/${bitcoind.makeNetworkName "bitcoin" "regtest"}/lightning-rpc
-      '' + optionalString cfg.btcpayserver.lbtc ''
+      '' + optionalString (cfg.btcpayserver.lightningBackend == "lnd")
+        (
+          "btclightning=type=lnd-rest;" +
+          "server=https://${cfg.lnd.restAddress}:${toString cfg.lnd.restPort}/;" +
+          "macaroonfilepath=/run/lnd/btcpayserver.macaroon;" +
+          "certfilepath=${config.services.lnd.certPath}" +
+          "\n"
+        )
+      + optionalString cfg.btcpayserver.lbtc ''
         chains=btc,lbtc
         lbtcexplorerurl=${nbExplorerUrl}
         lbtcexplorercookiefile=${nbExplorerCookie}
       '');
-      lndConfig =
-        "btclightning=type=lnd-rest;" +
-        "server=https://${cfg.lnd.restAddress}:${toString cfg.lnd.restPort}/;" +
-        "macaroonfilepath=/run/lnd/btcpayserver.macaroon;" +
-        "certthumbprint=";
     in let self = {
       wantedBy = [ "multi-user.target" ];
       requires = [ "nbxplorer.service" "postgresql.service" ]
                  ++ optional (cfg.btcpayserver.lightningBackend != null) "${cfg.btcpayserver.lightningBackend}.service";
       after = self.requires;
-      preStart = ''
-        install -m 600 ${configFile} '${cfg.btcpayserver.dataDir}/settings.config'
-        ${optionalString (cfg.btcpayserver.lightningBackend == "lnd") ''
-          {
-            echo -n "${lndConfig}"
-            ${pkgs.openssl}/bin/openssl x509 -noout -fingerprint -sha256 -in ${config.services.lnd.certPath} \
-              | sed -e 's/.*=//;s/://g'
-          } >> '${cfg.btcpayserver.dataDir}/settings.config'
-        ''}
-      '';
       serviceConfig = nbLib.defaultHardening // {
         ExecStart = ''
-          ${cfg.btcpayserver.package}/bin/btcpayserver --conf='${cfg.btcpayserver.dataDir}/settings.config' \
+          ${cfg.btcpayserver.package}/bin/btcpayserver --conf=${configFile} \
             --datadir='${cfg.btcpayserver.dataDir}'
         '';
         User = cfg.btcpayserver.user;
