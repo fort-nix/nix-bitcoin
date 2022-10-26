@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Run flake-info for the nix-bitcoin flake in a sandbox:
+# Run flake-info for the nix-bitcoin flake in an offline sandbox:
 # - Adds a consistent, reproducible runtime environment
 # - Removes the need to trust the flake-info binary
 #
