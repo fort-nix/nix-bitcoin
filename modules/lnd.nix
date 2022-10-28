@@ -174,7 +174,7 @@ let
     ${optionalString (cfg.tor-socks != null) "tor.socks=${cfg.tor-socks}"}
 
     bitcoind.rpchost=${bitcoindRpcAddress}:${toString bitcoind.rpc.port}
-    bitcoind.rpcuser=${bitcoind.rpc.users.public.name}
+    bitcoind.rpcuser=${bitcoind.rpc.users.${rpcUser}.name}
     bitcoind.zmqpubrawblock=${bitcoind.zmqpubrawblock}
     bitcoind.zmqpubrawtx=${bitcoind.zmqpubrawtx}
 
@@ -182,11 +182,16 @@ let
 
     ${cfg.extraConfig}
   '';
+
+  isPruned = bitcoind.prune > 0;
+  # When bitcoind pruning is enabled, lnd requires non-public RPC commands `getpeerinfo`, `getnodeaddresses`
+  # to fetch missing blocks from peers (implemented in btcsuite/btcwallet/chain/pruned_block_dispatcher.go)
+  rpcUser = if isPruned then "lnd" else "public";
 in {
 
   inherit options;
 
-  config = mkIf cfg.enable {
+  config = mkIf cfg.enable (mkMerge [ {
     assertions = [
       { assertion =
           !(config.services ? clightning)
@@ -226,7 +231,7 @@ in {
       preStart = ''
         install -m600 ${configFile} '${cfg.dataDir}/lnd.conf'
         {
-          echo "bitcoind.rpcpass=$(cat ${secretsDir}/bitcoin-rpcpassword-public)"
+          echo "bitcoind.rpcpass=$(cat ${secretsDir}/bitcoin-rpcpassword-${rpcUser})"
           ${optionalString (cfg.getPublicAddressCmd != "") ''
             echo "externalip=$(${cfg.getPublicAddressCmd})"
           ''}
@@ -304,5 +309,22 @@ in {
       makePasswordSecret lnd-wallet-password
       makeCert lnd '${nbLib.mkCertExtraAltNames cfg.certificate}'
     '';
-  };
+  }
+
+  (mkIf isPruned {
+    services.bitcoind.rpc.users.lnd = {
+      passwordHMACFromFile = true;
+      rpcwhitelist = bitcoind.rpc.users.public.rpcwhitelist ++ [
+        "getpeerinfo"
+        "getnodeaddresses"
+      ];
+    };
+    nix-bitcoin.secrets = {
+      bitcoin-rpcpassword-lnd.user = cfg.user;
+      bitcoin-HMAC-lnd.user = bitcoind.user;
+    };
+    nix-bitcoin.generateSecretsCmds.lndBitcoinRPC = ''
+      makeBitcoinRPCPassword lnd
+    '';
+  }) ]);
 }

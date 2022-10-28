@@ -318,6 +318,12 @@ let
       services.btcpayserver.lbtc = mkForce false;
     };
 
+    # Test the special bitcoin RPC setup that lnd uses when bitcoin is pruned
+    lndPruned = {
+      services.lnd.enable = true;
+      services.bitcoind.prune = 1000;
+    };
+
     ## Examples / debug helper
 
     # Run a selection of tests in scenario 'netns'

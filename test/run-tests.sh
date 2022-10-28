@@ -306,6 +306,7 @@ buildable() {
     scenario=regtest buildTest "$@"
     scenario=hardened buildTest "$@"
     scenario=clightningReplication buildTest "$@"
+    scenario=lndPruned buildTest "$@"
 }
 
 examples() {
