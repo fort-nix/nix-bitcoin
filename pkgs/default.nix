@@ -37,5 +37,9 @@ let self = {
 
   pinned = import ./pinned.nix pkgs pkgsUnstable;
 
+  # TODO-EXTERNAL:
+  # Remove this when lnd 0.15.4 is available in the nixpkgs-unstable channel
+  lnd = pkgsUnstable.callPackage ./lnd-0.15.4.nix {};
+
   modulesPkgs = self // self.pinned;
 }; in self
