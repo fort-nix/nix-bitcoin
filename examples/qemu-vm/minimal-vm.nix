@@ -43,6 +43,7 @@ rec {
         - nodeinfo
         - systemctl status bitcoind
         - systemctl status clightning
+        - lightning-cli getinfo
       '';
 
       # Power off VM when the user exits the shell
