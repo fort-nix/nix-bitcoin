@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 
 # This script can also be run locally for testing:
-#   scenario=default ./build.sh
+#   ./build.sh <scenario>
 #
 # When variable CIRRUS_CI is unset, this script leaves no persistent traces on the host system.
 
 set -euo pipefail
+
+scenario=$1
 
 if [[ -v CIRRUS_CI ]]; then
     if [[ ! -e /dev/kvm ]]; then
@@ -16,5 +18,5 @@ if [[ -v CIRRUS_CI ]]; then
     chmod o+rw /dev/kvm
 fi
 
-# shellcheck disable=SC2154
-"${BASH_SOURCE[0]%/*}/../run-tests.sh" --ci --scenario "$scenario"
+cd "${BASH_SOURCE[0]%/*}"
+exec ./build-to-cachix.sh --expr "(builtins.getFlake (toString ../..)).legacyPackages.\${builtins.currentSystem}.tests.$scenario"

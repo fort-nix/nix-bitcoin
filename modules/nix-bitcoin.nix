@@ -12,7 +12,7 @@ with lib;
 
       lib = mkOption {
         readOnly = true;
-        default = import ../pkgs/lib.nix lib pkgs;
+        default = import ../pkgs/lib.nix lib pkgs config;
         defaultText = "nix-bitcoin/pkgs/lib.nix";
       };
 

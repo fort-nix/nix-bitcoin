@@ -6,11 +6,16 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-22.05";
-    nixpkgsUnstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     flake-utils.url = "github:numtide/flake-utils";
+    extra-container = {
+      url = "github:erikarvstedt/extra-container";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-utils.follows = "flake-utils";
+    };
   };
 
-  outputs = { self, nixpkgs, nixpkgsUnstable, flake-utils }:
+  outputs = { self, nixpkgs, nixpkgs-unstable, flake-utils, ... }:
     let
       supportedSystems = [
         "x86_64-linux"
@@ -18,14 +23,22 @@
         "aarch64-linux"
         "armv7l-linux"
       ];
+
+      test = import ./test/tests.nix nixpkgs.lib;
     in {
       lib = {
         mkNbPkgs = {
           system
           , pkgs ? nixpkgs.legacyPackages.${system}
-          , pkgsUnstable ? nixpkgsUnstable.legacyPackages.${system}
+          , pkgsUnstable ? nixpkgs-unstable.legacyPackages.${system}
         }:
           import ./pkgs { inherit pkgs pkgsUnstable; };
+
+        test = {
+          inherit (test) scenarios;
+        };
+
+        inherit supportedSystems;
       };
 
       overlays.default = final: prev: let
@@ -91,7 +104,12 @@
         # Allow accessing the whole nested `nbPkgs` attrset (including `modulesPkgs`)
         # via this flake.
         # `packages` is not allowed to contain nested pkgs attrsets.
-        legacyPackages = nbPkgs;
+        legacyPackages =
+          nbPkgs //
+          (test.pkgs self pkgs) //
+          {
+            extra-container = self.inputs.extra-container.packages.${system}.default;
+          };
 
         apps = rec {
           default = vm;

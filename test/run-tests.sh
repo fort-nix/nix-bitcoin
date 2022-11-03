@@ -66,7 +66,6 @@ scriptDir=$(cd "${BASH_SOURCE[0]%/*}" && pwd)
 args=("$@")
 scenario=
 outLinkPrefix=
-ciBuild=
 while :; do
     case $1 in
         --scenario|-s)
@@ -89,10 +88,6 @@ while :; do
                 exit 1
             fi
             ;;
-        --ci)
-            shift
-            ciBuild=1
-            ;;
         --copy-src|-c)
             shift
             if [[ ! $_nixBitcoinInCopiedSrc ]]; then
@@ -105,183 +100,142 @@ while :; do
     esac
 done
 
-numCPUs=${numCPUs:-$(nproc)}
-# Min. 800 MiB needed to avoid 'out of memory' errors
-memoryMiB=${memoryMiB:-2048}
-
-NIX_PATH=nixpkgs=$(nix eval --raw -f "$scriptDir/../pkgs/nixpkgs-pinned.nix" nixpkgs):nix-bitcoin=$(realpath "$scriptDir/..")
-export NIX_PATH
-
-runAtExit=
-trap 'eval "$runAtExit"' EXIT
+tmpDir=
+# Sets global var `tmpDir`
+makeTmpDir() {
+    if [[ ! $tmpDir ]]; then
+        tmpDir=$(mktemp -d /tmp/nix-bitcoin-tests.XXX)
+        # shellcheck disable=SC2064
+        trap "rm -rf '$tmpDir'" EXIT
+    fi
+}
 
 # Support explicit scenario definitions
 if [[ $scenario = *' '* ]]; then
-    scenarioOverridesFile=$(mktemp "${XDG_RUNTIME_DIR:-/tmp}/nb-scenario.XXX")
-    export scenarioOverridesFile
-
-    # shellcheck disable=SC2016
-    runAtExit+='rm -f "$scenarioOverridesFile";'
-    echo "{ scenarios, pkgs, lib }: with lib; { tmp = $scenario; }" > "$scenarioOverridesFile"
+    makeTmpDir
+    export scenarioOverridesFile=$tmpDir/scenario-overrides.nix
+    echo "{ scenarios, pkgs, lib, nix-bitcoin }: with lib; { tmp = $scenario; }" > "$scenarioOverridesFile"
     scenario=tmp
 fi
 
 # Run the test. No temporary files are left on the host system.
 run() {
-    # TMPDIR is also used by the test driver for VM tmp files
-    TMPDIR=$(mktemp -d /tmp/nix-bitcoin-test.XXX)
-    export TMPDIR
-    runAtExit+="rm -rf ${TMPDIR};"
-
-    nix-build --out-link "$TMPDIR/driver" -E "((import \"$scriptDir/tests.nix\" {}).getTest \"$scenario\").vm" -A driver
-
-    # Variable 'tests' contains the Python code that is executed by the driver on startup
-    if [[ $1 == --interactive ]]; then
-        echo "Running interactive testing environment"
-        tests=$(
-            echo 'is_interactive = True'
-            echo 'exec(open(os.environ["testScript"]).read())'
-            # Start VM
-            echo 'if "machine" in vars(): machine.start()'
-            # Start REPL.
-            # Use `code.interact` for the REPL instead of the builtin test driver REPL
-            # because it supports low featured terminals like Emacs' shell-mode.
-            echo 'import code'
-            echo 'code.interact(local=globals())'
-        )
-    else
-        tests='exec(open(os.environ["testScript"]).read())'
-    fi
-
-    echo "VM stats: CPUs: $numCPUs, memory: $memoryMiB MiB"
-    [[ $NB_TEST_ENABLE_NETWORK ]] || QEMU_NET_OPTS='restrict=on'
-    cd "$TMPDIR" # The VM creates a VDE control socket in $PWD
-    env -i \
-        NIX_PATH="$NIX_PATH" \
-        TMPDIR="$TMPDIR" \
-        USE_TMPDIR=1 \
-        QEMU_OPTS="-smp $numCPUs -m $memoryMiB -nographic $QEMU_OPTS"  \
-        QEMU_NET_OPTS="$QEMU_NET_OPTS" \
-        "$TMPDIR/driver/bin/nixos-test-driver" <(echo "$tests")
+    makeTmpDir
+    buildTestAttr .run --out-link "$tmpDir/run-vm"
+    NIX_BITCOIN_VM_DATADIR=$tmpDir "$tmpDir/run-vm/bin/run-vm" "$@"
 }
 
 debug() {
-    run --interactive
-}
-
-evalTest() {
-    nix-instantiate --eval -E "($(vmTestNixExpr)).outPath"
-}
-
-instantiate() {
-    nix-instantiate -E "$(vmTestNixExpr)" "$@"
+    run --debug
 }
 
 container() {
-    export scriptDir scenario
+    local nixosContainer
+    if ! nixosContainer=$(type -p nixos-container) \
+       || grep -q '"/etc/nixos-containers"' "$nixosContainer"; then
+        local attr=container
+    else
+        # NixOS with `system.stateVersion` <22.05
+        local attr=containerLegacy
+    fi
+    echo "Building container"
+    makeTmpDir
+    export container=$tmpDir/container
+    buildTestAttr ".$attr" --out-link "$container"
+    export scriptDir
     "$scriptDir/lib/make-container.sh" "$@"
 }
 
 # Run a regular NixOS VM
 vm() {
-    TMPDIR=$(mktemp -d /tmp/nix-bitcoin-vm.XXX)
-    export TMPDIR
-    runAtExit+="rm -rf $TMPDIR;"
-
-    nix-build --out-link "$TMPDIR/vm" -E "((import \"$scriptDir/tests.nix\" {}).getTest \"$scenario\").vmWithoutTests"
-
-    echo "VM stats: CPUs: $numCPUs, memory: $memoryMiB MiB"
-    [[ $NB_TEST_ENABLE_NETWORK ]] || export QEMU_NET_OPTS="restrict=on,$QEMU_NET_OPTS"
-
-    # shellcheck disable=SC2211
-    USE_TMPDIR=1 \
-    NIX_DISK_IMAGE=$TMPDIR/img.qcow2 \
-    QEMU_OPTS="-smp $numCPUs -m $memoryMiB -nographic $QEMU_OPTS"  \
-      "$TMPDIR"/vm/bin/run-*-vm
-}
-
-doBuild() {
-    name=$1
-    shift
-    if [[ $ciBuild ]]; then
-        "$scriptDir/ci/build-to-cachix.sh" "$@"
-    else
-        if [[ $outLinkPrefix ]]; then
-            outLink="--out-link $outLinkPrefix-$name"
-        else
-            outLink=--no-out-link
-        fi
-        nix-build $outLink "$@"
-    fi
+    makeTmpDir
+    buildTestAttr .vm --out-link "$tmpDir/vm"
+    NIX_BITCOIN_VM_DATADIR=$tmpDir "$tmpDir/vm/bin/run-vm-in-tmpdir"
 }
 
 # Run the test by building the test derivation
 buildTest() {
-    vmTestNixExpr | doBuild $scenario "$@" -
+    buildTestAttr "" "$@"
 }
 
-vmTestNixExpr() {
-    extraQEMUOpts=
-
-    if [[ $ciBuild ]]; then
-        # On continuous integration nodes there are few other processes running alongside the
-        # test, so use more memory here for maximum performance.
-        memoryMiB=4096
-        memTotalKiB=$(awk '/MemTotal/ { print $2 }' /proc/meminfo)
-        memAvailableKiB=$(awk '/MemAvailable/ { print $2 }' /proc/meminfo)
-        # Round down to nearest multiple of 50 MiB for improved test build caching
-        # shellcheck disable=SC2017
-        ((memAvailableMiB = memAvailableKiB / (1024 * 50) * 50))
-        ((memAvailableMiB < memoryMiB)) && memoryMiB=$memAvailableMiB
-        >&2 echo "VM stats: CPUs: $numCPUs, memory: $memoryMiB MiB"
-        >&2 echo "Host memory total: $((memTotalKiB / 1024)) MiB, available: $memAvailableMiB MiB"
-
-        # VMX is usually not available on CI nodes due to recursive virtualisation.
-        # Explicitly disable VMX, otherwise QEMU 4.20 fails with message
-        # "error: failed to set MSR 0x48b to 0x159ff00000000"
-        extraQEMUOpts="-cpu host,-vmx"
-    fi
-
-    cat <<EOF
-    ((import "$scriptDir/tests.nix" {}).getTest "$scenario").vm.overrideAttrs (old: rec {
-      buildCommand = ''
-        export QEMU_OPTS="-smp $numCPUs -m $memoryMiB $extraQEMUOpts"
-        echo "VM stats: CPUs: $numCPUs, memory: $memoryMiB MiB"
-      '' + old.buildCommand;
-    })
-EOF
+evalTest() {
+    nixInstantiateTest "" "$@"
+    # Print out path
+    nix-store -q "$drv"
+    # Print drv path
+    realpath "$drv"
 }
 
-checkFlakeSupport() {
-    testName=$1
-    if [[ ! -v hasFlakes ]]; then
-        if [[ $(nix flake 2>&1) == *"requires a sub-command"* ]]; then
-            hasFlakes=1
-        else
-            hasFlakes=
-        fi
+buildTestAttr() {
+    local attr=$1
+    shift
+    # TODO-EXTERNAL:
+    # Simplify and switch to pure build when `nix build` can build flake function outputs
+    nixInstantiateTest "$attr"
+    nixBuild "$scenario" "$drv" "$@"
+}
+
+buildTests() {
+    local -n tests=$1
+    shift
+    # TODO-EXTERNAL:
+    # Simplify and switch to pure build when `nix build` can instantiate flake function outputs
+    # shellcheck disable=SC2207
+    drvs=($(nixInstantiate "pkgs.instantiateTests \"${tests[*]}\""))
+    for i in "${!tests[@]}"; do
+        testName=${tests[$i]}
+        drv=${drvs[$i]}
+        echo
+        echo "Building test '$testName'"
+        nixBuild "$testName" "$drv" "$@"
+    done
+}
+
+# Instantiate an attr of the test defined in global var `scenario`
+nixInstantiateTest() {
+    local attr=$1
+    shift
+    if [[ ${scenarioOverridesFile:-} ]]; then
+        local file="extraScenariosFile = \"$scenarioOverridesFile\";"
+    else
+        local file=
     fi
-    if [[ ! $hasFlakes ]]; then
-        echo "Skipping test '$testName'. Nix flake support is not enabled."
-        return 1
+    nixInstantiate "(pkgs.getTest { name = \"$scenario\"; $file })$attr" "$@" >/dev/null
+}
+
+drv=
+# Sets global var `drv` to the gcroot link of the instantiated derivation
+nixInstantiate() {
+    local expr=$1
+    shift
+    makeTmpDir
+    drv="$tmpDir/drv"
+    nix-instantiate --add-root "$drv" -E "
+      let
+        pkgs = (builtins.getFlake \"git+file://$scriptDir/..\").legacyPackages.\${builtins.currentSystem};
+      in
+        $expr
+    " "$@"
+}
+
+nixBuild() {
+    local outLinkName=$1
+    shift
+    args=(--print-out-paths -L)
+    if [[ $outLinkPrefix ]]; then
+        args+=(--out-link "$outLinkPrefix-$outLinkName")
+    else
+        args+=(--no-link)
     fi
+    nix build "${args[@]}" "$@"
 }
 
 flake() {
-    if ! checkFlakeSupport "flake"; then return; fi
-
     nix flake check "$scriptDir/.."
 }
 
 # Test generating module documentation for search.nixos.org
 nixosSearch() {
-    if ! checkFlakeSupport "nixosSearch"; then return; fi
-
-    if [[ $_nixBitcoinInCopiedSrc ]]; then
-      # flake-info requires that its target flake is under version control
-      . "$scriptDir/lib/create-git-repo.sh"
-    fi
-
     if [[ $outLinkPrefix ]]; then
         # Add gcroots for flake-info
         nix build "$scriptDir/nixos-search#flake-info" -o "$outLinkPrefix-flake-info"
@@ -290,38 +244,41 @@ nixosSearch() {
 }
 
 # A basic subset of tests to keep the total runtime within
-# manageable bounds (<4 min on desktop systems).
+# manageable bounds.
 # These are also run on the CI server.
-basic() {
-    scenario=default buildTest "$@"
-    scenario=netns buildTest "$@"
-    scenario=netnsRegtest buildTest "$@"
-}
+basic=(
+    default
+    netns
+    netnsRegtest
+)
+basic() { buildTests basic "$@"; }
 
 # All tests that only consist of building a nix derivation.
-# Their output is cached in /nix/store.
-buildable() {
-    basic "$@"
-    scenario=full buildTest "$@"
-    scenario=regtest buildTest "$@"
-    scenario=hardened buildTest "$@"
-    scenario=clightningReplication buildTest "$@"
-    scenario=lndPruned buildTest "$@"
-}
+# shellcheck disable=2034
+buildable=(
+    "${basic[@]}"
+    full
+    regtest
+    hardened
+    clightningReplication
+    lndPruned
+)
+buildable() { buildTests buildable "$@"; }
 
 examples() {
-    script="
+    # shellcheck disable=SC2016
+    script='
       set -e
-      ./deploy-container.sh
-      ./deploy-container-minimal.sh
-      ./deploy-qemu-vm.sh
-      ./deploy-krops.sh
-    "
+      runExample() { echo; echo Running example $1; ./$1; }
+      runExample deploy-container.sh
+      runExample deploy-container-minimal.sh
+      runExample deploy-qemu-vm.sh
+      runExample deploy-krops.sh
+    '
     (cd "$scriptDir/../examples" && nix-shell --run "$script")
 }
 
 shellcheck() {
-    if ! checkFlakeSupport "shellcheck"; then return; fi
     "$scriptDir/shellcheck.sh"
 }
 

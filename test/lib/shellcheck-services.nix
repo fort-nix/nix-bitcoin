@@ -1,8 +1,24 @@
 { config, pkgs, lib, extendModules, ... }@args:
 with lib;
 let
-  options = {
-    test.shellcheckServices = mkOption {
+  options.test.shellcheckServices = {
+    enable = mkOption {
+      type = types.bool;
+      default = false;
+      description = ''
+        Whether to shellcheck services during system build time.
+      '';
+    };
+
+    sourcePrefix = mkOption {
+      type = with types; nullOr str;
+      default = null;
+      description = ''
+        The definition source path prefix of services to include in the shellcheck.
+      '';
+    };
+
+    runShellcheck = mkOption {
       readOnly = true;
       description = ''
         A derivation that runs shellcheck on all bash scripts included
@@ -12,26 +28,29 @@ let
     };
   };
 
-  # A list of all service names that are defined by nix-bitcoin.
+  cfg = config.test.shellcheckServices;
+
+  # A list of all service names that are defined in source paths prefixed by
+  # `sourcePrefix`.
   # [ "bitcoind", "clightning", ... ]
   #
   # Algorithm: Parse defintions of `systemd.services` and return all services
-  # that only have definitions located in the nix-bitcoin source.
-  nix-bitcoin-services = let
+  # that only have definitions located within `sourcePrefix`.
+  servicesToCheck = let
+    inherit (cfg) sourcePrefix;
     systemdServices = args.options.systemd.services;
     configSystemdServices = args.config.systemd.services;
-    nix-bitcoin-source = toString ../..;
-    nbServices = collectServices true;
-    nonNbServices = collectServices false;
+    matchingServices = collectServices true;
+    nonMatchingServices = collectServices false;
     # Return set of services ({ service1 = true; service2 = true; ... })
-    # which are either defined or not defined by nix-bitcoin, depending
-    # on `fromNixBitcoin`.
-    collectServices = fromNixBitcoin: lib.listToAttrs (builtins.concatLists (zipListsWith (services: file:
+    # which are either defined or not defined within `sourcePrefix`, depending
+    # on `shouldMatch`.
+    collectServices = shouldMatch: lib.listToAttrs (builtins.concatLists (zipListsWith (services: file:
       let
-        isNbSource = lib.hasPrefix nix-bitcoin-source file;
+        isMatching = lib.hasPrefix sourcePrefix file;
       in
         # Nix has no boolean XOR, so use `if`
-        lib.optionals (if fromNixBitcoin then isNbSource else !isNbSource) (
+        lib.optionals (if shouldMatch then isMatching else !isMatching) (
           (map (service: { name = service; value = true; }) (builtins.attrNames services))
         )
     # TODO-EXTERNAL:
@@ -39,13 +58,13 @@ let
     # is included in nixpkgs stable.
     ) systemdServices.definitions systemdServices.files));
   in
-    # Calculate set difference: nbServices - nonNbServices
+    # Calculate set difference: matchingServices - nonMatchingServices
     # and exclude unavailable services (defined via `mkIf false ...`) by checking `configSystemdServices`.
-    builtins.filter (nbService:
-      configSystemdServices ? ${nbService} && (! nonNbServices ? ${nbService})
-    ) (builtins.attrNames nbServices);
+    builtins.filter (prefixedService:
+      configSystemdServices ? ${prefixedService} && (! nonMatchingServices ? ${prefixedService})
+    ) (builtins.attrNames matchingServices);
 
-  # The concatenated list of values of ExecStart, ExecStop, ... (`scriptAttrs`) of all `nix-bitcoin-services`.
+  # The concatenated list of values of ExecStart, ExecStop, ... (`scriptAttrs`) of all `servicesToCheck`.
   serviceCmds = let
     scriptAttrs = [
       "ExecStartPre"
@@ -69,7 +88,7 @@ let
             if builtins.typeOf cmd == "list" then cmd else [ cmd ]
         )
       ) scriptAttrs
-    ) nix-bitcoin-services;
+    ) servicesToCheck;
 
   # A list of all binaries included in `serviceCmds`
   serviceBinaries = map (cmd: builtins.head (
@@ -95,4 +114,15 @@ let
 in
 {
   inherit options;
+
+  config = mkIf (cfg.enable && cfg.sourcePrefix != null) {
+    assertions = [
+      {
+        assertion = builtins.length servicesToCheck > 0;
+        message = "test.shellcheckServices: No services found with source prefix `${cfg.sourcePrefix}`";
+      }
+    ];
+
+    system.extraDependencies = [ shellcheckServices ];
+  };
 }

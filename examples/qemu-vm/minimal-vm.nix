@@ -13,13 +13,13 @@ rec {
     QEMU_OPTS="-smp $(nproc) -m 1500" ${vm}/bin/run-*-vm
   '';
 
-  vm = (import "${nixpkgs}/nixos" {
+  vm = (import (nixpkgs + "/nixos") {
     inherit system;
     configuration = { config, lib, modulesPath, ... }: {
       imports = [
         nix-bitcoin.nixosModules.default
-        "${nix-bitcoin}/modules/presets/secure-node.nix"
-        "${modulesPath}/virtualisation/qemu-vm.nix"
+        (nix-bitcoin + "/modules/presets/secure-node.nix")
+        (modulesPath + "/virtualisation/qemu-vm.nix")
       ];
 
       virtualisation.graphics = false;
@@ -28,6 +28,9 @@ rec {
       services.clightning.enable = true;
       # For faster startup in offline VMs
       services.clightning.extraConfig = "disable-dns";
+
+      # Avoid lengthy build of the nixos manual
+      documentation.nixos.enable = false;
 
       nixpkgs.pkgs = pkgs;
       services.getty.autologinUser = "root";

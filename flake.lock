@@ -1,5 +1,27 @@
 {
   "nodes": {
+    "extra-container": {
+      "inputs": {
+        "flake-utils": [
+          "flake-utils"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1666443795,
+        "owner": "erikarvstedt",
+        "repo": "extra-container",
+        "rev": "3b69ecfd363983cdee4db7f5d118b0ca099d23ed",
+        "type": "github"
+      },
+      "original": {
+        "owner": "erikarvstedt",
+        "repo": "extra-container",
+        "type": "github"
+      }
+    },
     "flake-utils": {
       "locked": {
         "lastModified": 1659877975,
@@ -31,7 +53,7 @@
         "type": "github"
       }
     },
-    "nixpkgsUnstable": {
+    "nixpkgs-unstable": {
       "locked": {
         "lastModified": 1666570118,
         "narHash": "sha256-MTXmIYowHM1wyIYyqPdBLia5SjGnxETv0YkIbDsbkx4=",
@@ -49,9 +71,10 @@
     },
     "root": {
       "inputs": {
+        "extra-container": "extra-container",
         "flake-utils": "flake-utils",
         "nixpkgs": "nixpkgs",
-        "nixpkgsUnstable": "nixpkgsUnstable"
+        "nixpkgs-unstable": "nixpkgs-unstable"
       }
     }
   },

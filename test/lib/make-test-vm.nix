@@ -1,6 +1,6 @@
 pkgs:
 let
-  pythonTesting = import "${toString pkgs.path}/nixos/lib/testing-python.nix" {
+  pythonTesting = import (pkgs.path + "/nixos/lib/testing-python.nix") {
     system = pkgs.stdenv.hostPlatform.system;
     inherit pkgs;
   };
