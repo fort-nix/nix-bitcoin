@@ -380,7 +380,7 @@ in {
       # TODO-EXTERNAL: Instead of `wants`, use a future systemd dependency type
       # that propagates initial start failures but no restarts
       wants = [ "nix-bitcoin-secrets.target" ];
-      after = [ "network.target" "nix-bitcoin-secrets.target" ];
+      after = [ "network-online.target" "nix-bitcoin-secrets.target" ];
       wantedBy = [ "multi-user.target" ];
 
       preStart = let
