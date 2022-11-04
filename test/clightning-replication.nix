@@ -128,8 +128,8 @@ makeTestVM {
           # A gocryptfs has been created
           client.succeed("ls /var/backup/clightning/lightningd-db/gocryptfs.conf")
 
-      server.wait_for_unit("sshd.service")
       switch_to_system("replicationRemote")
+      server.wait_for_unit("sshd.service")
       with subtest("remote replication"):
           replica_db = "/var/cache/clightning-replication/sshfs/lightningd.sqlite3"
           client.succeed(f"runuser -u clightning -- ls {replica_db}")
