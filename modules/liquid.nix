@@ -145,14 +145,14 @@ let
       };
       cli = mkOption {
         readOnly = true;
-        default = pkgs.writeScriptBin "elements-cli" ''
+        default = pkgs.writers.writeBashBin "elements-cli" ''
           ${nbPkgs.elementsd}/bin/elements-cli -datadir='${cfg.dataDir}' "$@"
         '';
         defaultText = "(See source)";
         description = "Binary to connect with the liquidd instance.";
       };
       swapCli = mkOption {
-        default = pkgs.writeScriptBin "liquidswap-cli" ''
+        default = pkgs.writers.writeBashBin "liquidswap-cli" ''
           ${nbPkgs.liquid-swap}/bin/liquidswap-cli -c '${cfg.dataDir}/elements.conf' "$@"
         '';
         defaultText = "(See source)";

@@ -81,7 +81,7 @@ let
     };
     cli = mkOption {
       readOnly = true;
-      default = pkgs.writeScriptBin "lightning-cli" ''
+      default = pkgs.writers.writeBashBin "lightning-cli" ''
         ${cfg.package}/bin/lightning-cli --lightning-dir='${cfg.dataDir}' "$@"
       '';
       defaultText = "(See source)";

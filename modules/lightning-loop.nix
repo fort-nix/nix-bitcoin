@@ -73,7 +73,7 @@ let
       '';
     };
     cli = mkOption {
-      default = pkgs.writeScriptBin "loop" ''
+      default = pkgs.writers.writeBashBin "loop" ''
         ${cfg.package}/bin/loop \
         --rpcserver ${nbLib.addressWithPort cfg.rpcAddress cfg.rpcPort} \
         --macaroonpath '${cfg.dataDir}/${network}/loop.macaroon' \

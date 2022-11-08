@@ -49,7 +49,7 @@ let
       description = "Extra lines appended to the configuration file.";
     };
     cli = mkOption {
-      default = pkgs.writeScriptBin "pool" ''
+      default = pkgs.writers.writeBashBin "pool" ''
         exec ${cfg.package}/bin/pool \
           --rpcserver ${nbLib.addressWithPort cfg.rpcAddress cfg.rpcPort} \
           --network ${network} \
