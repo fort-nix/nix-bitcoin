@@ -6,6 +6,7 @@ pkgs: pkgsUnstable:
     bitcoind
     extra-container
     lightning-pool
+    lnd
     lndconnect;
 
   inherit (pkgsUnstable)
