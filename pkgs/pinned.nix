@@ -4,7 +4,6 @@ pkgs: pkgsUnstable:
   inherit (pkgs)
     bitcoin
     bitcoind
-    extra-container
     lightning-pool
     lnd
     lndconnect;
@@ -15,6 +14,7 @@ pkgs: pkgsUnstable:
     clightning
     electrs
     elementsd
+    extra-container
     fulcrum
     hwi
     lightning-loop
