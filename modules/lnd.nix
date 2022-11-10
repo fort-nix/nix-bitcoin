@@ -109,7 +109,7 @@ let
       description = "The package providing lnd binaries.";
     };
     cli = mkOption {
-      default = pkgs.writeScriptBin "lncli"
+      default = pkgs.writers.writeBashBin "lncli"
         # Switch user because lnd makes datadir contents readable by user only
         ''
           ${runAsUser} ${cfg.user} ${cfg.package}/bin/lncli \

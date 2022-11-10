@@ -27,7 +27,7 @@ with lib;
       # Related issue: https://github.com/NixOS/nixpkgs/issues/94236
       torify = mkOption {
         readOnly = true;
-        default = pkgs.writeScriptBin "torify" ''
+        default = pkgs.writers.writeBashBin "torify" ''
           ${pkgs.tor}/bin/torify \
             --address ${config.services.tor.client.socksListenAddress.addr} \
             "$@"

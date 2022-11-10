@@ -265,7 +265,7 @@ let
       cli = mkOption {
         readOnly = true;
         type = types.package;
-        default = pkgs.writeScriptBin "bitcoin-cli" ''
+        default = pkgs.writers.writeBashBin "bitcoin-cli" ''
           exec ${cfg.package}/bin/bitcoin-cli -datadir='${cfg.dataDir}' "$@"
         '';
         defaultText = "(See source)";
