@@ -102,16 +102,18 @@ let
   nbLib = config.nix-bitcoin.lib;
   nbPkgs = config.nix-bitcoin.pkgs;
 
-  network = config.services.bitcoind.makeNetworkName "bitcoin" "regtest";
+  inherit (config.services) bitcoind;
+
+  network = bitcoind.makeNetworkName "bitcoin" "regtest";
   configFile = pkgs.writeText "config" ''
     network=${network}
-    bitcoin-datadir=${config.services.bitcoind.dataDir}
+    bitcoin-datadir=${bitcoind.dataDir}
     ${optionalString (cfg.proxy != null) "proxy=${cfg.proxy}"}
     always-use-proxy=${boolToString cfg.always-use-proxy}
     bind-addr=${cfg.address}:${toString cfg.port}
-    bitcoin-rpcconnect=${nbLib.address config.services.bitcoind.rpc.address}
-    bitcoin-rpcport=${toString config.services.bitcoind.rpc.port}
-    bitcoin-rpcuser=${config.services.bitcoind.rpc.users.public.name}
+    bitcoin-rpcconnect=${nbLib.address bitcoind.rpc.address}
+    bitcoin-rpcport=${toString bitcoind.rpc.port}
+    bitcoin-rpcuser=${bitcoind.rpc.users.public.name}
     rpc-file-mode=0660
     log-timestamps=false
     ${optionalString (cfg.wallet != null) "wallet=${cfg.wallet}"}
