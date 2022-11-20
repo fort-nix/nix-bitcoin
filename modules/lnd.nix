@@ -175,13 +175,15 @@ let
 
     bitcoind.rpchost=${bitcoindRpcAddress}:${toString bitcoind.rpc.port}
     bitcoind.rpcuser=${bitcoind.rpc.users.${rpcUser}.name}
-    bitcoind.zmqpubrawblock=${bitcoind.zmqpubrawblock}
-    bitcoind.zmqpubrawtx=${bitcoind.zmqpubrawtx}
+    bitcoind.zmqpubrawblock=${zmqHandleSpecialAddress bitcoind.zmqpubrawblock}
+    bitcoind.zmqpubrawtx=${zmqHandleSpecialAddress bitcoind.zmqpubrawtx}
 
     wallet-unlock-password-file=${secretsDir}/lnd-wallet-password
 
     ${cfg.extraConfig}
   '';
+
+  zmqHandleSpecialAddress = builtins.replaceStrings [ "0.0.0.0" "[::]" ] [ "127.0.0.1" "[::1]" ];
 
   isPruned = bitcoind.prune > 0;
   # When bitcoind pruning is enabled, lnd requires non-public RPC commands `getpeerinfo`, `getnodeaddresses`
@@ -212,8 +214,8 @@ in {
       # under high bitcoind rpc load
       rpc.threads = 16;
 
-      zmqpubrawblock = "tcp://${bitcoindRpcAddress}:28332";
-      zmqpubrawtx = "tcp://${bitcoindRpcAddress}:28333";
+      zmqpubrawblock = mkDefault "tcp://${bitcoindRpcAddress}:28332";
+      zmqpubrawtx = mkDefault "tcp://${bitcoindRpcAddress}:28333";
     };
 
     environment.systemPackages = [ cfg.package (hiPrio cfg.cli) ];
