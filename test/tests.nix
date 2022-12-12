@@ -84,6 +84,8 @@ let
         };
       };
 
+      nix-bitcoin.onionServices.lnd.public = true;
+
       tests.lndconnect-onion-lnd = cfg.lnd.lndconnectOnion.enable;
       tests.lndconnect-onion-clightning = cfg.clightning-rest.lndconnectOnion.enable;
 
@@ -91,7 +93,6 @@ let
       services.lightning-loop.certificate.extraIPs = [ "20.0.0.1" ];
 
       tests.lightning-pool = cfg.lightning-pool.enable;
-      nix-bitcoin.onionServices.lnd.public = true;
 
       tests.charge-lnd = cfg.charge-lnd.enable;
 
