@@ -272,7 +272,7 @@ buildable=(
     full
     regtest
     hardened
-    clightningReplication
+    clightning-replication
     lndPruned
 )
 buildable() { buildTests buildable "$@"; }

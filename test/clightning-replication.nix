@@ -1,4 +1,4 @@
-# You can run this test via `run-tests.sh -s clightningReplication`
+# You can run this test via `run-tests.sh -s clightning-replication`
 
 makeTestVM: pkgs:
 with pkgs.lib;
