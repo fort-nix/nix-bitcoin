@@ -53,12 +53,6 @@ let
           clboss.path = "${nbPkgs.clboss}/bin/clboss";
         };
       in map (plugin: pluginPkgs.${plugin}.path) enabled;
-      # Torified 'dig' subprocesses of clboss don't respond to SIGTERM and keep
-      # running for a long time when WAN is disabled, which prevents clightning units
-      # from stopping quickly.
-      # Set TimeoutStopSec for faster stopping.
-      systemd.services.clightning.serviceConfig.TimeoutStopSec =
-        mkIf config.services.clightning.plugins.clboss.enable "500ms";
 
       tests.clightning-rest = cfg.clightning-rest.enable;
 
@@ -140,6 +134,13 @@ let
       # Avoid timeout failures on slow CI nodes
       systemd.services.postgresql.serviceConfig.TimeoutStartSec = "5min";
     }
+    (mkIf config.services.clightning.plugins.clboss.enable {
+      # Torified 'dig' subprocesses of clboss don't respond to SIGTERM and keep
+      # running for a long time when WAN is disabled, which prevents clightning units
+      # from stopping quickly.
+      # Set TimeoutStopSec for faster stopping.
+      systemd.services.clightning.serviceConfig.TimeoutStopSec = "500ms";
+    })
     (mkIf config.test.features.clightningPlugins {
       services.clightning.plugins = {
         clboss.enable = true;
