@@ -14,6 +14,8 @@ let
   clientBaseConfig = {
     imports = [ ../modules/modules.nix ];
 
+    nixpkgs.pkgs = pkgs;
+
     nix-bitcoin.generateSecrets = true;
 
     services.clightning = {
@@ -54,7 +56,9 @@ makeTestVM {
       services.clightning.replication.encrypt = true;
     };
 
-    server = { ... }: {
+    server = {
+      nixpkgs.pkgs = pkgs;
+
       environment.etc."ssh-host-key" = {
         source = keys.server;
         mode = "400";
