@@ -28,7 +28,7 @@ let
     };
 
     generateSecretsCmds = mkOption {
-      type = types.attrsOf types.str;
+      type = types.attrsOf types.lines;
       default = {};
       description = mdDoc ''
         Bash expressions for generating secrets.
