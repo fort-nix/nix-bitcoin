@@ -117,6 +117,11 @@ let
     rpc-file-mode=0660
     log-timestamps=false
     ${optionalString (cfg.wallet != null) "wallet=${cfg.wallet}"}
+    ${ # TODO-EXTERNAL: When updating from a version of clightning before 22.11
+       # to version 22.11.1, then the database upgrade needs to be allowed
+       # explicitly. Remove this when it's unlikely that this module is used
+       # with a clightning version 22.11.1 package.
+      optionalString (cfg.package.version == "22.11.1") "database-upgrade=true"}
     ${cfg.extraConfig}
   '';
 
