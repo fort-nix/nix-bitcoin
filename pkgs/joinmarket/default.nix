@@ -1,10 +1,10 @@
 { stdenv, lib, fetchurl, python3, nbPythonPackageOverrides, pkgs }:
 
 let
-  version = "0.9.7";
+  version = "0.9.8";
   src = fetchurl {
     url = "https://github.com/JoinMarket-Org/joinmarket-clientserver/archive/v${version}.tar.gz";
-    sha256 = "13bfr8ha6bka8wiai8m79ki43dn2r311lrfffr39ni2wy1v12l93";
+    sha256 = "1ab4smpyx966iiiip3g11bcslya37qhac1kgkbmsmlsdkpilw9di";
   };
 
   pyPkgs = (python3.override {
