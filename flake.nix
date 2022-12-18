@@ -19,9 +19,11 @@
     let
       supportedSystems = [
         "x86_64-linux"
-        "i686-linux"
         "aarch64-linux"
-        "armv7l-linux"
+        # On these 32-bit platforms, Python pkg `pymemcache` 4.0.0 (required by
+        # `joinmarket`) is broken:
+        # "i686-linux"
+        # "armv7l-linux"
       ];
 
       test = import ./test/tests.nix nixpkgs.lib;
