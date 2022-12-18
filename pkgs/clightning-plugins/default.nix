@@ -31,7 +31,7 @@ let
       description = "Lightning node exporter for the prometheus timeseries server";
       extraPkgs = [ prometheus_client ];
       patchRequirements =
-        "--replace prometheus-client==0.6.0 prometheus-client==0.13.1"
+        "--replace prometheus-client==0.6.0 prometheus-client==0.15.0"
         + " --replace pyln-client~=0.9.3 pyln-client~=22.11rc1";
     };
     rebalance = {
