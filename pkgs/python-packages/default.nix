@@ -16,7 +16,10 @@ rec {
       # Packages only used by joinmarket
       bencoderpyx = callPackage ./bencoderpyx {};
       chromalog = callPackage ./chromalog {};
-      python-bitcointx = callPackage ./python-bitcointx { inherit (nbPkgs) secp256k1; };
+      python-bitcointx = callPackage ./python-bitcointx {
+        inherit (nbPkgs) secp256k1;
+        openssl = super.pkgs.openssl_1_1;
+      };
       runes = callPackage ./runes {};
       sha256 = callPackage ./sha256 {};
       urldecode = callPackage ./urldecode {};
@@ -33,27 +36,25 @@ rec {
       joinmarketbitcoin = joinmarketPkg ./jmbitcoin;
       joinmarketdaemon = joinmarketPkg ./jmdaemon;
 
-      # Don't mark `klein` as broken.
-      # `klein` is fixed by using werkzeug 2.1.0 (see below)
-      klein = super.klein.overrideAttrs (old: {
-        meta = builtins.removeAttrs old.meta [ "broken" ];
-      });
       ## Specific versions of packages that already exist in nixpkgs
 
       # cryptography 3.3.2, required by joinmarketdaemon
       # Used in the private python package set for joinmarket (../joinmarket/default.nix)
       cryptography = callPackage ./specific-versions/cryptography {
+        openssl = super.pkgs.openssl_1_1;
         cryptography_vectors = callPackage ./specific-versions/cryptography/vectors.nix {};
       };
 
       # autobahn 20.12.3, required by joinmarketclient
       autobahn = callPackage ./specific-versions/autobahn.nix {};
 
-      # werkzeug 2.1.0, required by jmclient (via pkg `klein`)
-      werkzeug = callPackage ./specific-versions/werkzeug.nix {};
-
       # pyopenssl 20.0.1, required by joinmarketdaemon
-      pyopenssl = callPackage ./specific-versions/pyopenssl.nix {};
+      pyopenssl = callPackage ./specific-versions/pyopenssl.nix {
+        openssl = super.pkgs.openssl_1_1;
+      };
+
+      # twisted 22.4.0, compatible with pyopenssl 20.0.1
+      twisted = callPackage ./specific-versions/twisted.nix {};
     };
 
   nbPython3Packages = (python3.override {
