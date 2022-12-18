@@ -7,22 +7,22 @@ let
     address = mkOption {
       type = types.str;
       default = "localhost";
-      description = "http(s) server address.";
+      description = mdDoc "http(s) server address.";
     };
     port = mkOption {
       type = types.port;
       default = 9737;
-      description = "http(s) server port.";
+      description = mdDoc "http(s) server port.";
     };
     extraArgs = mkOption {
       type = types.separatedString " ";
       default = "";
-      description = "Extra command line arguments passed to spark-wallet.";
+      description = mdDoc "Extra command line arguments passed to spark-wallet.";
     };
     getPublicAddressCmd = mkOption {
       type = types.str;
       default = "";
-      description = ''
+      description = mdDoc ''
         Bash expression which outputs the public service address.
         If set, spark-wallet prints a QR code to the systemd journal which
         encodes an URL for accessing the web interface.
@@ -31,12 +31,12 @@ let
     user = mkOption {
       type = types.str;
       default = "spark-wallet";
-      description = "The user as which to run spark-wallet.";
+      description = mdDoc "The user as which to run spark-wallet.";
     };
     group = mkOption {
       type = types.str;
       default = cfg.user;
-      description = "The group as which to run spark-wallet.";
+      description = mdDoc "The group as which to run spark-wallet.";
     };
     tor = nbLib.tor;
   };

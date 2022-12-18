@@ -7,56 +7,56 @@ let
     rpcAddress = mkOption {
        type = types.str;
        default = "localhost";
-       description = "Address to listen for gRPC connections.";
+       description = mdDoc "Address to listen for gRPC connections.";
     };
     rpcPort = mkOption {
        type = types.port;
        default = 11010;
-       description = "Port to listen for gRPC connections.";
+       description = mdDoc "Port to listen for gRPC connections.";
     };
     restAddress = mkOption {
        type = types.str;
        default = cfg.rpcAddress;
-       description = "Address to listen for REST connections.";
+       description = mdDoc "Address to listen for REST connections.";
     };
     restPort = mkOption {
        type = types.port;
        default = 8081;
-       description = "Port to listen for REST connections.";
+       description = mdDoc "Port to listen for REST connections.";
     };
     package = mkOption {
       type = types.package;
       default = config.nix-bitcoin.pkgs.lightning-loop;
       defaultText = "config.nix-bitcoin.pkgs.lightning-loop";
-      description = "The package providing lightning-loop binaries.";
+      description = mdDoc "The package providing lightning-loop binaries.";
     };
     dataDir = mkOption {
       type = types.path;
       default = "/var/lib/lightning-loop";
-      description = "The data directory for lightning-loop.";
+      description = mdDoc "The data directory for lightning-loop.";
     };
     proxy = mkOption {
       type = types.nullOr types.str;
       default = if cfg.tor.proxy then config.nix-bitcoin.torClientAddressWithPort else null;
-      description = "host:port of SOCKS5 proxy for connnecting to the loop server.";
+      description = mdDoc "`host:port` of SOCKS5 proxy for connnecting to the loop server.";
     };
     certificate = {
       extraIPs = mkOption {
         type = with types; listOf str;
         default = [];
         example = [ "60.100.0.1" ];
-        description = ''
+        description = mdDoc ''
           Extra `subjectAltName` IPs added to the certificate.
-          This works the same as loop option `tlsextraip`.
+          This works the same as loop option {option}`tlsextraip`.
         '';
       };
       extraDomains = mkOption {
         type = with types; listOf str;
         default = [];
         example = [ "example.com" ];
-        description = ''
+        description = mdDoc ''
           Extra `subjectAltName` domain names added to the certificate.
-          This works the same as loop option `tlsextradomain`.
+          This works the same as loop option {option}`tlsextradomain`.
         '';
       };
     };
@@ -66,7 +66,7 @@ let
       example = ''
         debuglevel=trace
       '';
-      description = ''
+      description = mdDoc ''
         Extra lines appended to the configuration file.
         See here for all available options:
         https://github.com/lightninglabs/loop/blob/11ab596080e9d36f1df43edbeba0702b25aa7457/loopd/config.go#L119
@@ -80,7 +80,7 @@ let
         --tlscertpath '${secretsDir}/loop-cert' "$@"
       '';
       defaultText = "(See source)";
-      description = "Binary to connect with the lightning-loop instance.";
+      description = mdDoc "Binary to connect with the lightning-loop instance.";
     };
     tor = nbLib.tor;
   };

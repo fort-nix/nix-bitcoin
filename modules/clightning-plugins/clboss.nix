@@ -7,7 +7,7 @@ let cfg = config.services.clightning.plugins.clboss; in
     enable = mkOption {
       type = types.bool;
       default = false;
-      description = ''
+      description = mdDoc ''
         Whether to enable CLBOSS (clightning plugin).
         See also: https://github.com/ZmnSCPxj/clboss#operating
       '';
@@ -15,7 +15,7 @@ let cfg = config.services.clightning.plugins.clboss; in
     min-onchain = mkOption {
       type = types.ints.positive;
       default = 30000;
-      description = ''
+      description = mdDoc ''
         Target amount (in satoshi) that CLBOSS will leave on-chain.
         clboss will only open new channels if this amount is smaller than
         the funds in your clightning wallet.
@@ -24,27 +24,27 @@ let cfg = config.services.clightning.plugins.clboss; in
     min-channel = mkOption {
       type = types.ints.positive;
       default = 500000;
-      description = "The minimum size (in satoshi) of channels created by CLBOSS.";
+      description = mdDoc "The minimum size (in satoshi) of channels created by CLBOSS.";
     };
     max-channel = mkOption {
       type = types.ints.positive;
       default = 16777215;
-      description = "The maximum size (in satoshi) of channels created by CLBOSS.";
+      description = mdDoc "The maximum size (in satoshi) of channels created by CLBOSS.";
     };
     zerobasefee = mkOption {
       type = types.enum [ "require" "allow" "disallow" ];
       default = "allow";
-      description = ''
-        require: set `base_fee` to 0.
-        allow: set `base_fee` according to the CLBOSS heuristics, which may include value 0.
-        disallow: set `base_fee` to according to the CLBOSS heuristics, with a minimum value of 1.
+      description = mdDoc ''
+        `require`: set `base_fee` to 0.
+        `allow`: set `base_fee` according to the CLBOSS heuristics, which may include value 0.
+        `disallow`: set `base_fee` to according to the CLBOSS heuristics, with a minimum value of 1.
       '';
     };
     package = mkOption {
       type = types.package;
       default = config.nix-bitcoin.pkgs.clboss;
       defaultText = "config.nix-bitcoin.pkgs.clboss";
-      description = "The package providing clboss binaries.";
+      description = mdDoc "The package providing clboss binaries.";
     };
   };
 

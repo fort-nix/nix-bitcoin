@@ -6,7 +6,7 @@ let
     enable = mkOption {
       type = types.bool;
       default = false;
-      description = ''
+      description = mdDoc ''
         Whether to define a user named `operator` for convenient interactive access
         to nix-bitcoin features (like `bitcoin-cli`).
 
@@ -18,17 +18,17 @@ let
     name = mkOption {
       type = types.str;
       default = "operator";
-      description = "Name of the operator user.";
+      description = mdDoc "Name of the operator user.";
     };
     groups = mkOption {
       type = with types; listOf str;
       default = [];
-      description = "Extra groups of the operatur user.";
+      description = mdDoc "Extra groups of the operatur user.";
     };
     allowRunAsUsers = mkOption {
       type = with types; listOf str;
       default = [];
-      description = "Users as which the operator is allowed to run commands.";
+      description = mdDoc "Users as which the operator is allowed to run commands.";
     };
   };
 

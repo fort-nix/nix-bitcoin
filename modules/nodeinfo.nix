@@ -17,7 +17,7 @@ let
         type = types.attrs;
         default = {};
         defaultText = "(See source)";
-        description = ''
+        description = mdDoc ''
           Nodeinfo service definitions.
         '';
       };
@@ -27,7 +27,7 @@ let
         readOnly = true;
         default = nodeinfoLib;
         defaultText = "(See source)";
-        description = ''
+        description = mdDoc ''
           Helper functions for defining nodeinfo services.
         '';
       };

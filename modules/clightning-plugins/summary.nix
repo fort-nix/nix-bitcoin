@@ -8,22 +8,22 @@ let cfg = config.services.clightning.plugins.summary; in
     currency = mkOption {
       type = types.str;
       default = "USD";
-      description = "The currency to look up on btcaverage.";
+      description = mdDoc "The currency to look up on btcaverage.";
     };
     currencyPrefix = mkOption {
       type = types.str;
       default = "USD $";
-      description = "The prefix to use for the currency.";
+      description = mdDoc "The prefix to use for the currency.";
     };
     availabilityInterval = mkOption {
       type = types.int;
       default = 300;
-      description = "How often in seconds the availability should be calculated.";
+      description = mdDoc "How often in seconds the availability should be calculated.";
     };
     availabilityWindow = mkOption {
       type = types.int;
       default = 72;
-      description = "How many hours the availability should be averaged over.";
+      description = mdDoc "How many hours the availability should be averaged over.";
     };
   };
 

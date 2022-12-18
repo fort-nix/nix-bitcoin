@@ -8,19 +8,19 @@ let
       address = mkOption {
         type = types.str;
         default = "127.0.0.1";
-        description = "Address to listen for peer connections.";
+        description = mdDoc "Address to listen for peer connections.";
       };
       port = mkOption {
         type = types.port;
         default = 8333;
-        description = "Port to listen for peer connections.";
+        description = mdDoc "Port to listen for peer connections.";
       };
       onionPort = mkOption {
         type = types.nullOr types.port;
         # When the bitcoind onion service is enabled, add an onion-tagged socket
         # to distinguish local connections from Tor connections
         default = if (config.nix-bitcoin.onionServices.bitcoind.enable or false) then 8334 else null;
-        description = ''
+        description = mdDoc ''
           Port to listen for Tor peer connections.
           If set, inbound connections to this port are tagged as onion peers.
         '';
@@ -28,15 +28,15 @@ let
       listen = mkOption {
         type = types.bool;
         default = false;
-        description = ''
+        description = mdDoc ''
           Listen for peer connections at `address:port`
-          and `address:onionPort` (if `onionPort` is set).
+          and `address:onionPort` (if {option}`onionPort` is set).
         '';
       };
       listenWhitelisted = mkOption {
         type = types.bool;
         default = false;
-        description = ''
+        description = mdDoc ''
           Listen for peer connections at `address:whitelistedPort`.
           Peers connected through this socket are automatically whitelisted.
         '';
@@ -44,12 +44,12 @@ let
       whitelistedPort = mkOption {
         type = types.port;
         default = 8335;
-        description = "See `listenWhitelisted`.";
+        description = mdDoc "See `listenWhitelisted`.";
       };
       getPublicAddressCmd = mkOption {
         type = types.str;
         default = "";
-        description = ''
+        description = mdDoc ''
           Bash expression which outputs the public service address to announce to peers.
           If left empty, no address is announced.
         '';
@@ -58,7 +58,7 @@ let
         type = types.package;
         default = config.nix-bitcoin.pkgs.bitcoind;
         defaultText = "config.nix-bitcoin.pkgs.bitcoind";
-        description = "The package providing bitcoin binaries.";
+        description = mdDoc "The package providing bitcoin binaries.";
       };
       extraConfig = mkOption {
         type = types.lines;
@@ -67,41 +67,41 @@ let
           par=16
           logips=1
         '';
-        description = "Extra lines appended to <filename>bitcoin.conf</filename>.";
+        description = mdDoc "Extra lines appended to {file}`bitcoin.conf`.";
       };
       dataDir = mkOption {
         type = types.path;
         default = "/var/lib/bitcoind";
-        description = "The data directory for bitcoind.";
+        description = mdDoc "The data directory for bitcoind.";
       };
       rpc = {
         address = mkOption {
           type = types.str;
           default = "127.0.0.1";
-          description = ''
+          description = mdDoc ''
             Address to listen for JSON-RPC connections.
           '';
         };
         port = mkOption {
           type = types.port;
           default = 8332;
-          description = "Port to listen for JSON-RPC connections.";
+          description = mdDoc "Port to listen for JSON-RPC connections.";
         };
         threads = mkOption {
           type = types.nullOr types.ints.u16;
           default = null;
-          description = "The number of threads to service RPC calls.";
+          description = mdDoc "The number of threads to service RPC calls.";
         };
         allowip = mkOption {
           type = types.listOf types.str;
           default = [ "127.0.0.1" ];
-          description = ''
+          description = mdDoc ''
             Allow JSON-RPC connections from specified sources.
           '';
         };
         users = mkOption {
           default = {};
-          description = ''
+          description = mdDoc ''
             Allowed users for JSON-RPC connections.
           '';
           example = {
@@ -116,16 +116,16 @@ let
                 type = types.str;
                 default = name;
                 example = "alice";
-                description = ''
+                description = mdDoc ''
                   Username for JSON-RPC connections.
                 '';
               };
               passwordHMAC = mkOption {
                 type = types.str;
                 example = "f7efda5c189b999524f151318c0c86$d5b51b3beffbc02b724e5d095828e0bc8b2456e9ac8757ae3211a5d9b16a22ae";
-                description = ''
+                description = mdDoc ''
                   Password HMAC-SHA-256 for JSON-RPC connections. Must be a string of the
-                  format `salt-hex$hmac-hex`.
+                  format `<SALT-HEX>$<HMAC-HEX>`.
                 '';
               };
               passwordHMACFromFile = mkOption {
@@ -136,7 +136,7 @@ let
               rpcwhitelist = mkOption {
                 type = types.listOf types.str;
                 default = [];
-                description = ''
+                description = mdDoc ''
                   List of allowed rpc calls for each user.
                   If empty list, rpcwhitelist is disabled for that user.
                 '';
@@ -148,7 +148,7 @@ let
       regtest = mkOption {
         type = types.bool;
         default = false;
-        description = "Enable regtest mode.";
+        description = mdDoc "Enable regtest mode.";
       };
       network = mkOption {
         readOnly = true;
@@ -161,12 +161,12 @@ let
       proxy = mkOption {
         type = types.nullOr types.str;
         default = if cfg.tor.proxy then config.nix-bitcoin.torClientAddressWithPort else null;
-        description = "Connect through SOCKS5 proxy";
+        description = mdDoc "Connect through SOCKS5 proxy";
       };
       i2p = mkOption {
         type = types.enum [ false true "only-outgoing" ];
         default = false;
-        description = ''
+        description = mdDoc ''
           Enable peer connections via i2p.
           With `only-outgoing`, incoming i2p connections are disabled.
         '';
@@ -174,7 +174,7 @@ let
       dataDirReadableByGroup = mkOption {
         type = types.bool;
         default = false;
-        description = ''
+        description = mdDoc ''
           If enabled, data dir content is readable by the bitcoind service group.
           Warning: This disables bitcoind's wallet support.
         '';
@@ -182,7 +182,7 @@ let
       sysperms = mkOption {
         type = types.nullOr types.bool;
         default = null;
-        description = ''
+        description = mdDoc ''
           Create new files with system default permissions, instead of umask 077
           (only effective with disabled wallet functionality)
         '';
@@ -190,7 +190,7 @@ let
       disablewallet = mkOption {
         type = types.nullOr types.bool;
         default = null;
-        description = ''
+        description = mdDoc ''
           Do not load the wallet and disable wallet RPC calls
         '';
       };
@@ -198,13 +198,13 @@ let
         type = types.nullOr (types.ints.between 4 16384);
         default = null;
         example = 4000;
-        description = "Override the default database cache size in MiB.";
+        description = mdDoc "Override the default database cache size in MiB.";
       };
       prune = mkOption {
         type = types.ints.unsigned;
         default = 0;
         example = 10000;
-        description = ''
+        description = mdDoc ''
           Automatically prune block files to stay under the specified target size in MiB.
           Value 0 disables pruning.
         '';
@@ -212,25 +212,25 @@ let
       txindex = mkOption {
         type = types.bool;
         default = false;
-        description = "Enable the transaction index.";
+        description = mdDoc "Enable the transaction index.";
       };
       zmqpubrawblock = mkOption {
         type = types.nullOr types.str;
         default = null;
         example = "tcp://127.0.0.1:28332";
-        description = "ZMQ address for zmqpubrawblock notifications";
+        description = mdDoc "ZMQ address for zmqpubrawblock notifications";
       };
       zmqpubrawtx = mkOption {
         type = types.nullOr types.str;
         default = null;
         example = "tcp://127.0.0.1:28333";
-        description = "ZMQ address for zmqpubrawtx notifications";
+        description = mdDoc "ZMQ address for zmqpubrawtx notifications";
       };
       assumevalid = mkOption {
         type = types.nullOr types.str;
         default = null;
         example = "00000000000000000000e5abc3a74fe27dc0ead9c70ea1deb456f11c15fd7bc6";
-        description = ''
+        description = mdDoc ''
           If this block is in the chain assume that it and its ancestors are
           valid and potentially skip their script verification.
         '';
@@ -239,28 +239,28 @@ let
         type = types.listOf types.str;
         default = [];
         example = [ "ecoc5q34tmbq54wl.onion" ];
-        description = "Add nodes to connect to and attempt to keep the connections open";
+        description = mdDoc "Add nodes to connect to and attempt to keep the connections open";
       };
       discover = mkOption {
         type = types.nullOr types.bool;
         default = null;
-        description = "Discover own IP addresses";
+        description = mdDoc "Discover own IP addresses";
       };
       addresstype = mkOption {
         type = types.nullOr types.str;
         default = null;
         example = "bech32";
-        description = "The type of addresses to use";
+        description = mdDoc "The type of addresses to use";
       };
       user = mkOption {
         type = types.str;
         default = "bitcoin";
-        description = "The user as which to run bitcoind.";
+        description = mdDoc "The user as which to run bitcoind.";
       };
       group = mkOption {
         type = types.str;
         default = cfg.user;
-        description = "The group as which to run bitcoind.";
+        description = mdDoc "The group as which to run bitcoind.";
       };
       cli = mkOption {
         readOnly = true;
@@ -269,7 +269,7 @@ let
           exec ${cfg.package}/bin/bitcoin-cli -datadir='${cfg.dataDir}' "$@"
         '';
         defaultText = "(See source)";
-        description = "Binary to connect with the bitcoind instance.";
+        description = mdDoc "Binary to connect with the bitcoind instance.";
       };
       tor = nbLib.tor;
     };

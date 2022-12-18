@@ -9,18 +9,17 @@ let
       type = listOf str;
       default = [];
       example = [ "--verbose" "--dry-run" ];
-      description = "Extra flags to pass to the charge-lnd command.";
+      description = mdDoc "Extra flags to pass to the charge-lnd command.";
     };
 
     interval = mkOption {
       type = str;
       default = "*-*-* 04:00:00";
       example = "hourly";
-      description = ''
+      description = mdDoc ''
         Systemd calendar expression when to adjust fees.
 
-        See <citerefentry><refentrytitle>systemd.time</refentrytitle>
-        <manvolnum>7</manvolnum></citerefentry> for possible values.
+        See {man}`systemd.time(7)` for possible values.
 
         Default is once a day.
       '';
@@ -29,7 +28,7 @@ let
     randomDelay = mkOption {
       type = str;
       default = "1h";
-      description = ''
+      description = mdDoc ''
         Random delay to add to scheduled time.
       '';
     };
@@ -55,7 +54,7 @@ let
         [default]
         strategy = ignore
       '';
-      description = ''
+      description = mdDoc ''
         Policy definitions in INI format.
 
         See https://github.com/accumulator/charge-lnd/blob/master/README.md#usage
@@ -126,7 +125,6 @@ in
     };
 
     systemd.timers.charge-lnd = {
-      description = "Adjust LND routing fees";
       wantedBy = [ "timers.target" ];
       timerConfig = {
         OnCalendar = cfg.interval;

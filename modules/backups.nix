@@ -6,7 +6,7 @@ let
     enable = mkOption {
       type = types.bool;
       default = false;
-      description = ''
+      description = mdDoc ''
         Enable backups of node data.
         This uses the NixOS duplicity service.
         To further configure the backup, you can set NixOS options `services.duplicity.*`.
@@ -16,34 +16,34 @@ let
     with-bulk-data = mkOption {
       type = types.bool;
       default = false;
-      description = ''
+      description = mdDoc ''
         Whether to also backup Bitcoin blockchain and other bulk data.
       '';
     };
     destination = mkOption {
       type = types.str;
       default = "file:///var/lib/localBackups";
-      description = ''
+      description = mdDoc ''
         Where to back up to.
       '';
     };
     frequency = mkOption {
       type = types.nullOr types.str;
       default = null;
-      description = ''
+      description = mdDoc ''
         Run backup with the given frequency. If null, do not run automatically.
       '';
     };
     postgresqlDatabases = mkOption {
       type = types.listOf types.str;
       default = [];
-      description = "List of database names to backup.";
+      description = mdDoc "List of database names to backup.";
     };
     extraFiles = mkOption {
       type = types.listOf types.str;
       default = [];
       example = [ "/var/lib/nginx" ];
-      description = "Additional files to be appended to filelist.";
+      description = mdDoc "Additional files to be appended to filelist.";
     };
   };
 

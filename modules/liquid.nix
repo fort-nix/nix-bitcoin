@@ -8,19 +8,19 @@ let
       address = mkOption {
         type = types.str;
         default = "127.0.0.1";
-        description = "Address to listen for peer connections.";
+        description = mdDoc "Address to listen for peer connections.";
       };
       port = mkOption {
         type = types.port;
         default = 7042;
-        description = "Override the default port on which to listen for connections.";
+        description = mdDoc "Override the default port on which to listen for connections.";
       };
       onionPort = mkOption {
         type = types.nullOr types.port;
         # When the liquidd onion service is enabled, add an onion-tagged socket
         # to distinguish local connections from Tor connections
         default = if (config.nix-bitcoin.onionServices.liquidd.enable or false) then 7043 else null;
-        description = ''
+        description = mdDoc ''
           Port to listen for Tor peer connections.
           If set, inbound connections to this port are tagged as onion peers.
         '';
@@ -28,15 +28,15 @@ let
       listen = mkOption {
         type = types.bool;
         default = false;
-        description = ''
+        description = mdDoc ''
           Listen for peer connections at `address:port`
-          and `address:onionPort` (if `onionPort` is set).
+          and `address:onionPort` (if {option}`onionPort` is set).
         '';
       };
       listenWhitelisted = mkOption {
         type = types.bool;
         default = false;
-        description = ''
+        description = mdDoc ''
           Listen for peer connections at `address:whitelistedPort`.
           Peers connected through this socket are automatically whitelisted.
         '';
@@ -44,7 +44,7 @@ let
       whitelistedPort = mkOption {
         type = types.port;
         default = 7044;
-        description = "See `listenWhitelisted`.";
+        description = mdDoc "See {option}`listenWhitelisted`.";
       };
       extraConfig = mkOption {
         type = types.lines;
@@ -54,23 +54,23 @@ let
           rpcthreads=16
           logips=1
         '';
-        description = "Extra lines appended to <filename>elements.conf</filename>.";
+        description = mdDoc "Extra lines appended to {file}`elements.conf`.";
       };
       dataDir = mkOption {
         type = types.path;
         default = "/var/lib/liquidd";
-        description = "The data directory for liquidd.";
+        description = mdDoc "The data directory for liquidd.";
       };
       rpc = {
         address = mkOption {
           type = types.str;
           default = "127.0.0.1";
-          description = "Address to listen for JSON-RPC connections.";
+          description = mdDoc "Address to listen for JSON-RPC connections.";
         };
         port = mkOption {
           type = types.port;
           default = 7041;
-          description = "Port to listen for JSON-RPC connections.";
+          description = mdDoc "Port to listen for JSON-RPC connections.";
         };
         users = mkOption {
           default = {};
@@ -79,7 +79,7 @@ let
             bob.passwordHMAC = "b2dd077cb54591a2f3139e69a897ac$4e71f08d48b4347cf8eff3815c0e25ae2e9a4340474079f55705f40574f4ec99";
           };
           type = with types; attrsOf (submodule rpcUserOpts);
-          description = ''
+          description = mdDoc ''
             RPC user information for JSON-RPC connections.
           '';
         };
@@ -87,25 +87,25 @@ let
       rpcallowip = mkOption {
         type = types.listOf types.str;
         default = [ "127.0.0.1" ];
-        description = ''
+        description = mdDoc ''
           Allow JSON-RPC connections from specified source.
         '';
       };
       rpcuser = mkOption {
           type = types.str;
           default = "liquidrpc";
-          description = "Username for JSON-RPC connections";
+          description = mdDoc "Username for JSON-RPC connections";
       };
       proxy = mkOption {
         type = types.nullOr types.str;
         default = if cfg.tor.proxy then config.nix-bitcoin.torClientAddressWithPort else null;
-        description = "Connect through SOCKS5 proxy";
+        description = mdDoc "Connect through SOCKS5 proxy";
       };
       dbCache = mkOption {
         type = types.nullOr (types.ints.between 4 16384);
         default = null;
         example = 4000;
-        description = "Override the default database cache size in megabytes.";
+        description = mdDoc "Override the default database cache size in megabytes.";
       };
       prune = mkOption {
         type = types.nullOr (types.coercedTo
@@ -115,13 +115,13 @@ let
         );
         default = null;
         example = 10000;
-        description = ''
+        description = mdDoc ''
           Reduce storage requirements by enabling pruning (deleting) of old
           blocks. This allows the pruneblockchain RPC to be called to delete
           specific blocks, and enables automatic pruning of old blocks if a
           target size in MiB is provided. This mode is incompatible with -txindex
           and -rescan. Warning: Reverting this setting requires re-downloading
-          the entire blockchain. ("disable" = disable pruning blocks, "manual"
+          the entire blockchain. (`disable` = disable pruning blocks, `manual`
           = allow manual pruning via RPC, >=550 = automatically prune block files
           to stay under the specified target size in MiB)
         '';
@@ -129,19 +129,19 @@ let
       validatepegin = mkOption {
         type = types.nullOr types.bool;
         default = null;
-        description = ''
+        description = mdDoc ''
           Validate pegin claims. All functionaries must run this.
         '';
       };
       user = mkOption {
         type = types.str;
         default = "liquid";
-        description = "The user as which to run liquidd.";
+        description = mdDoc "The user as which to run liquidd.";
       };
       group = mkOption {
         type = types.str;
         default = cfg.user;
-        description = "The group as which to run liquidd.";
+        description = mdDoc "The group as which to run liquidd.";
       };
       cli = mkOption {
         readOnly = true;
@@ -149,14 +149,14 @@ let
           ${nbPkgs.elementsd}/bin/elements-cli -datadir='${cfg.dataDir}' "$@"
         '';
         defaultText = "(See source)";
-        description = "Binary to connect with the liquidd instance.";
+        description = mdDoc "Binary to connect with the liquidd instance.";
       };
       swapCli = mkOption {
         default = pkgs.writers.writeBashBin "liquidswap-cli" ''
           ${nbPkgs.liquid-swap}/bin/liquidswap-cli -c '${cfg.dataDir}/elements.conf' "$@"
         '';
         defaultText = "(See source)";
-        description = "Binary for managing liquid swaps.";
+        description = mdDoc "Binary for managing liquid swaps.";
       };
       tor = nbLib.tor;
     };
@@ -215,16 +215,16 @@ let
       name = mkOption {
         type = types.str;
         example = "alice";
-        description = ''
+        description = mdDoc ''
           Username for JSON-RPC connections.
         '';
       };
       passwordHMAC = mkOption {
         type = with types; uniq (strMatching "[0-9a-f]+\\$[0-9a-f]{64}");
         example = "f7efda5c189b999524f151318c0c86$d5b51b3beffbc02b724e5d095828e0bc8b2456e9ac8757ae3211a5d9b16a22ae";
-        description = ''
+        description = mdDoc ''
           Password HMAC-SHA-256 for JSON-RPC connections. Must be a string of the
-          format `salt-hex$hmac-hex`.
+          format `<SALT-HEX>$<HMAC-HEX>`.
         '';
       };
     };

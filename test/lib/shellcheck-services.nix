@@ -5,7 +5,7 @@ let
     enable = mkOption {
       type = types.bool;
       default = false;
-      description = ''
+      description = mdDoc ''
         Whether to shellcheck services during system build time.
       '';
     };
@@ -13,14 +13,14 @@ let
     sourcePrefix = mkOption {
       type = with types; nullOr str;
       default = null;
-      description = ''
+      description = mdDoc ''
         The definition source path prefix of services to include in the shellcheck.
       '';
     };
 
     runShellcheck = mkOption {
       readOnly = true;
-      description = ''
+      description = mdDoc ''
         A derivation that runs shellcheck on all bash scripts included
         in nix-bitcoin services.
       '';
