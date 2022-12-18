@@ -47,7 +47,7 @@ let
         # is_interactive is set in ./run-vm.sh
         ''
           if not "is_interactive" in vars():
-              run_tests()
+              nb_run_tests()
         ''
       ];
   };
