@@ -12,6 +12,19 @@ set -euo pipefail
 #     pinned to stable.
 #     All other pkgs are pinned to unstable.
 
+forceRun=
+nixosVersion=
+for arg in "$@"; do
+    case $arg in
+        -f)
+            forceRun=1
+            ;;
+        *)
+            nixosVersion=$arg
+            ;;
+    esac
+done
+
 # cd to script dir
 cd "${BASH_SOURCE[0]%/*}"
 
@@ -21,7 +34,7 @@ if [[ $(nix flake 2>&1) != *"requires a sub-command"* ]]; then
     exit 1
 fi
 
-if [[ ${1:-} != -f ]] && ! git diff --quiet ../flake.{nix,lock}; then
+if [[ $forceRun ]] && ! git diff --quiet ../flake.{nix,lock}; then
     echo "error: flake.nix/flake.lock have changes. Run with option -f to ignore."
     exit 1
 fi
@@ -36,6 +49,9 @@ versions=$(nix eval --json -f update-flake.nix versions)
 # versions=$(echo "$versions" | sed 's|1|0|g')
 
 echo "Updating main flake"
+if [[ $nixosVersion ]]; then
+    sed -Ei "s|(nixpkgs.url = .*nixos-)[^\"]+|\1$nixosVersion|" ../flake.nix
+fi
 nix flake update ..
 
 echo
