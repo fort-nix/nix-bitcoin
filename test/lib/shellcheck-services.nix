@@ -45,18 +45,17 @@ let
     # Return set of services ({ service1 = true; service2 = true; ... })
     # which are either defined or not defined within `sourcePrefix`, depending
     # on `shouldMatch`.
-    collectServices = shouldMatch: lib.listToAttrs (builtins.concatLists (zipListsWith (services: file:
+    collectServices = shouldMatch: lib.listToAttrs (builtins.concatLists (map (def:
       let
+        services = def.value;
+        inherit (def) file;
         isMatching = lib.hasPrefix sourcePrefix file;
       in
         # Nix has no boolean XOR, so use `if`
         lib.optionals (if shouldMatch then isMatching else !isMatching) (
           (map (service: { name = service; value = true; }) (builtins.attrNames services))
         )
-    # TODO-EXTERNAL:
-    # Use `systemdServices.definitionsWithLocations` when https://github.com/NixOS/nixpkgs/pull/189836
-    # is included in nixpkgs stable.
-    ) systemdServices.definitions systemdServices.files));
+    ) systemdServices.definitionsWithLocations));
   in
     # Calculate set difference: matchingServices - nonMatchingServices
     # and exclude unavailable services (defined via `mkIf false ...`) by checking `configSystemdServices`.
