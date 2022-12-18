@@ -19,6 +19,6 @@ buildGoModule rec {
     description = "Wallet initializer utility for lnd";
     homepage = "https://github.com/lightninglabs/lndinit";
     license = licenses.mit;
-    maintainers = with maintainers; [ earvstedt ];
+    maintainers = with maintainers; [ erikarvstedt ];
   };
 }

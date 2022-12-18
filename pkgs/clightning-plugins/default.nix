@@ -80,7 +80,7 @@ let
         inherit (plugin) description;
         homepage = "https://github.com/lightningd/plugins";
         license = licenses.bsd3;
-        maintainers = with maintainers; [ nixbitcoin earvstedt ];
+        maintainers = with maintainers; [ nixbitcoin erikarvstedt ];
         platforms = platforms.unix;
       };
     };
