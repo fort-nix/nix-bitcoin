@@ -10,22 +10,11 @@
 }:
 let self = stdenvNoCC.mkDerivation {
   pname = "rtl";
-  version = "0.13.1";
+  version = "0.13.2";
 
-  src = applyPatches {
-    src = fetchurl {
-      url = "https://github.com/Ride-The-Lightning/RTL/archive/refs/tags/v${self.version}.tar.gz";
-      hash = "sha256-k40xwDDJxny1nPN2xz60WfbinxMNM0QPdglibO2anZw=";
-    };
-
-    patches = [
-      # Move non-runtime deps to `devDependencies`
-      # https://github.com/Ride-The-Lightning/RTL/pull/1070
-      (fetchpatch {
-        url = "https://github.com/Ride-The-Lightning/RTL/pull/1070.patch";
-        sha256 = "sha256-esDkYI27SNzj2AhYHS9XqlW0r2mr+o0K4A6PUE2kbWU=";
-      })
-    ];
+  src = fetchurl {
+    url = "https://github.com/Ride-The-Lightning/RTL/archive/refs/tags/v${self.version}.tar.gz";
+    hash = "sha256-7VrLxmE+xPCipx7UOG1mja2pSBrj+swk55afcvBQeDU=";
   };
 
   passthru = {
@@ -34,7 +23,7 @@ let self = stdenvNoCC.mkDerivation {
 
     nodeModules = fetchNodeModules {
       inherit (self) src nodejs;
-      hash = "sha256-bYZ6snfXhDZ3MMga45EHVrPZxC0/Q0e3AgCgMBire64=";
+      hash = "sha256-ohS6gVX0M1Ir1QE9SjibbCrBpkXYIv5jV1Bkv0czRw4=";
     };
   };
 
