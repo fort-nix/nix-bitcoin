@@ -71,6 +71,67 @@ let
     };
 
     generateSecretsScript = mkOption {
+      readOnly = true;
+
+      description = mdDoc cfg.secretsScriptLib.scriptHelp;
+
+      default = pkgs.writers.writeBashBin "generate-secrets" ''
+        ${cfg.secretsScriptLib.gotoDestDir}
+        ${cfg.generateSecretsScriptImpl}
+      '';
+      defaultText = "(See source)";
+    };
+
+    # Snippets for assembling generate secrets scripts
+    secretsScriptLib = mkOption {
+      internal = true;
+      readOnly = true;
+      default = {
+        scriptHelp = ''
+          Script to generate secrets.
+
+          Usage:
+            generate-secrets
+
+              Writes secrets to ./secrets, if dir ./.git exists.
+              Writes secrets to the working directory, otherwise.
+
+            generate-secrets <destdir>
+
+              Writes secrets to <destdir>
+        '';
+        gotoDestDir = ''
+          set -euo pipefail
+
+          case ''${1:-} in
+            -h|--help)
+              echo '${cfg.secretsScriptLib.scriptHelp}'
+              exit 0
+              ;;
+          esac
+
+          destDir=''${1:-}
+
+          if [[ ! $destDir ]]; then
+            if [[ -d .git ]]; then
+              destDir=./secrets
+            else
+              destDir=.
+            fi
+          fi
+
+          echo "Writing secrets to $destDir" >&2
+
+          if [[ $destDir != . ]]; then
+            ${pkgs.coreutils}/bin/mkdir -p "$destDir"
+            cd "$destDir"
+          fi
+        '';
+      };
+    };
+
+    # Writes secrets to PWD
+    generateSecretsScriptImpl = mkOption {
       internal = true;
       default = let
         rpcauthSrc = pkgs.fetchurl {
@@ -182,7 +243,7 @@ in {
           cd "${cfg.secretsDir}"
           chown root: .
           chmod 0700 .
-          ${cfg.generateSecretsScript}
+          ${cfg.generateSecretsScriptImpl}
         ''}
 
         setupSecret() {
