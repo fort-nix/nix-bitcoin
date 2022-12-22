@@ -38,6 +38,12 @@ By default, [`configuration.nix`](configuration.nix) enables `bitcoind` and `cli
   nix-bitcoin configuration to it using [krops](https://github.com/krebs/krops).\
   Requires: [Nix](https://nixos.org/nix/), Linux
 
+- [`./flakes-agenix/deploy.sh`](./flakes-agenix/deploy.sh) shows how to deploy a
+  nix-bitcoin node flake using [agenix](https://github.com/ryantm/agenix) secrets encryption.\
+  agenix allows repo-defined secrets that can be deployed with any deployment scheme.\
+  The node is deployed in a container.\
+  Requires: [Nix](https://nixos.org/), a systemd-based Linux distro and root privileges
+
 - [`./deploy-container-minimal.sh`](deploy-container-minimal.sh) creates a
   container defined by [importable-configuration.nix](importable-configuration.nix).\
   You can copy and import this file to use nix-bitcoin in an existing NixOS configuration.\
@@ -63,3 +69,5 @@ The commands in `shell.nix` allow you to locally run the node in a VM or contain
 
 Flakes make it easy to include `nix-bitcoin` in an existing NixOS config.
 The [flakes example](./flakes/flake.nix) shows how to use `nix-bitcoin` as an input to a system flake.
+
+To use [agenix](https://github.com/ryantm/agenix), which allows committing secrets to the node repo, see [`./flakes-agenix`](./flakes-agenix).
