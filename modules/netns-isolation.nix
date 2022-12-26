@@ -297,6 +297,10 @@ in {
         id = 31;
         connections = [ "bitcoind" ];
       };
+      lndhub-go = {
+        id = 32;
+        connections = [ "lnd" ];
+      };
     };
 
     services.bitcoind = {
@@ -355,6 +359,8 @@ in {
     services.rtl.address = netns.rtl.address;
 
     services.clightning-rest.address = netns.clightning-rest.address;
+
+    services.lndhub-go.address = netns.lndhub-go.address;
   }
   ]);
 }

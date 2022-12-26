@@ -18,6 +18,7 @@ pkgs: pkgsUnstable:
     hwi
     lightning-loop
     lnd
+    lndhub-go
     nbxplorer;
 
   inherit pkgs pkgsUnstable;

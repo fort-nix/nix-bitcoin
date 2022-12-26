@@ -85,6 +85,7 @@ NixOS modules ([src](modules/modules.nix))
     * [Lightning Loop](https://github.com/lightninglabs/loop)
     * [Lightning Pool](https://github.com/lightninglabs/pool)
     * [charge-lnd](https://github.com/accumulator/charge-lnd): policy-based channel fee manager
+    * [LndHub.go](https://github.com/getAlby/lndhub.go): accounting wrapper for lnd
   * [lndconnect](https://github.com/LN-Zap/lndconnect): connect your wallet to lnd or clightning via a REST onion service
   * [Ride The Lightning](https://github.com/Ride-The-Lightning/RTL): web interface for `lnd` and `clightning`
   * [spark-wallet](https://github.com/shesek/spark-wallet)
