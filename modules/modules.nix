@@ -28,6 +28,7 @@
     ./joinmarket.nix
     ./joinmarket-ob-watcher.nix
     ./hardware-wallets.nix
+    ./peerswap-lnd.nix
 
     # Support features
     ./versioning.nix

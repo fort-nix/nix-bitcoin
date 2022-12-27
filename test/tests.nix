@@ -132,6 +132,8 @@ let
 
       tests.backups = cfg.backups.enable;
 
+      tests.peerswap-lnd = cfg.peerswap-lnd.enable;
+
       # To test that unused secrets are made inaccessible by 'setup-secrets'
       systemd.services.setup-secrets.preStart = mkIfTest "security" ''
         install -D -o nobody -g nogroup -m777 <(:) /secrets/dummy
@@ -198,6 +200,7 @@ let
       services.joinmarket.enable = true;
       services.joinmarket-ob-watcher.enable = true;
       services.backups.enable = true;
+      services.peerswap-lnd.enable = true;
 
       nix-bitcoin.nodeinfo.enable = true;
 
