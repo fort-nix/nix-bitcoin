@@ -46,7 +46,7 @@ This is borrowed from the [NixOS manual](https://nixos.org/nixos/manual/index.ht
     ls /sys/firmware/efi
     ```
 
-    If the file exists exists, you should continue the installation for UEFI otherwise for Legacy Boot.
+    If the file exists you should continue the installation for UEFI otherwise for Legacy Boot.
 
 4. Option 1: Partition and format for UEFI
 
