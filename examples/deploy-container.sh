@@ -8,23 +8,21 @@ set -euo pipefail
 # Run with option `--interactive` or `-i` to start a shell for interacting with
 # the node.
 
-if [[ ! -v NIX_BITCOIN_EXAMPLES_DIR ]]; then
-    echo "Running script in nix shell env..."
-    cd "${BASH_SOURCE[0]%/*}"
-    exec nix-shell --run "./${BASH_SOURCE[0]##*/} $*"
-else
-    cd "$NIX_BITCOIN_EXAMPLES_DIR"
+if [[ $EUID != 0 ]]; then
+    # NixOS containers require root permissions
+    exec sudo "${BASH_SOURCE[0]}" "$@"
 fi
 
-if [[ $(sysctl -n net.ipv4.ip_forward || sudo sysctl -n net.ipv4.ip_forward) != 1 ]]; then
+if [[ $(sysctl -n net.ipv4.ip_forward) != 1 ]]; then
     echo "Error: IP forwarding (net.ipv4.ip_forward) is not enabled."
     echo "Needed for container WAN access."
     exit 1
 fi
 
-if [[ $EUID != 0 ]]; then
-    # NixOS containers require root permissions
-    exec sudo "PATH=$PATH" "NIX_PATH=$NIX_PATH" "NIX_BITCOIN_EXAMPLES_DIR=$NIX_BITCOIN_EXAMPLES_DIR" "${BASH_SOURCE[0]}" "$@"
+if [[ ! -v DEPLOY_CONTAINER_NIX_SHELL ]]; then
+    echo "Running script in nix shell env..."
+    cd "${BASH_SOURCE[0]%/*}"
+    DEPLOY_CONTAINER_NIX_SHELL=1 exec nix-shell --run "./${BASH_SOURCE[0]##*/} $*"
 fi
 
 interactive=
