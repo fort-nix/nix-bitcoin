@@ -7,38 +7,38 @@ let
     rpcAddress = mkOption {
        type = types.str;
        default = "localhost";
-       description = "Address to listen for gRPC connections.";
+       description = mdDoc "Address to listen for gRPC connections.";
     };
     rpcPort = mkOption {
        type = types.port;
        default = 12010;
-       description = "Port to listen for gRPC connections.";
+       description = mdDoc "Port to listen for gRPC connections.";
     };
     restAddress = mkOption {
        type = types.str;
        default = cfg.rpcAddress;
-       description = "Address to listen for REST connections.";
+       description = mdDoc "Address to listen for REST connections.";
     };
     restPort = mkOption {
        type = types.port;
        default = 8281;
-       description = "Port to listen for REST connections.";
+       description = mdDoc "Port to listen for REST connections.";
     };
     package = mkOption {
       type = types.package;
       default = config.nix-bitcoin.pkgs.lightning-pool;
       defaultText = "config.nix-bitcoin.pkgs.lightning-pool";
-      description = "The package providing lightning-pool binaries.";
+      description = mdDoc "The package providing lightning-pool binaries.";
     };
     dataDir = mkOption {
       type = types.path;
       default = "/var/lib/lightning-pool";
-      description = "The data directory for lightning-pool.";
+      description = mdDoc "The data directory for lightning-pool.";
     };
     proxy = mkOption {
       type = types.nullOr types.str;
       default = if cfg.tor.proxy then config.nix-bitcoin.torClientAddressWithPort else null;
-      description = "host:port of SOCKS5 proxy for connnecting to the pool auction server.";
+      description = mdDoc "host:port of SOCKS5 proxy for connnecting to the pool auction server.";
     };
     extraConfig = mkOption {
       type = types.lines;
@@ -46,7 +46,7 @@ let
       example = ''
         debuglevel=trace
       '';
-      description = "Extra lines appended to the configuration file.";
+      description = mdDoc "Extra lines appended to the configuration file.";
     };
     cli = mkOption {
       default = pkgs.writers.writeBashBin "pool" ''
@@ -56,7 +56,7 @@ let
           --basedir '${cfg.dataDir}' "$@"
       '';
       defaultText = "(See source)";
-      description = "Binary to connect with the lightning-pool instance.";
+      description = mdDoc "Binary to connect with the lightning-pool instance.";
     };
     tor = nbLib.tor;
   };

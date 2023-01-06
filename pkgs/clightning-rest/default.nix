@@ -49,7 +49,7 @@ let self = stdenvNoCC.mkDerivation {
     description = "REST API for C-Lightning";
     homepage = "https://github.com/Ride-The-Lightning/c-lightning-REST";
     license = licenses.mit;
-    maintainers = with maintainers; [ nixbitcoin earvstedt ];
+    maintainers = with maintainers; [ nixbitcoin erikarvstedt ];
     platforms = platforms.unix;
   };
 }; in self

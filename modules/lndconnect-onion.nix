@@ -6,13 +6,13 @@ let
     services.lnd.lndconnectOnion.enable = mkOption {
       type = types.bool;
       default = false;
-      description = ''
+      description = mdDoc ''
         Create an onion service for the lnd REST server.
         Add a `lndconnect-onion` binary to the system environment.
         See: https://github.com/LN-Zap/lndconnect
 
         Usage:
-        ```
+        ```bash
           # Print QR code
           lndconnect-onion
 
@@ -25,13 +25,13 @@ let
     services.clightning-rest.lndconnectOnion.enable = mkOption {
       type = types.bool;
       default = false;
-      description = ''
+      description = mdDoc ''
         Create an onion service for clightning-rest.
         Add a `lndconnect-onion-clightning` binary to the system environment.
         See: https://github.com/LN-Zap/lndconnect
 
         Usage:
-        ```
+        ```bash
           # Print QR code
           lndconnect-onion-clightning
 

@@ -11,7 +11,7 @@ let
     nix-bitcoin.configVersion = mkOption {
       type = with types; nullOr str;
       default = null;
-      description = ''
+      description = mdDoc ''
         Set this option to the nix-bitcoin release version that your config is
         compatible with.
 

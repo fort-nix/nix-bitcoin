@@ -5,7 +5,7 @@
   '';
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-22.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-22.11";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     flake-utils.url = "github:numtide/flake-utils";
     extra-container = {
@@ -19,9 +19,11 @@
     let
       supportedSystems = [
         "x86_64-linux"
-        "i686-linux"
         "aarch64-linux"
-        "armv7l-linux"
+        # On these 32-bit platforms, Python pkg `pymemcache` 4.0.0 (required by
+        # `joinmarket`) is broken:
+        # "i686-linux"
+        # "armv7l-linux"
       ];
 
       test = import ./test/tests.nix nixpkgs.lib;

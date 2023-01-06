@@ -6,14 +6,14 @@ let
     secretsDir = mkOption {
       type = types.path;
       default = "/etc/nix-bitcoin-secrets";
-      description = "Directory to store secrets";
+      description = mdDoc "Directory to store secrets";
     };
 
     setupSecrets = mkOption {
       type = types.bool;
       default = false;
-      description = ''
-        Set permissions for existing secrets in `nix-bitcoin.secretsDir`
+      description = mdDoc ''
+        Set permissions for existing secrets in {option}`nix-bitcoin.secretsDir`
         before services are started.
       '';
     };
@@ -21,7 +21,7 @@ let
     generateSecrets = mkOption {
       type = types.bool;
       default = false;
-      description = ''
+      description = mdDoc ''
         Automatically generate all required secrets before services are started.
         Note: Make sure to create a backup of the generated secrets.
       '';
@@ -30,7 +30,7 @@ let
     generateSecretsCmds = mkOption {
       type = types.attrsOf types.str;
       default = {};
-      description = ''
+      description = mdDoc ''
         Bash expressions for generating secrets.
       '';
     };
@@ -38,7 +38,7 @@ let
     # Currently, this is used only by ../deployment/nixops.nix
     deployment.secretsDir = mkOption {
       type = types.path;
-      description = ''
+      description = mdDoc ''
         Directory of local secrets that are transferred to the nix-bitcoin node on deployment
       '';
     };

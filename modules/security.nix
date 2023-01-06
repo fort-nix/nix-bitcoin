@@ -6,16 +6,16 @@ with lib;
     nix-bitcoin.security.dbusHideProcessInformation = mkOption {
       type = types.bool;
       default = false;
-      description = ''
-        Only allow users with group 'proc' to retrieve systemd unit information like
+      description = mdDoc ''
+        Only allow users with group `proc` to retrieve systemd unit information like
         cgroup paths (i.e. (sub)process command lines) via D-Bus.
 
         This mitigates a systemd security issue where (sub)process command lines can
         be retrieved by services even when their access to /proc is restricted
         (via ProtectProc).
 
-        This option works by restricting the D-Bus method 'GetUnitProcesses', which
-        is also used internally by `systemctl status`.
+        This option works by restricting the D-Bus method `GetUnitProcesses`, which
+        is also used internally by {command}`systemctl status`.
       '';
     };
   };

@@ -1,16 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if [[ ! -v NIX_BITCOIN_EXAMPLES_DIR ]]; then
-    echo "Running script in nix shell env..."
-    cd "${BASH_SOURCE[0]%/*}"
-    exec nix-shell --run "./${BASH_SOURCE[0]##*/} $*"
-else
-    cd "$NIX_BITCOIN_EXAMPLES_DIR"
-fi
-
 tmpDir=$(mktemp -d /tmp/nix-bitcoin-minimal-container.XXX)
 trap 'rm -rf $tmpDir' EXIT
+
+cd "${BASH_SOURCE[0]%/*}"
 
 # Modify importable-configuration.nix to use the local <nix-bitcoin>
 # source instead of fetchTarball
@@ -31,4 +25,4 @@ cat > "$tmpDir/configuration.nix" <<EOF
   }
 EOF
 
-"${BASH_SOURCE[0]%/*}/deploy-container.sh" "$tmpDir/configuration.nix" "$@"
+./deploy-container.sh "$tmpDir/configuration.nix" "$@"

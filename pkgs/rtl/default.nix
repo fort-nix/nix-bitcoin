@@ -57,7 +57,7 @@ let self = stdenvNoCC.mkDerivation {
     description = "A web interface for LND, c-lightning and Eclair";
     homepage = "https://github.com/Ride-The-Lightning/RTL";
     license = licenses.mit;
-    maintainers = with maintainers; [ nixbitcoin earvstedt ];
+    maintainers = with maintainers; [ nixbitcoin erikarvstedt ];
     platforms = platforms.unix;
   };
 }; in self

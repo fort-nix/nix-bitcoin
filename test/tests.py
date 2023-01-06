@@ -48,7 +48,8 @@ def test(name):
         tests[name] = fn
     return x
 
-def run_tests():
+# `run_tests` is already defined by the NixOS test driver
+def nb_run_tests():
     enabled = enabled_tests.copy()
     to_run = []
     for test in tests:

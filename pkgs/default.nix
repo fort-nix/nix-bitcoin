@@ -13,7 +13,7 @@ let self = {
   clightning-rest = pkgs.callPackage ./clightning-rest { inherit (self) fetchNodeModules; };
   clboss = pkgs.callPackage ./clboss { };
   clightning-plugins = pkgs.recurseIntoAttrs (import ./clightning-plugins pkgs self.nbPython3Packages);
-  joinmarket = pkgs.callPackage ./joinmarket { nbPythonPackageOverrides = import ./python-packages self; };
+  joinmarket = pkgs.callPackage ./joinmarket { inherit (self) nbPython3PackagesJoinmarket; };
   lndinit = pkgs.callPackage ./lndinit { };
   liquid-swap = pkgs.python3Packages.callPackage ./liquid-swap { };
   rtl = pkgs.callPackage ./rtl { inherit (self) fetchNodeModules; };
@@ -21,9 +21,10 @@ let self = {
   secp256k1 = pkgs.callPackage ./secp256k1 { };
   spark-wallet = pkgs.callPackage ./spark-wallet { };
 
-  nbPython3Packages = (pkgs.python3.override {
-    packageOverrides = import ./python-packages self;
-  }).pkgs;
+  pyPkgs = import ./python-packages self pkgs.python3;
+  inherit (self.pyPkgs)
+    nbPython3Packages
+    nbPython3PackagesJoinmarket;
 
   fetchNodeModules = pkgs.callPackage ./build-support/fetch-node-modules.nix { };
 

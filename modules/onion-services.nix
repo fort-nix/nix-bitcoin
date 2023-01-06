@@ -16,24 +16,24 @@ let
           enable = mkOption {
             type = types.bool;
             default = config.public;
-            description = ''
+            description = mdDoc ''
               Create an onion service for the given service.
-              The service must define options 'address' and 'onionPort' (or `port`).
+              The service must define options {option}'address' and {option}'onionPort' (or `port`).
             '';
           };
           public = mkOption {
             type = types.bool;
             default = false;
-            description = ''
+            description = mdDoc ''
               Make the onion address accessible to the service.
               If enabled, the onion service is automatically enabled.
-              Only available for services that define option `getPublicAddressCmd`.
+              Only available for services that define option {option}`getPublicAddressCmd`.
             '';
           };
           externalPort = mkOption {
             type = types.nullOr types.port;
             default = null;
-            description = "Override the external port of the onion service.";
+            description = mdDoc "Override the external port of the onion service.";
           };
         };
       }

@@ -10,7 +10,7 @@ nodePackages.package.override {
     description = "A minimalistic wallet GUI for c-lightning";
     homepage = "https://github.com/shesek/spark-wallet";
     license = licenses.mit;
-    maintainers = with maintainers; [ nixbitcoin earvstedt ];
+    maintainers = with maintainers; [ nixbitcoin erikarvstedt ];
     platforms = platforms.unix;
   };
 }

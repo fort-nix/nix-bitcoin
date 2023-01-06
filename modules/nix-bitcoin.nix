@@ -39,8 +39,7 @@ with lib;
       runAsUserCmd = mkOption {
         readOnly = true;
         default = if config.security.doas.enable
-                  # TODO-EXTERNAL: Use absolute path until https://github.com/NixOS/nixpkgs/pull/133622 is available.
-                  then "/run/wrappers/bin/doas -u"
+                  then "doas -u"
                   else "sudo -u";
         defaultText = "(See source)";
       };
