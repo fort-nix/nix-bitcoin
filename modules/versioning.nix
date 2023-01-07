@@ -231,6 +231,15 @@ let
         The `lndconnect-rest-onion` binary has been renamed to `lndconnect-onion`.
       '';
     }
+    {
+      version = "0.0.85";
+      condition = config.services.fulcrum.enable;
+      message = ''
+        Fulcrum 1.9.0 has changed its database format.
+        The database update happens automatically and instantly on deployment,
+        but you can't switch back to an older Fulcrum version afterwards.
+      '';
+    }
   ];
 
   mkOnionServiceChange = service: {
