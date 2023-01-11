@@ -96,6 +96,14 @@ let
       '';
     };
     tor = nbLib.tor;
+    alternativeBitcoinBackend = mkOption {
+      type = types.nullOr types.str;
+      default = null;
+      example = "/path/to/trustedcoin";
+      description = ''
+        Path to an alternative bitcoin blockchain data supplier plugin like trustedcoin
+      '';
+    };
   };
 
   cfg = config.services.clightning;
@@ -107,7 +115,9 @@ let
   network = bitcoind.makeNetworkName "bitcoin" "regtest";
   configFile = pkgs.writeText "config" ''
     network=${network}
-    bitcoin-datadir=${bitcoind.dataDir}
+    ${optionalString (cfg.alternativeBitcoinBackend == null) "bitcoin-datadir=${bitcoind.dataDir}"}
+    ${optionalString (cfg.alternativeBitcoinBackend != null) "disable-plugin=bcli"}
+    ${optionalString (cfg.alternativeBitcoinBackend != null) "plugin=${cfg.alternativeBitcoinBackend}"}
     ${optionalString (cfg.proxy != null) "proxy=${cfg.proxy}"}
     always-use-proxy=${boolToString cfg.always-use-proxy}
     bind-addr=${cfg.address}:${toString cfg.port}
