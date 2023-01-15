@@ -4,7 +4,7 @@
 # The tests (defined in ./tests.nix) use the NixOS testing framework and are executed in a VM.
 #
 # Usage:
-#   Run all tests
+#   Run the basic set of tests. These are also run on the CI server.
 #   ./run-tests.sh
 #
 #   Test specific scenario
