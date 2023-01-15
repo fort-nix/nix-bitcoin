@@ -335,6 +335,31 @@ let
       # See ./lib/test-lib.nix for a description
       test.container.exposeLocalhost = true;
     };
+
+    ## Scenarios with a custom Python test
+
+    # Variant 1: Define testing code that always runs
+    customTestSimple = {
+      networking.hostName = "myhost";
+
+      # Variant 1: Define testing code that always runs
+      test.extraTestScript = ''
+        succeed("[[ $(hostname) == myhost ]]")
+      '';
+    };
+
+    # Variant 2: Define a test that can be enabled/disabled
+    # via the Nix module system.
+    customTestExtended = {
+      networking.hostName = "myhost";
+
+      tests.hostName = true;
+      test.extraTestScript = ''
+        @test("hostName")
+        def _():
+            succeed("[[ $(hostname) == myhost ]]")
+      '';
+    };
   };
 in {
   inherit scenarios;
