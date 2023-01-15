@@ -135,7 +135,7 @@ You can use the same approach to allow connections to other services.
 ## Example: bitcoind
 
 ```shell
-# 1. Stop bitcoind on your nodes
+# 1. Stop bitcoind on your node
 ssh root@nix-bitcoin-node 'systemctl stop bitcoind'
 # Also stop bitcoind on the node that you'll be copying data from
 
