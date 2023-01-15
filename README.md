@@ -120,6 +120,10 @@ The nix-bitcoin security fund is a 2 of 3 bitcoin multisig address open for dona
 security researchers who discover vulnerabilities in nix-bitcoin or its upstream dependencies.\
 See [Security Fund](./SECURITY.md#nix-bitcoin-security-fund) for details.
 
+Developing
+---
+See [dev/README](./dev/README.md).
+
 Troubleshooting
 ---
 If you are having problems with nix-bitcoin check the [FAQ](docs/faq.md) or submit an issue.\

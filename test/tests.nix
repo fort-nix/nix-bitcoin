@@ -315,7 +315,9 @@ let
       services.lnd.enable = true;
       services.bitcoind.prune = 1000;
     };
-  };
+  } // (import ../dev/dev-scenarios.nix {
+    inherit lib scenarios;
+  });
 
   ## Example scenarios that showcase extra features
   exampleScenarios = with lib; {
