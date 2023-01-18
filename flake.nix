@@ -122,6 +122,8 @@
             program = toString packages.runVM;
           };
         };
+
+        devShells.default = import ./dev/dev-env/dev-shell.nix pkgs;
       }
     ));
 }

@@ -53,12 +53,6 @@ let
           clboss.path = "${nbPkgs.clboss}/bin/clboss";
         };
       in map (plugin: pluginPkgs.${plugin}.path) enabled;
-      # Torified 'dig' subprocesses of clboss don't respond to SIGTERM and keep
-      # running for a long time when WAN is disabled, which prevents clightning units
-      # from stopping quickly.
-      # Set TimeoutStopSec for faster stopping.
-      systemd.services.clightning.serviceConfig.TimeoutStopSec =
-        mkIf config.services.clightning.plugins.clboss.enable "500ms";
 
       tests.clightning-rest = cfg.clightning-rest.enable;
 
@@ -90,6 +84,8 @@ let
         };
       };
 
+      nix-bitcoin.onionServices.lnd.public = true;
+
       tests.lndconnect-onion-lnd = cfg.lnd.lndconnectOnion.enable;
       tests.lndconnect-onion-clightning = cfg.clightning-rest.lndconnectOnion.enable;
 
@@ -97,7 +93,6 @@ let
       services.lightning-loop.certificate.extraIPs = [ "20.0.0.1" ];
 
       tests.lightning-pool = cfg.lightning-pool.enable;
-      nix-bitcoin.onionServices.lnd.public = true;
 
       tests.charge-lnd = cfg.charge-lnd.enable;
 
@@ -140,6 +135,13 @@ let
       # Avoid timeout failures on slow CI nodes
       systemd.services.postgresql.serviceConfig.TimeoutStartSec = "5min";
     }
+    (mkIf config.services.clightning.plugins.clboss.enable {
+      # Torified 'dig' subprocesses of clboss don't respond to SIGTERM and keep
+      # running for a long time when WAN is disabled, which prevents clightning units
+      # from stopping quickly.
+      # Set TimeoutStopSec for faster stopping.
+      systemd.services.clightning.serviceConfig.TimeoutStopSec = "500ms";
+    })
     (mkIf config.test.features.clightningPlugins {
       services.clightning.plugins = {
         clboss.enable = true;
@@ -313,7 +315,9 @@ let
       services.lnd.enable = true;
       services.bitcoind.prune = 1000;
     };
-  };
+  } // (import ../dev/dev-scenarios.nix {
+    inherit lib scenarios;
+  });
 
   ## Example scenarios that showcase extra features
   exampleScenarios = with lib; {
@@ -332,6 +336,31 @@ let
       test.container.enableWAN = true;
       # See ./lib/test-lib.nix for a description
       test.container.exposeLocalhost = true;
+    };
+
+    ## Scenarios with a custom Python test
+
+    # Variant 1: Define testing code that always runs
+    customTestSimple = {
+      networking.hostName = "myhost";
+
+      # Variant 1: Define testing code that always runs
+      test.extraTestScript = ''
+        succeed("[[ $(hostname) == myhost ]]")
+      '';
+    };
+
+    # Variant 2: Define a test that can be enabled/disabled
+    # via the Nix module system.
+    customTestExtended = {
+      networking.hostName = "myhost";
+
+      tests.hostName = true;
+      test.extraTestScript = ''
+        @test("hostName")
+        def _():
+            succeed("[[ $(hostname) == myhost ]]")
+      '';
     };
   };
 in {

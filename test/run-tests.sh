@@ -4,7 +4,7 @@
 # The tests (defined in ./tests.nix) use the NixOS testing framework and are executed in a VM.
 #
 # Usage:
-#   Run all tests
+#   Run the basic set of tests. These are also run on the CI server.
 #   ./run-tests.sh
 #
 #   Test specific scenario
@@ -57,7 +57,8 @@
 #     and reading source files.
 #     Files are copied to /tmp, a caching scheme helps minimizing copies.
 #
-#   To add custom scenarios, set the environment variable `scenarioOverridesFile`.
+#   Add custom scenarios from a file
+#   ./run-tests.sh --extra-scenarios ~/my/scenarios.nix ...
 
 set -eo pipefail
 
@@ -66,6 +67,7 @@ scriptDir=$(cd "${BASH_SOURCE[0]%/*}" && pwd)
 args=("$@")
 scenario=
 outLinkPrefix=
+scenarioOverridesFile=
 while :; do
     case $1 in
         --scenario|-s)
@@ -81,6 +83,16 @@ while :; do
         --out-link-prefix|-o)
             if [[ $2 ]]; then
                 outLinkPrefix=$2
+                shift
+                shift
+            else
+                >&2 echo "Error: $1 requires an argument."
+                exit 1
+            fi
+            ;;
+        --extra-scenarios)
+            if [[ $2 ]]; then
+                scenarioOverridesFile=$2
                 shift
                 shift
             else
@@ -113,7 +125,7 @@ makeTmpDir() {
 # Support explicit scenario definitions
 if [[ $scenario = *' '* ]]; then
     makeTmpDir
-    export scenarioOverridesFile=$tmpDir/scenario-overrides.nix
+    scenarioOverridesFile=$tmpDir/scenario-overrides.nix
     echo "{ scenarios, pkgs, lib, nix-bitcoin }: with lib; { tmp = $scenario; }" > "$scenarioOverridesFile"
     scenario=tmp
 fi
@@ -195,7 +207,7 @@ buildTests() {
 nixInstantiateTest() {
     local attr=$1
     shift
-    if [[ ${scenarioOverridesFile:-} ]]; then
+    if [[ $scenarioOverridesFile ]]; then
         local file="extraScenariosFile = \"$scenarioOverridesFile\";"
     else
         local file=
