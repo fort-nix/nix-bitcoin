@@ -215,9 +215,11 @@ in {
 
         };
       };
-    in foldl (services: n:
-      services // (makeNetnsServices n netns.${n})
-    ) {} (builtins.attrNames netns));
+    in
+      foldl (services: n:
+        services // (makeNetnsServices n netns.${n})
+      ) {} (builtins.attrNames netns)
+    );
   }
 
   # Service-specific config
