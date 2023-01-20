@@ -297,6 +297,7 @@ in {
         id = 31;
         connections = [ "bitcoind" ];
       };
+      # id = 32 reserved for the upcoming mempool module
     };
 
     services.bitcoind = {
