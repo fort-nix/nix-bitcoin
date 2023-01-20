@@ -5,7 +5,9 @@ let
   secretsDir = config.nix-bitcoin.secretsDir;
 in {
   services.bitcoind = {
-    # Make the local bitcoin-cli work with the remote node
+    # Make the local bitcoin-cli work with the remote node.
+    # Without this, bitcoin-cli would try to use the .cookie file in the local
+    # bitcoind data dir for authorization, which doesn't exist.
     extraConfig = ''
       rpcuser=${cfg.rpc.users.privileged.name}
     '';
