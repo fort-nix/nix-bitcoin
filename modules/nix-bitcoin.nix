@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, options, pkgs, lib, ... }:
 
 with lib;
 {
@@ -8,6 +8,18 @@ with lib;
         type = types.attrs;
         default = (import ../pkgs { inherit pkgs; }).modulesPkgs;
         defaultText = "nix-bitcoin/pkgs.modulesPkgs";
+        apply = base:
+          let
+            final = foldl (prev: overlay:
+              prev // (overlay prev final)
+            ) base options.nix-bitcoin.pkgOverlays.definitions;
+          in
+            final;
+      };
+
+      pkgOverlays = mkOption {
+        internal = true;
+        type = with types; functionTo attrs;
       };
 
       lib = mkOption {
