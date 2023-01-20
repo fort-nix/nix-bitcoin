@@ -270,8 +270,8 @@ in {
         NotifyAccess = "all";
         User = cfg.user;
         Group = cfg.group;
-        TimeoutStartSec = "10min";
-        TimeoutStopSec = "10min";
+        TimeoutStartSec = "2h";
+        TimeoutStopSec = "2h";
         ExecStart = "${nbPkgs.elementsd}/bin/elementsd -datadir='${cfg.dataDir}'";
         Restart = "on-failure";
         ReadWritePaths = [ cfg.dataDir ];

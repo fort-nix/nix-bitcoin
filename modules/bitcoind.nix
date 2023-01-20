@@ -421,8 +421,8 @@ in {
         NotifyAccess = "all";
         User = cfg.user;
         Group = cfg.group;
-        TimeoutStartSec = "10min";
-        TimeoutStopSec = "10min";
+        TimeoutStartSec = "30min";
+        TimeoutStopSec = "30min";
         ExecStart = "${cfg.package}/bin/bitcoind -datadir='${cfg.dataDir}'";
         Restart = "on-failure";
         UMask = mkIf cfg.dataDirReadableByGroup "0027";
