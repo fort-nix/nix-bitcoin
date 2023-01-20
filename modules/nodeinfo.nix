@@ -73,9 +73,10 @@ let
             return
         info["onion_address"] = f"{onion_address}:{port}"
 
-    def add_service(service, make_info):
-        if not is_active(service):
-            infos[service] = "service is not running"
+    def add_service(service, make_info, systemd_service = None):
+        systemd_service = systemd_service or service
+        if not is_active(systemd_service):
+            infos[service] = f"'{systemd_service}.service' is not running"
         else:
             info = OrderedDict()
             exec(make_info, globals(), locals())
@@ -96,14 +97,19 @@ let
   ) (builtins.attrNames cfg.services);
 
   nodeinfoLib = rec {
-    mkInfo = extraCode: name: cfg: ''
+    mkInfo = extraCode: name: cfg:
+      mkInfoLong {
+        inherit extraCode name cfg;
+      };
+
+    mkInfoLong = { extraCode ? "", name, cfg, systemdServiceName ? name }: ''
       add_service("${name}", """
       info["local_address"] = "${nbLib.addressWithPort cfg.address cfg.port}"
     '' + mkIfOnionPort name (onionPort: ''
       set_onion_address(info, "${name}", ${onionPort})
     '') + extraCode + ''
 
-      """)
+      """, "${systemdServiceName}")
     '';
 
     mkIfOnionPort = name: fn:
