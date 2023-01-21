@@ -53,6 +53,15 @@ ls -al /var/lib/nixos-containers/nb-test
 # The container root filesystem on NixOS systems with stateVersion < 22.05
 ls -al /var/lib/containers/nb-test
 
+# Start a shell in the context of a service process.
+# Must be run inside the container (enter with cmd `c`).
+enter_service() {
+    local name=$1
+    nsenter --all -t "$(systemctl show -p MainPID --value "$name")" \
+      --setuid "$(id -u "$name")" --setgid "$(id -g "$name")" bash
+}
+enter_service clightning
+
 #―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 # bitcoind
 run-tests.sh -s bitcoind container
