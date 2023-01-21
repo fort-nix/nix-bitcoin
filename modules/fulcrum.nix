@@ -126,6 +126,7 @@ in {
         Restart = "on-failure";
         RestartSec = "10s";
         ReadWritePaths = cfg.dataDir;
+        ProcSubset = "all"; # Fulcrum requires read access to /proc/meminfo
       } // nbLib.allowedIPAddresses cfg.tor.enforce;
     };
 
