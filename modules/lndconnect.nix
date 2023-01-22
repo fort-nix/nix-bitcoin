@@ -82,6 +82,7 @@ let
   mkLndconnect = {
     name,
     shebang ? "#!${pkgs.stdenv.shell} -e",
+    isClightning ? false,
     port,
     macaroonPath,
     enableOnion,
@@ -93,12 +94,39 @@ let
   # https://github.com/LN-Zap/lndconnect/issues/25
   pkgs.hiPrio (pkgs.writeScriptBin name ''
     ${shebang}
-    exec ${config.nix-bitcoin.pkgs.lndconnect}/bin/lndconnect \
-     ${optionalString enableOnion "--host=$(cat ${config.nix-bitcoin.onionAddresses.dataDir}/${onionService})"} \
-     --port=${toString port} \
-     ${if enableOnion || certPath == null then "--nocert" else "--tlscertpath='${certPath}'"} \
-     --adminmacaroonpath='${macaroonPath}' \
-     --configfile=/dev/null "$@"
+    url=$(
+      ${getExe config.nix-bitcoin.pkgs.lndconnect} --url \
+        ${optionalString enableOnion "--host=$(cat ${config.nix-bitcoin.onionAddresses.dataDir}/${onionService})"} \
+        --port=${toString port} \
+        ${if enableOnion || certPath == null then "--nocert" else "--tlscertpath='${certPath}'"} \
+        --adminmacaroonpath='${macaroonPath}' \
+        --configfile=/dev/null "$@"
+    )
+
+    ${optionalString isClightning
+      # - Change URL procotcol to c-lightning-rest
+      # - Encode macaroon as hex (in uppercase) instead of base 64.
+      #   Because `macaroon` is always the last URL fragment, the
+      #   sed replacement below works correctly.
+      ''
+        macaroonHex=$(${getExe pkgs.xxd} -p -u -c 99999 '${macaroonPath}')
+        url=$(
+          echo "$url" | ${getExe pkgs.gnused} "
+            s|^lndconnect|c-lightning-rest|
+            s|macaroon=.*|macaroon=$macaroonHex|
+          ";
+        )
+      ''
+    }
+
+    # If --url is in args
+    if [[ " $* " =~ " --url " ]]; then
+      echo "$url"
+    else
+      # This UTF-8 encoding yields a smaller, more convenient output format
+      # compared to the native lndconnect output
+      echo -n "$url" | ${getExe pkgs.qrencode} -t UTF8 -o -
+    fi
   '');
 
   operatorName = config.nix-bitcoin.operator.name;
@@ -144,6 +172,7 @@ in {
           environment.systemPackages = [(
             mkLndconnect {
               name = "lndconnect-clightning";
+              isClightning = true;
               enableOnion = clightning-rest.lndconnect.onion;
               onionService = "${operatorName}/clightning-rest";
               port = clightning-rest.port;

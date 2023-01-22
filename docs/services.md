@@ -143,7 +143,7 @@ The default password location is `$secretsDir/rtl-password`.
 See: [Secrets dir](./configuration.md#secrets-dir)
 
 # Use Zeus (mobile lightning wallet) via Tor
-1. Install [Zeus](https://zeusln.app)
+1. Install [Zeus](https://zeusln.app) (version ≥ 0.7.1)
 
 2. Edit your `configuration.nix`
 
@@ -186,19 +186,16 @@ See: [Secrets dir](./configuration.md#secrets-dir)
    ```
 
 5. Configure Zeus
-   - Add a new node
-   - Select `Scan lndconnect config` (at the bottom) and scan the QR code
-   - For clightning: Set `Node interface` to `c-lightning-REST`
+   - Add a new node and scan the QR code
    - Click `Save node config`
    - Start sending and stacking sats privately
 
 ### Additional lndconnect features
-- Create plain text URLs or QR code images
+- Create a plain text URL:
   ```bash
   lndconnect --url
-  lndconnect --image
   ```
-- Set a custom host.  By default, `lndconnect` detects the system's external IP and uses it as the host.
+- Set a custom host. By default, `lndconnect` detects the system's external IP and uses it as the host.
   ```bash
   lndconnect --host myhost
   ```
