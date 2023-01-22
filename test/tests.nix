@@ -405,6 +405,7 @@ in {
     in
       {
         clightning-replication = import ./clightning-replication.nix makeTestVM pkgs;
+        wireguard-lndconnect = import ./wireguard-lndconnect.nix makeTestVM pkgs;
       } // mainTests;
 
     tests = makeTests scenarios;

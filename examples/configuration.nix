@@ -58,7 +58,9 @@
   # Set this to create a clightning REST onion service.
   # This also adds binary `lndconnect-clightning` to the system environment.
   # This binary creates QR codes or URLs for connecting applications to clightning
-  # via the REST onion service (see ../docs/services.md).
+  # via the REST onion service.
+  # You can also connect via WireGuard instead of Tor.
+  # See ../docs/services.md for details.
   #
   # services.clightning-rest = {
   #   enable = true;
@@ -84,7 +86,10 @@
   # Set this to create a lnd REST onion service.
   # This also adds binary `lndconnect` to the system environment.
   # This binary generates QR codes or URLs for connecting applications to lnd via the
-  # REST onion service (see ../docs/services.md).
+  # REST onion service.
+  # You can also connect via WireGuard instead of Tor.
+  # See ../docs/services.md for details.
+  #
   # services.lnd.lndconnect = {
   #   enable = true;
   #   onion = true;

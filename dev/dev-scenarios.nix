@@ -45,4 +45,34 @@ with lib;
     nix-bitcoin.nodeinfo.enable = true;
     # test.container.enableWAN = true;
   };
+
+  wireguard-lndconnect-online = { config, pkgs, lib, ... }: {
+    imports = [
+      ../modules/presets/wireguard.nix
+      scenarios.regtestBase
+    ];
+
+    # 51820 (default wg port) + 1
+    networking.wireguard.interfaces.wg-nb.listenPort = 51821;
+    test.container.enableWAN = true;
+    # test.container.exposeLocalhost = true;
+
+    services.clightning.extraConfig = "disable-dns";
+
+    services.lnd = {
+      enable = true;
+      lndconnect = {
+        enable = true;
+        onion = true;
+      };
+    };
+    services.clightning-rest = {
+      enable = true;
+      lndconnect = {
+        enable = true;
+        onion = true;
+      };
+    };
+    nix-bitcoin.nodeinfo.enable = true;
+  };
 }

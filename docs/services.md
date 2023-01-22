@@ -200,6 +200,97 @@ See: [Secrets dir](./configuration.md#secrets-dir)
   lndconnect --host myhost
   ```
 
+# Use Zeus (mobile lightning wallet) via WireGuard
+
+Connecting Zeus directly to your node is much faster than using Tor, but a bit more complex to setup.
+
+There are two ways to establish a secure, direct connection:
+
+- Connecting via TLS. This requires installing your lightning app's
+  TLS Certificate on your mobile device.
+
+- Connecting via WireGuard. This approach is simpler and more versatile, and is
+  described in this guide.
+
+1. Install [Zeus](https://zeusln.app) (version ≥ 0.7.1) and
+   [WireGuard](https://www.wireguard.com/install/) on your mobile device.
+
+2. Add the following to your `configuration.nix`:
+   ```nix
+   imports = [
+     # Use this line when using the default deployment method
+     <nix-bitcoin/modules/presets/wireguard.nix>
+
+     # Use this line when using Flakes
+     (nix-bitcoin + /modules/presets/wireguard.nix)
+   ]
+
+   # For lnd
+   services.lnd.lndconnect.enable = true;
+
+   # For clightning
+   services.clightning-rest = {
+     enable = true;
+     lndconnect.enable = true;
+   };
+   ```
+3. Deploy your configuration.
+
+4. If your node is behind an external firewall or NAT, add the following port forwarding
+   rule to the external device:
+   - Port: 51820 (the default value of option `networking.wireguard.interfaces.wg-nb.listenPort`)
+   - Protocol: UDP
+   - Destination: IP of your node
+
+5. Setup WireGuard on your mobile device.
+
+   Run the following command on your node (as user `operator`) to create a QR code
+   for WireGuard:
+   ```bash
+   nix-bitcoin-wg-connect
+
+   # For debugging: Show the WireGuard config as text
+   nix-bitcoin-wg-connect --text
+   ```
+   The above commands automatically detect your node's external IP.\
+   To set a custom IP or hostname, run the following:
+   ```
+   nix-bitcoin-wg-connect 93.184.216.34
+   nix-bitcoin-wg-connect mynode.org
+   ```
+
+   Configure WireGuard:
+   - Press the `+` button in the bottom right corner
+   - Scan the QR code
+   - Add the tunnel
+
+6. Setup Zeus
+
+   Run the following command on your node (as user `operator`) to create a QR code for Zeus:
+
+   ##### For lnd
+   ```
+   lndconnect-wg
+   ```
+
+   ##### For clightning
+   ```
+   lndconnect-clightning-wg
+   ```
+
+   Configure Zeus:
+   - Add a new node and scan the QR code
+   - Click `Save node config`
+   - On the certificate warning screen, click `I understand, save node config`.\
+     Certificates are not needed when connecting via WireGuard.
+   - Start sending and stacking sats privately
+
+### Additional lndconnect features
+Create a plain text URL:
+```bash
+lndconnect-wg --url
+``````
+
 # Connect to spark-wallet
 ### Requirements
 * Android phone
