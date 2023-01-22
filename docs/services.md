@@ -142,7 +142,7 @@ You can find the `<onion-address>` with command `nodeinfo`.
 The default password location is `$secretsDir/rtl-password`.
 See: [Secrets dir](./configuration.md#secrets-dir)
 
-# Use LND or clightning with Zeus (mobile wallet) via Tor
+# Use Zeus (mobile lightning wallet) via Tor
 1. Install [Zeus](https://zeusln.app)
 
 2. Edit your `configuration.nix`
@@ -166,7 +166,7 @@ See: [Secrets dir](./configuration.md#secrets-dir)
 
 3. Deploy your configuration
 
-3. Run the following command on your node (as user `operator`) to create a QR code
+4. Run the following command on your node (as user `operator`) to create a QR code
    with address and authentication information:
 
    ##### For lnd
@@ -179,7 +179,7 @@ See: [Secrets dir](./configuration.md#secrets-dir)
    lndconnect-onion-clightning
    ```
 
-4. Configure Zeus
+5. Configure Zeus
    - Add a new node
    - Select `Scan lndconnect config` (at the bottom) and scan the QR code
    - For clightning: Set `Node interface` to `c-lightning-REST`
