@@ -177,12 +177,12 @@ def _():
 @test("lndconnect-onion-lnd")
 def _():
     assert_running("lnd")
-    assert_matches("runuser -u operator -- lndconnect-onion --url", ".onion")
+    assert_matches("runuser -u operator -- lndconnect --url", ".onion")
 
 @test("lndconnect-onion-clightning")
 def _():
     assert_running("clightning-rest")
-    assert_matches("runuser -u operator -- lndconnect-onion-clightning --url", ".onion")
+    assert_matches("runuser -u operator -- lndconnect-clightning --url", ".onion")
 
 @test("lightning-loop")
 def _():

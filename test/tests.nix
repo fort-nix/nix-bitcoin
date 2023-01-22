@@ -86,8 +86,8 @@ let
 
       nix-bitcoin.onionServices.lnd.public = true;
 
-      tests.lndconnect-onion-lnd = cfg.lnd.lndconnectOnion.enable;
-      tests.lndconnect-onion-clightning = cfg.clightning-rest.lndconnectOnion.enable;
+      tests.lndconnect-onion-lnd = with cfg.lnd.lndconnect; enable && onion;
+      tests.lndconnect-onion-clightning = with cfg.clightning-rest.lndconnect; enable && onion;
 
       tests.lightning-loop = cfg.lightning-loop.enable;
       services.lightning-loop.certificate.extraIPs = [ "20.0.0.1" ];
@@ -187,9 +187,9 @@ let
       services.rtl.enable = true;
       services.spark-wallet.enable = true;
       services.clightning-rest.enable = true;
-      services.clightning-rest.lndconnectOnion.enable = true;
+      services.clightning-rest.lndconnect = { enable = true; onion = true; };
       services.lnd.enable = true;
-      services.lnd.lndconnectOnion.enable = true;
+      services.lnd.lndconnect = { enable = true; onion = true; };
       services.lightning-loop.enable = true;
       services.lightning-pool.enable = true;
       services.charge-lnd.enable = true;

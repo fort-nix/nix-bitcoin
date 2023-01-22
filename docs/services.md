@@ -150,17 +150,23 @@ See: [Secrets dir](./configuration.md#secrets-dir)
    ##### For lnd
 
    Add the following config:
-   ```
-   services.lnd.lndconnectOnion.enable = true;
+   ```nix
+   services.lnd.lndconnect = {
+     enable = true;
+     onion = true;
+   };
    ```
 
    ##### For clightning
 
    Add the following config:
-   ```
+   ```nix
    services.clightning-rest = {
      enable = true;
-     lndconnectOnion.enable = true;
+     lndconnect = {
+       enable = true;
+       onion = true;
+     };
    };
    ```
 
@@ -171,12 +177,12 @@ See: [Secrets dir](./configuration.md#secrets-dir)
 
    ##### For lnd
    ```
-   lndconnect-onion
+   lndconnect
    ```
 
    ##### For clightning
    ```
-   lndconnect-onion-clightning
+   lndconnect-clightning
    ```
 
 5. Configure Zeus
@@ -187,15 +193,15 @@ See: [Secrets dir](./configuration.md#secrets-dir)
    - Start sending and stacking sats privately
 
 ### Additional lndconnect features
-Create plain text URLs or QR code images:
-```
-lndconnect-onion --url
-lndconnect-onion --image
-``````
-Create a QR code for a custom hostname:
-```
-lndconnect-onion --host=mynode.org
-```
+- Create plain text URLs or QR code images
+  ```bash
+  lndconnect --url
+  lndconnect --image
+  ```
+- Set a custom host.  By default, `lndconnect` detects the system's external IP and uses it as the host.
+  ```bash
+  lndconnect --host myhost
+  ```
 
 # Connect to spark-wallet
 ### Requirements

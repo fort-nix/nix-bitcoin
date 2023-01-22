@@ -33,7 +33,6 @@ in {
     (mkRenamedOptionModule [ "services" "liquidd" "rpcbind" ] [ "services" "liquidd" "rpc" "address" ])
     # 0.0.70
     (mkRenamedOptionModule [ "services" "rtl" "cl-rest" ] [ "services" "clightning-rest" ])
-    (mkRenamedOptionModule [ "services" "lnd" "restOnionService" "enable" ] [ "services" "lnd" "lndconnectOnion" "enable" ])
 
     (mkRenamedOptionModule [ "nix-bitcoin" "setup-secrets" ] [ "nix-bitcoin" "setupSecrets" ])
 
@@ -45,6 +44,28 @@ in {
       This option is no longer supported by electrs 0.9.0. Electrs now always uses
       bitcoin peer connections for syncing blocks. This performs well on low and high
       memory systems.
+    '')
+    # 0.0.86
+    (mkRemovedOptionModule [ "services" "lnd" "restOnionService" "enable" ] ''
+      Set the following options instead:
+      services.lnd.lndconnect = {
+        enable = true;
+        onion = true;
+      }
+    '')
+    (mkRemovedOptionModule [ "services" "lnd" "lndconnect-onion" ] ''
+      Set the following options instead:
+      services.lnd.lndconnect = {
+        enable = true;
+        onion = true;
+      }
+    '')
+    (mkRemovedOptionModule [ "services" "clightning-rest" "lndconnect-onion" ] ''
+      Set the following options instead:
+      services.clightning-rest.lndconnect = {
+        enable = true;
+        onion = true;
+      }
     '')
   ] ++
   # 0.0.59
