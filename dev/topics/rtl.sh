@@ -37,6 +37,9 @@ PATH=/tmp/nix-bitcoin-dev/nodejs/bin:"$PATH"
 
 # Install
 npm ci --omit=dev --omit=optional --no-update-notifier --ignore-scripts
+# If the above fails, try: (details: https://github.com/Ride-The-Lightning/RTL/issues/1182)
+npm ci --omit=dev --omit=optional --no-update-notifier --ignore-scripts --legacy-peer-deps
+
 
 # Run
 node rtl --help
