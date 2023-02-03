@@ -52,11 +52,6 @@ let
       ];
   };
 
-  # A VM runner for interactive use
-  run = pkgs.writers.writeBashBin "run-vm" ''
-    . ${./run-vm.sh} ${test.driver} "$@"
-  '';
-
   mkContainer = legacyInstallDirs:
     extra-container.lib.buildContainers {
       inherit system legacyInstallDirs;
@@ -139,7 +134,6 @@ let
 in
 test // {
   inherit
-    run
     vm
     container
     # For NixOS with `system.stateVersion` <22.05

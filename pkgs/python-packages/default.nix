@@ -39,7 +39,6 @@ rec {
       ## Specific versions of packages that already exist in nixpkgs
 
       # cryptography 3.3.2, required by joinmarketdaemon
-      # Used in the private python package set for joinmarket (../joinmarket/default.nix)
       cryptography = callPackage ./specific-versions/cryptography {
         openssl = super.pkgs.openssl_1_1;
         cryptography_vectors = callPackage ./specific-versions/cryptography/vectors.nix {};

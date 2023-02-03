@@ -404,7 +404,7 @@ in {
       ) scenarios;
     in
       {
-        clightningReplication = import ./clightning-replication.nix makeTestVM pkgs;
+        clightning-replication = import ./clightning-replication.nix makeTestVM pkgs;
       } // mainTests;
 
     tests = makeTests scenarios;

@@ -55,8 +55,8 @@ in {
         RemainAfterExit = true;
         StateDirectory = "onion-addresses";
         StateDirectoryMode = "771";
-        PrivateNetwork = "true"; # This service needs no network access
-        PrivateUsers = "false";
+        PrivateNetwork = true; # This service needs no network access
+        PrivateUsers = false;
         CapabilityBoundingSet = "CAP_CHOWN CAP_FSETID CAP_SETFCAP CAP_DAC_OVERRIDE CAP_DAC_READ_SEARCH CAP_FOWNER CAP_IPC_OWNER";
       };
       script = ''

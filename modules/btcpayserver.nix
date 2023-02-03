@@ -193,7 +193,7 @@ in {
         Restart = "on-failure";
         RestartSec = "10s";
         ReadWritePaths = [ cfg.nbxplorer.dataDir ];
-        MemoryDenyWriteExecute = "false";
+        MemoryDenyWriteExecute = false;
       } // nbLib.allowedIPAddresses cfg.nbxplorer.tor.enforce;
     };
 
@@ -239,7 +239,7 @@ in {
         Restart = "on-failure";
         RestartSec = "10s";
         ReadWritePaths = [ cfg.btcpayserver.dataDir ];
-        MemoryDenyWriteExecute = "false";
+        MemoryDenyWriteExecute = false;
       } // nbLib.allowedIPAddresses cfg.btcpayserver.tor.enforce;
     }; in self;
 

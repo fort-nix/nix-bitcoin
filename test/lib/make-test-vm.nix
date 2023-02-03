@@ -27,4 +27,9 @@ let
     inherit (test) meta passthru;
   } // test;
 in
-  runTest
+  runTest // {
+    # A VM runner for interactive use
+    run = pkgs.writers.writeBashBin "run-vm" ''
+      . ${./run-vm.sh} ${runTest.driver} "$@"
+    '';
+  }

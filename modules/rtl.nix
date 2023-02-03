@@ -27,7 +27,7 @@ let
           description = mdDoc "Enable the clightning node interface.";
         };
         extraConfig = mkOption {
-          type = types.attrs;
+          type = with types; attrsOf anything;
           default = {};
           example = {
             Settings.userPersona = "MERCHANT";
@@ -52,7 +52,7 @@ let
           description = mdDoc "Enable swaps with lightning-loop.";
         };
         extraConfig = mkOption {
-          type = types.attrs;
+          type = with types; attrsOf anything;
           default = {};
           example = {
             Settings.userPersona = "MERCHANT";

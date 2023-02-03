@@ -215,9 +215,11 @@ in {
 
         };
       };
-    in foldl (services: n:
-      services // (makeNetnsServices n netns.${n})
-    ) {} (builtins.attrNames netns));
+    in
+      foldl (services: n:
+        services // (makeNetnsServices n netns.${n})
+      ) {} (builtins.attrNames netns)
+    );
   }
 
   # Service-specific config
@@ -297,6 +299,7 @@ in {
         id = 31;
         connections = [ "bitcoind" ];
       };
+      # id = 32 reserved for the upcoming mempool module
     };
 
     services.bitcoind = {

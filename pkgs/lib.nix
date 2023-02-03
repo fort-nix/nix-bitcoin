@@ -7,28 +7,28 @@ with lib;
 let self = {
   # These settings roughly follow systemd's "strict" security profile
   defaultHardening = {
-      PrivateTmp = "true";
+      PrivateTmp = true;
       ProtectSystem = "strict";
-      ProtectHome = "true";
-      NoNewPrivileges = "true";
-      PrivateDevices = "true";
-      MemoryDenyWriteExecute = "true";
-      ProtectKernelTunables = "true";
-      ProtectKernelModules = "true";
-      ProtectKernelLogs = "true";
-      ProtectClock = "true";
+      ProtectHome = true;
+      NoNewPrivileges = true;
+      PrivateDevices = true;
+      MemoryDenyWriteExecute = true;
+      ProtectKernelTunables = true;
+      ProtectKernelModules = true;
+      ProtectKernelLogs = true;
+      ProtectClock = true;
       ProtectProc = "invisible";
       ProcSubset = "pid";
-      ProtectControlGroups = "true";
+      ProtectControlGroups = true;
       RestrictAddressFamilies = "AF_UNIX AF_INET AF_INET6";
-      RestrictNamespaces = "true";
-      LockPersonality = "true";
+      RestrictNamespaces = true;
+      LockPersonality = true;
       IPAddressDeny = "any";
-      PrivateUsers = "true";
-      RestrictSUIDSGID = "true";
-      RemoveIPC = "true";
-      RestrictRealtime = "true";
-      ProtectHostname = "true";
+      PrivateUsers = true;
+      RestrictSUIDSGID = true;
+      RemoveIPC = true;
+      RestrictRealtime = true;
+      ProtectHostname = true;
       CapabilityBoundingSet = "";
       # @system-service whitelist and docker seccomp blacklist (except for "clone"
       # which is a core requirement for systemd services)
@@ -42,7 +42,7 @@ let self = {
   };
 
   # nodejs applications require memory write execute for JIT compilation
-  nodejs = { MemoryDenyWriteExecute = "false"; };
+  nodejs = { MemoryDenyWriteExecute = false; };
 
   # Allow takes precedence over Deny.
   allowLocalIPAddresses = {

@@ -17,8 +17,8 @@ let cfg = config.services.clightning.plugins.clboss; in
       default = 30000;
       description = mdDoc ''
         Target amount (in satoshi) that CLBOSS will leave on-chain.
-        clboss will only open new channels if this amount is smaller than
-        the funds in your clightning wallet.
+        clboss will only open new channels if the funds in your clightning wallet are
+        larger than this amount.
       '';
     };
     min-channel = mkOption {
