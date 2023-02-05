@@ -40,6 +40,7 @@ in {
     joinmarket = defaultEnforceTor;
     joinmarket-ob-watcher = defaultEnforceTor;
     clightning-rest = defaultEnforceTor;
+    torq = defaultEnforceTor;
   };
 
   # Add onion services for incoming connections
@@ -51,5 +52,6 @@ in {
     spark-wallet.enable = defaultTrue;
     joinmarket-ob-watcher.enable = defaultTrue;
     rtl.enable = defaultTrue;
+    torq.enable = defaultTrue;
   };
 }

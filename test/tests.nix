@@ -123,6 +123,8 @@ let
         txfee = 200;
       };
 
+      tests.torq = cfg.torq.enable;
+
       tests.nodeinfo = config.nix-bitcoin.nodeinfo.enable;
 
       tests.backups = cfg.backups.enable;
@@ -199,6 +201,7 @@ let
       services.btcpayserver.enable = true;
       services.joinmarket.enable = true;
       services.joinmarket-ob-watcher.enable = true;
+      services.torq.enable = true;
       services.backups.enable = true;
 
       nix-bitcoin.nodeinfo.enable = true;

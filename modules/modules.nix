@@ -20,6 +20,7 @@
     ./lightning-pool.nix
     ./charge-lnd.nix
     ./lndconnect.nix # Requires onion-addresses.nix
+    ./torq.nix
     ./rtl.nix
     ./electrs.nix
     ./fulcrum.nix

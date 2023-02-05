@@ -236,6 +236,11 @@
   # Set this to enable the JoinMarket order book watcher.
   # services.joinmarket-ob-watcher.enable = true;
 
+  ### torq
+  # Set this to enable Torq, node management software for large Lightning Network nodes.
+  #
+  # services.torq.enable = true;
+
   ### Backups
   # Set this to enable nix-bitcoin's own backup service. By default, it
   # uses duplicity to incrementally back up all important files in /var/lib to

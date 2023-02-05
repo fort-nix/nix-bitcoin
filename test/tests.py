@@ -279,6 +279,12 @@ def _():
     assert_running("joinmarket-ob-watcher")
     machine.wait_until_succeeds(log_has_string("joinmarket-ob-watcher", "Starting ob-watcher"))
 
+@test("torq")
+def _():
+    assert_running("torq")
+    wait_for_open_port(ip("torq"), 8089)
+    machine.wait_until_succeeds(log_has_string("torq", "ImportNodeInformation was imported successfully"))
+
 @test("nodeinfo")
 def _():
     status, _ = machine.execute("systemctl is-enabled --quiet onion-addresses 2> /dev/null")

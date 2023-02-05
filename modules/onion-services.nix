@@ -122,6 +122,9 @@ in {
         rtl = {
           externalPort = 80;
         };
+        torq = {
+          externalPort = 80;
+        };
       };
     }
   ];

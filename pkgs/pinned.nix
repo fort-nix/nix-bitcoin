@@ -18,7 +18,8 @@ pkgs: pkgsUnstable:
     fulcrum
     hwi
     lnd
-    nbxplorer;
+    nbxplorer
+    torq;
 
   inherit pkgs pkgsUnstable;
 }

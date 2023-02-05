@@ -300,6 +300,10 @@ in {
         connections = [ "bitcoind" ];
       };
       # id = 32 reserved for the upcoming mempool module
+      torq = {
+        id = 33; # TODO
+        connections = [ "lnd" ];
+      };
     };
 
     services.bitcoind = {
@@ -358,6 +362,8 @@ in {
     services.rtl.address = netns.rtl.address;
 
     services.clightning-rest.address = netns.clightning-rest.address;
+
+    services.torq.address = netns.torq.address;
   }
   ]);
 }
