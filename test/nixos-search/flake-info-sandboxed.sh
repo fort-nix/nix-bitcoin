@@ -41,4 +41,4 @@ bwrap \
   --ro-bind "$tmpDir/nix.conf" /etc/nix/nix.conf \
   --ro-bind /usr /usr \
   --ro-bind-try /run /run \
-  -- flake-info flake "$nbFlake"
+  -- flake-info --json flake "$nbFlake" >/dev/null
