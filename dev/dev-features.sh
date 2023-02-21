@@ -56,9 +56,10 @@ ls -al /var/lib/containers/nb-test
 # Start a shell in the context of a service process.
 # Must be run inside the container (enter with cmd `c`).
 enter_service() {
-    local name=$1
-    nsenter --all -t "$(systemctl show -p MainPID --value "$name")" \
-      --setuid "$(id -u "$name")" --setgid "$(id -g "$name")" bash
+    name=$1
+    pid=$(systemctl show -p MainPID --value "$name")
+    IFS=- read -r uid gid  < <(stat -c "%u-%g" "/proc/$pid")
+    nsenter --all -t "$pid" --setuid "$uid" --setgid "$gid" bash
 }
 enter_service clightning
 

@@ -88,10 +88,10 @@ NixOS modules ([src](modules/modules.nix))
   * [lndconnect](https://github.com/LN-Zap/lndconnect): connect your wallet to lnd or clightning via a REST onion service
   * [Ride The Lightning](https://github.com/Ride-The-Lightning/RTL): web interface for `lnd` and `clightning`
   * [spark-wallet](https://github.com/shesek/spark-wallet)
-  * [electrs](https://github.com/romanz/electrs)
-  * [fulcrum](https://github.com/cculianu/Fulcrum) (see [the module](modules/fulcrum.nix) for a comparison to electrs)
+  * [electrs](https://github.com/romanz/electrs): Electrum server
+  * [fulcrum](https://github.com/cculianu/Fulcrum): Electrum server (see [the module](modules/fulcrum.nix) for a comparison with electrs)
   * [btcpayserver](https://github.com/btcpayserver/btcpayserver)
-  * [liquid](https://github.com/elementsproject/elements)
+  * [liquid](https://github.com/elementsproject/elements): federated sidechain
   * [JoinMarket](https://github.com/joinmarket-org/joinmarket-clientserver)
     * [JoinMarket Orderbook Watcher](https://github.com/JoinMarket-Org/joinmarket-clientserver/blob/master/docs/orderbook.md)
   * [bitcoin-core-hwi](https://github.com/bitcoin-core/HWI)
@@ -99,7 +99,13 @@ NixOS modules ([src](modules/modules.nix))
   * [netns-isolation](modules/netns-isolation.nix): isolates applications on the network-level via network namespaces
   * [nodeinfo](modules/nodeinfo.nix): script which prints info about the node's services
   * [backups](modules/backups.nix): duplicity backups of all your node's important files
-  * [operator](modules/operator.nix): adds non-root user `operator` who has access to client tools (e.g. `bitcoin-cli`, `lightning-cli`)
+  * [operator](modules/operator.nix): configures a non-root user who has access to client tools (e.g. `bitcoin-cli`, `lightning-cli`)
+
+### Extension modules
+Extension modules are maintained in separate repositories and have their own review
+and release process.
+
+* [Mempool](https://github.com/fort-nix/nix-bitcoin-mempool): Bitcoin visualizer, explorer and API service
 
 Security
 ---
