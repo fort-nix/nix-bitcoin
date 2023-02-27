@@ -236,11 +236,16 @@ in {
             --datadir='${cfg.btcpayserver.dataDir}'
         '';
         User = cfg.btcpayserver.user;
-        Restart = "on-failure";
-        RestartSec = "10s";
+        # Also restart after the program has exited successfully.
+        # This is required to support restarting from the web interface after
+        # interactive plugin installation.
+        # Restart rate limiting is implemented via the `startLimit*` options below.
+        Restart = "always";
         ReadWritePaths = [ cfg.btcpayserver.dataDir ];
         MemoryDenyWriteExecute = false;
       } // nbLib.allowedIPAddresses cfg.btcpayserver.tor.enforce;
+      startLimitIntervalSec = 30;
+      startLimitBurst = 10;
     }; in self;
 
     users.users.${cfg.nbxplorer.user} = {
