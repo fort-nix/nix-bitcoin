@@ -191,6 +191,7 @@ in {
                  optional cfg.nodes.lnd.enable "lnd.service";
       after = requires;
       environment.RTL_CONFIG_PATH = cfg.dataDir;
+      environment.DB_DIRECTORY_PATH = cfg.dataDir;
       serviceConfig = nbLib.defaultHardening // {
         ExecStartPre = [
           (nbLib.script "rtl-setup-config" ''
