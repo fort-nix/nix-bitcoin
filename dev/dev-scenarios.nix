@@ -9,6 +9,9 @@ with lib;
     services.btcpayserver.enable = true;
     test.container.exposeLocalhost = true;
     # services.btcpayserver.lbtc = false;
+
+    # Required for testing interactive plugin installation
+    test.container.enableWAN = true;
   };
 
   # A node with internet access to test joinmarket-ob-watcher

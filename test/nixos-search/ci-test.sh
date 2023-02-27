@@ -20,4 +20,4 @@ if [[ ${CACHIX_SIGNING_KEY:-} ]]; then
 fi
 
 echo "Running flake-info (nixos-search)"
-flake-info flake ../..
+flake-info --json flake ../.. >/dev/null
