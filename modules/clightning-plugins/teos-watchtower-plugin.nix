@@ -3,6 +3,7 @@
 with lib;
 let cfg = config.services.clightning.plugins.teos-watchtower-plugin; in
 {
+  # Ref.: https://github.com/talaia-labs/rust-teos/tree/master/watchtower-plugin
   options.services.clightning.plugins.teos-watchtower-plugin = {
     enable = mkEnableOption "TEoS - watchtower (clightning plugin)";
     package = mkOption {
@@ -14,17 +15,22 @@ let cfg = config.services.clightning.plugins.teos-watchtower-plugin; in
     port = mkOption {
       type = types.port;
       default = config.services.teos.api.port;
-      description = mdDoc "tower API port.";
+      description = mdDoc "Tower API port.";
     };
     dataDir = mkOption {
       type = types.path;
       default = "${config.services.clightning.dataDir}/.watchtower";
       description = mdDoc "The data directory for teos-watchtower-plugin.";
     };
-    watchtowerMaxRetryTime = mkOption {
+    maxRetryTime = mkOption {
       type = types.int;
-      default = 900;
-      description = mdDoc "the maximum time a retry strategy will try to reach a temporary unreachable tower before giving up.";
+      default = 3600;
+      description = mdDoc "For how long (in seconds) a retry strategy will try to reach a temporary unreachable tower before giving up.";
+    };
+    autoRetryDelay = mkOption {
+      type = types.int;
+      default = 28800;
+      description = mdDoc "For how long (in seconds) the client will wait before auto-retrying a failed tower.";
     };
   };
 
@@ -32,7 +38,8 @@ let cfg = config.services.clightning.plugins.teos-watchtower-plugin; in
     services.clightning.extraConfig = ''
       plugin=${cfg.package}/bin/watchtower-client
       watchtower-port=${toString cfg.port}
-      watchtower-max-retry-time=${toString cfg.watchtowerMaxRetryTime}
+      watchtower-max-retry-time=${toString cfg.maxRetryTime}
+      watchtower-auto-retry-delay=${toString cfg.autoRetryDelay}
     '';
 
     # The data directory of teos-watchtower-plugin must be specified and must
