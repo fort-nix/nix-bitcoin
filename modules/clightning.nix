@@ -33,7 +33,7 @@ let
     useBcli = mkOption {
       type = types.bool;
       default = true;
-      description = ''
+      description = mdDoc ''
         If clightning should use the bitcoind as a main source for getting
         on-chain block data. Disable this to use a trustedcoin provider (the
         trustedcoin plugin will be automatically enabled).
