@@ -30,15 +30,6 @@ let
         This also disables all DNS lookups, to avoid leaking address information.
       '';
     };
-    useBcli = mkOption {
-      type = types.bool;
-      default = true;
-      description = mdDoc ''
-        If clightning should use the bitcoind as a main source for getting
-        on-chain block data. Disable this to use a trustedcoin provider (the
-        trustedcoin plugin will be automatically enabled).
-      '';
-    };
     dataDir = mkOption {
       type = types.path;
       default = "/var/lib/clightning";
@@ -116,8 +107,7 @@ let
   network = bitcoind.makeNetworkName "bitcoin" "regtest";
   configFile = pkgs.writeText "config" ''
     network=${network}
-    ${optionalString (!cfg.useBcli) "disable-plugin=bcli"}
-    ${optionalString (cfg.useBcli) "bitcoin-datadir=${bitcoind.dataDir}"}
+    ${optionalString (!cfg.plugins.trustedcoin.enable) "bitcoin-datadir=${bitcoind.dataDir}"}
     ${optionalString (cfg.proxy != null) "proxy=${cfg.proxy}"}
     always-use-proxy=${boolToString cfg.always-use-proxy}
     bind-addr=${cfg.address}:${toString cfg.port}
@@ -173,6 +163,7 @@ in {
         {
           cat ${configFile}
           echo "bitcoin-rpcpassword=$(cat ${config.nix-bitcoin.secretsDir}/bitcoin-rpcpassword-public)"
+
           ${optionalString (cfg.getPublicAddressCmd != "") ''
             echo "announce-addr=$(${cfg.getPublicAddressCmd}):${toString publicPort}"
           ''}
