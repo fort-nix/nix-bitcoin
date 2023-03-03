@@ -25,6 +25,11 @@ let
         default = 9814;
         description = mdDoc "Port to listen for API connections.";
       };
+      onionPort = mkOption {
+        type = types.port;
+        default = config.services.teos.api.port;
+        description = "Port to listen for Tor API connections.";
+      };
     };
     internalApi = {
       address = mkOption {
@@ -111,7 +116,7 @@ in {
         api_port = ${toString cfg.api.port}
 
         tor_control_port = 9051
-        onion_hidden_service_port = 2121
+        onion_hidden_service_port = ${toString cfg.api.onionPort}
         tor_support = false
 
         # RPC
