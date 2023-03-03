@@ -27,6 +27,7 @@ task:
           - scenario: default
           - scenario: netns
           - scenario: netnsRegtest
+          - scenario: trustedcoin
       # This script is run as root
       build_script:
         - echo "sandbox = true" >> /etc/nix/nix.conf
