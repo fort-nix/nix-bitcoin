@@ -133,9 +133,10 @@ in {
         if 'onion_address' in info:
             info["id"] = f"{info['nodeid']}@{info['onion_address']}"
       '';
-      lnd = mkInfo ''
+      lnd = name: cfg: mkInfo ''
+        info["rest_address"] = "${nbLib.addressWithPort cfg.restAddress cfg.restPort}"
         info["nodeid"] = shell("lncli getinfo | jq -r '.identity_pubkey'")
-      '';
+      '' name cfg;
       clightning-rest = mkInfo "";
       electrs = mkInfo "";
       fulcrum = mkInfo "";
