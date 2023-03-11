@@ -162,7 +162,10 @@ in {
               port = lnd.restPort;
             };
           };
-          nix-bitcoin.onionAddresses.access.${lnd.user} = [ "lnd-rest" ];
+          nix-bitcoin.onionAddresses.access = {
+            ${lnd.user} = [ "lnd-rest" ];
+            ${operatorName} = [ "lnd-rest" ];
+          };
         })
       ]))
 
