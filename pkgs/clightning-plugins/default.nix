@@ -32,7 +32,7 @@ let
       extraPkgs = [ prometheus_client ];
       patchRequirements =
         "--replace prometheus-client==0.6.0 prometheus-client==0.15.0"
-        + " --replace pyln-client~=0.9.3 pyln-client~=22.11rc1";
+        + " --replace pyln-client~=0.9.3 pyln-client~=23.02";
     };
     rebalance = {
       description = "Keeps your channels balanced";
