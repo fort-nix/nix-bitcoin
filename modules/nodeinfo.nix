@@ -123,8 +123,10 @@ let
 in {
   inherit options;
 
-  config = {
-    environment.systemPackages = optional cfg.enable script;
+  config = mkIf cfg.enable {
+    environment.systemPackages = [ script ];
+
+    nix-bitcoin.operator.enable = true;
 
     nix-bitcoin.nodeinfo.services = with nodeinfoLib; {
       bitcoind = mkInfo "";
