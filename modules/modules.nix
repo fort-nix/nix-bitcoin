@@ -19,7 +19,7 @@
     ./lightning-loop.nix
     ./lightning-pool.nix
     ./charge-lnd.nix
-    ./lndconnect-onion.nix # Requires onion-addresses.nix
+    ./lndconnect.nix # Requires onion-addresses.nix
     ./rtl.nix
     ./electrs.nix
     ./fulcrum.nix

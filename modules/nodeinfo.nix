@@ -63,7 +63,7 @@ let
     infos = OrderedDict()
     operator = "${config.nix-bitcoin.operator.name}"
 
-    def set_onion_address(info, name, port):
+    def get_onion_address(name, port):
         path = f"/var/lib/onion-addresses/{operator}/{name}"
         try:
             with open(path, "r") as f:
@@ -71,7 +71,7 @@ let
         except OSError:
             print(f"error reading file {path}", file=sys.stderr)
             return
-        info["onion_address"] = f"{onion_address}:{port}"
+        return f"{onion_address}:{port}"
 
     def add_service(service, make_info, systemd_service = None):
         systemd_service = systemd_service or service
@@ -106,7 +106,7 @@ let
       add_service("${name}", """
       info["local_address"] = "${nbLib.addressWithPort cfg.address cfg.port}"
     '' + mkIfOnionPort name (onionPort: ''
-      set_onion_address(info, "${name}", ${onionPort})
+      info["onion_address"] = get_onion_address("${name}", ${onionPort})
     '') + extraCode + ''
 
       """, "${systemdServiceName}")
@@ -123,8 +123,10 @@ let
 in {
   inherit options;
 
-  config = {
-    environment.systemPackages = optional cfg.enable script;
+  config = mkIf cfg.enable {
+    environment.systemPackages = [ script ];
+
+    nix-bitcoin.operator.enable = true;
 
     nix-bitcoin.nodeinfo.services = with nodeinfoLib; {
       bitcoind = mkInfo "";
@@ -133,9 +135,13 @@ in {
         if 'onion_address' in info:
             info["id"] = f"{info['nodeid']}@{info['onion_address']}"
       '';
-      lnd = mkInfo ''
+      lnd = name: cfg: mkInfo (''
+        info["rest_address"] = "${nbLib.addressWithPort cfg.restAddress cfg.restPort}"
+      '' + mkIfOnionPort "lnd-rest" (onionPort: ''
+        info["onion_rest_address"] = get_onion_address("lnd-rest", ${onionPort})
+      '') + ''
         info["nodeid"] = shell("lncli getinfo | jq -r '.identity_pubkey'")
-      '';
+      '') name cfg;
       clightning-rest = mkInfo "";
       electrs = mkInfo "";
       fulcrum = mkInfo "";
@@ -146,7 +152,7 @@ in {
       rtl = mkInfo "";
       # Only add sshd when it has an onion service
       sshd = name: cfg: mkIfOnionPort "sshd" (onionPort: ''
-        add_service("sshd", """set_onion_address(info, "sshd", ${onionPort})""")
+        add_service("sshd", """info["onion_address"] = get_onion_address("sshd", ${onionPort})""")
       '');
     };
   };

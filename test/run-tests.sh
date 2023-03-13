@@ -274,6 +274,7 @@ buildable=(
     hardened
     clightning-replication
     lndPruned
+    wireguard-lndconnect
 )
 buildable() { buildTests buildable "$@"; }
 
