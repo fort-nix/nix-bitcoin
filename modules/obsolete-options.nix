@@ -53,14 +53,14 @@ in {
         onion = true;
       }
     '')
-    (mkRemovedOptionModule [ "services" "lnd" "lndconnect-onion" ] ''
+    (mkRemovedOptionModule [ "services" "lnd" "lndconnectOnion" ] ''
       Set the following options instead:
       services.lnd.lndconnect = {
         enable = true;
         onion = true;
       }
     '')
-    (mkRemovedOptionModule [ "services" "clightning-rest" "lndconnect-onion" ] ''
+    (mkRemovedOptionModule [ "services" "clightning-rest" "lndconnectOnion" ] ''
       Set the following options instead:
       services.clightning-rest.lndconnect = {
         enable = true;
