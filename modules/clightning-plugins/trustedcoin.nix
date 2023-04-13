@@ -18,5 +18,11 @@ let cfg = config.services.clightning.plugins.trustedcoin; in
       plugin=${cfg.package}/bin/trustedcoin
       disable-plugin=bcli
     '';
+
+    # Trustedcoin does not honor the clightning's proxy configuration.
+    # Ref.: https://github.com/nbd-wtf/trustedcoin/pull/19
+    systemd.services.clightning.environment = mkIf (config.services.clightning.proxy != null) {
+      HTTPS_PROXY = "socks5://${config.services.clightning.proxy}";
+    };
   };
 }
