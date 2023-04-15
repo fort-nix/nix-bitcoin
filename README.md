@@ -79,7 +79,7 @@ NixOS modules ([src](modules/modules.nix))
     * [prometheus](https://github.com/lightningd/plugins/tree/master/prometheus): lightning node exporter for the prometheus timeseries server
     * [rebalance](https://github.com/lightningd/plugins/tree/master/rebalance): keeps your channels balanced
     * [summary](https://github.com/lightningd/plugins/tree/master/summary): print a nice summary of the node status
-    * [trustedcoin](https://github.com/nbd-wtf/trustedcoin): replaces bitcoind with trusted public explorers
+    * [trustedcoin](https://github.com/nbd-wtf/trustedcoin) [[experimental](docs/services.md#trustedcoin-hints)]: replaces bitcoind with trusted public explorers
     * [zmq](https://github.com/lightningd/plugins/tree/master/zmq): publishes notifications via ZeroMQ to configured endpoints
   * [clightning-rest](https://github.com/Ride-The-Lightning/c-lightning-REST): REST server for clightning
   * [lnd](https://github.com/lightningnetwork/lnd) with support for announcing an onion service and [static channel backups](https://github.com/lightningnetwork/lnd/blob/master/docs/recovery.md)
