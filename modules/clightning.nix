@@ -107,13 +107,15 @@ let
   network = bitcoind.makeNetworkName "bitcoin" "regtest";
   configFile = pkgs.writeText "config" ''
     network=${network}
-    bitcoin-datadir=${bitcoind.dataDir}
+    ${optionalString (!cfg.plugins.trustedcoin.enable) "bitcoin-datadir=${bitcoind.dataDir}"}
     ${optionalString (cfg.proxy != null) "proxy=${cfg.proxy}"}
     always-use-proxy=${boolToString cfg.always-use-proxy}
     bind-addr=${cfg.address}:${toString cfg.port}
+
     bitcoin-rpcconnect=${nbLib.address bitcoind.rpc.address}
     bitcoin-rpcport=${toString bitcoind.rpc.port}
     bitcoin-rpcuser=${bitcoind.rpc.users.public.name}
+
     rpc-file-mode=0660
     log-timestamps=false
     ${optionalString (cfg.wallet != null) "wallet=${cfg.wallet}"}
@@ -161,6 +163,7 @@ in {
         {
           cat ${configFile}
           echo "bitcoin-rpcpassword=$(cat ${config.nix-bitcoin.secretsDir}/bitcoin-rpcpassword-public)"
+
           ${optionalString (cfg.getPublicAddressCmd != "") ''
             echo "announce-addr=$(${cfg.getPublicAddressCmd}):${toString publicPort}"
           ''}

@@ -45,7 +45,7 @@ let
       services.clightning.extraConfig = mkIf config.test.noConnections "disable-dns";
       test.data.clightning-plugins = let
         plugins = config.services.clightning.plugins;
-        removed = [ "commando" ];
+        removed = [ "commando" "trustedcoin" ];
         enabled = builtins.filter (plugin: plugins.${plugin}.enable)
                                   (subtractLists removed (builtins.attrNames plugins));
         nbPkgs = config.nix-bitcoin.pkgs;
@@ -314,6 +314,15 @@ let
     lndPruned = {
       services.lnd.enable = true;
       services.bitcoind.prune = 1000;
+    };
+
+    # Test the special clightning setup where trustedcoin plugin is used
+    trustedcoin = {
+      tests.trustedcoin = true;
+      services.clightning = {
+        enable = true;
+        plugins.trustedcoin.enable = true;
+      };
     };
   } // (import ../dev/dev-scenarios.nix {
     inherit lib scenarios;
