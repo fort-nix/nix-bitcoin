@@ -21,6 +21,7 @@ let self = {
   secp256k1 = pkgs.callPackage ./secp256k1 { };
   spark-wallet = pkgs.callPackage ./spark-wallet { };
   trustedcoin = pkgs.callPackage ./trustedcoin { };
+  circular = pkgs.callPackage ./circular { };
 
   pyPkgs = import ./python-packages self pkgs.python3;
   inherit (self.pyPkgs)
