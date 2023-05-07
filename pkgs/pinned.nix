@@ -5,7 +5,6 @@ pkgs: pkgsUnstable:
     bitcoin
     bitcoind
     extra-container
-    lightning-loop
     lightning-pool
     lndconnect;
 
@@ -17,7 +16,7 @@ pkgs: pkgsUnstable:
     elementsd
     fulcrum
     hwi
-    lnd
+    lightning-loop
     nbxplorer;
 
   inherit pkgs pkgsUnstable;
