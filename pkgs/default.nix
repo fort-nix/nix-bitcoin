@@ -22,6 +22,11 @@ let self = {
   spark-wallet = pkgs.callPackage ./spark-wallet { };
   trustedcoin = pkgs.callPackage ./trustedcoin { };
 
+  # TODO-EXTERNAL:
+  # Remove this when https://github.com/lightningnetwork/lnd/pull/7672
+  # has been resolved
+  lnd = pkgsUnstable.callPackage ./lnd { };
+
   pyPkgs = import ./python-packages self pkgs.python3;
   inherit (self.pyPkgs)
     nbPython3Packages

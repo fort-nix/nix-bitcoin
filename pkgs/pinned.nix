@@ -17,7 +17,6 @@ pkgs: pkgsUnstable:
     fulcrum
     hwi
     lightning-loop
-    lnd
     nbxplorer;
 
   inherit pkgs pkgsUnstable;
