@@ -2,11 +2,11 @@
 
 buildPythonPackage rec {
   pname = "bencoder.pyx";
-  version = "2.0.1";
+  version = "3.0.1";
 
   src = fetchurl {
-    url = "https://github.com/whtsky/bencoder.pyx/archive/v${version}.tar.gz";
-    sha256 = "f3ff92ac706a7e4692bed5e6cbe205963327f3076f55e408eb948659923eac72";
+    url = "https://github.com/whtsky/bencoder.pyx/archive/9a47768f3ceba9df9e6fbaa7c445f59960889009.tar.gz";
+    sha256 = "1yh565xjbbhn49xjfms80ac8psjbzn66n8dcx0x8mn7zzjv06clz";
   };
 
   nativeBuildInputs = [ cython ];
