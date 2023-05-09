@@ -22,7 +22,6 @@ rec {
       };
       runes = callPackage ./runes {};
       sha256 = callPackage ./sha256 {};
-      urldecode = callPackage ./urldecode {};
     };
 
   # Joinmarket requires a custom package set because it uses older versions of Python pkgs
@@ -47,12 +46,10 @@ rec {
       # autobahn 20.12.3, required by joinmarketclient
       autobahn = callPackage ./specific-versions/autobahn.nix {};
 
-      # pyopenssl 20.0.1, required by joinmarketdaemon
-      pyopenssl = callPackage ./specific-versions/pyopenssl.nix {
-        openssl = super.pkgs.openssl_1_1;
-      };
+      # pyopenssl 21.0.0, required by joinmarketdaemon
+      pyopenssl = callPackage ./specific-versions/pyopenssl.nix {};
 
-      # twisted 22.4.0, compatible with pyopenssl 20.0.1
+      # twisted 22.4.0, required by joinmarketbase
       twisted = callPackage ./specific-versions/twisted.nix {};
     };
 

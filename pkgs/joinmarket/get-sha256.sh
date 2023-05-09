@@ -1,25 +1,23 @@
-#!/usr/bin/env bash
+#!/usr/bin/env nix-shell
+#!nix-shell -i bash -p git gnupg jq
+
 set -euo pipefail
-. "${BASH_SOURCE[0]%/*}/../../helper/run-in-nix-env" "git gnupg" "$@"
+newVersion=$(curl -s "https://api.github.com/repos/joinmarket-org/joinmarket-clientserver/releases" | jq -r '.[0].tag_name')
 
-TMPDIR="$(mktemp -d -p /tmp)"
-trap 'rm -rf $TMPDIR' EXIT
-cd "$TMPDIR"
-
-echo "Fetching latest release"
-git clone https://github.com/joinmarket-org/joinmarket-clientserver 2> /dev/null
-cd joinmarket-clientserver
-latest=$(git describe --tags "$(git rev-list --tags --max-count=1)")
-echo "Latest release is $latest"
-
-# GPG verification
-export GNUPGHOME=$TMPDIR
+# Fetch release and GPG-verify the content hash
+tmpdir=$(mktemp -d /tmp/joinmarket-verify-gpg.XXX)
+repo=$tmpdir/repo
+git clone --depth 1 --branch "${newVersion}" -c advice.detachedHead=false https://github.com/joinmarket-org/joinmarket-clientserver "$repo"
+export GNUPGHOME=$tmpdir
 echo "Fetching Adam Gibson's key"
 gpg --keyserver hkps://keyserver.ubuntu.com --recv-keys 2B6FC204D9BF332D062B461A141001A1AF77F20B 2> /dev/null
-echo "Verifying latest release"
-git verify-tag "$latest"
+echo
+echo "Verifying commit"
+git -C "$repo" verify-commit HEAD
+rm -rf "$repo"/.git
+newHash=$(nix hash path "$repo")
+rm -rf "$tmpdir"
+echo
 
-echo "tag: $latest"
-# The prefix option is necessary because GitHub prefixes the archive contents in this format
-echo "sha256: $(nix-hash --type sha256 --flat --base32 \
-                <(git archive --format tar.gz --prefix=joinmarket-clientserver-"${latest//v}"/ "$latest"))"
+echo "tag: $newVersion"
+echo "hash: $newHash"

@@ -8,6 +8,12 @@ buildPythonPackage rec {
 
   propagatedBuildInputs = [ txtorcon cryptography pyopenssl libnacl joinmarketbase ];
 
+  # libnacl 1.8.0 is not on github
+  patchPhase = ''
+    substituteInPlace setup.py \
+      --replace "'libnacl==1.8.0'" "'libnacl==1.7.2'"
+  '';
+
   meta = with lib; {
     description = "Client library for Bitcoin coinjoins";
     homepage = "https://github.com/Joinmarket-Org/joinmarket-clientserver";
