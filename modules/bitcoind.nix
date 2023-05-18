@@ -150,13 +150,22 @@ let
         default = false;
         description = mdDoc "Enable regtest mode.";
       };
+      signet = mkOption {
+        type = types.bool;
+        default = false;
+        description = "Enable signet mode.";
+      };
       network = mkOption {
         readOnly = true;
-        default = if cfg.regtest then "regtest" else "mainnet";
+        default = if cfg.regtest then "regtest" else if cfg.signet then "signet" else "mainnet";
+      };
+      makeNetworkNameOld = mkOption {
+        readOnly = true;
+        default = mainnet: regtest: if cfg.regtest then regtest else mainnet;
       };
       makeNetworkName = mkOption {
         readOnly = true;
-        default = mainnet: regtest: if cfg.regtest then regtest else mainnet;
+        default = mainnet: regtest: signet: if cfg.signet then signet else (cfg.makeNetworkNameOld mainnet regtest);
       };
       proxy = mkOption {
         type = types.nullOr types.str;
@@ -292,6 +301,10 @@ let
       regtest=1
       [regtest]
     ''}
+    ${optionalString cfg.signet ''
+      signet=1
+      [signet]
+    ''}
     ${optionalString (cfg.dbCache != null) "dbcache=${toString cfg.dbCache}"}
     prune=${toString cfg.prune}
     ${optionalString cfg.txindex "txindex=1"}
@@ -413,7 +426,7 @@ in {
 
       # Enable RPC access for group
       postStart = ''
-        chmod g=r '${cfg.dataDir}/${optionalString cfg.regtest "regtest/"}.cookie'
+        chmod g=r '${cfg.dataDir}/${optionalString cfg.regtest "regtest/"}${optionalString cfg.signet "signet/"}.cookie'
       '';
 
       serviceConfig = nbLib.defaultHardening // {

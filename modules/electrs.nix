@@ -79,7 +79,7 @@ in {
         ExecStart = ''
           ${config.nix-bitcoin.pkgs.electrs}/bin/electrs \
           --log-filters=INFO \
-          --network=${bitcoind.makeNetworkName "bitcoin" "regtest"} \
+          --network=${bitcoind.makeNetworkNameOld "bitcoin" "regtest"} \
           --db-dir='${cfg.dataDir}' \
           --daemon-dir='${bitcoind.dataDir}' \
           --electrum-rpc-addr=${cfg.address}:${toString cfg.port} \

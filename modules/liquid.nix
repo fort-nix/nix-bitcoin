@@ -175,7 +175,7 @@ let
 
     startupnotify=/run/current-system/systemd/bin/systemd-notify --ready
 
-    chain=${bitcoind.makeNetworkName "liquidv1" ''
+    chain=${bitcoind.makeNetworkNameOld "liquidv1" ''
       regtest
       [regtest]'' # Add [regtest] config section
     }

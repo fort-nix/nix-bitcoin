@@ -199,7 +199,7 @@ in {
 
     systemd.services.btcpayserver = let
       nbExplorerUrl = "http://${nbLib.addressWithPort cfg.nbxplorer.address cfg.nbxplorer.port}/";
-      nbExplorerCookie = "${cfg.nbxplorer.dataDir}/${bitcoind.makeNetworkName "Main" "RegTest"}/.cookie";
+      nbExplorerCookie = "${cfg.nbxplorer.dataDir}/${bitcoind.makeNetworkNameOld "Main" "RegTest"}/.cookie";
       configFile = builtins.toFile "btcpayserver-config" (''
         network=${bitcoind.network}
         bind=${cfg.btcpayserver.address}

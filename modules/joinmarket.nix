@@ -195,8 +195,8 @@ let
     use_ssl = false
 
     [BLOCKCHAIN]
-    blockchain_source = ${bitcoind.makeNetworkName "bitcoin-rpc" "regtest"}
-    network = ${bitcoind.makeNetworkName "mainnet" "testnet"}
+    blockchain_source = ${bitcoind.makeNetworkNameOld "bitcoin-rpc" "regtest"}
+    network = ${bitcoind.makeNetworkNameOld "mainnet" "testnet"}
     rpc_host = ${nbLib.address bitcoind.rpc.address}
     rpc_port = ${toString bitcoind.rpc.port}
     rpc_user = ${bitcoind.rpc.users.privileged.name}
