@@ -8,7 +8,13 @@
     [
       <nix-bitcoin/modules/presets/secure-node.nix>
       <nix-bitcoin/modules/presets/hardened.nix>
-      
+    
+      # Following is temprary until mempool is re-integrated in nix-bitcoin. 
+      (import (builtins.fetchTarball {
+        url = "https://github.com/fort-nix/nix-bitcoin-mempool/archive/402a8a6de1eb6d20d2b36e13d3461e1b85f0bbef.tar.gz";
+        sha256 = "0zj2g0i0mj9x9svggbja6ja6yb47gdzx8rw4cw26ka169a0mj6sb";
+      })).nixosModules.default
+ 
       ./hardware-configuration.nix
     ];
 
@@ -20,8 +26,9 @@
   networking.hostName = "mybonk_console"; # FIXME: Define a hostname of your choice.
   networking.wireless.enable = false; # We prefer our nodes not to operate over WiFi. 
 
-  networking.firewall.checkReversePath = "loose"; # Use this setting because strict reverse path filtering breaks Tailscale exit node use and some subnet routing setups
-#  networking.networkmanager.enable = true;
+  # Use this setting 'loose' because strict reverse path filtering breaks Tailscale exit node use and some subnet routing setups
+  networking.firewall.checkReversePath = "loose";
+  # networking.networkmanager.enable = true;
   
   # Set your time zone.
   time.timeZone = "Europe/Brussels"; # FIXME: Adjust for your timezone.
@@ -35,7 +42,7 @@
   # FIXME: Configure console keymap
   console.keyMap = "fr";
 
-  # Define a user account. Don't forget to set a password with ‘passwd’.
+  # Define a user account. Don't forget to set a password with 'passwd'
   users.users.mybonk = {
     isNormalUser = true;
     description = "mybonk";
@@ -49,7 +56,6 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-  #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
   wget
   git
   vim
@@ -78,41 +84,20 @@
 
   users.users.root = {
     openssh.authorizedKeys.keys = [
-        "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDNI9e9FtUAuBLAs3Xjcgm78yD6psH+iko+DXOqeEO0VQY+faUKJ0KYF8hp2x8WYtlB7BsrYHVfupwk5YwDSvN36d0KgvYj8hqGRbeKAPynmh5NC1IpX3YU911dNOieDAlGaqFnCicl30FER/bXPfOUCHFm0X7YGudqTU5Zm2TkPKvdH7y+a5mYpZbT2cDKEcRcGbWvUcagw0d0e0jLnXwlTO93WVLpyf5hCmbKFGVpIK1ssx1ij0ZB5rmqlVSscbHY5irt8slXoTOW9go/EpkPD5AWb7RhtTbkA4Vrwk0zqbwoRIIjHF75Z0zK/5oTBVVxEtru96nhXzMII/1D2MTqfD43SK34s7RSklTQjMPlewseDAZtL75MRf1t0eurl1jX9c1gKh9FiGqxTxzIGnfCFIhAISOYD+2m0r9xUaBETOUS1JK3pZc0kqrAStBdah5XjqyZwGbKFzaotLuLRab/GdEGA4bjBQ8nnh+0m5AZIHxPvqh3EyRd4eoT8IpQPOE= debian@debian11"
+        "" # FIXME Put here your public ssh key 
     ]
 ;
   };
 
   ### BITCOIND
   # Bitcoind is enabled by default via secure-node.nix.
+  services.bitcoind.signet = true; 
   services.bitcoind.dataDir = "/data/bitcoind"; 
-  #
-  # Set this option to enable pruning with a specified MiB value.
-  # clightning is compatible with pruning. See
-  # https://github.com/ElementsProject/lightning/#pruning for more information.
-  # LND and electrs are not compatible with pruning.
-  # services.bitcoind.prune = 1000;
-  #
-  # Set this to accounce the onion service address to peers.
-  # The onion service allows accepting incoming connections via Tor.
   nix-bitcoin.onionServices.bitcoind.public = true;
-  #
-  # You can add options that are not defined in modules/bitcoind.nix as follows
-  
-  services.bitcoind.signet = true;  
-
-  services.bitcoind.extraConfig = ''
-#    maxorphantx=110
-  '';
 
   ### CLIGHTNING
-  # Enable clightning, a Lightning Network implementation in C.
-  services.clightning.enable = true;
-  #
-  # Set this to create an onion service by which clightning can accept incoming connections
-  # via Tor.
-  # The onion service is automatically announced to peers.
-  nix-bitcoin.onionServices.clightning.public = true;
+  #services.clightning.enable = true;
+  #nix-bitcoin.onionServices.clightning.public = true;
   #
   # == Plugins
   # See ../README.md (Features ?~F~R clightning) for the list of available plugins.
@@ -126,13 +111,53 @@
   # You can also connect via WireGuard instead of Tor.
   # See ../docs/services.md for details.
   #
-  services.clightning-rest = {
+  #services.clightning-rest = {
+  #  enable = true;
+  #  lndconnect = {
+  #    enable = true;
+  #    onion = true;
+  #  };
+  #};
+
+
+  services.rtl = {
     enable = true;
-    lndconnect = {
-      enable = true;
-      onion = true;
-    };
+    nodes.clightning.enable = true;
   };
+
+
+  ### SPARK WALLET
+  # Set this to enable spark-wallet, a minimalistic wallet GUI for
+  # c-lightning, accessible over the web or through mobile and desktop apps.
+  # Automatically enables clightning.
+  services.spark-wallet.enable = true;
+
+
+  ### FULCRUM
+  # Set this to enable fulcrum, an Electrum server implemented in C++.
+  #
+  # Compared to electrs, fulcrum has higher storage demands but
+  # can serve arbitrary address queries instantly.
+  #
+  # Before enabling fulcrum, and for more info on storage demands,
+  # see the description of option `enable` in ../modules/fulcrum.nix
+  #
+  #services.fulcrum = {
+  #  enable = true;
+  #  port = 50011;
+  #};
+
+
+  #services.mempool = {
+  #  enable = true;
+  #  electrumServer = "fulcrum";
+  #  tor = {
+  #    proxy = true;
+  #    enforce = true;
+  #  };
+  #};
+  #nix-bitcoin.onionServices.mempool-frontend.enable = true;
+
 
   users.users.operator.extraGroups = [ "wheel" ];
 
