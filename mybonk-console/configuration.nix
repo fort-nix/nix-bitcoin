@@ -96,12 +96,12 @@
   nix-bitcoin.onionServices.bitcoind.public = true;
 
   ### CLIGHTNING
-  #services.clightning.enable = true;
-  #nix-bitcoin.onionServices.clightning.public = true;
+  services.clightning.enable = true;
+  nix-bitcoin.onionServices.clightning.public = true;
   #
   # == Plugins
   # See ../README.md (Features ?~F~R clightning) for the list of available plugins.
-  services.clightning.plugins.prometheus.enable = true;
+  #services.clightning.plugins.prometheus.enable = true;
   #
   # == REST server
   # Set this to create a clightning REST onion service.
@@ -120,10 +120,10 @@
   #};
 
 
-  services.rtl = {
-    enable = true;
-    nodes.clightning.enable = true;
-  };
+  #services.rtl = {
+  #  enable = true;
+  #  nodes.clightning.enable = true;
+  #};
 
 
   ### SPARK WALLET
