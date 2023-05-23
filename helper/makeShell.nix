@@ -147,7 +147,7 @@ pkgs.stdenv.mkDerivation {
     }
 
     if [[ $isInteractive ]]; then
-      ${pkgs.figlet}/bin/figlet "nix-bitcoin"
+      ${pkgs.figlet}/bin/figlet "mybonk"
       echo 'Enter "h" or "help" for documentation.'
     fi
 
