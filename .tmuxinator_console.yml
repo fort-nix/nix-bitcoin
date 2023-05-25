@@ -1,0 +1,101 @@
+# MYBONK orchestrator Tmuxinator.
+# Tmuxinator configuration to get started.
+# You need to configure ssh key pair (or a VPN like Tailscale) it requires auto-login to the remote machine(s).
+
+name: console
+#root: ~/
+
+# Optional tmux socket
+# socket_name: foo
+
+# Note that the pre and post options have been deprecated and will be replaced by
+# project hooks.
+
+# Project hooks
+
+# Runs on project start, always
+# on_project_start: command
+
+# Run on project start, the first time
+# on_project_first_start: command
+
+# Run on project start, after the first time
+# on_project_restart: command
+
+# Run on project exit ( detaching from tmux session )
+# on_project_exit: command
+
+# Run on project stop
+# on_project_stop: command
+
+# Runs in each window and pane before window/pane specific commands. Useful for setting up interpreter versions.
+# pre_window: rbenv shell 2.0.0-p247
+pre_window:
+  - ssh <%= @settings["node"] %>
+
+# Pass command line options to tmux. Useful for specifying a different tmux.conf.
+# tmux_options: -f ~/.tmux.mac.conf
+
+# Change the command to call tmux.  This can be used by derivatives/wrappers like byobu.
+#tmux_command: byobu
+
+# Specifies (by name or index) which window will be selected on project startup. If not set, the first window is used.
+startup_window: console
+
+# Specifies (by index) which pane of the specified window will be selected on project startup. If not set, the first pane is used.
+# startup_pane: 1
+
+# Controls whether the tmux session should be attached to automatically. Defaults to true.
+# attach: false
+
+windows:
+
+  - orchestrator:
+    - exit
+    - clear 
+  - krops:
+      layout: even-vertical
+      # Synchronize all panes of this window, can be enabled before or after the pane commands run.
+      # 'before' represents legacy functionality and will be deprecated in a future release, in favour of 'after'
+      # synchronize: after
+      panes:
+        - logs:
+          - clear
+          - journalctl -f -n 60
+        - deployment:
+          - exit
+          - clear
+          - cd $HOME/nix-bitcoin
+  - console_commands:
+      layout: even-vertical
+      panes:
+        - logs:
+          - journalctl -f -n 800  | sed --expression="/sudo/d" | sed --expression="/background.scan.sh/d"
+        - command:
+          - pwd 
+  - console:
+      layout: 1851,204x53,0,0[204x12,0,0,2,204x13,0,13,5,204x12,0,27,6,204x13,0,40{51x13,0,40,7,50x13,52,40,9,101x13,103,40,8}]
+      panes:
+        - clightning:
+          - clear
+          - journalctl --no-full -f -n 500 -u clightning
+        - bitcoind:
+          - clear
+          - journalctl --no-pager -f -n 500 -u bitcoind | sed --expression="/UpdateTip:/d"
+        - noticeonly:
+          - clear
+          - journalctl -f -n 500 -p notice | sed --expression="/sudo/d" | sed --expression="/background.scan.sh/d"
+        - orchestrator:
+          - clear
+          - exit
+          - cd $HOME/nix-bitcoin/examples
+          - nix-shell
+        - command:
+          - ls -la
+        - top:
+          - top
+  - console_glances:
+      - glances
+  - console_logs:
+      - journalctl -f -n 200
+
