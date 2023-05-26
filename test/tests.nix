@@ -145,6 +145,7 @@ let
     (mkIf config.test.features.clightningPlugins {
       services.clightning.plugins = {
         clboss.enable = true;
+        clboss.acknowledgeDeprecation = true;
         feeadjuster.enable = true;
         helpme.enable = true;
         monitor.enable = true;
