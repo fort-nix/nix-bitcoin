@@ -414,6 +414,8 @@ in {
       # Enable RPC access for group
       postStart = ''
         chmod g=r '${cfg.dataDir}/${optionalString cfg.regtest "regtest/"}.cookie'
+      '' + (optionalString cfg.regtest) ''
+        chmod g=x '${cfg.dataDir}/regtest'
       '';
 
       serviceConfig = nbLib.defaultHardening // {
