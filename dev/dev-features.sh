@@ -128,22 +128,6 @@ c journalctl -u clightning-rest
 c systemctl status clightning-rest-migrate-datadir
 
 #―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
-# spark-wallet
-
-run-tests.sh -s "{
-  services.spark-wallet.enable = true;
-  test.container.exposeLocalhost = true;
-}" container
-
-c systemctl status spark-wallet
-c journalctl -u spark-wallet
-
-sparkAuth=$(c cat /secrets/spark-wallet-login | grep -ohP '(?<=login=).*')
-curl -v http://$sparkAuth@$ip:9737
-# Open in browser
-runuser -u "$(logname)" -- xdg-open http://$sparkAuth@$ip:9737
-
-#―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 # electrs
 
 run-tests.sh -s "{

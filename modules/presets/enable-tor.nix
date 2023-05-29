@@ -26,7 +26,6 @@ in {
     # TODO-EXTERNAL:
     # disable Tor enforcement until btcpayserver can fetch rates over Tor
     # btcpayserver = defaultEnableTorProxy;
-    spark-wallet = defaultEnableTorProxy;
     lightning-pool = defaultEnableTorProxy;
 
     # These services don't make outgoing connections
@@ -48,7 +47,6 @@ in {
     liquidd.enable = defaultTrue;
     electrs.enable = defaultTrue;
     fulcrum.enable = defaultTrue;
-    spark-wallet.enable = defaultTrue;
     joinmarket-ob-watcher.enable = defaultTrue;
     rtl.enable = defaultTrue;
   };

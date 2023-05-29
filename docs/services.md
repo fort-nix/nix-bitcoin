@@ -291,49 +291,6 @@ Create a plain text URL:
 lndconnect-wg --url
 ``````
 
-# Connect to spark-wallet
-### Requirements
-* Android phone
-* [Orbot](https://guardianproject.info/apps/orbot/) installed from [F-Droid](https://guardianproject.info/fdroid) (recommended) or [Google Play](https://play.google.com/store/apps/details?id=org.torproject.android&hl=en)
-* [Spark-wallet](https://github.com/shesek/spark-wallet) installed from [direct download](https://github.com/shesek/spark-wallet/releases) or [Google Play](https://play.google.com/store/apps/details?id=com.spark.wallet)
-
-1. Enable spark-wallet in `configuration.nix`
-
-    Change
-    ```
-    # services.spark-wallet.enable = true;
-    ```
-    to
-    ```
-    services.spark-wallet.enable = true;
-    ```
-
-2. Deploy new `configuration.nix`
-
-3. Enable Orbot VPN for spark-wallet
-
-    ```
-    Open Orbot app
-    Turn on "VPN Mode"
-    Select Gear icon under "Tor-Enabled Apps"
-    Toggle checkbox under Spark icon
-    ```
-
-4. Get the onion address, access key and QR access code for the spark wallet android app
-
-    ```
-    journalctl -eu spark-wallet
-    ```
-    Note: The qr code might have issues scanning if you have a light terminal theme. Try setting it to dark or highlighting the entire output to invert the colors.
-
-5. Connect to spark-wallet android app
-
-    ```
-    Server Settings
-    Scan QR
-    Done
-    ```
-
 # Connect to electrs
 ### Requirements Android
 * Android phone

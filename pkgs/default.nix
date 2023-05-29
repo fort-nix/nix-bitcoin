@@ -19,7 +19,6 @@ let self = {
   rtl = pkgs.callPackage ./rtl { inherit (self) fetchNodeModules; };
   # The secp256k1 version used by joinmarket
   secp256k1 = pkgs.callPackage ./secp256k1 { };
-  spark-wallet = pkgs.callPackage ./spark-wallet { };
   trustedcoin = pkgs.callPackage ./trustedcoin { };
 
   # TODO-EXTERNAL:

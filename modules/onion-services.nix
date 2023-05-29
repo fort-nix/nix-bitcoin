@@ -104,15 +104,6 @@ in {
     # Set sensible defaults for some services
     {
       nix-bitcoin.onionServices = {
-        spark-wallet = {
-          externalPort = 80;
-          # Enable 'public' by default, but don't auto-enable the onion service.
-          # When the onion service is enabled, 'public' lets spark-wallet generate
-          # a QR code for accessing the web interface.
-          public = true;
-          # Low priority so we can override this with mkDefault in ./presets/enable-tor.nix
-          enable = mkOverride 1400 false;
-        };
         btcpayserver = {
           externalPort = 80;
         };
