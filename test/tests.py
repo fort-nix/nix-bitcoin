@@ -248,7 +248,7 @@ def _():
 def _():
     assert_running("clightning-rest")
     machine.wait_until_succeeds(
-        log_has_string("clightning-rest", "cl-rest api server is ready and listening on port: 3001")
+        log_has_string("clightning-rest", "cl-rest api server is ready and listening")
     )
 
 @test("spark-wallet")
