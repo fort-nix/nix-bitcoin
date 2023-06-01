@@ -339,6 +339,7 @@ def _():
     succeed("bitcoin-cli -named createwallet wallet_name=test blank=true >/dev/null")
 
     succeed("systemctl stop bitcoind")
+    assert_matches("systemctl show -p ExecMainStatus --value bitcoind", "^0$")
     succeed("systemctl start duplicity")
     machine.wait_until_succeeds(log_has_string("duplicity", "duplicity.service: Deactivated successfully."))
     run_duplicity = "export $(cat /secrets/backup-encryption-env); duplicity"
