@@ -10,6 +10,21 @@ in
   }
 }:
 let self = {
+  # TODO-EXTERNAL:
+  # Remove bitcoin and bitcoind 24.1 packages and replace with 25.0 from nixpkgs
+  # when https://github.com/bitcoin/bitcoin/issues/27722 has been resolved
+  bitcoin  = pkgsUnstable.libsForQt5.callPackage ./bitcoin {
+    stdenv = if pkgsUnstable.stdenv.isDarwin then pkgsUnstable.darwin.apple_sdk_11_0.stdenv else pkgsUnstable.stdenv;
+    boost = pkgsUnstable.boost17x;
+    withGui = true;
+    inherit (pkgsUnstable.darwin) autoSignDarwinBinariesHook;
+  };
+
+  bitcoind = pkgsUnstable.callPackage ./bitcoin {
+    boost = pkgsUnstable.boost17x;
+    withGui = false;
+    inherit (pkgsUnstable.darwin) autoSignDarwinBinariesHook;
+  };
   clightning-rest = pkgs.callPackage ./clightning-rest { inherit (self) fetchNodeModules; };
   clboss = pkgs.callPackage ./clboss { };
   clightning-plugins = pkgs.recurseIntoAttrs (import ./clightning-plugins pkgs self.nbPython3Packages);
@@ -19,7 +34,6 @@ let self = {
   rtl = pkgs.callPackage ./rtl { inherit (self) fetchNodeModules; };
   # The secp256k1 version used by joinmarket
   secp256k1 = pkgs.callPackage ./secp256k1 { };
-  spark-wallet = pkgs.callPackage ./spark-wallet { };
   trustedcoin = pkgs.callPackage ./trustedcoin { };
 
   # TODO-EXTERNAL:

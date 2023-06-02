@@ -97,6 +97,7 @@ in {
         Restart = "on-failure";
         RestartSec = "10s";
         ReadWritePaths = [ cfg.dataDir ];
+        inherit (nbLib.allowNetlink) RestrictAddressFamilies;
       } // nbLib.allowedIPAddresses cfg.tor.enforce
         // nbLib.nodejs;
     };

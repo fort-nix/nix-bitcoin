@@ -2,8 +2,6 @@
 pkgs: pkgsUnstable:
 {
   inherit (pkgs)
-    bitcoin
-    bitcoind
     extra-container
     lightning-pool
     lndconnect;

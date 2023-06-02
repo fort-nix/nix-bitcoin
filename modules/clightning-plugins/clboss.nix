@@ -12,6 +12,11 @@ let cfg = config.services.clightning.plugins.clboss; in
         See also: https://github.com/ZmnSCPxj/clboss#operating
       '';
     };
+    acknowledgeDeprecation = mkOption {
+      type = types.bool;
+      default = false;
+      internal = true;
+    };
     min-onchain = mkOption {
       type = types.ints.positive;
       default = 30000;
@@ -49,6 +54,22 @@ let cfg = config.services.clightning.plugins.clboss; in
   };
 
   config = mkIf cfg.enable {
+    assertions = [
+      {
+        assertion = cfg.acknowledgeDeprecation;
+        message = ''
+          `clboss` is no longer maintained and has been deprecated.
+
+          Warning: For compatibility with clighting 23.05, the nix-bitcoin `clboss` package
+          includes a third-party fix that has not been thoroughly tested:
+          https://github.com/ZmnSCPxj/clboss/pull/162
+
+          To ignore this warning and continue using `clboss`, add the following to your config:
+          services.clightning.plugins.clboss.acknowledgeDeprecation = true;
+        '';
+      }
+    ];
+
     services.clightning.extraConfig = ''
       plugin=${cfg.package}/bin/clboss
       clboss-min-onchain=${toString cfg.min-onchain}
@@ -56,6 +77,7 @@ let cfg = config.services.clightning.plugins.clboss; in
       clboss-max-channel=${toString cfg.max-channel}
       clboss-zerobasefee=${cfg.zerobasefee}
     '';
+
     systemd.services.clightning.path = [
       pkgs.dnsutils
     ] ++ optional config.services.clightning.tor.proxy (hiPrio config.nix-bitcoin.torify);

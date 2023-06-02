@@ -90,7 +90,6 @@ NixOS modules ([src](modules/modules.nix))
     clightning [via WireGuard](./docs/services.md#use-zeus-mobile-lightning-wallet-via-wireguard) or
     [Tor](./docs/services.md#use-zeus-mobile-lightning-wallet-via-tor)
   * [Ride The Lightning](https://github.com/Ride-The-Lightning/RTL): web interface for `lnd` and `clightning`
-  * [spark-wallet](https://github.com/shesek/spark-wallet)
   * [electrs](https://github.com/romanz/electrs): Electrum server
   * [fulcrum](https://github.com/cculianu/Fulcrum): Electrum server (see [the module](modules/fulcrum.nix) for a comparison with electrs)
   * [btcpayserver](https://github.com/btcpayserver/btcpayserver)

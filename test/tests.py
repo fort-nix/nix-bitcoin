@@ -248,15 +248,8 @@ def _():
 def _():
     assert_running("clightning-rest")
     machine.wait_until_succeeds(
-        log_has_string("clightning-rest", "cl-rest api server is ready and listening on port: 3001")
+        log_has_string("clightning-rest", "cl-rest api server is ready and listening")
     )
-
-@test("spark-wallet")
-def _():
-    assert_running("spark-wallet")
-    wait_for_open_port(ip("spark-wallet"), 9737)
-    spark_auth = re.search("login=(.*)", succeed("cat /secrets/spark-wallet-login"))[1]
-    assert_matches(f"curl -fsS {spark_auth}@{ip('spark-wallet')}:9737", "Spark")
 
 @test("joinmarket")
 def _():
@@ -315,7 +308,7 @@ def _():
 
     # These reachability tests are non-exhaustive
     assert_reachable("bitcoind", ["clightning", "lnd", "liquidd"])
-    assert_unreachable("bitcoind", ["btcpayserver", "spark-wallet", "lightning-loop"])
+    assert_unreachable("bitcoind", ["btcpayserver", "rtl", "lightning-loop"])
     assert_unreachable("btcpayserver", ["bitcoind", "lightning-loop"])
 
     # netns addresses can not be bound to in the main netns.
@@ -346,6 +339,7 @@ def _():
     succeed("bitcoin-cli -named createwallet wallet_name=test blank=true >/dev/null")
 
     succeed("systemctl stop bitcoind")
+    assert_matches("systemctl show -p ExecMainStatus --value bitcoind", "^0$")
     succeed("systemctl start duplicity")
     machine.wait_until_succeeds(log_has_string("duplicity", "duplicity.service: Deactivated successfully."))
     run_duplicity = "export $(cat /secrets/backup-encryption-env); duplicity"

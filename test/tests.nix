@@ -73,8 +73,6 @@ let
         echo a > rtl-password
       '');
 
-      tests.spark-wallet = cfg.spark-wallet.enable;
-
       tests.lnd = cfg.lnd.enable;
       services.lnd = {
         port = 9736;
@@ -145,6 +143,7 @@ let
     (mkIf config.test.features.clightningPlugins {
       services.clightning.plugins = {
         clboss.enable = true;
+        clboss.acknowledgeDeprecation = true;
         feeadjuster.enable = true;
         helpme.enable = true;
         monitor.enable = true;
@@ -185,7 +184,6 @@ let
       };
       test.features.clightningPlugins = true;
       services.rtl.enable = true;
-      services.spark-wallet.enable = true;
       services.clightning-rest.enable = true;
       services.clightning-rest.lndconnect = { enable = true; onion = true; };
       services.lnd.enable = true;
@@ -235,7 +233,6 @@ let
       services.clightning-rest.enable = true;
       services.liquidd.enable = true;
       services.rtl.enable = true;
-      services.spark-wallet.enable = true;
       services.lnd.enable = true;
       services.lightning-loop.enable = true;
       services.lightning-pool.enable = true;

@@ -244,10 +244,6 @@ in {
         id = 16;
         connections = [ "bitcoind" ];
       };
-      spark-wallet = {
-        id = 17;
-        # communicates with clightning over lightning-rpc socket
-      };
       nginx = {
         id = 21;
       };
@@ -331,11 +327,6 @@ in {
     services.electrs.address = netns.electrs.address;
 
     services.fulcrum.address = netns.fulcrum.address;
-
-    services.spark-wallet = {
-      address = netns.spark-wallet.address;
-      extraArgs = "--no-tls";
-    };
 
     services.lightning-loop.rpcAddress = netns.lightning-loop.address;
 

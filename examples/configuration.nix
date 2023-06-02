@@ -126,12 +126,6 @@
   # Automatically enables lightning-loop.
   # services.rtl.nodes.lnd.loop = true;
 
-  ### SPARK WALLET
-  # Set this to enable spark-wallet, a minimalistic wallet GUI for
-  # c-lightning, accessible over the web or through mobile and desktop apps.
-  # Automatically enables clightning.
-  # services.spark-wallet.enable = true;
-
   ### ELECTRS
   # Set this to enable electrs, an Electrum server implemented in Rust.
   # services.electrs.enable = true;
