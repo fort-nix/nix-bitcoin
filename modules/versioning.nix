@@ -11,13 +11,16 @@ let
     nix-bitcoin.configVersion = mkOption {
       type = with types; nullOr str;
       default = null;
+      example = "0.0.92";
       description = mdDoc ''
-        Set this option to the nix-bitcoin release version that your config is
-        compatible with.
+        The nix-bitcoin release version that your config is compatible with.
 
         When upgrading to a backwards-incompatible release, nix-bitcoin will throw an
         error during evaluation and provide instructions for migrating your config to
         the new release.
+
+        Once set, you only need to update this option when explicitly told to in an
+        error message during evaluation.
       '';
     };
   };
