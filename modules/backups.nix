@@ -49,7 +49,7 @@ let
 
   cfg = config.services.backups;
 
-  # Potential backup file paths are are matched against filelist
+  # Potential backup file paths are matched against filelist
   # entries from top to bottom.
   # The first match determines inclusion or exclusion.
   filelist = builtins.toFile "filelist.txt" ''
