@@ -50,7 +50,7 @@ Get started
 Docs
 ---
 Hint: To show a table of contents, click the button (![Github TOC button](docs/img/github-table-of-contents.svg)) in the
-top left corner of the documents.
+top right corner of the documents.
 
 <!-- TODO-EXTERNAL: -->
 <!-- Change query to `nix-bitcoin` when upstream search has been fixed -->
