@@ -9,11 +9,11 @@
 }:
 let self = stdenvNoCC.mkDerivation {
   pname = "clightning-rest";
-  version = "0.10.3";
+  version = "0.10.4";
 
   src = fetchurl {
     url = "https://github.com/Ride-The-Lightning/c-lightning-REST/archive/refs/tags/v${self.version}.tar.gz";
-    hash = "sha256-1yGKCLO+hTHJG+xNLnNeySU/Awk7DxqhXHJHQAjMgAs=";
+    hash = "sha256-oLTRiYVcR5ymYxK7kMGP0q2hjThxY7AH0aEo2WGwpcU=";
   };
 
   passthru = {
@@ -22,7 +22,7 @@ let self = stdenvNoCC.mkDerivation {
 
     nodeModules = fetchNodeModules {
       inherit (self) src nodejs;
-      hash = "sha256-s98VHqSWGP9eI4oKL8XMyszmxAcLOvElolF5OdtDKCA=";
+      hash = "sha256-C4hSNHZVR+Fubr1zM+aEygiqmk12mG1m596oRPxr4o4=";
     };
   };
 
