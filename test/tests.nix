@@ -46,8 +46,8 @@ let
       test.data.clightning-plugins = let
         plugins = config.services.clightning.plugins;
         removed = [ "commando" "trustedcoin" ];
-        enabled = builtins.filter (plugin: plugins.${plugin}.enable)
-                                  (subtractLists removed (builtins.attrNames plugins));
+        available = subtractLists removed (builtins.attrNames plugins);
+        enabled = builtins.filter (plugin: plugins.${plugin}.enable) available;
         nbPkgs = config.nix-bitcoin.pkgs;
         pluginPkgs = nbPkgs.clightning-plugins // {
           clboss.path = "${nbPkgs.clboss}/bin/clboss";
