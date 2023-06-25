@@ -39,6 +39,7 @@ let
 
       tests.clightning = cfg.clightning.enable;
       test.data.clightning-replication = cfg.clightning.replication.enable;
+      tests.trustedcoin = cfg.clightning.plugins.trustedcoin.enable;
 
       # TODO-EXTERNAL:
       # When WAN is disabled, DNS bootstrapping slows down service startup by ~15 s.
@@ -317,9 +318,7 @@ let
       services.bitcoind.prune = 1000;
     };
 
-    # Test the special clightning setup where trustedcoin plugin is used
     trustedcoin = {
-      tests.trustedcoin = true;
       services.clightning = {
         enable = true;
         plugins.trustedcoin.enable = true;
