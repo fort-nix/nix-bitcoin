@@ -45,12 +45,16 @@ let
       services.clightning.extraConfig = mkIf config.test.noConnections "disable-dns";
       test.data.clightning-plugins = let
         plugins = config.services.clightning.plugins;
-        removed = [ "commando" "trustedcoin" ];
+        removed = [
+          # Only defined via `obsolete-options.nix`
+          "commando"
+        ];
         available = subtractLists removed (builtins.attrNames plugins);
         enabled = builtins.filter (plugin: plugins.${plugin}.enable) available;
         nbPkgs = config.nix-bitcoin.pkgs;
         pluginPkgs = nbPkgs.clightning-plugins // {
           clboss.path = "${plugins.clboss.package}/bin/clboss";
+          trustedcoin.path = "${plugins.trustedcoin.package}/bin/trustedcoin";
         };
       in map (plugin: pluginPkgs.${plugin}.path) enabled;
 
