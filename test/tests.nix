@@ -50,7 +50,7 @@ let
         enabled = builtins.filter (plugin: plugins.${plugin}.enable) available;
         nbPkgs = config.nix-bitcoin.pkgs;
         pluginPkgs = nbPkgs.clightning-plugins // {
-          clboss.path = "${nbPkgs.clboss}/bin/clboss";
+          clboss.path = "${plugins.clboss.package}/bin/clboss";
         };
       in map (plugin: pluginPkgs.${plugin}.path) enabled;
 
