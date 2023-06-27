@@ -275,6 +275,11 @@ buildable=(
     clightning-replication
     lndPruned
     wireguard-lndconnect
+
+    # TODO-EXTERNAL:
+    # Reenable when this has been fixed:
+    # https://github.com/nbd-wtf/trustedcoin/issues/21
+    # trustedcoin
 )
 buildable() { buildTests buildable "$@"; }
 
