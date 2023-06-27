@@ -2,7 +2,6 @@
 pkgs: pkgsUnstable:
 {
   inherit (pkgs)
-    extra-container
     lightning-pool
     lndconnect;
 
@@ -12,6 +11,7 @@ pkgs: pkgsUnstable:
     clightning
     electrs
     elementsd
+    extra-container
     fulcrum
     hwi
     lightning-loop
