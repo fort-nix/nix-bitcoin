@@ -129,7 +129,7 @@ in {
         rpc_port = ${toString cfg.port}
 
         # bitcoind
-        btc_network = "${bitcoind.makeNetworkName "bitcoin" "regtest"}"
+        btc_network = "${bitcoind.makeNetworkName "mainnet" "regtest"}"
         btc_rpc_user = "${bitcoind.rpc.users.public.name}"
         btc_rpc_password = "$(cat ${secretsDir}/bitcoin-rpcpassword-public)"
         btc_rpc_connect = "${bitcoind.rpc.address}"
