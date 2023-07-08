@@ -36,7 +36,7 @@ fi
 
 cd "${BASH_SOURCE[0]%/*}"
 
-RESPONSE=$(curl https://api.github.com/repos/$REPO/releases/latest 2> /dev/null)
+RESPONSE=$(curl -fsS https://api.github.com/repos/$REPO/releases/latest)
 echo "Latest release" "$(echo "$RESPONSE" | jq -r '.tag_name' | tail -c +2)"
 
 if [[ ! $DRY_RUN ]]; then
@@ -75,7 +75,7 @@ if [[ $DRY_RUN ]]; then
 fi
 
 POST_DATA="{ \"tag_name\": \"v$releaseVersion\", \"name\": \"nix-bitcoin-$releaseVersion\", \"body\": \"nix-bitcoin-$releaseVersion\", \"target_comitish\": \"$BRANCH\" }"
-RESPONSE=$(curl -H "Authorization: token $OAUTH_TOKEN" -d "$POST_DATA" https://api.github.com/repos/$REPO/releases 2> /dev/null)
+RESPONSE=$(curl -fsS -H "Authorization: token $OAUTH_TOKEN" -d "$POST_DATA" https://api.github.com/repos/$REPO/releases)
 ID=$(echo "$RESPONSE" | jq -r '.id')
 if [[ $ID == null ]]; then
     echo "Failed to create release with $POST_DATA"
@@ -84,8 +84,8 @@ fi
 
 post_asset() {
     GH_ASSET="https://uploads.github.com/repos/$REPO/releases/$ID/assets?name="
-    curl -H "Authorization: token $OAUTH_TOKEN" --data-binary "@$1" -H "Content-Type: application/octet-stream" \
-         "$GH_ASSET/$(basename "$1")" &> /dev/null
+    curl -fsS -H "Authorization: token $OAUTH_TOKEN" --data-binary "@$1" -H "Content-Type: application/octet-stream" \
+         "$GH_ASSET/$(basename "$1")"
 }
 post_asset nar-hash.txt
 post_asset nar-hash.txt.asc
