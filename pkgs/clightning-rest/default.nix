@@ -1,7 +1,7 @@
 { lib
 , stdenvNoCC
-, nodejs-16_x
-, nodejs-slim-16_x
+, nodejs-18_x
+, nodejs-slim-18_x
 , fetchNodeModules
 , fetchurl
 , makeWrapper
@@ -17,8 +17,8 @@ let self = stdenvNoCC.mkDerivation {
   };
 
   passthru = {
-    nodejs = nodejs-16_x;
-    nodejsRuntime = nodejs-slim-16_x;
+    nodejs = nodejs-18_x;
+    nodejsRuntime = nodejs-slim-18_x;
 
     nodeModules = fetchNodeModules {
       inherit (self) src nodejs;
