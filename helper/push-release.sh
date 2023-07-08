@@ -53,6 +53,13 @@ if [[ ! $DRY_RUN ]]; then
    done
 fi
 
+nixosVersion=$(sed -nE 's|.*system.stateVersion = "(.*?)".*|\1|p' ../examples/configuration.nix)
+if [[ ! $nixosVersion ]]; then
+    echo "Error fetching NixOS version"
+    exit 1
+fi
+nixosVersionBranch=nixos-$nixosVersion
+
 TMPDIR=$(mktemp -d)
 if [[ ! $DRY_RUN ]]; then trap 'rm -rf $TMPDIR' EXIT; fi
 ARCHIVE_NAME=nix-bitcoin-$releaseVersion.tar.gz
@@ -74,8 +81,12 @@ gpg -o nar-hash.txt.asc -a --detach-sig nar-hash.txt
 
 if [[ $DRY_RUN ]]; then
     echo "Created v$releaseVersion in $TMPDIR"
+    echo "NixOS version branch: $nixosVersionBranch"
     exit 0
 fi
+
+#―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+# Create release
 
 POST_DATA="{ \"tag_name\": \"v$releaseVersion\", \"name\": \"nix-bitcoin-$releaseVersion\", \"body\": \"nix-bitcoin-$releaseVersion\", \"target_comitish\": \"$BRANCH\" }"
 RESPONSE=$(curl -fsS -H "Authorization: token $OAUTH_TOKEN" -d "$POST_DATA" https://api.github.com/repos/$REPO/releases)
@@ -101,7 +112,8 @@ post_asset "$SHA256SUMS.asc"
 popd >/dev/null
 
 if [[ ! $DRY_RUN ]]; then
-    git push "$GIT_REMOTE" "${BRANCH}:release"
+    git push "$GIT_REMOTE" "$BRANCH:release"
+    git push "$GIT_REMOTE" "$BRANCH:$nixosVersionBranch"
 fi
 
 echo "Successfully created" "$(echo "$POST_DATA" | jq -r .tag_name)"
