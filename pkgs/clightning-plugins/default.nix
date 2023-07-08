@@ -42,7 +42,7 @@ let
       description = "Lightning node exporter for the prometheus timeseries server";
       extraPkgs = [ prometheus_client ];
       patchRequirements =
-        "--replace prometheus-client==0.6.0 prometheus-client==0.15.0"
+        "--replace prometheus-client==0.6.0 prometheus-client==0.16.0"
         + " --replace pyln-client~=0.9.3 pyln-client~=23.02";
     };
     rebalance = {
@@ -79,7 +79,7 @@ let
 
         # Check that requirements are met
         PYTHONPATH='${toString python}/${python.sitePackages}' \
-          ${pkgs.python3Packages.pip}/bin/pip install -r requirements.txt --no-cache --no-index
+          ${pkgs.python3Packages.pip}/bin/pip install -r requirements.txt --no-cache --no-index --break-system-packages
 
         chmod +x '${script}'
         patchShebangs '${script}'

@@ -6,6 +6,10 @@ buildPythonPackage rec {
 
   postUnpack = "sourceRoot=$sourceRoot/jmbase";
 
+  patchPhase = ''
+    sed -i 's|twisted==22.4.0|twisted==22.10.0|' setup.py
+  '';
+
   propagatedBuildInputs = [ future twisted service-identity chromalog txtorcon ];
 
   meta = with lib; {
