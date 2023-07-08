@@ -10,6 +10,8 @@ releaseVersion=
 
 trap 'echo "Error at ${BASH_SOURCE[0]}:$LINENO"' ERR
 
+cd "${BASH_SOURCE[0]%/*}"
+
 for arg in "$@"; do
     case $arg in
         --dry-run|-n)
@@ -21,10 +23,13 @@ for arg in "$@"; do
     esac
 done
 
+latestVersion=$(curl -fsS https://api.github.com/repos/$REPO/releases/latest | jq -r '.tag_name' | tail -c +2)
+
 if [[ ! $releaseVersion ]]; then
-    echo "$0 [--dry-run|-n] <tag_name>"
-    exit
+    # Increment the lowest/last part of `latestVersion`
+    releaseVersion=$(echo "$latestVersion" | awk -F. '/[0-9]+\./{$NF++;print}' OFS=.)
 fi
+
 if [[ $DRY_RUN ]]; then
     echo "Dry run"
 else
@@ -34,10 +39,7 @@ else
     fi
 fi
 
-cd "${BASH_SOURCE[0]%/*}"
-
-RESPONSE=$(curl -fsS https://api.github.com/repos/$REPO/releases/latest)
-echo "Latest release" "$(echo "$RESPONSE" | jq -r '.tag_name' | tail -c +2)"
+echo "Latest release: $latestVersion"
 
 if [[ ! $DRY_RUN ]]; then
    while true; do
