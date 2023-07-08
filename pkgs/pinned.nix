@@ -2,17 +2,17 @@
 pkgs: pkgsUnstable:
 {
   inherit (pkgs)
-    lndconnect;
-
-  inherit (pkgsUnstable)
-    btcpayserver
     charge-lnd
-    clightning
     electrs
     elementsd
     extra-container
     fulcrum
     hwi
+    lndconnect;
+
+  inherit (pkgsUnstable)
+    btcpayserver
+    clightning
     lightning-loop
     lightning-pool
     nbxplorer;

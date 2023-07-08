@@ -390,7 +390,10 @@ in {
             config
           ];
           # Share the same pkgs instance among tests
-          nixpkgs.pkgs = pkgs.lib.mkDefault pkgs;
+          # Set priority slightly higher (i.e. to a slightly lower number) than `mkDefault`,
+          # so that this module can be used with function `pkgs.nixos`, which already
+          # sets `nixpkgs.pkgs` with prio `mkDefault`.
+          nixpkgs.pkgs = lib.mkOverride 900 pkgs;
         };
       };
 
