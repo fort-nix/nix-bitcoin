@@ -320,7 +320,7 @@ if [[ $# -gt 0 && $1 != -* ]]; then
     if [[ $command == eval ]]; then
         command=evalTest
     fi
-    : ${scenario:=default}
+    : "${scenario:=default}"
 elif [[ $scenario ]]; then
     command=buildTest
 else
