@@ -2,7 +2,6 @@
 pkgs: pkgsUnstable:
 {
   inherit (pkgs)
-    lightning-pool
     lndconnect;
 
   inherit (pkgsUnstable)
@@ -15,6 +14,7 @@ pkgs: pkgsUnstable:
     fulcrum
     hwi
     lightning-loop
+    lightning-pool
     nbxplorer;
 
   inherit pkgs pkgsUnstable;
