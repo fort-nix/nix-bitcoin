@@ -35,7 +35,8 @@ if [[ $DRY_RUN ]]; then
 else
     OAUTH_TOKEN=$(pass show nix-bitcoin/github/oauth-token)
     if [[ ! $OAUTH_TOKEN ]]; then
-        echo "Please set OAUTH_TOKEN variable"
+        echo "Error fetching OAUTH_TOKEN"
+        exit 1
     fi
 fi
 
