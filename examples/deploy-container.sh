@@ -87,6 +87,7 @@ read -rd '' src <<EOF || true
   };
 }
 EOF
+. "${BASH_SOURCE[0]%/*}"/../test/lib/extra-container-check-version.sh
 extra-container shell -E "$src" "${runCmd[@]}"
 
 # The container is automatically deleted at exit
