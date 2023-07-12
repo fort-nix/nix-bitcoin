@@ -25,6 +25,7 @@ in {
     # Use doas instead of sudo
     security.doas.enable = true;
     security.sudo.enable = false;
+    environment.shellAliases.sudo = "doas";
 
     environment.systemPackages = with pkgs; [
       jq
