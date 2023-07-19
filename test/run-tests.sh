@@ -232,6 +232,8 @@ nixInstantiate() {
 
 nixBuild() {
     local outLinkName=$1
+    local drv=$2
+    shift
     shift
     args=(--print-out-paths -L)
     if [[ $outLinkPrefix ]]; then
@@ -239,7 +241,25 @@ nixBuild() {
     else
         args+=(--no-link)
     fi
-    nix build "${args[@]}" "$@"
+    if isNixVersionGreaterEqual_2_15; then
+        # This syntax is supported by Nix ≥ 2.13
+        drv="$(realpath "$drv")^*"
+    fi
+    nix build "$drv" "${args[@]}" "$@"
+}
+
+isNixGE_2_15=undefined
+isNixVersionGreaterEqual_2_15() {
+    if [[ $isNixGE_2_15 == undefined ]]; then
+        isNixGE_2_15=
+        if {
+            echo '2.15'
+            nix --version | awk '{print $NF}'
+        } | sort -C -V; then
+            isNixGE_2_15=1
+        fi
+    fi
+    [[ $isNixGE_2_15 ]]
 }
 
 flake() {
