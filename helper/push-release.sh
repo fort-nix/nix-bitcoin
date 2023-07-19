@@ -6,9 +6,11 @@ BRANCH=master
 GIT_REMOTE=origin
 OAUTH_TOKEN=
 DRY_RUN=
-TAG_NAME=
+releaseVersion=
 
 trap 'echo "Error at ${BASH_SOURCE[0]}:$LINENO"' ERR
+
+cd "${BASH_SOURCE[0]%/*}"
 
 for arg in "$@"; do
     case $arg in
@@ -16,32 +18,33 @@ for arg in "$@"; do
             DRY_RUN=1
             ;;
         *)
-            TAG_NAME="$arg"
+            releaseVersion="$arg"
             ;;
     esac
 done
 
-if [[ ! $TAG_NAME ]]; then
-    echo "$0 [--dry-run|-n] <tag_name>"
-    exit
+latestVersion=$(curl -fsS https://api.github.com/repos/$REPO/releases/latest | jq -r '.tag_name' | tail -c +2)
+
+if [[ ! $releaseVersion ]]; then
+    # Increment the lowest/last part of `latestVersion`
+    releaseVersion=$(echo "$latestVersion" | awk -F. '/[0-9]+\./{$NF++;print}' OFS=.)
 fi
+
 if [[ $DRY_RUN ]]; then
     echo "Dry run"
 else
     OAUTH_TOKEN=$(pass show nix-bitcoin/github/oauth-token)
     if [[ ! $OAUTH_TOKEN ]]; then
-        echo "Please set OAUTH_TOKEN variable"
+        echo "Error fetching OAUTH_TOKEN"
+        exit 1
     fi
 fi
 
-cd "${BASH_SOURCE[0]%/*}"
-
-RESPONSE=$(curl https://api.github.com/repos/$REPO/releases/latest 2> /dev/null)
-echo "Latest release" "$(echo "$RESPONSE" | jq -r '.tag_name' | tail -c +2)"
+echo "Latest release: $latestVersion"
 
 if [[ ! $DRY_RUN ]]; then
    while true; do
-       read -rp "Create release ${TAG_NAME}? [yn] " yn
+       read -rp "Create release ${releaseVersion}? [yn] " yn
        case $yn in
            [Yy]* ) break;;
            [Nn]* ) exit;;
@@ -50,9 +53,16 @@ if [[ ! $DRY_RUN ]]; then
    done
 fi
 
+nixosVersion=$(sed -nE 's|.*system.stateVersion = "(.*?)".*|\1|p' ../examples/configuration.nix)
+if [[ ! $nixosVersion ]]; then
+    echo "Error fetching NixOS version"
+    exit 1
+fi
+nixosVersionBranch=nixos-$nixosVersion
+
 TMPDIR=$(mktemp -d)
 if [[ ! $DRY_RUN ]]; then trap 'rm -rf $TMPDIR' EXIT; fi
-ARCHIVE_NAME=nix-bitcoin-$TAG_NAME.tar.gz
+ARCHIVE_NAME=nix-bitcoin-$releaseVersion.tar.gz
 ARCHIVE=$TMPDIR/$ARCHIVE_NAME
 
 # Need to be in the repo root directory for archiving
@@ -70,12 +80,16 @@ nix hash to-sri --type sha256 "$(nix-prefetch-url --unpack "file://$ARCHIVE" 2> 
 gpg -o nar-hash.txt.asc -a --detach-sig nar-hash.txt
 
 if [[ $DRY_RUN ]]; then
-    echo "Created v$TAG_NAME in $TMPDIR"
+    echo "Created v$releaseVersion in $TMPDIR"
+    echo "NixOS version branch: $nixosVersionBranch"
     exit 0
 fi
 
-POST_DATA="{ \"tag_name\": \"v$TAG_NAME\", \"name\": \"nix-bitcoin-$TAG_NAME\", \"body\": \"nix-bitcoin-$TAG_NAME\", \"target_comitish\": \"$BRANCH\" }"
-RESPONSE=$(curl -H "Authorization: token $OAUTH_TOKEN" -d "$POST_DATA" https://api.github.com/repos/$REPO/releases 2> /dev/null)
+#―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+# Create release
+
+POST_DATA="{ \"tag_name\": \"v$releaseVersion\", \"name\": \"nix-bitcoin-$releaseVersion\", \"body\": \"nix-bitcoin-$releaseVersion\", \"target_comitish\": \"$BRANCH\" }"
+RESPONSE=$(curl -fsS -H "Authorization: token $OAUTH_TOKEN" -d "$POST_DATA" https://api.github.com/repos/$REPO/releases)
 ID=$(echo "$RESPONSE" | jq -r '.id')
 if [[ $ID == null ]]; then
     echo "Failed to create release with $POST_DATA"
@@ -84,8 +98,8 @@ fi
 
 post_asset() {
     GH_ASSET="https://uploads.github.com/repos/$REPO/releases/$ID/assets?name="
-    curl -H "Authorization: token $OAUTH_TOKEN" --data-binary "@$1" -H "Content-Type: application/octet-stream" \
-         "$GH_ASSET/$(basename "$1")" &> /dev/null
+    curl -fsS -H "Authorization: token $OAUTH_TOKEN" --data-binary "@$1" -H "Content-Type: application/octet-stream" \
+         "$GH_ASSET/$(basename "$1")"
 }
 post_asset nar-hash.txt
 post_asset nar-hash.txt.asc
@@ -98,7 +112,8 @@ post_asset "$SHA256SUMS.asc"
 popd >/dev/null
 
 if [[ ! $DRY_RUN ]]; then
-    git push "$GIT_REMOTE" "${BRANCH}:release"
+    git push "$GIT_REMOTE" "$BRANCH:release"
+    git push "$GIT_REMOTE" "$BRANCH:$nixosVersionBranch"
 fi
 
 echo "Successfully created" "$(echo "$POST_DATA" | jq -r .tag_name)"
