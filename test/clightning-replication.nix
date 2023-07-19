@@ -101,7 +101,7 @@ makeTestVM {
 
   testScript =  { nodes, ... }: let
     systems = builtins.concatStringsSep ", "
-      (mapAttrsToList (name: node: ''"${name}": "${node.config.system.build.toplevel}"'') nodes);
+      (mapAttrsToList (name: node: ''"${name}": "${node.system.build.toplevel}"'') nodes);
   in ''
     systems = { ${systems} }
 

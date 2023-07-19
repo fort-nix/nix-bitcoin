@@ -23,7 +23,7 @@ let
     };
 
     testScript = nodes: let
-      cfg = nodes.nodes.machine.config;
+      cfg = nodes.nodes.machine;
       data = {
         data = cfg.test.data;
         tests = cfg.tests;

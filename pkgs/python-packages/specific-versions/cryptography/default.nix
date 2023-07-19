@@ -50,7 +50,8 @@ buildPythonPackage rec {
 
   checkInputs = [
     cryptography_vectors
-    hypothesis
+    # Work around `error: infinite recursion encountered`
+    (hypothesis.override { enableDocumentation = false; })
     iso8601
     pretend
     pytest
@@ -58,7 +59,7 @@ buildPythonPackage rec {
   ];
 
   checkPhase = ''
-    py.test --disable-pytest-warnings tests
+    ${pytest}/bin/py.test --disable-pytest-warnings tests
   '';
 
   # IOKit's dependencies are inconsistent between OSX versions, so this is the best we

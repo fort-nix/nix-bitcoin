@@ -29,6 +29,6 @@ buildPythonPackage rec {
   postUnpack = "sourceRoot=$sourceRoot/contrib/pyln-proto";
 
   postPatch = ''
-    sed -i 's|cryptography = "^36.0.1"|cryptography = "^38.0.0"|' pyproject.toml
+    sed -i 's|cryptography = "^36.0.1"|cryptography = "^40.0"|' pyproject.toml
   '';
 }

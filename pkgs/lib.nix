@@ -41,8 +41,12 @@ let self = {
     RestrictAddressFamilies = self.defaultHardening.RestrictAddressFamilies + " AF_NETLINK";
   };
 
-  # nodejs applications require memory write execute for JIT compilation
-  nodejs = { MemoryDenyWriteExecute = false; };
+  nodejs = {
+    # Required for JIT compilation
+    MemoryDenyWriteExecute = false;
+    # Required by nodejs >= 18
+    SystemCallFilter = self.defaultHardening.SystemCallFilter ++ [ "@pkey" ];
+  };
 
   # Allow takes precedence over Deny.
   allowLocalIPAddresses = {
