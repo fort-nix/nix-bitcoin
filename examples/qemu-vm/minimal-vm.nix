@@ -40,10 +40,11 @@ rec {
 
         Welcome to nix-bitcoin!
         To explore running services, try the following commands:
-        - nodeinfo
-        - systemctl status bitcoind
-        - systemctl status clightning
-        - lightning-cli getinfo
+          nodeinfo
+          systemctl status bitcoind
+          systemctl status clightning
+          bitcoin-cli -getinfo
+          lightning-cli getinfo
       '';
 
       # Power off VM when the user exits the shell
