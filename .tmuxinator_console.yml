@@ -1,6 +1,8 @@
 # MYBONK orchestrator Tmuxinator.
 # Tmuxinator configuration to get started.
 # You need to configure ssh key pair (or a VPN like Tailscale) it requires auto-login to the remote machine(s).
+# Example: 
+# $tmuxinator start -p .tmuxinator_console.yml console node="root@mybonk-jay.dab-dominant.ts.net"
 
 name: console
 #root: ~/
@@ -40,7 +42,7 @@ pre_window:
 #tmux_command: byobu
 
 # Specifies (by name or index) which window will be selected on project startup. If not set, the first window is used.
-startup_window: console
+startup_window: console_glances
 
 # Specifies (by index) which pane of the specified window will be selected on project startup. If not set, the first pane is used.
 # startup_pane: 1
@@ -52,7 +54,7 @@ windows:
 
   - orchestrator:
     - exit
-    - clear 
+    - clear
   - krops:
       layout: even-vertical
       # Synchronize all panes of this window, can be enabled before or after the pane commands run.
@@ -65,7 +67,8 @@ windows:
         - deployment:
           - exit
           - clear
-          - cd $HOME/nix-bitcoin
+          - cd ./mybonk-console 
+          - nix-shell
   - console_commands:
       layout: even-vertical
       panes:
@@ -78,24 +81,25 @@ windows:
       panes:
         - clightning:
           - clear
+          - sleep 2
           - journalctl --no-full -f -n 500 -u clightning
         - bitcoind:
           - clear
+          - sleep 1
           - journalctl --no-pager -f -n 500 -u bitcoind | sed --expression="/UpdateTip:/d"
         - noticeonly:
           - clear
           - journalctl -f -n 500 -p notice | sed --expression="/sudo/d" | sed --expression="/background.scan.sh/d"
         - orchestrator:
-          - clear
           - exit
-          - cd $HOME/nix-bitcoin/examples
-          - nix-shell
+          - clear
+          - cd ./mybonk-console
         - command:
-          - ls -la
+          - clear
         - top:
           - top
   - console_glances:
       - glances
   - console_logs:
-      - journalctl -f -n 200
+      - journalctl -f -n 100
 
