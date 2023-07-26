@@ -1,5 +1,5 @@
 # MYBONK console default configuration file. 
-# For testing only (it runs on SIGNET).
+# For testing only.
 
 { config, pkgs, lib, ... }:
 
@@ -23,12 +23,12 @@
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.efi.efiSysMountPoint = "/boot/efi";
 
-  networking.hostName = "mybonk_console"; # FIXME: Define a hostname of your choice.
+  networking.hostName = "mybonk-jay"; # FIXME: Define a hostname of your choice.
   networking.wireless.enable = false; # We prefer our nodes not to operate over WiFi. 
 
   # Use this setting 'loose' because strict reverse path filtering breaks Tailscale exit node use and some subnet routing setups
   networking.firewall.checkReversePath = "loose";
-  # networking.networkmanager.enable = true;
+  networking.networkmanager.enable = true;
   
   # Set your time zone.
   time.timeZone = "Europe/Brussels"; # FIXME: Adjust for your timezone.
@@ -59,9 +59,14 @@
   wget
   git
   vim
+  ripgrep
+  pv
+  htop
   glances
   websocketd
+  geekbench 
   ];
+
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -78,26 +83,45 @@
 
   services.openssh = {
     enable = true;
-    passwordAuthentication = false;
-    #permitRootLogin = "yes";
+    passwordAuthentication = true;
+    permitRootLogin = "yes";
   };
 
   users.users.root = {
     openssh.authorizedKeys.keys = [
-        "" # FIXME Put here your public ssh key 
-    ]
-;
+      # FIXME: Replace this with your SSH pubkey
+      "ssh-ed25519 AAAAC3..."
+    ];
   };
-
   ### BITCOIND
   # Bitcoind is enabled by default via secure-node.nix.
-  services.bitcoind.signet = true; 
-  services.bitcoind.dataDir = "/data/bitcoind"; 
+
+  services.bitcoind = {
+    dataDir = "/data/bitcoind";
+    signet = true;
+    tor.enforce = false;
+    tor.proxy = false;
+    extraConfig = ''
+      mempoolfullrbf=1
+    '';
+  };
   nix-bitcoin.onionServices.bitcoind.public = true;
 
+
   ### CLIGHTNING
-  services.clightning.enable = true;
+  services.clightning = {
+    dataDir = "/data/clightning"; 
+    enable = true;
+    tor.enforce = false;
+    tor.proxy = false;
+    extraConfig = ''
+      #FIXME below choose an alias name of your node
+      alias=FIXME
+    '';
+    
+  }; 
   nix-bitcoin.onionServices.clightning.public = true;
+  systemd.services.clightning.serviceConfig.TimeoutStartSec = "5m";
   #
   # == Plugins
   # See ../README.md (Features ?~F~R clightning) for the list of available plugins.
@@ -111,27 +135,20 @@
   # You can also connect via WireGuard instead of Tor.
   # See ../docs/services.md for details.
   #
-  #services.clightning-rest = {
-  #  enable = true;
-  #  lndconnect = {
-  #    enable = true;
-  #    onion = true;
-  #  };
-  #};
+  services.clightning-rest = {
+    enable = true;
+    lndconnect = {
+      enable = true;
+    };
+  };
+
+  services.rtl = {
+    enable = true;
+    nodes.clightning.enable = true;
+  };
 
 
-  #services.rtl = {
-  #  enable = true;
-  #  nodes.clightning.enable = true;
-  #};
-
-
-  ### SPARK WALLET
-  # Set this to enable spark-wallet, a minimalistic wallet GUI for
-  # c-lightning, accessible over the web or through mobile and desktop apps.
-  # Automatically enables clightning.
-  services.spark-wallet.enable = true;
-
+  #services.electrs.enable = true;
 
   ### FULCRUM
   # Set this to enable fulcrum, an Electrum server implemented in C++.
@@ -142,28 +159,29 @@
   # Before enabling fulcrum, and for more info on storage demands,
   # see the description of option `enable` in ../modules/fulcrum.nix
   #
-  #services.fulcrum = {
-  #  enable = true;
-  #  port = 50011;
-  #};
+  services.fulcrum = {
+    dataDir = "/data/fulcrum";
+    enable = false;
+    port = 50011;
+  };
 
 
-  #services.mempool = {
-  #  enable = true;
-  #  electrumServer = "fulcrum";
-  #  tor = {
-  #    proxy = true;
-  #    enforce = true;
-  #  };
-  #};
-  #nix-bitcoin.onionServices.mempool-frontend.enable = true;
+  services.mempool = {
+    enable = false;
+    electrumServer = "fulcrum";
+    #tor = {
+    #  proxy = true;
+      #enforce = true;
+    #};
+  };
+  #nix-bitcoin.onionServices.mempool-frontend.enable = false;
 
 
   users.users.operator.extraGroups = [ "wheel" ];
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
-  # on your system were taken. It‘s perfectly fine and recommended to leave
+  # on your system were taken. It is perfectly fine and recommended to leave
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).

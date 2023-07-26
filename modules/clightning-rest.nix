@@ -58,7 +58,7 @@ let
   configFile = builtins.toFile "clightning-rest-config" (builtins.toJSON ({
     PORT = cfg.port;
     DOCPORT = cfg.docPort;
-    LNRPCPATH = "${clightning.dataDir}/${bitcoind.makeNetworkNameOld "bitcoin" "regtest"}/lightning-rpc";
+    LNRPCPATH = "${clightning.dataDir}/${bitcoind.makeNetworkName "bitcoin" "regtest" "signet"}/lightning-rpc";
     EXECMODE = "production";
     PROTOCOL = "https";
     RPCCOMMANDS = ["*"];
