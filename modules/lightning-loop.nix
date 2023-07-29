@@ -6,7 +6,7 @@ let
     enable = mkEnableOption "Lightning Loop, a non-custodial off/on chain bridge";
     rpcAddress = mkOption {
        type = types.str;
-       default = "localhost";
+       default = "127.0.0.1";
        description = mdDoc "Address to listen for gRPC connections.";
     };
     rpcPort = mkOption {
@@ -121,7 +121,7 @@ in {
       "d '${cfg.dataDir}' 0770 ${lnd.user} ${lnd.group} - -"
     ];
 
-    services.lightning-loop.certificate.extraIPs = mkIf (cfg.rpcAddress != "localhost") [ "${cfg.rpcAddress}" ];
+    services.lightning-loop.certificate.extraIPs = mkIf (cfg.rpcAddress != "127.0.0.1") [ "${cfg.rpcAddress}" ];
 
     systemd.services.lightning-loop = {
       wantedBy = [ "multi-user.target" ];

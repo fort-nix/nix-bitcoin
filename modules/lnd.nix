@@ -6,7 +6,7 @@ let
     enable = mkEnableOption "Lightning Network daemon, a Lightning Network implementation in Go";
     address = mkOption {
       type = types.str;
-      default = "localhost";
+      default = "127.0.0.1";
       description = mdDoc "Address to listen for peer connections";
     };
     port = mkOption {
@@ -16,7 +16,7 @@ let
     };
     rpcAddress = mkOption {
       type = types.str;
-      default = "localhost";
+      default = "127.0.0.1";
       description = mdDoc "Address to listen for RPC connections.";
     };
     rpcPort = mkOption {
@@ -26,7 +26,7 @@ let
     };
     restAddress = mkOption {
       type = types.str;
-      default = "localhost";
+      default = "127.0.0.1";
       description = mdDoc "Address to listen for REST connections.";
     };
     restPort = mkOption {
@@ -224,7 +224,7 @@ in {
       "d '${cfg.dataDir}' 0770 ${cfg.user} ${cfg.group} - -"
     ];
 
-    services.lnd.certificate.extraIPs = mkIf (cfg.rpcAddress != "localhost") [ "${cfg.rpcAddress}" ];
+    services.lnd.certificate.extraIPs = mkIf (cfg.rpcAddress != "127.0.0.1") [ "${cfg.rpcAddress}" ];
 
     systemd.services.lnd = {
       wantedBy = [ "multi-user.target" ];
