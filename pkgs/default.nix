@@ -15,13 +15,11 @@ let self = {
   # when https://github.com/bitcoin/bitcoin/issues/27722 has been resolved
   bitcoin  = pkgsUnstable.libsForQt5.callPackage ./bitcoin {
     stdenv = if pkgsUnstable.stdenv.isDarwin then pkgsUnstable.darwin.apple_sdk_11_0.stdenv else pkgsUnstable.stdenv;
-    boost = pkgsUnstable.boost17x;
     withGui = true;
     inherit (pkgsUnstable.darwin) autoSignDarwinBinariesHook;
   };
 
   bitcoind = pkgsUnstable.callPackage ./bitcoin {
-    boost = pkgsUnstable.boost17x;
     withGui = false;
     inherit (pkgsUnstable.darwin) autoSignDarwinBinariesHook;
   };
