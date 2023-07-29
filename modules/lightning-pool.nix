@@ -6,7 +6,7 @@ let
     enable = mkEnableOption "Lightning Pool, a marketplace for inbound lightning liquidity ";
     rpcAddress = mkOption {
        type = types.str;
-       default = "localhost";
+       default = "127.0.0.1";
        description = mdDoc "Address to listen for gRPC connections.";
     };
     rpcPort = mkOption {

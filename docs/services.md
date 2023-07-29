@@ -128,7 +128,7 @@ yourself with custom permissions.
 Normally you would connect to RTL via SSH tunneling with a command like this
 
 ```
-ssh -L 3000:localhost:3000 root@bitcoin-node
+ssh -L 3000:127.0.0.1:3000 root@bitcoin-node
 ```
 
 Or like this, if you are using `netns-isolation`
@@ -326,7 +326,7 @@ lndconnect-wg --url
 
     On Desktop
     ```
-    electrum --oneserver -1 -s "<electrs onion address>:t" -p socks5:localhost:9050
+    electrum --oneserver -1 -s "<electrs onion address>:t" -p socks5:127.0.0.1:9050
     ```
 
     On Android
@@ -365,11 +365,11 @@ lndconnect-wg --url
 4. Connect to your nix-bitcoin node's SSH onion service, forwarding a local port to the nix-bitcoin node's SSH server
 
     ```
-    ssh -i ~/.ssh/id_ed25519 -L <random port of your choosing>:localhost:22 root@<SSH onion address>
+    ssh -i ~/.ssh/id_ed25519 -L <random port of your choosing>:127.0.0.1:22 root@<SSH onion address>
     ```
 
-5. Edit your deployment tool's configuration and change the node's address to `localhost` and the ssh port to `<random port of your choosing>`.
-   If you use krops as described in the [installation tutorial](./install.md), set `target = "localhost:<random port of your choosing>";` in `krops/deploy.nix`.
+5. Edit your deployment tool's configuration and change the node's address to `127.0.0.1` and the ssh port to `<random port of your choosing>`.
+   If you use krops as described in the [installation tutorial](./install.md), set `target = "127.0.0.1:<random port of your choosing>";` in `krops/deploy.nix`.
 
 6. After deploying the new configuration, it will connect through the SSH tunnel you established in step iv. This also allows you to do more complex SSH setups that some deployment tools don't support. An example would be authenticating with [Trezor's SSH agent](https://github.com/romanz/trezor-agent), which provides extra security.
 

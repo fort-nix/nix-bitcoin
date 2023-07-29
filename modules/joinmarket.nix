@@ -191,7 +191,7 @@ let
     [DAEMON]
     no_daemon = 0
     daemon_port = 27183
-    daemon_host = localhost
+    daemon_host = 127.0.0.1
     use_ssl = false
 
     [BLOCKCHAIN]

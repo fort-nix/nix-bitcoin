@@ -279,13 +279,13 @@ let
       # lightning-loop contains no builtin swap server for regtest.
       # Add a dummy definition.
       services.lightning-loop.extraConfig = ''
-        server.host=localhost
+        server.host=127.0.0.1
       '';
 
       # lightning-pool contains no builtin auction server for regtest.
       # Add a dummy definition
       services.lightning-pool.extraConfig = ''
-        auctionserver=localhost
+        auctionserver=127.0.0.1
       '';
 
       # `validatepegin` is incompatible with regtest

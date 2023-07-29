@@ -275,9 +275,9 @@ c journalctl -u joinmarket-ob-watcher
 c journalctl -f -u joinmarket-ob-watcher
 
 # Check webinterface
-c curl localhost:62601
+c curl 127.0.0.1:62601
 nix run --inputs-from . nixpkgs#lynx -- --dump $ip:62601
-c curl -s localhost:62601 | grep -i "orders found"
+c curl -s 127.0.0.1:62601 | grep -i "orders found"
 
 #―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 # rtl
