@@ -579,20 +579,15 @@ services.clightning = {
 
 Please have a look at the module for a plugin (e.g. [prometheus.nix](../modules/clightning-plugins/prometheus.nix)) to learn its configuration options.
 
-### Trustedcoin hints
-The [trustedcoin](https://github.com/nbd-wtf/trustedcoin) plugin use a Tor
-proxy for all of its external connections by default. That's why you can
-sometimes face issues with your connections to esploras getting blocked.
+### Trustedcoin
+When `services.clightning.tor.proxy` is enabled, [trustedcoin](https://github.com/nbd-wtf/trustedcoin)
+also uses Tor for all external connections by default.
+In this case, connections to block explorers can sometimes get blocked.
 
-An example of clightning log error output in a case your connections are getting blocked:
-
+An example of clightning log error output when connections are getting blocked:
 ```
 lightningd[5138]: plugin-trustedcoin estimatefees error: https://blockstream.info/api error: 403 Forbidden
-```
-
-```
-lightningd[4933]: plugin-trustedcoin getblock error: got something that isn't a block hash: <html><head>
-lightningd[4933]: <meta http-equiv="content-type" content="text/html;
+lightningd[4933]: plugin-trustedcoin getblock error: got something that isn't a block hash: <html><head>...
 ```
 
 If you face these issues and you still need to use trustedcoin, use can disable
