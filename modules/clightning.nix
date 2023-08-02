@@ -49,6 +49,15 @@ let
         parameters, as fully qualified data source name.
       '';
     };
+    useBcliPlugin = mkOption {
+      type = types.bool;
+      default = true;
+      description = ''
+        Use bitcoind (via plugin `bcli`) for getting block data.
+        This option is disabled by plugins that use other sources for
+        fetching block data, like `trustedcoin`.
+      '';
+    };
     extraConfig = mkOption {
       type = types.lines;
       default = "";
@@ -107,7 +116,13 @@ let
   network = bitcoind.makeNetworkName "bitcoin" "regtest";
   configFile = pkgs.writeText "config" ''
     network=${network}
-    ${optionalString (!cfg.plugins.trustedcoin.enable) "bitcoin-datadir=${bitcoind.dataDir}"}
+    ${
+      if cfg.useBcliPlugin then ''
+        bitcoin-datadir=${config.services.bitcoind.dataDir}
+      '' else ''
+        disable-plugin=bcli
+      ''
+    }
     ${optionalString (cfg.proxy != null) "proxy=${cfg.proxy}"}
     always-use-proxy=${boolToString cfg.always-use-proxy}
     bind-addr=${cfg.address}:${toString cfg.port}

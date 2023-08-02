@@ -14,10 +14,12 @@ let cfg = config.services.clightning.plugins.trustedcoin; in
   };
 
   config = mkIf cfg.enable {
-    services.clightning.extraConfig = ''
-      plugin=${cfg.package}/bin/trustedcoin
-      disable-plugin=bcli
-    '';
+    services.clightning = {
+      useBcliPlugin = false;
+      extraConfig = ''
+        plugin=${cfg.package}/bin/trustedcoin
+      '';
+    };
 
     # Trustedcoin does not honor the clightning's proxy configuration.
     # Ref.: https://github.com/nbd-wtf/trustedcoin/pull/19
