@@ -590,10 +590,7 @@ lightningd[5138]: plugin-trustedcoin estimatefees error: https://blockstream.inf
 lightningd[4933]: plugin-trustedcoin getblock error: got something that isn't a block hash: <html><head>...
 ```
 
-If you face these issues and you still need to use trustedcoin, use can disable
-clightning's tor hardening by setting this option in your `configuration.nix`
-file:
-
-```
-services.clightning.tor.enforce = false;
+To work around this and connect via clearnet instead, set this option:
+```nix
+services.clightning.plugins.trustedcoin.tor.proxy = false;
 ```
