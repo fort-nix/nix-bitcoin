@@ -280,5 +280,14 @@ nix run --inputs-from . nixpkgs#lynx -- --dump $ip:62601
 c curl -s 127.0.0.1:62601 | grep -i "orders found"
 
 #―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+# trustedcoin
+run-tests.sh -s trustedcoin-online container
+
+c systemctl start clightning
+c journalctl -u clightning -f
+# This should show log msgs like
+# plugin-trustedcoin returning block 801409, 0000000000000000000482ddc4…, 1483968 bytes
+
+#―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 # rtl
 # see ./topics/rtl.sh

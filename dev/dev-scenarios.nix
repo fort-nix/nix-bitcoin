@@ -75,4 +75,23 @@ with lib;
     };
     nix-bitcoin.nodeinfo.enable = true;
   };
+
+  trustedcoin-online = {
+    services.clightning = {
+      enable = true;
+      tor.proxy = true;
+      plugins.trustedcoin.enable = true;
+      plugins.trustedcoin.tor.proxy = false;
+    };
+
+    # Don't run clightning on startup.
+    # This breaks the follwing dependency cycle:
+    #   clightning
+    #   -> network (trustedcoin fails and exits clightning without network access)
+    #   -> multi-user.target (NixOS containers only gain network access after multi-user.target has completed)
+    #   -> clightning
+    systemd.services.clightning.wantedBy = mkForce [];
+
+    test.container.enableWAN = true;
+  };
 }
