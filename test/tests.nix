@@ -319,6 +319,8 @@ let
     };
 
     trustedcoin = {
+      imports = [ scenarios.regtestBase ];
+
       services.clightning = {
         enable = true;
         plugins.trustedcoin.enable = true;

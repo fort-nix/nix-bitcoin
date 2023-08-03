@@ -435,6 +435,11 @@ def _():
     machine.wait_for_unit("clightning")
     expect_clightning_log("plugin-trustedcoin[^^]\[0m\s+bitcoind RPC working")
     expect_clightning_log("plugin-trustedcoin[^^]\[0m\s+estimatefees error: none of the esploras returned usable responses")
+    if "regtest" in enabled_tests:
+        num_blocks = test_data["num_blocks"]
+        expect_clightning_log(f"plugin-trustedcoin[^^]\[0m\s+tip: {num_blocks}")
+        expect_clightning_log("plugin-trustedcoin[^^]\[0m\s+returning block")
+
 
 if "netns-isolation" in enabled_tests:
     def ip(name):
