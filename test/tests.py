@@ -429,10 +429,12 @@ def _():
 
 @test("trustedcoin")
 def _():
-    machine.wait_for_unit("clightning")
-    machine.wait_until_succeeds(log_has_string("clightning", "plugin-trustedcoin[^^]\[0m\s+bitcoind RPC working"))
-    machine.wait_until_succeeds(log_has_string("clightning", "plugin-trustedcoin[^^]\[0m\s+estimatefees error: none of the esploras returned usable responses"))
+    def expect_clightning_log(str):
+        machine.wait_until_succeeds(log_has_string("clightning", str))
 
+    machine.wait_for_unit("clightning")
+    expect_clightning_log("plugin-trustedcoin[^^]\[0m\s+bitcoind RPC working")
+    expect_clightning_log("plugin-trustedcoin[^^]\[0m\s+estimatefees error: none of the esploras returned usable responses")
 
 if "netns-isolation" in enabled_tests:
     def ip(name):
