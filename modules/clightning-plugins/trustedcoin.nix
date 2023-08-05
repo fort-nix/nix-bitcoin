@@ -5,24 +5,36 @@ let cfg = config.services.clightning.plugins.trustedcoin; in
 {
   options.services.clightning.plugins.trustedcoin = {
     enable = mkEnableOption "Trustedcoin (clightning plugin)";
+
     package = mkOption {
       type = types.package;
       default = config.nix-bitcoin.pkgs.trustedcoin;
       defaultText = "config.nix-bitcoin.pkgs.trustedcoin";
       description = mdDoc "The package providing trustedcoin binaries.";
     };
+
+    tor.proxy = mkOption {
+      type = types.bool;
+      default = config.services.clightning.tor.proxy;
+      description = mdDoc "Whether to proxy outgoing connections with Tor.";
+    };
   };
 
   config = mkIf cfg.enable {
-    services.clightning.extraConfig = ''
-      plugin=${cfg.package}/bin/trustedcoin
-      disable-plugin=bcli
-    '';
+    services.clightning = {
+      useBcliPlugin = false;
+      extraConfig = ''
+        plugin=${cfg.package}/bin/trustedcoin
+      '';
+      tor.enforce = mkIf (!cfg.tor.proxy) false;
+    };
 
-    # Trustedcoin does not honor the clightning's proxy configuration.
-    # Ref.: https://github.com/nbd-wtf/trustedcoin/pull/19
-    systemd.services.clightning.environment = mkIf (config.services.clightning.proxy != null) {
-      HTTPS_PROXY = "socks5://${config.services.clightning.proxy}";
+    systemd.services.clightning.environment = mkIf (cfg.tor.proxy) {
+      HTTPS_PROXY = let
+        clnProxy = config.services.clightning.proxy;
+        proxy = if clnProxy != null then clnProxy else config.nix-bitcoin.torClientAddressWithPort;
+      in
+        "socks5://${proxy}";
     };
   };
 }

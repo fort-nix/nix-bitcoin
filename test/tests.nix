@@ -39,18 +39,23 @@ let
 
       tests.clightning = cfg.clightning.enable;
       test.data.clightning-replication = cfg.clightning.replication.enable;
+      tests.trustedcoin = cfg.clightning.plugins.trustedcoin.enable;
 
       # TODO-EXTERNAL:
       # When WAN is disabled, DNS bootstrapping slows down service startup by ~15 s.
       services.clightning.extraConfig = mkIf config.test.noConnections "disable-dns";
       test.data.clightning-plugins = let
         plugins = config.services.clightning.plugins;
-        removed = [ "commando" "trustedcoin" ];
-        enabled = builtins.filter (plugin: plugins.${plugin}.enable)
-                                  (subtractLists removed (builtins.attrNames plugins));
+        removed = [
+          # Only defined via `obsolete-options.nix`
+          "commando"
+        ];
+        available = subtractLists removed (builtins.attrNames plugins);
+        enabled = builtins.filter (plugin: plugins.${plugin}.enable) available;
         nbPkgs = config.nix-bitcoin.pkgs;
         pluginPkgs = nbPkgs.clightning-plugins // {
-          clboss.path = "${nbPkgs.clboss}/bin/clboss";
+          clboss.path = "${plugins.clboss.package}/bin/clboss";
+          trustedcoin.path = "${plugins.trustedcoin.package}/bin/trustedcoin";
         };
       in map (plugin: pluginPkgs.${plugin}.path) enabled;
 
@@ -313,9 +318,9 @@ let
       services.bitcoind.prune = 1000;
     };
 
-    # Test the special clightning setup where trustedcoin plugin is used
     trustedcoin = {
-      tests.trustedcoin = true;
+      imports = [ scenarios.regtestBase ];
+
       services.clightning = {
         enable = true;
         plugins.trustedcoin.enable = true;

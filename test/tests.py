@@ -429,14 +429,16 @@ def _():
 
 @test("trustedcoin")
 def _():
-    machine.wait_for_unit("bitcoind")
-    machine.wait_for_unit("clightning")
+    def expect_clightning_log(str):
+        machine.wait_until_succeeds(log_has_string("clightning", str))
 
-    # Let's check the trustedcoin plugin was correctly initialized
-    machine.wait_until_succeeds(log_has_string("clightning", "plugin-trustedcoin[^^]\[0m\s+initialized plugin"))
-    machine.wait_until_succeeds(log_has_string("clightning", "plugin-trustedcoin[^^]\[0m\s+bitcoind RPC working"))
-    machine.wait_until_succeeds(log_has_string("clightning", "plugin-trustedcoin[^^]\[0m\s+tip: 0"))
-    machine.wait_until_succeeds(log_has_string("clightning", "plugin-trustedcoin[^^]\[0m\s+estimatefees error: none of the esploras returned usable responses"))
+    machine.wait_for_unit("clightning")
+    expect_clightning_log("plugin-trustedcoin[^^]\[0m\s+bitcoind RPC working")
+    expect_clightning_log("plugin-trustedcoin[^^]\[0m\s+estimatefees error: none of the esploras returned usable responses")
+    if "regtest" in enabled_tests:
+        num_blocks = test_data["num_blocks"]
+        expect_clightning_log(f"plugin-trustedcoin[^^]\[0m\s+tip: {num_blocks}")
+        expect_clightning_log("plugin-trustedcoin[^^]\[0m\s+returning block")
 
 
 if "netns-isolation" in enabled_tests:
