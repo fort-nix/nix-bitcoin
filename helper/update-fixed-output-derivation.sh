@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 set -euo pipefail
 
 # The file that defines the derivation that should be updated
