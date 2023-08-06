@@ -126,6 +126,26 @@
   # Automatically enables lightning-loop.
   # services.rtl.nodes.lnd.loop = true;
 
+  ### MEMPOOL
+  # Set this to enable mempool, a fully featured Bitcoin visualizer, explorer,
+  # and API service.
+  #
+  # services.mempool.enable = true;
+  #
+  # Possible options for the Electrum backend server:
+  #
+  # - electrs (enabled by default):
+  #   Small database size, slow when querying new addresses.
+  #
+  # - fulcrum:
+  #   Large database size, quickly serves arbitrary address queries.
+  #   Enable with:
+  #     services.mempool.electrumServer = "fulcrum";
+  #
+  # Set this to create an onion service to make the mempool web interface
+  # available via Tor:
+  # nix-bitcoin.onionServices.mempool-frontend.enable = true;
+
   ### ELECTRS
   # Set this to enable electrs, an Electrum server implemented in Rust.
   # services.electrs.enable = true;

@@ -63,3 +63,9 @@ The commands in `shell.nix` allow you to locally run the node in a VM or contain
 
 Flakes make it easy to include `nix-bitcoin` in an existing NixOS config.
 The [flakes example](./flakes/flake.nix) shows how to use `nix-bitcoin` as an input to a system flake.
+
+### Extending nix-bitcoin with Flakes
+
+The [mempool extension flake](https://github.com/fort-nix/nix-bitcoin-mempool) shows how to define new
+pkgs and modules in a Flake.\
+Since mempool is now a core nix-bitcoin module, this Flake just serves as an example.

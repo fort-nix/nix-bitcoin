@@ -90,6 +90,7 @@ NixOS modules ([src](modules/modules.nix))
     clightning [via WireGuard](./docs/services.md#use-zeus-mobile-lightning-wallet-via-wireguard) or
     [Tor](./docs/services.md#use-zeus-mobile-lightning-wallet-via-tor)
   * [Ride The Lightning](https://github.com/Ride-The-Lightning/RTL): web interface for `lnd` and `clightning`
+  * [mempool](https://github.com/mempool/mempool): Bitcoin visualizer, explorer, and API service
   * [electrs](https://github.com/romanz/electrs): Electrum server
   * [fulcrum](https://github.com/cculianu/Fulcrum): Electrum server (see [the module](modules/fulcrum.nix) for a comparison with electrs)
   * [btcpayserver](https://github.com/btcpayserver/btcpayserver)
@@ -102,12 +103,6 @@ NixOS modules ([src](modules/modules.nix))
   * [nodeinfo](modules/nodeinfo.nix): script which prints info about the node's services
   * [backups](modules/backups.nix): duplicity backups of all your node's important files
   * [operator](modules/operator.nix): configures a non-root user who has access to client tools (e.g. `bitcoin-cli`, `lightning-cli`)
-
-### Extension modules
-Extension modules are maintained in separate repositories and have their own review
-and release process.
-
-* [Mempool](https://github.com/fort-nix/nix-bitcoin-mempool): Bitcoin visualizer, explorer and API service
 
 Security
 ---
