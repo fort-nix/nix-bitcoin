@@ -2,6 +2,7 @@
 [
   "echo"
   "getinfo"
+  "getindexinfo"
   "help"
   "ping"
   "uptime"
