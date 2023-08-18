@@ -210,31 +210,21 @@ You can also build Nix from source by following the instructions at https://nixo
 1. Clone this project
 
     ```
-    cd
     git clone https://github.com/fort-nix/nix-bitcoin
     ```
 
-2. Obtain the hash of the latest nix-bitcoin release
+2. Create a new directory for your nix-bitcoin node config and copy initial files from nix-bitcoin
 
     ```
-    cd nix-bitcoin/examples
-    nix-shell
-    ```
-
-    This will download the nix-bitcoin dependencies and might take a while without giving an output.
-    Now in the nix-shell run
-
-    ```
-    fetch-release > nix-bitcoin-release.nix
-    ```
-
-3. Create a new directory for your nix-bitcoin deployment and copy initial files from nix-bitcoin
-
-    ```
-    cd ../../
     mkdir nix-bitcoin-node
     cd nix-bitcoin-node
-    cp -r ../nix-bitcoin/examples/{nix-bitcoin-release.nix,configuration.nix,shell.nix,krops,.gitignore} .
+    cp -r ../nix-bitcoin/examples/{configuration.nix,shell.nix,krops,.gitignore} .
+    ```
+
+3. Obtain the hash of the latest nix-bitcoin release
+
+    ```
+    ../nix-bitcoin/helper/fetch-release > nix-bitcoin-release.nix
     ```
 
 #### Optional: Specify the system of your node
