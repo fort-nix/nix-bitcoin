@@ -37,7 +37,7 @@ with lib;
         extraConfig.Settings.themeColor = "INDIGO";
       };
       # nodes.lnd.enable = false;
-      # services.rtl.nodes.reverseOrder = true;
+      # nodes.reverseOrder = true;
       nightTheme = true;
       extraCurrency = "CHF";
     };
