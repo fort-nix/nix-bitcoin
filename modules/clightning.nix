@@ -170,8 +170,6 @@ in {
       requires = [ "bitcoind.service" ];
       after = [ "bitcoind.service" ];
       preStart = ''
-        # The RPC socket has to be removed otherwise we might have stale sockets
-        rm -f ${cfg.networkDir}/lightning-rpc
         umask u=rw,g=r,o=
         {
           cat ${configFile}
