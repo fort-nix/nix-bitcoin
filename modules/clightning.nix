@@ -165,7 +165,7 @@ in {
     ];
 
     systemd.services.clightning = {
-      path  = [ nbPkgs.bitcoind ];
+      path  = [ bitcoind.package ];
       wantedBy = [ "multi-user.target" ];
       requires = [ "bitcoind.service" ];
       after = [ "bitcoind.service" ];
