@@ -165,13 +165,11 @@ in {
     ];
 
     systemd.services.clightning = {
-      path  = [ nbPkgs.bitcoind ];
+      path  = [ bitcoind.package ];
       wantedBy = [ "multi-user.target" ];
       requires = [ "bitcoind.service" ];
       after = [ "bitcoind.service" ];
       preStart = ''
-        # The RPC socket has to be removed otherwise we might have stale sockets
-        rm -f ${cfg.networkDir}/lightning-rpc
         umask u=rw,g=r,o=
         {
           cat ${configFile}
