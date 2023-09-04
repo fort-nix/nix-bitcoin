@@ -80,6 +80,7 @@ let
         rpcauth = pkgs.writers.writeBash "rpcauth" ''
           exec ${pkgs.python3}/bin/python ${rpcauthSrc} "$@"
         '';
+      # Writes secrets to PWD
       in pkgs.writers.writeBash "generate-secrets" ''
         set -euo pipefail
 

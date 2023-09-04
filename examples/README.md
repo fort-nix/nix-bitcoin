@@ -23,9 +23,9 @@ cd nix-bitcoin/examples/
 nix-shell
 ```
 
-The following example scripts set up a nix-bitcoin node according to [`configuration.nix`](configuration.nix) and then
+The following example scripts set up a nix-bitcoin node according to [`./configuration.nix`](configuration.nix) and then
 shut down immediately. They leave no traces (outside of `/nix/store`) on the host system.\
-By default, [`configuration.nix`](configuration.nix) enables `bitcoind` and `clightning`.
+By default, [`./configuration.nix`](configuration.nix) enables `bitcoind` and `clightning`.
 
 - [`./deploy-container.sh`](deploy-container.sh) creates a [NixOS container](https://github.com/erikarvstedt/extra-container).\
   This is the fastest way to set up a node.\

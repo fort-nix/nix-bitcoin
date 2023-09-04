@@ -230,6 +230,12 @@
   # Set this to enable the JoinMarket order book watcher.
   # services.joinmarket-ob-watcher.enable = true;
 
+  ### Nodeinfo
+  # Set this to add command `nodeinfo` to the system environment.
+  # It shows info about running services like onion addresses and local addresses.
+  # It is enabled by default when importing `secure-node.nix`.
+  # nix-bitcoin.nodeinfo.enable = true;
+
   ### Backups
   # Set this to enable nix-bitcoin's own backup service. By default, it
   # uses duplicity to incrementally back up all important files in /var/lib to
