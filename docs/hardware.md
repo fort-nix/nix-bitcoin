@@ -2,7 +2,7 @@ Hardware requirements
 ---
 * RAM: 2GB. ECC memory is better. Additionally, it's recommended to use DDR4 memory with
   targeted row refresh (TRR) enabled (https://rambleed.com/).
-* Disk space: 500 GB (400GB for Bitcoin blockchain + some room) for an unpruned
+* Disk space: 1 TB for an unpruned
   instance of Bitcoin Core.
   * This can be significantly lowered by enabling pruning.
     Note: Pruning is not supported by `electrs` and `fulcrum`.
