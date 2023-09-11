@@ -100,6 +100,13 @@ in {
       Lightning) module or the clightning-rest module in combination with the
       Zeus mobile wallet.
     '')
+  ]
+  ++
+  # 0.0.98
+  [
+    (mkRemovedOptionModule [ "services" "clightning" "plugins" "clboss" "acknowledgeDeprecation" ] ''
+      `clboss` is maintained again and has been un-deprecated.
+    '')
   ];
   config = {
     # Migrate old clightning-rest datadir from nix-bitcoin versions < 0.0.70
