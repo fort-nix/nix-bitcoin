@@ -6,6 +6,7 @@
 , cryptography
 , coincurve
 , base58
+, pysocks
 }:
 
 buildPythonPackage rec {
@@ -22,13 +23,10 @@ buildPythonPackage rec {
     cryptography
     coincurve
     base58
+    pysocks
   ];
 
   checkInputs = [ pytestCheckHook ];
 
   postUnpack = "sourceRoot=$sourceRoot/contrib/pyln-proto";
-
-  postPatch = ''
-    sed -i 's|cryptography = "^36.0.1"|cryptography = "^40.0"|' pyproject.toml
-  '';
 }

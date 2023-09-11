@@ -117,7 +117,7 @@ makeTestVM {
 
       with subtest("local replication"):
           client.wait_for_unit("clightning.service")
-          client.succeed("runuser -u clightning -- ls /var/backup/clightning/lightningd.sqlite3")
+          client.wait_until_succeeds("runuser -u clightning -- ls /var/backup/clightning/lightningd.sqlite3")
           # No other user should be able to read the backup directory
           client.fail("runuser -u bitcoin -- ls /var/backup/clightning")
 
@@ -126,7 +126,7 @@ makeTestVM {
       switch_to_system("replicationLocalEncrypted")
       with subtest("local replication encrypted"):
           replica_db = "/var/cache/clightning-replication/plaintext/lightningd.sqlite3"
-          client.succeed(f"runuser -u clightning -- ls {replica_db}")
+          client.wait_until_succeeds(f"runuser -u clightning -- ls {replica_db}")
           # No other user should be able to read the unencrypted files
           client.fail(f"runuser -u bitcoin -- ls {replica_db}")
           # A gocryptfs has been created
@@ -136,7 +136,7 @@ makeTestVM {
       server.wait_for_unit("sshd.service")
       with subtest("remote replication"):
           replica_db = "/var/cache/clightning-replication/sshfs/lightningd.sqlite3"
-          client.succeed(f"runuser -u clightning -- ls {replica_db}")
+          client.wait_until_succeeds(f"runuser -u clightning -- ls {replica_db}")
           # No other user should be able to read the unencrypted files
           client.fail(f"runuser -u bitcoin -- ls {replica_db}")
           # A clighting db exists on the server
@@ -145,7 +145,7 @@ makeTestVM {
       switch_to_system("replicationRemoteEncrypted")
       with subtest("remote replication encrypted"):
           replica_db = "/var/cache/clightning-replication/plaintext/lightningd.sqlite3"
-          client.succeed(f"runuser -u clightning -- ls {replica_db}")
+          client.wait_until_succeeds(f"runuser -u clightning -- ls {replica_db}")
           # No other user should be able to read the unencrypted files
           client.fail(f"runuser -u bitcoin -- ls {replica_db}")
           # A gocryptfs has been created on the server
