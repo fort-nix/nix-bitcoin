@@ -1,4 +1,4 @@
-# Copied from nixpkgs 4a22f6f0a4b4354778f786425babce9a56f6b5d8
+# Copied from nixpkgs e2dda8236301ee1bf7db6a3cba2fbee8bfcf4bed
 { lib
 , stdenv
 , fetchurl
@@ -33,14 +33,14 @@ let
 in
 stdenv.mkDerivation rec {
   pname = if withGui then "bitcoin" else "bitcoind";
-  version = "24.1";
+  version = "25.0";
 
   src = fetchurl {
     urls = [
       "https://bitcoincore.org/bin/bitcoin-core-${version}/bitcoin-${version}.tar.gz"
     ];
     # hash retrieved from signed SHA256SUMS
-    sha256 = "8a0a3db3b2d9cc024e897113f70a3a65d8de831c129eb6d1e26ffa65e7bfaf4e";
+    sha256 = "5df67cf42ca3b9a0c38cdafec5bbb517da5b58d251f32c8d2a47511f9be1ebc2";
   };
 
   nativeBuildInputs =
