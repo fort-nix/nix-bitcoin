@@ -22,6 +22,7 @@
 , nixosTests
 , withGui
 , withWallet ? true
+, installShellFiles
 }:
 
 let
@@ -44,7 +45,7 @@ stdenv.mkDerivation rec {
   };
 
   nativeBuildInputs =
-    [ autoreconfHook pkg-config ]
+    [ autoreconfHook pkg-config installShellFiles ]
     ++ lib.optionals stdenv.isLinux [ util-linux ]
     ++ lib.optionals stdenv.isDarwin [ hexdump ]
     ++ lib.optionals (stdenv.isDarwin && stdenv.isAarch64) [ autoSignDarwinBinariesHook ]
@@ -54,10 +55,15 @@ stdenv.mkDerivation rec {
     ++ lib.optionals withWallet [ db48 sqlite ]
     ++ lib.optionals withGui [ qrencode qtbase qttools ];
 
-  postInstall = lib.optionalString withGui ''
+  postInstall = if withGui then
+  ''
     install -Dm644 ${desktop} $out/share/applications/bitcoin-qt.desktop
     substituteInPlace $out/share/applications/bitcoin-qt.desktop --replace "Icon=bitcoin128" "Icon=bitcoin"
     install -Dm644 share/pixmaps/bitcoin256.png $out/share/pixmaps/bitcoin.png
+  ''
+  else
+  ''
+    installShellCompletion --bash /build/bitcoin-${version}/contrib/completions/bash/bitcoin-cli.bash-completion
   '';
 
   configureFlags = [
