@@ -272,6 +272,15 @@
   services.openssh = {
     enable = true;
     settings.PasswordAuthentication = false;
+    #
+    # FIXME: Decide if you want to enable SSHGuard
+    # services.sshguard.enable = true;
+    # services.sshguard.attack_threshold = 25;
+    # services.sshguard.detection_time = 3600;
+    #
+    # FIXME: Add an Allow List so you don't lock yourself out if you decide to 
+    # enable the service, this is optional but may lead to lockout. 
+    # services.sshguard.whitelist = ["192.168.1.1"];
   };
   users.users.root = {
     openssh.authorizedKeys.keys = [
