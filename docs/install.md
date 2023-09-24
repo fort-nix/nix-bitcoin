@@ -20,9 +20,9 @@ This is borrowed from the [NixOS manual](https://nixos.org/nixos/manual/index.ht
 1. Obtain latest [NixOS](https://nixos.org/nixos/download.html). For example:
 
     ```
-    wget https://releases.nixos.org/nixos/20.09/nixos-20.09.2405.e065200fc90/nixos-minimal-20.09.2405.e065200fc90-i686-linux.iso
+    wget https://releases.nixos.org/nixos/20.09/nixos-20.09.2405.e065200fc90/nixos-minimal-20.09.2405.e065200fc90-x86_64-linux.iso
     sha256sum nixos-minimal-20.09.2405.e065200fc90-x86_64-linux.iso
-    # output: 5fc182e27a71a297b041b5c287558b21bdabde7068d4fc049752dad3025df867
+    # output: 592624c32e41f5f6755450adeb2f15ad32c1532d2ffa009d5551cc8893695c9f
     ```
     Alternatively you can build NixOS from source by following the instructions at https://nixos.org/nixos/manual/index.html#sec-building-cd.
 
