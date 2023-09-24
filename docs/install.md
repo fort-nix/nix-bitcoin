@@ -20,16 +20,16 @@ This is borrowed from the [NixOS manual](https://nixos.org/nixos/manual/index.ht
 1. Obtain latest [NixOS](https://nixos.org/nixos/download.html). For example:
 
     ```
-    wget https://releases.nixos.org/nixos/20.09/nixos-20.09.2405.e065200fc90/nixos-minimal-20.09.2405.e065200fc90-x86_64-linux.iso
-    sha256sum nixos-minimal-20.09.2405.e065200fc90-x86_64-linux.iso
-    # output: 592624c32e41f5f6755450adeb2f15ad32c1532d2ffa009d5551cc8893695c9f
+    wget https://releases.nixos.org/nixos/23.05/nixos-23.05.3701.e9b4b56e5a20/nixos-minimal-23.05.3701.e9b4b56e5a20-x86_64-linux.iso
+    sha256sum nixos-minimal-23.05.3701.e9b4b56e5a20-x86_64-linux.iso
+    # output: 0bbc1919654a6b3212f7bdc9faf9e7a89ba5607e626e8d651a1cbb79ce2831c2
     ```
     Alternatively you can build NixOS from source by following the instructions at https://nixos.org/nixos/manual/index.html#sec-building-cd.
 
 2. Write NixOS iso to install media (USB/CD). For example:
 
     ```
-    cp nixos-minimal-20.09.2405.e065200fc90-x86_64-linux.iso /dev/sdX
+    cp nixos-minimal-23.05.3701.e9b4b56e5a20-x86_64-linux.iso /dev/sdX
     ```
 
     Replace /dev/sdX with the correct device name. You can find this using `sudo fdisk -l`
