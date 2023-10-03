@@ -189,7 +189,7 @@ in {
       wantedBy = [ "multi-user.target" ];
       requires = optional cfg.nodes.clightning.enable "clightning-rest.service" ++
                  optional cfg.nodes.lnd.enable "lnd.service";
-      after = requires;
+      after = requires ++ [ "nix-bitcoin-secrets.target" ];
       environment.RTL_CONFIG_PATH = cfg.dataDir;
       environment.DB_DIRECTORY_PATH = cfg.dataDir;
       serviceConfig = nbLib.defaultHardening // {

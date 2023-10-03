@@ -168,7 +168,7 @@ in {
       path  = [ bitcoind.package ];
       wantedBy = [ "multi-user.target" ];
       requires = [ "bitcoind.service" ];
-      after = [ "bitcoind.service" ];
+      after = [ "bitcoind.service" "nix-bitcoin-secrets.target" ];
       preStart = ''
         umask u=rw,g=r,o=
         {

@@ -229,7 +229,7 @@ in {
     systemd.services.lnd = {
       wantedBy = [ "multi-user.target" ];
       requires = [ "bitcoind.service" ];
-      after = [ "bitcoind.service" ];
+      after = [ "bitcoind.service" "nix-bitcoin-secrets.target" ];
       preStart = ''
         install -m600 ${configFile} '${cfg.dataDir}/lnd.conf'
         {

@@ -126,7 +126,7 @@ in {
     systemd.services.lightning-loop = {
       wantedBy = [ "multi-user.target" ];
       requires = [ "lnd.service" ];
-      after = [ "lnd.service" ];
+      after = [ "lnd.service" "nix-bitcoin-secrets.target" ];
       serviceConfig = nbLib.defaultHardening // {
         ExecStart = "${cfg.package}/bin/loopd --configfile=${configFile}";
         User = lnd.user;

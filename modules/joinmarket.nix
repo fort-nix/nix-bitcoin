@@ -303,7 +303,7 @@ in {
     systemd.services.joinmarket = {
       wantedBy = [ "multi-user.target" ];
       requires = [ "bitcoind.service" ];
-      after = [ "bitcoind.service" ];
+      after = [ "bitcoind.service" "nix-bitcoin-secrets.target" ];
       preStart = ''
         {
           cat ${configFile}
@@ -387,7 +387,7 @@ in {
     systemd.services.joinmarket-yieldgenerator = {
       wantedBy = [ "joinmarket.service" ];
       requires = [ "joinmarket.service" ];
-      after = [ "joinmarket.service" ];
+      after = [ "joinmarket.service" "nix-bitcoin-secrets.target" ];
       script = ''
         tr -d "\n" <"${secretsDir}/jm-wallet-password" \
         | ${nbPkgs.joinmarket}/bin/jm-yg-privacyenhanced --datadir='${cfg.dataDir}' \

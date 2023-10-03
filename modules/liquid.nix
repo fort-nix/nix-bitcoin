@@ -256,7 +256,7 @@ in {
 
     systemd.services.liquidd = {
       requires = [ "bitcoind.service" ];
-      after = [ "bitcoind.service" ];
+      after = [ "bitcoind.service" "nix-bitcoin-secrets.target" ];
       wantedBy = [ "multi-user.target" ];
       preStart = ''
         install -m 640 ${configFile} '${cfg.dataDir}/elements.conf'

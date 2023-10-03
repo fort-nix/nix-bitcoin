@@ -68,7 +68,7 @@ in {
     systemd.services.electrs = {
       wantedBy = [ "multi-user.target" ];
       requires = [ "bitcoind.service" ];
-      after = [ "bitcoind.service" ];
+      after = [ "bitcoind.service" "nix-bitcoin-secrets.target" ];
       preStart = ''
         echo "auth = \"${bitcoind.rpc.users.public.name}:$(cat ${secretsDir}/bitcoin-rpcpassword-public)\"" \
           > electrs.toml
