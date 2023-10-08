@@ -170,6 +170,11 @@ in {
       requires = [ "bitcoind.service" ];
       after = [ "bitcoind.service" ];
       preStart = ''
+        # Remove an existing socket so that `postStart` can detect when when a new
+        # socket has been created and clightning is ready to accept RPC connections.
+        # This will no longer be needed when clightning supports systemd startup notifications.
+        rm -f ${cfg.networkDir}/lightning-rpc
+
         umask u=rw,g=r,o=
         {
           cat ${configFile}
