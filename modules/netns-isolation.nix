@@ -341,7 +341,7 @@ in {
 
     services.teos = {
       address = netns.teos.address;
-      api.address = netns.teos.address;
+      rpc.address = netns.teos.address;
       internalApi.address = netns.teos.address;
     };
 
