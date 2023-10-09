@@ -59,7 +59,7 @@ let
         pluginPkgs = nbPkgs.clightning-plugins // {
           clboss.path = "${plugins.clboss.package}/bin/clboss";
           trustedcoin.path = "${plugins.trustedcoin.package}/bin/trustedcoin";
-          teos-watchtower-plugin.path = "${nbPkgs.teos-watchtower-plugin}/bin/watchtower-client";
+          teos-watchtower.path = "${nbPkgs.teos-watchtower-plugin}/bin/watchtower-client";
         };
       in map (plugin: pluginPkgs.${plugin}.path) enabled;
 
@@ -171,7 +171,7 @@ let
           sendpay-success = tcpEndpoint;
           sendpay-failure = tcpEndpoint;
         };
-        teos-watchtower-plugin.enable = true;
+        teos-watchtower.enable = true;
       };
     })
     ];
