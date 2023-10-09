@@ -236,11 +236,13 @@
   # services.charge-lnd.policies = ''
   # '';
 
-  ### TEoS - The Eye of Satoshi
-  # Set this to enable teos, a Lightning watchtower compliant with BOLT13,
-  # written in Rust.
-  #
+  ### THE EYE OF SATOSHI
+  # Set this to enable TEoS, a Lightning watchtower compliant with BOLT13.
   # services.teos.enable = true;
+  #
+  # Set this to create an onion service by which teos can accept incoming
+  # connections via Tor.
+  # nix-bitcoin.onionServices.teos.public = true;
 
   ### JOINMARKET
   # Set this to enable the JoinMarket service, including its command-line scripts.
