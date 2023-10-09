@@ -242,7 +242,7 @@
   #
   # Set this to create an onion service by which teos can accept incoming
   # connections via Tor.
-  # nix-bitcoin.onionServices.teos.public = true;
+  # nix-bitcoin.onionServices.teos.enable = true;
 
   ### JOINMARKET
   # Set this to enable the JoinMarket service, including its command-line scripts.
