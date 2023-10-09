@@ -129,7 +129,7 @@ in {
         api_port = ${toString cfg.api.port}
 
         ${
-          if onionServices.teos.enable then ''
+          if (onionServices.teos.enable or false) then ''
             tor_control_port = 9051
             onion_hidden_service_port = ${toString cfg.onionPort}
             tor_support = true
