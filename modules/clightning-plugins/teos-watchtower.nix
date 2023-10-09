@@ -14,7 +14,7 @@ let cfg = config.services.clightning.plugins.teos-watchtower; in
     };
     port = mkOption {
       type = types.port;
-      default = config.services.teos.api.port;
+      default = config.services.teos.port;
       description = mdDoc "Tower API port.";
     };
     dataDir = mkOption {
