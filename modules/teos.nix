@@ -14,6 +14,8 @@ let
       default = 8814;
       description = mdDoc "Port to listen for RPC connections.";
     };
+
+    # This port gets automatically loaded by nix-bitcoin.onionServices.
     externalPort = mkOption {
       type = types.port;
       default = 2121;
@@ -24,6 +26,7 @@ let
       default = config.services.teos.api.port;
       description = "Port to listen for onion API connections.";
     };
+
     api = {
       address = mkOption {
         type = types.str;
@@ -88,6 +91,8 @@ let
   cfg = config.services.teos;
   nbLib = config.nix-bitcoin.lib;
   nbPkgs = config.nix-bitcoin.pkgs;
+
+  onionServices = config.nix-bitcoin.onionServices;
   secretsDir = config.nix-bitcoin.secretsDir;
   bitcoind = config.services.bitcoind;
 in {
@@ -111,7 +116,10 @@ in {
       after = [ "bitcoind.service" ];
 
       # Example configuration file:
-      # Ref.: https://github.com/talaia-labs/rust-teos/blob/master/teos/src/conf_template.toml
+      # Ref.:
+      # - https://github.com/talaia-labs/rust-teos/blob/master/teos/src/conf_template.toml
+      #
+      # FIXME: Get the control port for `onion_hidden_service_port` dynamically.
       preStart = ''
         install -m 640 /dev/null teos.toml
 
@@ -120,9 +128,15 @@ in {
         api_bind = "${cfg.api.address}"
         api_port = ${toString cfg.api.port}
 
-        tor_control_port = 9051
-        onion_hidden_service_port = ${toString cfg.onionPort}
-        tor_support = false
+        ${
+          if onionServices.teos.enable then ''
+            tor_control_port = 9051
+            onion_hidden_service_port = ${toString cfg.onionPort}
+            tor_support = true
+          '' else ''
+            tor_support = false
+          ''
+        }
 
         # RPC
         rpc_bind = "${cfg.address}"
