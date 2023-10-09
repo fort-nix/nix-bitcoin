@@ -1,11 +1,11 @@
 { config, lib, ... }:
 
 with lib;
-let cfg = config.services.clightning.plugins.teos-watchtower-plugin; in
+let cfg = config.services.clightning.plugins.teos-watchtower; in
 {
   # Ref.: https://github.com/talaia-labs/rust-teos/tree/master/watchtower-plugin
-  options.services.clightning.plugins.teos-watchtower-plugin = {
-    enable = mkEnableOption "TEoS - watchtower (clightning plugin)";
+  options.services.clightning.plugins.teos-watchtower = {
+    enable = mkEnableOption "TEoS watchtower (clightning plugin)";
     package = mkOption {
       type = types.package;
       default = config.nix-bitcoin.pkgs.teos-watchtower-plugin;
@@ -20,7 +20,7 @@ let cfg = config.services.clightning.plugins.teos-watchtower-plugin; in
     dataDir = mkOption {
       type = types.path;
       default = "${config.services.clightning.dataDir}/.watchtower";
-      description = mdDoc "The data directory for teos-watchtower-plugin.";
+      description = mdDoc "The data directory for teos-watchtower.";
     };
     maxRetryTime = mkOption {
       type = types.int;
@@ -42,7 +42,7 @@ let cfg = config.services.clightning.plugins.teos-watchtower-plugin; in
       watchtower-auto-retry-delay=${toString cfg.autoRetryDelay}
     '';
 
-    # The data directory of teos-watchtower-plugin must be specified and must
+    # The data directory of teos-watchtower must be specified and must
     # be writeable. Otherwise the plugin fails to load.
     systemd.services.clightning.environment = {
       TOWERS_DATA_DIR = cfg.dataDir;
