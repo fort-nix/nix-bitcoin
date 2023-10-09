@@ -174,7 +174,7 @@ in {
     in rec {
       wantedBy = [ "multi-user.target" ];
       requires = [ "bitcoind.service" "postgresql.service" ] ++ optional cfg.btcpayserver.lbtc "liquidd.service";
-      after = requires;
+      after = requires ++ [ "nix-bitcoin-secrets.target" ];
       preStart = ''
         install -m 600 ${configFile} '${cfg.nbxplorer.dataDir}/settings.config'
         {

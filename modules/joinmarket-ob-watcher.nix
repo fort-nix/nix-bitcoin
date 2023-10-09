@@ -75,7 +75,7 @@ in {
     systemd.services.joinmarket-ob-watcher = rec {
       wantedBy = [ "multi-user.target" ];
       requires = [ "tor.service" "bitcoind.service" ];
-      after = requires;
+      after = requires ++ [ "nix-bitcoin-secrets.target" ];
       # The service writes to HOME/.config/matplotlib
       environment.HOME = cfg.dataDir;
       preStart = ''

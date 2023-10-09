@@ -112,7 +112,7 @@ in {
     systemd.services.fulcrum = {
       wantedBy = [ "multi-user.target" ];
       requires = [ "bitcoind.service" ];
-      after = [ "bitcoind.service" ];
+      after = [ "bitcoind.service" "nix-bitcoin-secrets.target" ];
       preStart = ''
         {
           cat ${configFile}

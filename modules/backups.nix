@@ -106,7 +106,7 @@ in {
 
       systemd.services.duplicity = {
         wants = postgresqlBackupServices;
-        after = postgresqlBackupServices;
+        after = postgresqlBackupServices ++ [ "nix-bitcoin-secrets.target" ];
       };
 
       services.postgresqlBackup = {
