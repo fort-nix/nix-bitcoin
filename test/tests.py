@@ -143,6 +143,16 @@ def _():
     tower_id = succeed("runuser -u operator -- teos-cli gettowerinfo | jq -jMr '.tower_id'")
     machine.succeed(log_has_string("teos", f"tower_id: {tower_id}"))
 
+    # teos-watchtower CLN plugin
+    machine.wait_until_succeeds(log_has_string("clightning", "plugin-watchtower-client: Starting retry manager"))
+    machine.wait_until_succeeds(f"runuser -u operator -- lightning-cli registertower '{tower_id}'")
+    machine.wait_until_succeeds(log_has_string("clightning", f"plugin-watchtower-client: Registering in the Eye of Satoshi \(tower_id={tower_id}\)"))
+    machine.wait_until_succeeds(log_has_string("clightning", "plugin-watchtower-client: Registration succeeded."))
+
+    cln_tower_info = succeed("runuser -u operator -- lightning-cli listtowers")
+    assert_matches(f"echo '{cln_tower_info}' | jq -jMr 'keys[0]'", tower_id)
+    assert_matches(f"echo '{cln_tower_info}' | jq -jMr '.[].status'", "reachable")
+
 # Impure: Stops electrs
 # Stop electrs from spamming the test log with 'waiting for 0 blocks to download' messages
 @test("stop-electrs")
