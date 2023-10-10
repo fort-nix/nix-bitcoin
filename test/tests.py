@@ -129,12 +129,19 @@ def _():
         # download will stop at genesis block. That's why the teos fails.
         machine.wait_until_succeeds(log_has_string("teos", "Last known block: 000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f"))
         assert_failure("teos")
-    else:
-        assert_running("teos")
-        wait_for_open_port(ip("teos"), 8814)
-        wait_for_open_port(ip("teos"), 9814)
-        wait_for_open_port(ip("teos"), 50051)
-        machine.wait_until_succeeds(log_has_string("teos", "Tower ready"))
+        machine.fail("runuser -u operator -- teos-cli gettowerinfo")
+        return
+
+    # teos daemon
+    assert_running("teos")
+    wait_for_open_port(ip("teos"), 8814)
+    wait_for_open_port(ip("teos"), 9814)
+    wait_for_open_port(ip("teos"), 50051)
+    machine.wait_until_succeeds(log_has_string("teos", "Tower ready"))
+
+    # teos-cli
+    tower_id = succeed("runuser -u operator -- teos-cli gettowerinfo | jq -jMr '.tower_id'")
+    machine.succeed(log_has_string("teos", f"tower_id: {tower_id}"))
 
 # Impure: Stops electrs
 # Stop electrs from spamming the test log with 'waiting for 0 blocks to download' messages
@@ -436,6 +443,7 @@ def _():
     if enabled("teos"):
         machine.wait_until_succeeds(log_has_string("teos", f"Last known block: {latest_block_hash}"))
         machine.wait_until_succeeds(log_has_string("teos", "Tower ready"))
+        succeed("runuser -u operator -- teos-cli gettowerinfo")
 
     if enabled("clightning"):
         machine.wait_until_succeeds(
