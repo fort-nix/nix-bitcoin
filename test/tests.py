@@ -145,7 +145,10 @@ def _():
 
     # teos-watchtower CLN plugin
     machine.wait_until_succeeds(log_has_string("clightning", "plugin-watchtower-client: Starting retry manager"))
-    machine.wait_until_succeeds(f"runuser -u operator -- lightning-cli registertower '{tower_id}'")
+
+    # Note: The registertower arguments must be provided as URI instead of separated arguments due to a bug:
+    # Ref.: https://github.com/talaia-labs/rust-teos/issues/244
+    machine.wait_until_succeeds(f"runuser -u operator -- lightning-cli registertower '{tower_id}@{ip('teos')}:9814'")
     machine.wait_until_succeeds(log_has_string("clightning", f"plugin-watchtower-client: Registering in the Eye of Satoshi \(tower_id={tower_id}\)"))
     machine.wait_until_succeeds(log_has_string("clightning", "plugin-watchtower-client: Registration succeeded."))
 
