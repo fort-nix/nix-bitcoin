@@ -230,7 +230,8 @@ in {
       };
       clightning = {
         id = 13;
-        connections = [ "bitcoind" ];
+        connections = [ "bitcoind" ]
+                      ++ optional config.services.teos.enable "teos";
       };
       lnd = {
         id = 14;
