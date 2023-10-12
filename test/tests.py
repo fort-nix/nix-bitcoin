@@ -440,7 +440,7 @@ def _():
         )
 
     def get_latest_block_hash():
-        return succeed("bitcoin-cli getblockchaininfo | jq --join-output '.bestblockhash'")
+        return succeed("bitcoin-cli getblockchaininfo | jq -jr '.bestblockhash'")
 
     num_blocks = test_data["num_blocks"]
     latest_block_hash = get_latest_block_hash()

@@ -76,14 +76,6 @@ let
       description = mdDoc "Binary to connect with the teos instance.";
     };
     tor.enforce = nbLib.tor.enforce;
-
-    ###  Internal options
-    # This port gets loaded by onionServices
-    #onionPort = mkOption {
-    #  type = types.nullOr types.port;
-    #  internal = true;
-    #  default = if (config.nix-bitcoin.onionServices.teos.enable or false) then config.services.teos.port else null;
-    #};
   };
 
   cfg = config.services.teos;
