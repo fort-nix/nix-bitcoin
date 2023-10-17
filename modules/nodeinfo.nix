@@ -145,7 +145,11 @@ in {
       clightning-rest = mkInfo "";
       electrs = mkInfo "";
       fulcrum = mkInfo "";
-      teos = mkInfo "";
+      teos = mkInfo ''
+        info["tower_id"] = shell("teos-cli gettowerinfo | jq -r '.tower_id'")
+        if 'onion_address' in info:
+            info["id"] = f"{info['tower_id']}@{info['onion_address']}"
+      '';
       btcpayserver = mkInfo "";
       liquidd = mkInfo "";
       joinmarket-ob-watcher = mkInfo "";
