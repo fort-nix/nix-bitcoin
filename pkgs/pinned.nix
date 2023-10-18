@@ -6,15 +6,16 @@ pkgs: pkgsUnstable:
     electrs
     elementsd
     extra-container
-    fulcrum
     lndconnect;
 
   inherit (pkgsUnstable)
     btcpayserver
     clightning
+    fulcrum
     hwi
     lightning-loop
     lightning-pool
+    lnd
     nbxplorer;
 
   inherit pkgs pkgsUnstable;
