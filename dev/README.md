@@ -101,4 +101,5 @@ It's easiest to use an existing service as a template:
 - [flake.nix](../flake.nix): update `nixpkgs.url`
 - [cirrus.yml](../.cirrus.yml): update toplevel container -> image attribute
 - [examples/configuration.nix](../examples/configuration.nix): update `system.stateVersion`
+- [examples/flakes/flake.nix](../examples/flakes/flake.nix): update `inputs.nix-bitcoin.url`
 - Treewide: check if any `TODO-EXTERNAL` comments can be resolved

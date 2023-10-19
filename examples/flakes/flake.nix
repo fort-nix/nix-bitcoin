@@ -12,9 +12,12 @@
   # You can also use a version branch to track a specific NixOS release
   # inputs.nix-bitcoin.url = "github:fort-nix/nix-bitcoin/nixos-23.05";
 
-  outputs = { self, nix-bitcoin }: {
+  inputs.nixpkgs.follows = "nix-bitcoin/nixpkgs";
+  inputs.nixpkgs-unstable.follows = "nix-bitcoin/nixpkgs-unstable";
 
-    nixosConfigurations.mynode = nix-bitcoin.inputs.nixpkgs.lib.nixosSystem {
+  outputs = { self, nixpkgs, nix-bitcoin, ... }: {
+
+    nixosConfigurations.mynode = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [
         nix-bitcoin.nixosModules.default
