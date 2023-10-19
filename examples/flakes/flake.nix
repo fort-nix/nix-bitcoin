@@ -1,3 +1,10 @@
+# This is a system configuration template that uses nix-bitcoin.
+#
+# You can adapt this to an existing system flake by copying the parts
+# relevant to nix-bitcoin.
+#
+# Make sure to check and edit all lines marked by 'FIXME:'
+
 {
   description = "A basic nix-bitcoin node";
 
@@ -23,21 +30,25 @@
           # The secrets are stored in /etc/nix-bitcoin-secrets
           nix-bitcoin.generateSecrets = true;
 
-          # Enable services.
+          # Enable some services.
           # See ../configuration.nix for all available features.
           services.bitcoind.enable = true;
+          services.clightning.enable = true;
 
           # When using nix-bitcoin as part of a larger NixOS configuration, set the following to enable
           # interactive access to nix-bitcoin features (like bitcoin-cli) for your system's main user
           nix-bitcoin.operator = {
             enable = true;
-            name = "main"; # Set this to your system's main user
+            # FIXME: Set this to your system's main user
+            name = "main";
           };
 
-          # The system's main unprivileged user. This setting is usually part of your
-          # existing NixOS configuration.
+          # The system's main unprivileged user.
+          # In an existing NixOS configuration, this setting is usually already defined.
           users.users.main = {
             isNormalUser = true;
+            # FIXME: This is unsafe. Use `hashedpassword` or `passwordFile` instead in a real
+            # deployment: https://search.nixos.org/options?show=users.users.%3Cname%3E.hashedPassword
             password = "a";
           };
 
