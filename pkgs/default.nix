@@ -10,19 +10,6 @@ in
   }
 }:
 let self = {
-  # TODO-EXTERNAL:
-  # Remove bitcoin and bitcoind 24.1 packages and replace with 25.0 from nixpkgs
-  # when https://github.com/bitcoin/bitcoin/issues/27722 has been resolved
-  bitcoin  = pkgs.libsForQt5.callPackage ./bitcoin {
-    stdenv = if pkgs.stdenv.isDarwin then pkgs.darwin.apple_sdk_11_0.stdenv else pkgs.stdenv;
-    withGui = true;
-    inherit (pkgs.darwin) autoSignDarwinBinariesHook;
-  };
-
-  bitcoind = pkgs.callPackage ./bitcoin {
-    withGui = false;
-    inherit (pkgs.darwin) autoSignDarwinBinariesHook;
-  };
   clightning-rest = pkgs.callPackage ./clightning-rest { inherit (self) fetchNodeModules; };
   clboss = pkgs.callPackage ./clboss { };
   clightning-plugins = pkgs.recurseIntoAttrs (import ./clightning-plugins pkgs self.nbPython3Packages);
