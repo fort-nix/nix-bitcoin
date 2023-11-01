@@ -183,8 +183,14 @@ in {
 
     # Listen on all addresses, including `serverAddress`.
     # This is safe because the listen ports are secured by the firewall.
-    services.lnd.restAddress = mkIf lndconnect "0.0.0.0";
-    # clightning-rest always listens on "0.0.0.0"
+    services.lnd = mkIf lndconnect {
+      restAddress = "0.0.0.0";
+      tor.enforce = false;
+    };
+    services.clightning-rest = mkIf lndconnect-clightning {
+      # clightning-rest always listens on "0.0.0.0"
+      tor.enforce = false;
+    };
 
     nix-bitcoin.secrets = {
       wg-server-private-key = {};
