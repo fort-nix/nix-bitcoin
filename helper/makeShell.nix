@@ -85,7 +85,7 @@ pkgs.stdenv.mkDerivation {
         config="${cfgDir}/configuration.nix"
       fi
       genSecrets=$(nix-build --no-out-link -I nixos-config="$config" \
-                   '<nixpkgs/nixos>' -A config.nix-bitcoin.generateSecretsScript)
+                   '<nixpkgs/nixos>' -A config.nix-bitcoin.generateSecretsScriptImpl)
       mkdir -p "${cfgDir}/secrets"
       (cd "${cfgDir}/secrets"; $genSecrets)
     )}

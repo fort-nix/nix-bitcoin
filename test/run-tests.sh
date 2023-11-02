@@ -308,6 +308,7 @@ examples() {
       runExample deploy-container-minimal.sh
       runExample deploy-qemu-vm.sh
       runExample deploy-krops.sh
+      runExample flakes-agenix/deploy.sh
     '
     (cd "$scriptDir/../examples" && nix-shell --run "$script")
 }
