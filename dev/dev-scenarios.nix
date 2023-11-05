@@ -94,4 +94,15 @@ with lib;
 
     test.container.enableWAN = true;
   };
+
+  mempool-regtest = {
+    imports = [
+      scenarios.regtestBase
+    ];
+    services.mempool = {
+      enable = true;
+      frontend.address = "0.0.0.0";
+    };
+    nix-bitcoin.nodeinfo.enable = true;
+  };
 }

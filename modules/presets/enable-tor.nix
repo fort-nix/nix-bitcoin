@@ -27,6 +27,7 @@ in {
     # disable Tor enforcement until btcpayserver can fetch rates over Tor
     # btcpayserver = defaultEnableTorProxy;
     lightning-pool = defaultEnableTorProxy;
+    mempool = defaultEnableTorProxy;
 
     # These services don't make outgoing connections
     # (or use Tor by default in case of joinmarket)
