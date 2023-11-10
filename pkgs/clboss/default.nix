@@ -1,4 +1,4 @@
-{ lib, stdenv, fetchFromGitHub, autoconf-archive, autoreconfHook, pkgconfig, curl, libev, sqlite }:
+{ lib, stdenv, fetchFromGitHub, autoconf-archive, autoreconfHook, pkg-config, curl, libev, sqlite }:
 
 let
   curlWithGnuTLS = curl.override { gnutlsSupport = true; opensslSupport = false; };
@@ -17,7 +17,7 @@ stdenv.mkDerivation rec {
   nativeBuildInputs = [
     autoreconfHook
     autoconf-archive
-    pkgconfig
+    pkg-config
     libev
     curlWithGnuTLS
     sqlite
