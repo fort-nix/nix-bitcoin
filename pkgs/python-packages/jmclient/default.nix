@@ -1,4 +1,4 @@
-{ version, src, lib, buildPythonPackage, fetchurl, future, configparser, joinmarketbase, joinmarketdaemon, mnemonic, argon2_cffi, bencoderpyx, pyaes, joinmarketbitcoin, klein, pyjwt, autobahn }:
+{ version, src, lib, buildPythonPackage, fetchurl, future, configparser, joinmarketbase, joinmarketdaemon, mnemonic, argon2_cffi, bencoderpyx, joinmarketbitcoin, klein, pyjwt, autobahn, werkzeug }:
 
 buildPythonPackage rec {
   pname = "joinmarketclient";
@@ -8,7 +8,7 @@ buildPythonPackage rec {
 
   checkInputs = [ joinmarketbitcoin joinmarketdaemon ];
 
-  propagatedBuildInputs = [ future configparser joinmarketbase mnemonic argon2_cffi bencoderpyx pyaes klein pyjwt autobahn ];
+  propagatedBuildInputs = [ future configparser joinmarketbase mnemonic argon2_cffi bencoderpyx klein pyjwt autobahn werkzeug ];
 
   patchPhase = ''
     substituteInPlace setup.py \

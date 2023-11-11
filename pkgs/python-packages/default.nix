@@ -71,17 +71,8 @@ rec {
 
       ## Specific versions of packages that already exist in nixpkgs
 
-      # cryptography 3.3.2, required by joinmarketdaemon
-      cryptography = callPackage ./specific-versions/cryptography {
-        openssl = openssl_1_1;
-        cryptography_vectors = callPackage ./specific-versions/cryptography/vectors.nix {};
-      };
-
       # autobahn 20.12.3, required by joinmarketclient
       autobahn = callPackage ./specific-versions/autobahn.nix {};
-
-      # pyopenssl 21.0.0, required by joinmarketdaemon
-      pyopenssl = callPackage ./specific-versions/pyopenssl.nix {};
 
       # txtorcon 22.0.0, required by joinmarketdaemon
       txtorcon = callPackage ./specific-versions/txtorcon.nix {};
