@@ -55,6 +55,7 @@ rec {
       };
       runes = callPackage ./runes {};
       sha256 = callPackage ./sha256 {};
+      watchdog = callPackage ./watchdog {};
     };
 
   # Joinmarket requires a custom package set because it uses older versions of Python pkgs
