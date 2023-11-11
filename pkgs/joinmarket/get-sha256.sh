@@ -11,6 +11,8 @@ git clone --depth 1 --branch "${newVersion}" -c advice.detachedHead=false https:
 export GNUPGHOME=$tmpdir
 echo "Fetching Adam Gibson's key"
 gpg --keyserver hkps://keyserver.ubuntu.com --recv-keys 2B6FC204D9BF332D062B461A141001A1AF77F20B 2> /dev/null
+echo "Fetch Kristaps Kaupe's key"
+gpg --keyserver hkps://keyserver.ubuntu.com --recv-keys 70A1D47DD44F59DF8B22244333E472FE870C7E5D 2> /dev/null
 echo
 echo "Verifying commit"
 git -C "$repo" verify-commit HEAD

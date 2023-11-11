@@ -1,4 +1,4 @@
-{ version, src, lib, buildPythonPackage, fetchurl, future, twisted, service-identity, chromalog, txtorcon }:
+{ version, src, lib, buildPythonPackage, fetchurl, future, twisted, service-identity, chromalog, txtorcon, pyaes }:
 
 buildPythonPackage rec {
   pname = "joinmarketbase";
@@ -11,7 +11,7 @@ buildPythonPackage rec {
     sed -i 's|service-identity==21.1.0|service-identity==23.1.0|' setup.py
   '';
 
-  propagatedBuildInputs = [ future twisted service-identity chromalog txtorcon ];
+  propagatedBuildInputs = [ future twisted service-identity chromalog txtorcon pyaes ];
 
   meta = with lib; {
     homepage = "https://github.com/Joinmarket-Org/joinmarket-clientserver";
