@@ -275,6 +275,11 @@ nixosSearch() {
     "$scriptDir/nixos-search/flake-info-sandboxed.sh"
 }
 
+persistentContainerExample() {
+    . "$scriptDir/lib/extra-container-check-version.sh"
+    nix run "$scriptDir/../examples/container" --override-input nix-bitcoin "$scriptDir/.." -- --run c systemctl status electrs
+}
+
 # A basic subset of tests to keep the total runtime within
 # manageable bounds.
 # These are also run on the CI server.
@@ -310,6 +315,10 @@ examples() {
       runExample deploy-krops.sh
     '
     (cd "$scriptDir/../examples" && nix-shell --run "$script")
+
+    echo
+    echo "Running example 'Persistent container'"
+    persistentContainerExample
 }
 
 shellcheck() {
