@@ -451,8 +451,7 @@ def _():
     expect_clightning_log("plugin-trustedcoin[^^]\[0m\s+estimatefees error: none of the esploras returned usable responses")
     if "regtest" in enabled_tests:
         num_blocks = test_data["num_blocks"]
-        expect_clightning_log(f"plugin-trustedcoin[^^]\[0m\s+tip: {num_blocks}")
-        expect_clightning_log("plugin-trustedcoin[^^]\[0m\s+returning block")
+        expect_clightning_log(f"plugin-trustedcoin[^^]\[0m\s+returning block {num_blocks}")
 
 
 if "netns-isolation" in enabled_tests:
