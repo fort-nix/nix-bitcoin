@@ -19,7 +19,7 @@ let cfg = config.services.clightning.plugins.teos-watchtower; in
     };
     dataDir = mkOption {
       type = types.path;
-      default = "${config.services.clightning.dataDir}/.watchtower";
+      default = "${config.services.clightning.dataDir}/watchtower";
       description = mdDoc "The data directory for teos-watchtower.";
     };
     maxRetryTime = mkOption {
