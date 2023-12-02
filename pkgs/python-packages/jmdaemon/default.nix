@@ -8,15 +8,21 @@ buildPythonPackage rec {
 
   propagatedBuildInputs = [ txtorcon cryptography pyopenssl libnacl joinmarketbase ];
 
-  # libnacl 1.8.0 is not on github
-  # cryptography 41.0.3 already in ../specific-versions
   patchPhase = ''
     substituteInPlace setup.py \
-      --replace "'libnacl==1.8.0'" "'libnacl==1.7.2'"
+      --replace "'txtorcon==22.0.0'" "'txtorcon==23.5.0'"
+    substituteInPlace setup.py \
+      --replace "'libnacl==1.8.0'" "'libnacl==2.1.0'"
     substituteInPlace setup.py \
       --replace "'cryptography==41.0.2" "'cryptography==41.0.3"
   '';
 
+  # The unit tests can't be run in a Nix build environment
+  doCheck = false;
+
+  pythonImportsCheck = [
+    "jmdaemon"
+  ];
   meta = with lib; {
     description = "Client library for Bitcoin coinjoins";
     homepage = "https://github.com/Joinmarket-Org/joinmarket-clientserver";

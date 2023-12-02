@@ -6,12 +6,19 @@ buildPythonPackage rec {
 
   postUnpack = "sourceRoot=$sourceRoot/jmbase";
 
+  propagatedBuildInputs = [ future twisted service-identity chromalog txtorcon pyaes ];
+
   patchPhase = ''
-    sed -i 's|twisted==22.4.0|twisted==22.10.0|' setup.py
+    sed -i 's|twisted==22.4.0|twisted==23.8.0|' setup.py
     sed -i 's|service-identity==21.1.0|service-identity==23.1.0|' setup.py
   '';
 
-  propagatedBuildInputs = [ future twisted service-identity chromalog txtorcon pyaes ];
+  # Has no tests
+  doCheck = false;
+
+  pythonImportsCheck = [
+    "jmbase"
+  ];
 
   meta = with lib; {
     homepage = "https://github.com/Joinmarket-Org/joinmarket-clientserver";

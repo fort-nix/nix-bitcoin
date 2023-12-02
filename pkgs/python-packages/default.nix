@@ -14,6 +14,7 @@ rec {
   pyPkgsOverrides = self: super: let
     inherit (self) callPackage;
     clightningPkg = pkg: callPackage pkg { inherit (nbPkgs.pinned) clightning; };
+    joinmarketPkg = pkg: callPackage pkg { inherit (nbPkgs.joinmarket) version src; };
   in
     {
       txzmq = callPackage ./txzmq {};
@@ -35,14 +36,7 @@ rec {
       };
       runes = callPackage ./runes {};
       sha256 = callPackage ./sha256 {};
-    };
 
-  # Joinmarket requires a custom package set because it uses older versions of Python pkgs
-  pyPkgsOverridesJoinmarket = self: super: let
-    inherit (self) callPackage;
-    joinmarketPkg = pkg: callPackage pkg { inherit (nbPkgs.joinmarket) version src; };
-  in
-    (pyPkgsOverrides self super) // {
       joinmarketbase = joinmarketPkg ./jmbase;
       joinmarketclient = joinmarketPkg ./jmclient;
       joinmarketbitcoin = joinmarketPkg ./jmbitcoin;
@@ -52,16 +46,11 @@ rec {
 
       # autobahn 20.12.3, required by joinmarketclient
       autobahn = callPackage ./specific-versions/autobahn.nix {};
-
-      # txtorcon 22.0.0, required by joinmarketdaemon
-      txtorcon = callPackage ./specific-versions/txtorcon.nix {};
     };
 
   nbPython3Packages = (python3.override {
     packageOverrides = pyPkgsOverrides;
   }).pkgs;
 
-  nbPython3PackagesJoinmarket = (python3.override {
-    packageOverrides = pyPkgsOverridesJoinmarket;
-  }).pkgs;
+  nbPython3PackagesJoinmarket = nbPython3Packages;
 }

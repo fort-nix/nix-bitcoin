@@ -10,6 +10,10 @@ buildPythonPackage rec {
 
   checkInputs = [ joinmarketbase ];
 
+  nativeCheckInputs = [
+    pytestCheckHook
+  ];
+
   meta = with lib; {
     homepage = "https://github.com/Joinmarket-Org/joinmarket-clientserver";
     maintainers = with maintainers; [ nixbitcoin ];

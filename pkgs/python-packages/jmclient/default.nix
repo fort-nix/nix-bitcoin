@@ -1,4 +1,23 @@
-{ version, src, lib, buildPythonPackage, fetchurl, future, configparser, joinmarketbase, joinmarketdaemon, mnemonic, argon2_cffi, bencoderpyx, joinmarketbitcoin, klein, pyjwt, autobahn, werkzeug }:
+{
+  pipBuildHook
+, version
+, src
+, lib
+, buildPythonPackage
+, argon2_cffi
+, autobahn
+, bencoderpyx
+, configparser
+, fetchurl
+, future
+, joinmarketbase
+, joinmarketbitcoin
+, joinmarketdaemon
+, klein
+, mnemonic
+, pyjwt
+, werkzeug
+}:
 
 buildPythonPackage rec {
   pname = "joinmarketclient";
@@ -6,16 +25,38 @@ buildPythonPackage rec {
 
   postUnpack = "sourceRoot=$sourceRoot/jmclient";
 
-  checkInputs = [ joinmarketbitcoin joinmarketdaemon ];
-
-  propagatedBuildInputs = [ future configparser joinmarketbase mnemonic argon2_cffi bencoderpyx klein pyjwt autobahn werkzeug ];
+  propagatedBuildInputs = [
+    argon2_cffi
+    autobahn
+    bencoderpyx
+    configparser
+    future
+    joinmarketbase
+    joinmarketbitcoin
+    joinmarketdaemon
+    klein
+    mnemonic
+    pyjwt
+    werkzeug
+  ];
 
   patchPhase = ''
     substituteInPlace setup.py \
       --replace "'klein==20.6.0'" "'klein>=20.6.0'"
     substituteInPlace setup.py \
-      --replace "'pyjwt==2.4.0'" "'pyjwt==2.6.0'"
+      --replace "'argon2_cffi==21.3.0'" "'argon2_cffi==23.1.0'"
+    substituteInPlace setup.py \
+      --replace "'pyjwt==2.4.0'" "'pyjwt==2.8.0'"
+    substituteInPlace setup.py \
+      --replace "'werkzeug==2.2.3'" "'werkzeug==2.3.7'"
   '';
+
+  # The unit tests can't be run in a Nix build environment
+  doCheck = false;
+
+  pythonImportsCheck = [
+    "jmclient"
+  ];
 
   meta = with lib; {
     description = "Client library for Bitcoin coinjoins";
