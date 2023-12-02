@@ -23,26 +23,6 @@ rec {
       pyln-bolt7 = clightningPkg ./pyln-bolt7;
       pylightning = clightningPkg ./pylightning;
 
-      # cryptography 41, required by pyln-proto
-      cryptography = callPackage ./specific-versions/cryptography_41 {
-        Security = super.darwin.apple_sdk.frameworks.Security;
-      };
-
-      # The versions of these packages that ship with nixos-23.05 are incompatible
-      # with cryptography 41
-      pyopenssl = callPackage ./specific-versions/pyopenssl_23_2 {};
-      service-identity = callPackage ./specific-versions/service-identity_23_1 {};
-
-      # The twisted package in nixos-23.05 runs a test that fails with
-      # service-identity 23.1. This package is backported from nixos-unstable
-      # and disables the test. (see
-      # https://github.com/twisted/twisted/issues/11877,
-      # https://github.com/NixOS/nixpkgs/commit/1ee622b10fcafcf2343960e3ffae0169afc59804)
-      twisted = callPackage ./specific-versions/twisted_22_10 {};
-
-      # Used by cryptography 41, backported from nixpkgs-unstable
-      setuptoolsRustBuildHook = callPackage ./setuptools-rust-hook {};
-
       # bitstring 3.1.9, required by pyln-proto
       bitstring = callPackage ./specific-versions/bitstring.nix {};
 

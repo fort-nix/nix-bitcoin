@@ -1,8 +1,9 @@
 { lib
 , buildPythonPackage
 , fetchPypi
-, twisted
 , pyzmq
+, setuptools
+, twisted
 }:
 
 buildPythonPackage rec {
@@ -16,8 +17,9 @@ buildPythonPackage rec {
   };
 
   propagatedBuildInputs = [
-    twisted
     pyzmq
+    setuptools
+    twisted
   ];
 
   meta = with lib; {
