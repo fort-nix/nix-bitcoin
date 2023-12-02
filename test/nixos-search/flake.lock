@@ -18,11 +18,11 @@
     "nixos-org-configurations": {
       "flake": false,
       "locked": {
-        "lastModified": 1688381214,
-        "narHash": "sha256-0g/rZUiXIk1H6D6Oa1VcK41REeIRGSdVDPAFVqZKf1E=",
+        "lastModified": 1701287284,
+        "narHash": "sha256-tu30FJa7e8eZCZg0CmQuAGimFQ/RVPooTFl59SiELxY=",
         "owner": "NixOS",
         "repo": "nixos-org-configurations",
-        "rev": "083c137b7ae19a1a8d6822fea7ca30aeeda72ac8",
+        "rev": "33bc481f102213c0c4e41cd356e7bcf1aea28107",
         "type": "github"
       },
       "original": {
@@ -39,11 +39,11 @@
         "npmlock2nix": "npmlock2nix"
       },
       "locked": {
-        "lastModified": 1693902773,
-        "narHash": "sha256-JFsiBAixnnkkPBl1RvnSvRKUiOZxwF6lXnm70LUIW4w=",
+        "lastModified": 1701444930,
+        "narHash": "sha256-in+L+Qv85ClccGe4u21czoUZABpS/HC89iPDAcBp9qE=",
         "owner": "nixos",
         "repo": "nixos-search",
-        "rev": "00f61f52aefe60b18059ec13201d9c94bdc04045",
+        "rev": "744ec58e082a3fcdd741b2c9b0654a0f7fda4603",
         "type": "github"
       },
       "original": {
