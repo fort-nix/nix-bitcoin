@@ -9,7 +9,7 @@ cd "$TMPDIR"
 echo "Fetching latest release"
 git clone https://github.com/simplexum/python-bitcointx 2> /dev/null
 cd python-bitcointx
-latest=python-bitcointx-v1.1.3
+latest=python-bitcointx-v1.1.4
 echo "Latest release is ${latest}"
 
 # GPG verification
@@ -19,6 +19,8 @@ gpg --keyserver hkps://keyserver.ubuntu.com --recv-keys B17A35BBA187395784E2A6B3
 echo "Verifying latest release"
 git verify-commit "$latest"
 
+git checkout -q "tags/$latest"
+rm -rf .git
+
 echo "tag: $latest"
-# The prefix option is necessary because GitHub prefixes the archive contents in this format
-echo "sha256: $(git archive --format tar.gz --prefix=python-bitcointx-"$latest"/ "$latest" | sha256sum | cut -d\  -f1)"
+nix hash path .

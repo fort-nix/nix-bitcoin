@@ -14,6 +14,11 @@ buildPythonPackageWithDepsCheck rec {
     pytestCheckHook
   ];
 
+  patchPhase = ''
+    substituteInPlace setup.py \
+      --replace "'python-bitcointx==1.1.3'" "'python-bitcointx==1.1.4'"
+  '';
+
   meta = with lib; {
     homepage = "https://github.com/Joinmarket-Org/joinmarket-clientserver";
     maintainers = with maintainers; [ nixbitcoin ];
