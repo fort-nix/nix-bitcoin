@@ -1,6 +1,6 @@
-{ version, src, lib, buildPythonPackage, fetchurl, python-bitcointx, joinmarketbase }:
+{ version, src, lib, buildPythonPackageWithDepsCheck, fetchurl, python-bitcointx, joinmarketbase, pytestCheckHook }:
 
-buildPythonPackage rec {
+buildPythonPackageWithDepsCheck rec {
   pname = "joinmarketbitcoin";
   inherit version src;
 

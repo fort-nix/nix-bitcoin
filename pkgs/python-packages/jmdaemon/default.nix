@@ -1,6 +1,6 @@
-{ version, src, lib, buildPythonPackage, fetchurl, txtorcon, cryptography, pyopenssl, libnacl, joinmarketbase }:
+{ version, src, lib, buildPythonPackageWithDepsCheck, fetchurl, txtorcon, cryptography, pyopenssl, libnacl, joinmarketbase }:
 
-buildPythonPackage rec {
+buildPythonPackageWithDepsCheck rec {
   pname = "joinmarketdaemon";
   inherit version src;
 
@@ -23,6 +23,7 @@ buildPythonPackage rec {
   pythonImportsCheck = [
     "jmdaemon"
   ];
+
   meta = with lib; {
     description = "Client library for Bitcoin coinjoins";
     homepage = "https://github.com/Joinmarket-Org/joinmarket-clientserver";

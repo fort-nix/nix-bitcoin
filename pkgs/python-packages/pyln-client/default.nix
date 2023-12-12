@@ -1,6 +1,6 @@
-{ buildPythonPackage, poetry-core, pytestCheckHook, clightning, pyln-bolt7, pyln-proto }:
+{ buildPythonPackageWithDepsCheck, poetry-core, pytestCheckHook, clightning, pyln-bolt7, pyln-proto }:
 
-buildPythonPackage rec {
+buildPythonPackageWithDepsCheck rec {
   pname = "pyln-client";
   version = clightning.version;
   format = "pyproject";

@@ -1,6 +1,6 @@
-{ buildPythonPackage, poetry-core, pytestCheckHook, clightning, pyln-proto }:
+{ buildPythonPackageWithDepsCheck, poetry-core, pytestCheckHook, clightning, pyln-proto }:
 
-buildPythonPackage rec {
+buildPythonPackageWithDepsCheck rec {
   pname = "pyln-bolt7";
   # The version is defined here:
   # https://github.com/ElementsProject/lightning/blob/master/contrib/pyln-spec/bolt7/pyproject.toml

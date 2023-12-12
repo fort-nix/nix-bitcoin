@@ -1,6 +1,6 @@
-{ version, src, lib, buildPythonPackage, fetchurl, future, twisted, service-identity, chromalog, txtorcon, pyaes }:
+{ version, src, lib, buildPythonPackageWithDepsCheck, fetchurl, future, twisted, service-identity, chromalog, txtorcon, pyaes }:
 
-buildPythonPackage rec {
+buildPythonPackageWithDepsCheck rec {
   pname = "joinmarketbase";
   inherit version src;
 

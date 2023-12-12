@@ -1,6 +1,6 @@
-{ lib, buildPythonPackage, fetchurl, secp256k1, openssl }:
+{ lib, buildPythonPackageWithDepsCheck, fetchurl, secp256k1, openssl }:
 
-buildPythonPackage rec {
+buildPythonPackageWithDepsCheck rec {
   pname = "python-bitcointx";
   version = "1.1.3";
 

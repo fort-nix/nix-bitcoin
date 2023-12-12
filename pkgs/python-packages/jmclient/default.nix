@@ -3,7 +3,7 @@
 , version
 , src
 , lib
-, buildPythonPackage
+, buildPythonPackageWithDepsCheck
 , argon2_cffi
 , autobahn
 , bencoderpyx
@@ -19,7 +19,7 @@
 , werkzeug
 }:
 
-buildPythonPackage rec {
+buildPythonPackageWithDepsCheck rec {
   pname = "joinmarketclient";
   inherit version src;
 
