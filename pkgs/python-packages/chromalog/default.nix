@@ -1,5 +1,5 @@
-{ lib, buildPythonPackage, fetchFromGitHub, colorama, future, six }:
-buildPythonPackage rec {
+{ lib, buildPythonPackageWithDepsCheck, fetchFromGitHub, colorama, future, six }:
+buildPythonPackageWithDepsCheck rec {
   pname = "chromalog";
   version = "1.0.5";
 

@@ -1,12 +1,12 @@
 { stdenv, lib, fetchFromGitHub, python3, nbPython3PackagesJoinmarket }:
 
 let
-  version = "0.9.9";
+  version = "0.9.10";
   src = fetchFromGitHub {
     owner = "joinmarket-org";
     repo = "joinmarket-clientserver";
     rev = "v${version}";
-    sha256 = "sha256-dkeSgAhjNl8o/ATKYAlQxxCrur5fLdXuMDXSnWaxYP8=";
+    hash = "sha256-uNweI7VKC16CFn8MNOAvadcSnTjK/Fznfy4qctM5PR8=";
   };
 
   runtimePackages = with nbPython3PackagesJoinmarket; [

@@ -1,7 +1,7 @@
 # This is a modified version of
 # https://github.com/NixOS/nixpkgs/pull/128749
 
-{ lib, stdenvNoCC, makeWrapper, nodejs }:
+{ lib, stdenvNoCC, makeWrapper, nodejs, cacert }:
 
 { src
 , hash ? ""
@@ -24,6 +24,9 @@ stdenvNoCC.mkDerivation ({
   impureEnvVars = lib.fetchers.proxyImpureEnvVars;
 
   phases = "unpackPhase patchPhase buildPhase installPhase";
+
+  # npm doesn't support var `SSL_CERT_FILE`.
+  NODE_EXTRA_CA_CERTS = "${cacert}/etc/ssl/certs/ca-bundle.crt";
 
   buildPhase = ''
     runHook preBuild

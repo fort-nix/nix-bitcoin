@@ -1,12 +1,14 @@
-{ lib, buildPythonPackage, fetchurl, secp256k1, openssl }:
+{ lib, buildPythonPackageWithDepsCheck, fetchFromGitHub, secp256k1 }:
 
-buildPythonPackage rec {
+buildPythonPackageWithDepsCheck rec {
   pname = "python-bitcointx";
-  version = "1.1.3";
+  version = "1.1.4";
 
-  src = fetchurl {
-    url = "https://github.com/Simplexum/${pname}/archive/${pname}-v${version}.tar.gz";
-    sha256 = "f0f487c29619df0e94a04f6deb3dc950ff9954c072017bd3eda90f73c24f0953";
+  src = fetchFromGitHub {
+    owner = "Simplexum";
+    repo = "python-bitcointx";
+    rev = "python-bitcointx-v${version}";
+    hash = "sha256-y8/cyLQr3GbpYqCg8LKTfyL0OX7eIo5AxjdFTWTqHmk=";
   };
 
   patchPhase = ''
@@ -14,8 +16,6 @@ buildPythonPackage rec {
       substituteInPlace "bitcointx/$path" \
         --replace "ctypes.util.find_library('secp256k1')" "'${secp256k1}/lib/libsecp256k1.so'"
     done
-    substituteInPlace bitcointx/core/key.py \
-      --replace "ctypes.util.find_library('ssl')" "'${openssl.out}/lib/libssl.so'"
   '';
 
   meta = with lib; {

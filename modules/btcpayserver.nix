@@ -138,16 +138,16 @@ in {
       enable = true;
       ensureDatabases = [ "btcpaydb" "nbxplorer" ];
       ensureUsers = [
-        {
-          name = cfg.btcpayserver.user;
-          ensurePermissions."DATABASE btcpaydb" = "ALL PRIVILEGES";
-        }
-        {
-          name = cfg.nbxplorer.user;
-          ensurePermissions."DATABASE nbxplorer" = "ALL PRIVILEGES";
-        }
+        { name = cfg.btcpayserver.user; }
+        { name = cfg.nbxplorer.user; }
       ];
     };
+    systemd.services.postgresql.postStart = lib.mkAfter ''
+      $PSQL -tAc '
+        ALTER DATABASE "btcpaydb" OWNER TO "${cfg.btcpayserver.user}";
+        ALTER DATABASE "nbxplorer" OWNER TO "${cfg.nbxplorer.user}";
+      '
+    '';
 
     systemd.tmpfiles.rules = [
       "d '${cfg.nbxplorer.dataDir}' 0770 ${cfg.nbxplorer.user} ${cfg.nbxplorer.group} - -"

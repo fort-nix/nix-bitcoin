@@ -212,6 +212,7 @@ let
     segwit = true
     native = true
     merge_algorithm = default
+    gaplimit = 6
     tx_fees = 3
     tx_fees_factor = 0.2
     absurd_fee_per_kb = 350000
@@ -252,7 +253,6 @@ let
     txfee_contribution_factor = ${toString yg.txfee_contribution_factor}
     minsize = ${toString yg.minsize}
     size_factor = ${toString yg.size_factor}
-    gaplimit = 6
 
     [SNICKER]
     enabled = false

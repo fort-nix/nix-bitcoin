@@ -1,6 +1,6 @@
-{ sha256, lib, buildPythonPackage, fetchFromGitHub }:
+{ sha256, lib, buildPythonPackageWithDepsCheck, fetchFromGitHub }:
 
-buildPythonPackage {
+buildPythonPackageWithDepsCheck {
   pname = "runes";
   version = "0.4.0";
 

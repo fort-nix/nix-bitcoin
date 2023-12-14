@@ -1,14 +1,23 @@
-{ version, src, lib, buildPythonPackage, fetchurl, pyaes, python-bitcointx, joinmarketbase }:
+{ version, src, lib, buildPythonPackageWithDepsCheck, fetchurl, python-bitcointx, joinmarketbase, pytestCheckHook }:
 
-buildPythonPackage rec {
+buildPythonPackageWithDepsCheck rec {
   pname = "joinmarketbitcoin";
   inherit version src;
 
   postUnpack = "sourceRoot=$sourceRoot/jmbitcoin";
 
-  propagatedBuildInputs = [ pyaes python-bitcointx ];
+  propagatedBuildInputs = [ python-bitcointx ];
 
   checkInputs = [ joinmarketbase ];
+
+  nativeCheckInputs = [
+    pytestCheckHook
+  ];
+
+  patchPhase = ''
+    substituteInPlace setup.py \
+      --replace "'python-bitcointx==1.1.3'" "'python-bitcointx==1.1.4'"
+  '';
 
   meta = with lib; {
     homepage = "https://github.com/Joinmarket-Org/joinmarket-clientserver";

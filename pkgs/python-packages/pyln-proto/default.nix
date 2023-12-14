@@ -1,4 +1,4 @@
-{ buildPythonPackage
+{ buildPythonPackageWithDepsCheck
 , clightning
 , poetry-core
 , pytestCheckHook
@@ -9,7 +9,7 @@
 , pysocks
 }:
 
-buildPythonPackage rec {
+buildPythonPackageWithDepsCheck rec {
   pname = "pyln-proto";
   version = clightning.version;
   format = "pyproject";

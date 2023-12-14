@@ -1,6 +1,6 @@
-{ buildPythonPackage, clightning, pyln-client }:
+{ buildPythonPackageWithDepsCheck, clightning, pyln-client }:
 
-buildPythonPackage rec {
+buildPythonPackageWithDepsCheck rec {
   pname = "pylightning";
   version = "0.10.1"; # defined in ${src}/contrib/pyln-client/pyln/client/__init__.py
 
