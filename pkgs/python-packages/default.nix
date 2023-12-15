@@ -19,7 +19,7 @@ rec {
       # Packages only used by joinmarket
       bencoderpyx = callPackage ./bencoderpyx {};
       chromalog = callPackage ./chromalog {};
-      python-bitcointx = callPackage ./python-bitcointx { inherit (nbPkgs) secp256k1; };
+      python-bitcointx = callPackage ./python-bitcointx { inherit (self.pkgs) secp256k1; };
       runes = callPackage ./runes {};
       sha256 = callPackage ./sha256 {};
 
