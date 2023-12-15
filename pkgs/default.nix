@@ -21,8 +21,6 @@ let self = {
     mempool-backend
     mempool-frontend
     mempool-nginx-conf;
-  # The secp256k1 version used by joinmarket
-  secp256k1 = pkgs.callPackage ./secp256k1 { };
   trustedcoin = pkgs.callPackage ./trustedcoin { };
 
   pyPkgs = import ./python-packages self pkgs.python3;
