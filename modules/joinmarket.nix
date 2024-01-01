@@ -282,6 +282,11 @@ in {
     services.bitcoind = {
       enable = true;
       disablewallet = false;
+      # TODO-EXTERNAL: remove when joinmarket supports descriptor wallets
+      # (https://github.com/JoinMarket-Org/joinmarket-clientserver/issues/1571).
+      extraConfig = ''
+        deprecatedrpc=create_bdb
+      '';
     };
 
     # Joinmarket is Tor-only

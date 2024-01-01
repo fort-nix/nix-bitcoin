@@ -13,9 +13,6 @@ rec {
       pyln-bolt7 = clightningPkg ./pyln-bolt7;
       pylightning = clightningPkg ./pylightning;
 
-      # bitstring 3.1.9, required by pyln-proto
-      bitstring = callPackage ./specific-versions/bitstring.nix {};
-
       # Packages only used by joinmarket
       bencoderpyx = callPackage ./bencoderpyx {};
       chromalog = callPackage ./chromalog {};
