@@ -12,7 +12,8 @@ let
       };
       port = mkOption {
         type = types.port;
-        default = 8333;
+        default = if !cfg.regtest then 8333 else 18444;
+        defaultText = "if !cfg.regtest then 8333 else 18444";
         description = mdDoc "Port to listen for peer connections.";
       };
       onionPort = mkOption {
@@ -84,7 +85,8 @@ let
         };
         port = mkOption {
           type = types.port;
-          default = 8332;
+          default = if !cfg.regtest then 8332 else 18443;
+          defaultText = "if !cfg.regtest then 8332 else 18443";
           description = mdDoc "Port to listen for JSON-RPC connections.";
         };
         threads = mkOption {
