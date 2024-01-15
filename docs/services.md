@@ -236,7 +236,7 @@ There are two ways to establish a secure, direct connection:
    ```
 3. Deploy your configuration.
 
-4. If your node is behind an external firewall or NAT, add the following port forwarding
+4. If your node is behind an external firewall or NAT (e.g. a router), add the following port forwarding
    rule to the external device:
    - Port: 51820 (the default value of option `networking.wireguard.interfaces.wg-nb.listenPort`)
    - Protocol: UDP
