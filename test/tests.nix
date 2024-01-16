@@ -1,6 +1,6 @@
 # Integration tests, can be run without internet access.
 
-lib:
+lib: nixBitcoinModule:
 let
   # Included in all scenarios
   baseConfig = { config, pkgs, ... }: with lib; let
@@ -9,7 +9,7 @@ let
   in {
     imports = [
       ./lib/test-lib.nix
-      ../modules/modules.nix
+      nixBitcoinModule
       {
         # Features required by the Python test suite
         nix-bitcoin.secretsDir = "/secrets";

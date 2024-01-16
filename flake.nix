@@ -26,7 +26,7 @@
         # "armv7l-linux"
       ];
 
-      test = import ./test/tests.nix nixpkgs.lib;
+      test = import ./test/tests.nix nixpkgs.lib self.nixosModules.default;
     in {
       lib = {
         mkNbPkgs = {
