@@ -264,6 +264,17 @@ let
         scenarios.secureNode
         ../modules/presets/hardened-extended.nix
       ];
+
+      # Patch clightning to increase the plugin init timeout.
+      # Otherwise this test can fail on slower hardware.
+      nix-bitcoin.pkgOverlays = super: self: {
+        clightning = super.clightning.overrideAttrs (old: {
+          postPatch = old.postPatch + ''
+            substituteInPlace lightningd/plugin.c \
+              --replace "#define PLUGIN_MANIFEST_TIMEOUT 60" "#define PLUGIN_MANIFEST_TIMEOUT 200"
+          '';
+        });
+      };
     };
 
     netnsBase = { config, pkgs, ... }: {
