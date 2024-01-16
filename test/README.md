@@ -1,4 +1,4 @@
-The [`run-tests.sh`](./run-tests.sh) command is most convenient and versatile way to run tests.\
+The [`run-tests.sh`](./run-tests.sh) command is the most convenient and versatile way to run tests.\
 It leave no traces (outside of `/nix/store`) on the host system.
 
 `run-tests.sh` requires Nix >= 2.10.
@@ -30,7 +30,7 @@ Test scenarios are defined in [tests.nix](./tests.nix) and [tests.py](tests.py).
 ```
 #### Debugging
 ```bash
-# Start a shell is inside a test VM. No tests are executed.
+# Start a shell inside a test VM. No tests are executed.
 ./run-tests.sh -s bitcoind vm
 systemctl status bitcoind
 

@@ -18,7 +18,7 @@ let
             default = config.public;
             description = mdDoc ''
               Create an onion service for the given service.
-              The service must define options {option}'address' and {option}'onionPort' (or `port`).
+              The service must define options {option}`address` and {option}`onionPort` (or `port`).
             '';
           };
           public = mkOption {

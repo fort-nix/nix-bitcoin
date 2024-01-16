@@ -20,6 +20,13 @@ with lib;
       pkgOverlays = mkOption {
         internal = true;
         type = with types; functionTo attrs;
+        example = lib.literalExpression ''
+          super: self: {
+            bitcoind = super.bitcoind.overrideAttrs (old: {
+              # dostuff
+            });
+          }
+        '';
       };
 
       lib = mkOption {
