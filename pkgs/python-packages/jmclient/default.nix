@@ -48,7 +48,7 @@ buildPythonPackageWithDepsCheck rec {
     substituteInPlace setup.py \
       --replace "'pyjwt==2.4.0'" "'pyjwt==2.8.0'"
     substituteInPlace setup.py \
-      --replace "'werkzeug==2.2.3'" "'werkzeug==2.3.7'"
+      --replace "'werkzeug==2.2.3'" "'werkzeug==2.3.8'"
   '';
 
   # The unit tests can't be run in a Nix build environment
