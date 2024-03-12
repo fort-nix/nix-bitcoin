@@ -18,6 +18,7 @@ in {
     ./prometheus.nix
     ./summary.nix
     ./trustedcoin.nix
+    ./teos-watchtower.nix
     ./zmq.nix
   ];
 
