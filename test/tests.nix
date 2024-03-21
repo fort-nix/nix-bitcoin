@@ -55,6 +55,7 @@ let
         nbPkgs = config.nix-bitcoin.pkgs;
         pluginPkgs = nbPkgs.clightning-plugins // {
           clboss.path = "${plugins.clboss.package}/bin/clboss";
+          clnrest.path = "${plugins.clnrest.package}/bin/clnrest";
           trustedcoin.path = "${plugins.trustedcoin.package}/bin/trustedcoin";
         };
       in map (plugin: pluginPkgs.${plugin}.path) enabled;
