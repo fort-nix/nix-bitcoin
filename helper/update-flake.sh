@@ -39,8 +39,22 @@ if [[ $forceRun ]] && ! git diff --quiet ../flake.{nix,lock}; then
     exit 1
 fi
 
+# Support Nix >2.18
+{
+    versionGreaterThan() {
+        [[ $1 != $(echo -e "$1\n$2" | sort -V | head -n1) ]]
+    }
+    nixVersion=$(nix --version | cut -d\  -f 3)
+    if versionGreaterThan "$nixVersion" 2.18; then
+        # https://nixos.org/manual/nix/stable/release-notes/rl-2.19#:~:text=nix%20flake%20update
+        nixUpdateArg=--flake
+    else
+        nixUpdateArg=
+    fi
+}
+
 echo "Updating flake 'nixos-search'"
-nix flake update ../test/nixos-search
+nix flake update $nixUpdateArg ../test/nixos-search
 echo
 
 versions=$(nix eval --json -f update-flake.nix versions)
@@ -52,7 +66,7 @@ echo "Updating main flake"
 if [[ $nixosVersion ]]; then
     sed -Ei "s|(nixpkgs.url = .*nixos-)[^\"]+|\1$nixosVersion|" ../flake.nix
 fi
-nix flake update ..
+nix flake update $nixUpdateArg ..
 
 echo
 nix eval --raw -f update-flake.nix --argstr prevVersions "$versions" showUpdates; echo
