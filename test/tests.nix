@@ -154,7 +154,6 @@ let
         feeadjuster.enable = true;
         monitor.enable = true;
         rebalance.enable = true;
-        summary.enable = true;
         zmq = let tcpEndpoint = "tcp://127.0.0.1:5501"; in {
           enable = true;
           channel-opened = tcpEndpoint;

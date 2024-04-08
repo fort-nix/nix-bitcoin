@@ -14,7 +14,6 @@ in {
   imports = [
     ./clboss.nix
     ./feeadjuster.nix
-    ./summary.nix
     ./trustedcoin.nix
     ./zmq.nix
   ];

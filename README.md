@@ -76,7 +76,6 @@ NixOS modules ([src](modules/modules.nix))
     * [currencyrate](https://github.com/lightningd/plugins/tree/master/currencyrate): currency converter
     * [monitor](https://github.com/lightningd/plugins/tree/master/monitor): helps you analyze the health of your peers and channels
     * [rebalance](https://github.com/lightningd/plugins/tree/master/rebalance): keeps your channels balanced
-    * [summary](https://github.com/lightningd/plugins/tree/master/summary): print a nice summary of the node status
     * [trustedcoin](https://github.com/nbd-wtf/trustedcoin) ([experimental](docs/services.md#trustedcoin)): replaces bitcoind with trusted public explorers
     * [zmq](https://github.com/lightningd/plugins/tree/master/zmq): publishes notifications via ZeroMQ to configured endpoints
   * [clightning-rest](https://github.com/Ride-The-Lightning/c-lightning-REST): REST server for clightning

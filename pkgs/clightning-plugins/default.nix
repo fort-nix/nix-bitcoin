@@ -27,10 +27,6 @@ let
     rebalance = {
       description = "Keeps your channels balanced";
     };
-    summary = {
-      description = "Prints a summary of the node status";
-      extraPkgs = [ packaging requests ];
-    };
     zmq = {
       description = "Publishes notifications via ZeroMQ to configured endpoints";
       scriptName = "cl-zmq";
