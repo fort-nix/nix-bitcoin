@@ -6,8 +6,8 @@ let
   src = pkgs.fetchFromGitHub {
     owner = "lightningd";
     repo = "plugins";
-    rev = "ce078bb74e10b5dea779fcd9fbe77e1d3e72db7a";
-    hash = "sha256-SCHSJzXe1l14hVT47SU3lWDxKCKwwICjXjSDpjUX96U";
+    rev = "83a80d134ecb2adc6647235d56195332e846f5cb";
+    sha256 = "1vwsvrak2jkcdfcaj426z4qk8shpkqhrqlfnb9i43w24ry7sqzy1";
   };
 
   version = builtins.substring 0 7 src.rev;
