@@ -152,9 +152,7 @@ let
       services.clightning.plugins = {
         clboss.enable = true;
         feeadjuster.enable = true;
-        helpme.enable = true;
         monitor.enable = true;
-        prometheus.enable = true;
         rebalance.enable = true;
         summary.enable = true;
         zmq = let tcpEndpoint = "tcp://127.0.0.1:5501"; in {
