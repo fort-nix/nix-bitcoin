@@ -49,6 +49,9 @@ let
         removed = [
           # Only defined via `obsolete-options.nix`
           "commando"
+          "helpme"
+          "prometheus"
+          "summary"
         ];
         available = subtractLists removed (builtins.attrNames plugins);
         enabled = builtins.filter (plugin: plugins.${plugin}.enable) available;

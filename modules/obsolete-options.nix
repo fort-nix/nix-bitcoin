@@ -107,7 +107,15 @@ in {
     (mkRemovedOptionModule [ "services" "clightning" "plugins" "clboss" "acknowledgeDeprecation" ] ''
       `clboss` is maintained again and has been un-deprecated.
     '')
-  ];
+  ]
+  ++
+  # 0.0.106
+  (map (plugin:
+    mkRemovedOptionModule [ "services" "clightning" "plugins" plugin ] ''
+      This plugin is no longer maintained.
+    '')
+    [ "summary" "helpme" "prometheus" ]
+  );
   config = {
     # Migrate old clightning-rest datadir from nix-bitcoin versions < 0.0.70
     systemd.services.clightning-rest-migrate-datadir = let
