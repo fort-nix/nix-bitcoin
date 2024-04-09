@@ -49,6 +49,9 @@ let
         removed = [
           # Only defined via `obsolete-options.nix`
           "commando"
+          "helpme"
+          "prometheus"
+          "summary"
         ];
         available = subtractLists removed (builtins.attrNames plugins);
         enabled = builtins.filter (plugin: plugins.${plugin}.enable) available;
@@ -152,11 +155,8 @@ let
       services.clightning.plugins = {
         clboss.enable = true;
         feeadjuster.enable = true;
-        helpme.enable = true;
         monitor.enable = true;
-        prometheus.enable = true;
         rebalance.enable = true;
-        summary.enable = true;
         zmq = let tcpEndpoint = "tcp://127.0.0.1:5501"; in {
           enable = true;
           channel-opened = tcpEndpoint;

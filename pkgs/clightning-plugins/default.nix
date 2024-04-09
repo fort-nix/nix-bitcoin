@@ -6,8 +6,8 @@ let
   src = pkgs.fetchFromGitHub {
     owner = "lightningd";
     repo = "plugins";
-    rev = "ce078bb74e10b5dea779fcd9fbe77e1d3e72db7a";
-    hash = "sha256-SCHSJzXe1l14hVT47SU3lWDxKCKwwICjXjSDpjUX96U";
+    rev = "83a80d134ecb2adc6647235d56195332e846f5cb";
+    sha256 = "1vwsvrak2jkcdfcaj426z4qk8shpkqhrqlfnb9i43w24ry7sqzy1";
   };
 
   version = builtins.substring 0 7 src.rev;
@@ -20,26 +20,12 @@ let
     feeadjuster = {
       description = "Dynamically changes channel fees to keep your channels more balanced";
     };
-    helpme = {
-      description = "Walks you through setting up a c-lightning node, offering advice for common problems";
-    };
     monitor = {
       description = "Helps you analyze the health of your peers and channels";
       extraPkgs = [ packaging ];
     };
-    prometheus = {
-      description = "Lightning node exporter for the prometheus timeseries server";
-      extraPkgs = [ prometheus_client ];
-      patchRequirements =
-        "--replace prometheus-client==0.6.0 prometheus-client==0.17.1"
-        + " --replace pyln-client~=0.9.3 pyln-client~=24.02";
-    };
     rebalance = {
       description = "Keeps your channels balanced";
-    };
-    summary = {
-      description = "Prints a summary of the node status";
-      extraPkgs = [ packaging requests ];
     };
     zmq = {
       description = "Publishes notifications via ZeroMQ to configured endpoints";

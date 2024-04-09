@@ -52,7 +52,7 @@
   #
   # == Plugins
   # See ../README.md (Features → clightning) for the list of available plugins.
-  # services.clightning.plugins.prometheus.enable = true;
+  # services.clightning.plugins.clboss.enable = true;
   #
   # == REST server
   # Set this to create a clightning REST onion service.

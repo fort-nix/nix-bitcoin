@@ -571,13 +571,13 @@ You can activate and configure these plugins like so:
 services.clightning = {
     enable = true;
     plugins = {
-        prometheus.enable = true;
-        prometheus.listen = "0.0.0.0:9900";
+        clboss.enable = true;
+        clboss.min-onchain = 40000;
     };
 };
 ```
 
-Please have a look at the module for a plugin (e.g. [prometheus.nix](../modules/clightning-plugins/prometheus.nix)) to learn its configuration options.
+Please have a look at the module for a plugin (e.g. [clboss.nix](../modules/clightning-plugins/clboss.nix)) to learn its configuration options.
 
 ### Trustedcoin
 When `services.clightning.tor.proxy` is enabled, [trustedcoin](https://github.com/nbd-wtf/trustedcoin)

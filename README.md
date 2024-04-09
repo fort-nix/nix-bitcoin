@@ -74,11 +74,8 @@ NixOS modules ([src](modules/modules.nix))
     Available plugins:
     * [clboss](https://github.com/ZmnSCPxj/clboss): automated C-Lightning Node Manager
     * [currencyrate](https://github.com/lightningd/plugins/tree/master/currencyrate): currency converter
-    * [helpme](https://github.com/lightningd/plugins/tree/master/helpme): walks you through setting up a fresh c-lightning node
     * [monitor](https://github.com/lightningd/plugins/tree/master/monitor): helps you analyze the health of your peers and channels
-    * [prometheus](https://github.com/lightningd/plugins/tree/master/prometheus): lightning node exporter for the prometheus timeseries server
     * [rebalance](https://github.com/lightningd/plugins/tree/master/rebalance): keeps your channels balanced
-    * [summary](https://github.com/lightningd/plugins/tree/master/summary): print a nice summary of the node status
     * [trustedcoin](https://github.com/nbd-wtf/trustedcoin) ([experimental](docs/services.md#trustedcoin)): replaces bitcoind with trusted public explorers
     * [zmq](https://github.com/lightningd/plugins/tree/master/zmq): publishes notifications via ZeroMQ to configured endpoints
   * [clightning-rest](https://github.com/Ride-The-Lightning/c-lightning-REST): REST server for clightning
