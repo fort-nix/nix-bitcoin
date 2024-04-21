@@ -235,7 +235,7 @@ def _():
         '"version"',
     )
     # Test web server response
-    assert_matches(f"curl -fsS -L {ip('btcpayserver')}:23000", "Welcome to your BTCPay&nbsp;Server")
+    assert_matches(f"curl -fsS -L {ip('btcpayserver')}:23000", "Welcome to your BTCPay&#xA0;Server")
 
 @test("rtl")
 def _():

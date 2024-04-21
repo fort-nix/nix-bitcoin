@@ -39,11 +39,11 @@
         "npmlock2nix": "npmlock2nix"
       },
       "locked": {
-        "lastModified": 1710291012,
-        "narHash": "sha256-vna5BXoLB50MT+tuN4f/VTIvOc4GyD46WtA2aTjohcA=",
+        "lastModified": 1713242159,
+        "narHash": "sha256-3rZnNNdTDWb5uUHUetY5woURdcnChCik7gd0UfT0fvA=",
         "owner": "nixos",
         "repo": "nixos-search",
-        "rev": "7081483b91ca079db329e8d1309ca65adc3e90fb",
+        "rev": "7bdc02cc99a5f293a127048f59b5bf0ae0d6ff24",
         "type": "github"
       },
       "original": {
