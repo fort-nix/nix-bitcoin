@@ -10,6 +10,8 @@ pkgs: pkgsUnstable:
     lndconnect;
 
   inherit (pkgsUnstable)
+    bitcoin
+    bitcoind
     btcpayserver
     clightning
     elementsd
