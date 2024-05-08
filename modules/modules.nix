@@ -28,6 +28,7 @@
     ./joinmarket.nix
     ./joinmarket-ob-watcher.nix
     ./joinmarket-jmwalletd.nix
+    ./joinmarket-jam.nix
     ./hardware-wallets.nix
 
     # Support features

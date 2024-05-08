@@ -356,6 +356,7 @@ in {
     };
 
     services.joinmarket-ob-watcher.address = netns.joinmarket-ob-watcher.address;
+    services.joinmarket-jam.address = netns.nginx.address;
 
     services.lightning-pool.rpcAddress = netns.lightning-pool.address;
 

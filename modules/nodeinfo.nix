@@ -149,6 +149,11 @@ in {
       liquidd = mkInfo "";
       joinmarket-ob-watcher = mkInfo "";
       joinmarket-jmwalletd = mkInfo "";
+      joinmarket-jam = name: cfg: mkInfoLong {
+        inherit name cfg;
+        systemdServiceName = "nginx";
+        extraCode = "";
+      };
       rtl = mkInfo "";
       mempool = mkInfo "";
       mempool-frontend = name: cfg: mkInfoLong {
