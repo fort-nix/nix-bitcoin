@@ -133,6 +133,7 @@ let
         cjfee_r = 0.00003;
         txfee = 200;
       };
+      tests.joinmarket-jam = cfg.joinmarket-jam.enable;
 
       tests.nodeinfo = config.nix-bitcoin.nodeinfo.enable;
       tests.backups = cfg.backups.enable;
@@ -207,6 +208,7 @@ let
       services.joinmarket.enable = true;
       services.joinmarket-ob-watcher.enable = true;
       services.joinmarket-jmwalletd.enable = true;
+      services.joinmarket-jam.enable = true;
       services.backups.enable = true;
 
       nix-bitcoin.nodeinfo.enable = true;
@@ -255,6 +257,7 @@ let
       services.btcpayserver.enable = true;
       services.joinmarket.enable = true;
       services.joinmarket-jmwalletd.enable = true;
+      services.joinmarket-jam.enable = true;
     };
 
     # netns and regtest, without secure-node.nix

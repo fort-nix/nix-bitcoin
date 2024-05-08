@@ -292,6 +292,12 @@ def _():
     # Test web server response
     assert_full_match(f"curl -fsSL --insecure https://{ip('joinmarket')}:28183/api/v1/getinfo | jq -jr keys[0]", "version")
 
+@test("joinmarket-jam")
+def _():
+    assert_running("nginx")
+    wait_for_open_port(ip("nginx"), 61851)
+    assert_matches(f"curl -L {ip('nginx')}:61851", "Jam for JoinMarket")
+
 @test("nodeinfo")
 def _():
     status, _ = machine.execute("systemctl is-enabled --quiet onion-addresses 2> /dev/null")
