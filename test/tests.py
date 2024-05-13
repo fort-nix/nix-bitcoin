@@ -281,6 +281,17 @@ def _():
     assert_running("joinmarket-ob-watcher")
     machine.wait_until_succeeds(log_has_string("joinmarket-ob-watcher", "Starting ob-watcher"))
 
+@test("joinmarket-jmwalletd")
+def _():
+    assert_running("joinmarket-jmwalletd")
+    machine.wait_until_succeeds(log_has_string("joinmarket-jmwalletd", "Started joinmarket-jmwalletd.service."))
+    machine.wait_until_succeeds(log_has_string("joinmarket-jmwalletd", "Starting jmwalletd on port: 28183"))
+    wait_for_open_port(ip("joinmarket"), 28183)  # RPC port
+    wait_for_open_port(ip("joinmarket"), 28283)  # Websocket SSL port
+
+    # Test web server response
+    assert_full_match(f"curl -fsSL --insecure https://{ip('joinmarket')}:28183/api/v1/getinfo | jq -jr keys[0]", "version")
+
 @test("nodeinfo")
 def _():
     status, _ = machine.execute("systemctl is-enabled --quiet onion-addresses 2> /dev/null")
