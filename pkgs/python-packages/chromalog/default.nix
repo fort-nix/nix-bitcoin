@@ -18,7 +18,7 @@ buildPythonPackageWithDepsCheck rec {
   meta = with lib; {
     description = "Enhance Python with colored logging";
     homepage = "https://github.com/freelan-developers/chromalog";
-    maintainers = with maintainers; [ nixbitcoin ];
+    maintainers = with maintainers; [ seberm nixbitcoin ];
     license = licenses.mit;
   };
 }

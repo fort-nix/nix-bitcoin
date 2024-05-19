@@ -3,7 +3,6 @@ rec {
   pyPkgsOverrides = self: super: let
     inherit (self) callPackage;
     clightningPkg = pkg: callPackage pkg { inherit (nbPkgs.pinned) clightning; };
-    joinmarketPkg = pkg: callPackage pkg { inherit (nbPkgs.joinmarket) version src; };
   in
     {
       txzmq = callPackage ./txzmq {};
@@ -20,10 +19,7 @@ rec {
       runes = callPackage ./runes {};
       sha256 = callPackage ./sha256 {};
 
-      joinmarketbase = joinmarketPkg ./jmbase;
-      joinmarketclient = joinmarketPkg ./jmclient;
-      joinmarketbitcoin = joinmarketPkg ./jmbitcoin;
-      joinmarketdaemon = joinmarketPkg ./jmdaemon;
+      joinmarket = callPackage ./joinmarket { inherit (nbPkgs.joinmarket) version src; };
 
       ## Specific versions of packages that already exist in nixpkgs
 
