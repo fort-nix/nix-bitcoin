@@ -43,6 +43,7 @@ stdenv.mkDerivation {
     cpBin wallet-tool.py
     cpBin yg-privacyenhanced.py
     cpBin genwallet.py
+    cpBin bond-calculator.py
 
     chmod +x -R "$out/bin"
     patchShebangs "$out/bin"
