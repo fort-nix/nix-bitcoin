@@ -271,7 +271,7 @@ let
         clightning = super.clightning.overrideAttrs (old: {
           postPatch = old.postPatch + ''
             substituteInPlace lightningd/plugin.c \
-              --replace "#define PLUGIN_MANIFEST_TIMEOUT 60" "#define PLUGIN_MANIFEST_TIMEOUT 200"
+              --replace-fail "#define PLUGIN_MANIFEST_TIMEOUT 60" "#define PLUGIN_MANIFEST_TIMEOUT 200"
           '';
         });
       };

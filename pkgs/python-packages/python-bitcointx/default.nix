@@ -14,7 +14,7 @@ buildPythonPackageWithDepsCheck rec {
   patchPhase = ''
     for path in core/secp256k1.py tests/test_load_secp256k1.py; do
       substituteInPlace "bitcointx/$path" \
-        --replace "ctypes.util.find_library('secp256k1')" "'${secp256k1}/lib/libsecp256k1.so'"
+        --replace-fail "ctypes.util.find_library('secp256k1')" "'${secp256k1}/lib/libsecp256k1.so'"
     done
   '';
 
