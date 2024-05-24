@@ -39,13 +39,13 @@ if [[ $forceRun ]] && ! git diff --quiet ../flake.{nix,lock}; then
     exit 1
 fi
 
-# Support Nix >2.18
+# Support Nix >=2.19
 {
-    versionGreaterThan() {
-        [[ $1 != $(echo -e "$1\n$2" | sort -V | head -n1) ]]
+    versionGreaterThanOrEqual() {
+        [[ $1 != $(echo -e "$1\n$2" | sort -V | head -n1) || $1 == "$2" ]]
     }
     nixVersion=$(nix --version | cut -d\  -f 3)
-    if versionGreaterThan "$nixVersion" 2.18; then
+    if versionGreaterThanOrEqual "$nixVersion" 2.19; then
         # https://nixos.org/manual/nix/stable/release-notes/rl-2.19#:~:text=nix%20flake%20update
         nixUpdateArg=--flake
     else
