@@ -16,7 +16,7 @@ buildPythonPackageWithDepsCheck rec {
   meta = with lib; {
     description = "A fast bencode implementation in Cython";
     homepage = "https://github.com/whtsky/bencoder.pyx";
-    maintainers = with maintainers; [ nixbitcoin ];
+    maintainers = with maintainers; [ seberm nixbitcoin ];
     license = licenses.bsd3;
   };
 }

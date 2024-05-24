@@ -2,13 +2,13 @@
 
 buildPythonPackageWithDepsCheck rec {
   pname = "python-bitcointx";
-  version = "1.1.4";
+  version = "1.1.5";
 
   src = fetchFromGitHub {
     owner = "Simplexum";
     repo = "python-bitcointx";
     rev = "python-bitcointx-v${version}";
-    hash = "sha256-y8/cyLQr3GbpYqCg8LKTfyL0OX7eIo5AxjdFTWTqHmk=";
+    hash = "sha256-KXndYEsJ8JRTiGojrKXmAEeGDlHrNGs5MtYs9XYiqMo=";
   };
 
   patchPhase = ''
@@ -18,10 +18,14 @@ buildPythonPackageWithDepsCheck rec {
     done
   '';
 
+  pythonImportCheck = [
+    "bitcointx"
+  ];
+
   meta = with lib; {
     description = "Interface to Bitcoin transaction data structures";
     homepage = "https://github.com/Simplexum/python-bitcointx";
-    maintainers = with maintainers; [ nixbitcoin ];
+    maintainers = with maintainers; [ seberm nixbitcoin ];
     license = licenses.gpl3;
   };
 }
