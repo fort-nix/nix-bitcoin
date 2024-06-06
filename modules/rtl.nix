@@ -106,8 +106,8 @@ let
   cfg = config.services.rtl;
   nbLib = config.nix-bitcoin.lib;
   nbPkgs = config.nix-bitcoin.pkgs;
-  secretsDir = config.nix-bitcoin.secretsDir;
 
+  inherit (config.nix-bitcoin) secretsDir;
   inherit (nbLib) optionalAttr;
 
   node = { isLnd, index }: {
@@ -149,7 +149,7 @@ let
   rtlConfig = {
     multiPass = "@multiPass@";
     host = cfg.address;
-    port = cfg.port;
+    inherit (cfg) port;
     SSO.rtlSSO = 0;
     inherit nodes;
   };
@@ -216,7 +216,7 @@ in {
 
     users.users.${cfg.user} = {
       isSystemUser = true;
-      group = cfg.group;
+      inherit (cfg) group;
       extraGroups =
         # Reads cert and macaroon from the clightning-rest datadir
         optional cfg.nodes.clightning.enable clightning-rest.group ++

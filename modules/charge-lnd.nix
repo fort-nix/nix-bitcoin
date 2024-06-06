@@ -90,7 +90,7 @@ in
     services.lnd = {
       enable = true;
       macaroons.charge-lnd = {
-        user = user;
+        inherit user;
         permissions = ''{"entity":"info","action":"read"},{"entity":"onchain","action":"read"},{"entity":"offchain","action":"read"},{"entity":"offchain","action":"write"}'';
       };
     };
@@ -134,7 +134,7 @@ in
 
     users.users.${user} = {
       isSystemUser = true;
-      group = group;
+      inherit group;
     };
     users.groups.${group} = {};
   };

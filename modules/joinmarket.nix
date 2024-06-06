@@ -369,23 +369,26 @@ in {
       } // nbLib.allowedIPAddresses cfg.tor.enforce;
     };
 
-    users.users.${cfg.user} = {
-      isSystemUser = true;
-      group = cfg.group;
-      home = cfg.dataDir;
-      # Allow access to the tor control socket, needed for payjoin onion service creation
-      extraGroups = [ "tor" "bitcoin" ];
+    users = {
+      users.${cfg.user} = {
+        isSystemUser = true;
+        group = cfg.group;
+        home = cfg.dataDir;
+        # Allow access to the tor control socket, needed for payjoin onion service creation
+        extraGroups = [ "tor" "bitcoin" ];
+      };
+      groups.${cfg.group} = {};
     };
-    users.groups.${cfg.group} = {};
-    nix-bitcoin.operator = {
-      groups = [ cfg.group ];
-      allowRunAsUsers = [ cfg.user ];
+    nix-bitcoin = {
+      operator = {
+        groups = [ cfg.group ];
+        allowRunAsUsers = [ cfg.user ];
+      };
+      secrets.jm-wallet-password.user = cfg.user;
+      generateSecretsCmds.joinmarket = ''
+        makePasswordSecret jm-wallet-password
+      '';
     };
-
-    nix-bitcoin.secrets.jm-wallet-password.user = cfg.user;
-    nix-bitcoin.generateSecretsCmds.joinmarket = ''
-      makePasswordSecret jm-wallet-password
-    '';
   }
 
   (mkIf cfg.yieldgenerator.enable {

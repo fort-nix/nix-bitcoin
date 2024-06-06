@@ -29,7 +29,7 @@ let cfg = config.services.clightning.plugins.trustedcoin; in
       tor.enforce = mkIf (!cfg.tor.proxy) false;
     };
 
-    systemd.services.clightning.environment = mkIf (cfg.tor.proxy) {
+    systemd.services.clightning.environment = mkIf cfg.tor.proxy {
       HTTPS_PROXY = let
         clnProxy = config.services.clightning.proxy;
         proxy = if clnProxy != null then clnProxy else config.nix-bitcoin.torClientAddressWithPort;

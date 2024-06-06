@@ -170,7 +170,7 @@ let
     bitcoin.active=1
     bitcoin.node=bitcoind
 
-    ${optionalString (cfg.tor.proxy) "tor.active=true"}
+    ${optionalString cfg.tor.proxy "tor.active=true"}
     ${optionalString (cfg.tor-socks != null) "tor.socks=${cfg.tor-socks}"}
 
     bitcoind.rpchost=${bitcoindRpcAddress}:${toString bitcoind.rpc.port}

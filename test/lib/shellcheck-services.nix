@@ -52,9 +52,9 @@ let
         isMatching = lib.hasPrefix sourcePrefix file;
       in
         # Nix has no boolean XOR, so use `if`
-        lib.optionals (if shouldMatch then isMatching else !isMatching) (
+        lib.optionals (if shouldMatch then isMatching else !isMatching)
           (map (service: { name = service; value = true; }) (builtins.attrNames services))
-        )
+
     ) systemdServices.definitionsWithLocations));
   in
     # Calculate set difference: matchingServices - nonMatchingServices

@@ -237,7 +237,7 @@ in {
 
   config = mkIf cfg.enable {
     assertions = [
-      { assertion = bitcoind.regtest -> cfg.validatepegin != true;
+      { assertion = bitcoind.regtest -> !cfg.validatepegin;
         message = "liquidd: `validatepegin` is incompatible with regtest.";
       }
     ];

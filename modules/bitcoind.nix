@@ -310,7 +310,7 @@ let
     ${optionalString cfg.listenWhitelisted
       "whitebind=${cfg.address}:${toString cfg.whitelistedPort}"}
     ${optionalString (cfg.proxy != null) "proxy=${cfg.proxy}"}
-    ${optionalString (cfg.i2p != false) "i2psam=${nbLib.addressWithPort i2pSAM.address i2pSAM.port}"}
+    ${optionalString cfg.i2p "i2psam=${nbLib.addressWithPort i2pSAM.address i2pSAM.port}"}
     ${optionalString (cfg.i2p == "only-outgoing") "i2pacceptincoming=0"}
 
     ${optionalString (cfg.discover != null) "discover=${if cfg.discover then "1" else "0"}"}
@@ -364,7 +364,7 @@ in {
       }
     ];
 
-    services.i2pd = mkIf (cfg.i2p != false) {
+    services.i2pd = mkIf cfg.i2p {
       enable = true;
       proto.sam.enable = true;
     };
@@ -435,28 +435,33 @@ in {
         // optionalAttrs zmqServerEnabled nbLib.allowNetlink;
     };
 
-    users.users.${cfg.user} = {
-      isSystemUser = true;
-      group = cfg.group;
-    };
-    users.groups.${cfg.group} = {};
-    users.groups.bitcoinrpc-public = {};
-
-    nix-bitcoin.operator.groups = [ cfg.group ];
-
-    nix-bitcoin.secrets = {
-      bitcoin-rpcpassword-privileged.user = cfg.user;
-      bitcoin-rpcpassword-public = {
-        user = cfg.user;
-        group = "bitcoinrpc-public";
+    users = {
+      users.${cfg.user} = {
+        isSystemUser = true;
+        group = cfg.group;
       };
-
-      bitcoin-HMAC-privileged.user = cfg.user;
-      bitcoin-HMAC-public.user = cfg.user;
+      groups = {
+        ${cfg.group} = {};
+        bitcoinrpc-public = {};
+      };
     };
-    nix-bitcoin.generateSecretsCmds.bitcoind = ''
-      makeBitcoinRPCPassword privileged
-      makeBitcoinRPCPassword public
-    '';
+
+    nix-bitcoin = {
+      operator.groups = [ cfg.group ];
+      secrets = {
+        bitcoin-rpcpassword-privileged.user = cfg.user;
+        bitcoin-rpcpassword-public = {
+          user = cfg.user;
+          group = "bitcoinrpc-public";
+        };
+
+        bitcoin-HMAC-privileged.user = cfg.user;
+        bitcoin-HMAC-public.user = cfg.user;
+      };
+      generateSecretsCmds.bitcoind = ''
+        makeBitcoinRPCPassword privileged
+        makeBitcoinRPCPassword public
+      '';
+    };
   };
 }

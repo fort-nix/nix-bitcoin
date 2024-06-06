@@ -178,7 +178,7 @@ in {
               isClightning = true;
               enableOnion = clightning-rest.lndconnect.onion;
               onionService = "${operatorName}/clightning-rest";
-              port = clightning-rest.port;
+              inherit (clightning-rest) port;
               certPath = "${clightning-rest.dataDir}/certs/certificate.pem";
               macaroonPath = "${clightning-rest.dataDir}/certs/access.macaroon";
             }
@@ -193,7 +193,7 @@ in {
             relay.onionServices.clightning-rest = nbLib.mkOnionService {
               target.addr = nbLib.address clightning-rest.address;
               target.port = clightning-rest.port;
-              port = clightning-rest.port;
+              inherit (clightning-rest) port;
             };
           };
           # This also allows nodeinfo to show the clightning-rest onion address

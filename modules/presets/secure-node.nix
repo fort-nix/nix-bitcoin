@@ -35,23 +35,25 @@ in {
     services.tor.relay.onionServices.sshd = nbLib.mkOnionService { port = 22; };
     nix-bitcoin.onionAddresses.access.${operatorName} = [ "sshd" ];
 
-    services.bitcoind = {
-      enable = true;
-      listen = true;
-      dbCache = 1000;
-    };
-
-    services.liquidd = {
-      # Enable `validatepegin` to verify that a transaction sending BTC into
-      # Liquid exists on Bitcoin. Without it, a malicious liquid federation can
-      # make the node accept a sidechain that is not fully backed.
-      validatepegin = true;
-      listen = true;
-    };
-
     nix-bitcoin.nodeinfo.enable = true;
 
-    services.backups.frequency = "daily";
+    services = {
+      bitcoind = {
+        enable = true;
+        listen = true;
+        dbCache = 1000;
+      };
+
+      liquidd = {
+        # Enable `validatepegin` to verify that a transaction sending BTC into
+        # Liquid exists on Bitcoin. Without it, a malicious liquid federation can
+        # make the node accept a sidechain that is not fully backed.
+        validatepegin = true;
+        listen = true;
+      };
+
+      backups.frequency = "daily";
+    };
 
     # operator
     nix-bitcoin.operator.enable = true;

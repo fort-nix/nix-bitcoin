@@ -40,3 +40,7 @@ task:
     - name: shellcheck
       build_script:
         - ./test/shellcheck.sh
+
+    - name: statix
+      build_script:
+        - ./test/statix.sh

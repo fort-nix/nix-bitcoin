@@ -42,7 +42,7 @@ let
   nixopsRelease = import "${src}/release.nix" {
     nixpkgs = pkgs.path;
     inherit pluginData;
-    p = (p: with p; [ aws hetzner vbox ]);
+    p = p: with p; [ aws hetzner vbox ];
   };
 in
 nixopsRelease.build.${builtins.currentSystem}
