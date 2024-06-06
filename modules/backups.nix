@@ -62,6 +62,7 @@ let
     ''}
     ${config.services.bitcoind.dataDir}
     ${config.services.clightning.dataDir}
+    ${config.services.clightning.plugins.teos-watchtower.dataDir}
     ${config.services.clightning-rest.dataDir}
     ${config.services.lnd.dataDir}
     ${optionalString (!cfg.with-bulk-data) ''
@@ -71,6 +72,7 @@ let
     ''}
     ${config.services.liquidd.dataDir}
     ${optionalString cfg.with-bulk-data "${config.services.electrs.dataDir}"}
+    ${optionalString cfg.with-bulk-data "${config.services.teos.dataDir}"}
     ${config.services.nbxplorer.dataDir}
     ${config.services.btcpayserver.dataDir}
     ${config.services.joinmarket.dataDir}
