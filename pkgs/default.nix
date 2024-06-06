@@ -22,6 +22,7 @@ let self = {
     mempool-frontend
     mempool-nginx-conf;
   trustedcoin = pkgs.callPackage ./trustedcoin { };
+  joinmarket-jam = pkgs.callPackage ./joinmarket-jam { };
 
   pyPkgs = import ./python-packages self pkgs.python3;
   inherit (self.pyPkgs)
