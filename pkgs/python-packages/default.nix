@@ -11,6 +11,7 @@ rec {
       pyln-proto = clightningPkg ./pyln-proto;
       pyln-bolt7 = clightningPkg ./pyln-bolt7;
       pylightning = clightningPkg ./pylightning;
+      clnrest = clightningPkg ./clnrest;
 
       # Packages only used by joinmarket
       bencoderpyx = callPackage ./bencoderpyx {};
@@ -36,6 +37,14 @@ rec {
           dontUsePypaInstall = true;
           nativeBuildInputs = (attrs.nativeBuildInputs or []) ++ [ self.pipInstallHook ];
         });
+
+      # required by clnrest
+      flask-restx = super.flask-restx.overridePythonAttrs (old: rec {
+        postPatch = ''
+          substituteInPlace requirements/install.pip \
+            --replace 'jsonschema<=4.17.3' 'jsonschema==4.19.0'
+        '';
+      });
     };
 
   nbPython3Packages = (python3.override {
