@@ -43,7 +43,13 @@ let
 
       # TODO-EXTERNAL:
       # When WAN is disabled, DNS bootstrapping slows down service startup by ~15 s.
-      services.clightning.extraConfig = mkIf config.test.noConnections "disable-dns";
+      # TODO-EXTERNAL:
+      # When bitcoind is not fully synced, the offers plugin in clightning 24.05
+      # crashes (see https://github.com/ElementsProject/lightning/issues/7378).
+      services.clightning.extraConfig = ''
+        ${optionalString config.test.noConnections "disable-dns"}
+        disable-plugin=offers
+      '';
       test.data.clightning-plugins = let
         plugins = config.services.clightning.plugins;
         removed = [
