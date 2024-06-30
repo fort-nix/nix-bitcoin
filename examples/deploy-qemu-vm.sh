@@ -30,6 +30,13 @@ nix-build --out-link "$tmpDir/vm" - <<'EOF'
       <qemu-vm/vm-config.nix>
     ];
     nix-bitcoin.generateSecrets = true;
+
+    # TODO-EXTERNAL:
+    # When bitcoind is not fully synced, the offers plugin in clightning 24.05
+    # crashes (see https://github.com/ElementsProject/lightning/issues/7378).
+    services.clightning.extraConfig = ''
+      disable-plugin=offers
+    '';
   };
 }).config.system.build.vm
 EOF
