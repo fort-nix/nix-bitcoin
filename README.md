@@ -127,6 +127,5 @@ See [dev/README](./dev/README.md).
 Troubleshooting
 ---
 If you are having problems with nix-bitcoin check the [FAQ](docs/faq.md) or submit an issue.\
-There's also a Matrix room at [#general:nixbitcoin.org](https://matrix.to/#/#general:nixbitcoin.org)
-and a `#nix-bitcoin` IRC channel on [libera](https://libera.chat).\
+There's also a Matrix room at [#general:nixbitcoin.org](https://matrix.to/#/#general:nixbitcoin.org).\
 We are always happy to help.
