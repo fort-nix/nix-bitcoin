@@ -1,0 +1,17 @@
+diff --git a/conftest.py b/conftest.py
+index 1cc56d5..54b0a4c 100644
+--- a/conftest.py
++++ b/conftest.py
+@@ -74,12 +74,6 @@ def pytest_addoption(parser: Any) -> None:
+                      action="store",
+                      default='bitcoinrpc',
+                      help="the RPC username for your test bitcoin instance (default=bitcoinrpc)")
+-    parser.addoption("--nirc",
+-                     type="int",
+-                     action="store",
+-                     default=1,
+-                     help="the number of local miniircd instances")
+-
+ 
+ @pytest.fixture(scope="session", autouse=True)
+ def setup_early_if_needed(request) -> None:
