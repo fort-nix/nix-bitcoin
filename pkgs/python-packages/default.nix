@@ -25,17 +25,6 @@ rec {
 
       # autobahn 20.12.3, required by joinmarketclient
       autobahn = callPackage ./specific-versions/autobahn.nix {};
-
-      # A version of `buildPythonPackage` which checks that Python package
-      # requirements are met.
-      # This was the case for NixOS <= 23.05.
-      # TODO-EXTERNAL: Remove when this is resolved:
-      # https://github.com/NixOS/nixpkgs/issues/253131
-      buildPythonPackageWithDepsCheck = attrs:
-        self.buildPythonPackage (attrs // {
-          dontUsePypaInstall = true;
-          nativeBuildInputs = (attrs.nativeBuildInputs or []) ++ [ self.pipInstallHook ];
-        });
     };
 
   nbPython3Packages = (python3.override {

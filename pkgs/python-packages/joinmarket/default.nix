@@ -1,7 +1,7 @@
 { version
 , src
 , lib
-, buildPythonPackageWithDepsCheck
+, buildPythonPackage
 , pythonOlder
 , pythonAtLeast
 , pytestCheckHook
@@ -24,7 +24,7 @@
 , pyopenssl
 }:
 
-buildPythonPackageWithDepsCheck rec {
+buildPythonPackage rec {
   pname = "joinmarket";
   inherit version src;
   format = "pyproject";
