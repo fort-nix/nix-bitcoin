@@ -29,4 +29,10 @@ buildPythonPackage rec {
   checkInputs = [ pytestCheckHook ];
 
   postUnpack = "sourceRoot=$sourceRoot/contrib/pyln-proto";
+
+  postPatch = ''
+    substituteInPlace pyproject.toml \
+      --replace-fail 'coincurve = "^18"' 'coincurve = "^19"' \
+      --replace-fail 'cryptography = "^41"' 'cryptography = "^42"' \
+  '';
 }
