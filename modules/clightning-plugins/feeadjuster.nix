@@ -6,7 +6,7 @@ let
     enable = mkOption {
       type = types.bool;
       default = false;
-      description = mdDoc ''
+      description = ''
         Enable feeaduster (clightning plugin).
         This plugin auto-updates channel fees to keep channels balanced.
 
@@ -18,17 +18,17 @@ let
     fuzz = mkOption {
       type = types.bool;
       default = true;
-      description = mdDoc "Enable update threshold randomization and hysteresis.";
+      description = "Enable update threshold randomization and hysteresis.";
     };
     adjustOnForward = mkOption {
       type = types.bool;
       default = false;
-      description = mdDoc "Automatically update fees on forward events.";
+      description = "Automatically update fees on forward events.";
     };
     method = mkOption {
       type = types.enum [ "soft" "default" "hard" ];
       default = "default";
-      description = mdDoc ''
+      description = ''
         Adjustment method to calculate channel fees.
         `soft`: less difference when adjusting fees.
         `hard`: greater difference when adjusting fees.
@@ -37,7 +37,7 @@ let
     adjustDaily = mkOption {
       type = types.bool;
       default = true;
-      description = mdDoc "Automatically update fees daily.";
+      description = "Automatically update fees daily.";
     };
   };
 

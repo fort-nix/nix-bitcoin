@@ -17,12 +17,12 @@ let
     subnet = mkOption {
       type = types.str;
       default = "10.10.0";
-      description = mdDoc "The /24 subnet of the wireguard network.";
+      description = "The /24 subnet of the wireguard network.";
     };
     restrictPeer = mkOption {
       type = types.bool;
       default = true;
-      description = mdDoc ''
+      description = ''
         Prevent the peer from connecting to any addresses except for the WireGuard server address.
       '';
     };

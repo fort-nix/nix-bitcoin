@@ -7,17 +7,17 @@ let
     port = mkOption {
       type = types.port;
       default = 3001;
-      description = mdDoc "REST server port.";
+      description = "REST server port.";
     };
     docPort = mkOption {
       type = types.port;
       default = 4001;
-      description = mdDoc "Swagger API documentation server port.";
+      description = "Swagger API documentation server port.";
     };
     dataDir = mkOption {
       type = types.path;
       default = "/var/lib/clightning-rest";
-      description = mdDoc "The data directory for clightning-rest.";
+      description = "The data directory for clightning-rest.";
     };
     extraConfig = mkOption {
       type = types.attrs;
@@ -25,7 +25,7 @@ let
       example = {
         DOMAIN = "mynode.org";
       };
-      description = mdDoc ''
+      description = ''
         Extra config options.
         See: https://github.com/Ride-The-Lightning/c-lightning-REST#option-1-via-config-file-cl-rest-configjson
       '';
@@ -34,7 +34,7 @@ let
     group = mkOption {
       readOnly = true;
       default = clightning.group;
-      description = mdDoc "The group under which clightning-rest is run.";
+      description = "The group under which clightning-rest is run.";
     };
     # Rest server address.
     # Not configurable. The server always listens on all interfaces:

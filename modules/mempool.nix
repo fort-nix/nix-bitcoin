@@ -7,7 +7,7 @@ let
       enable = mkOption {
         type = types.bool;
         default = false;
-        description = mdDoc ''
+        description = ''
           Enable Mempool, a fully featured Bitcoin visualizer, explorer, and API service.
 
           Note: Mempool enables `txindex` in bitcoind (this is a requirement).
@@ -25,7 +25,7 @@ let
         enable = mkOption {
           type = types.bool;
           default = cfg.enable;
-          description = mdDoc ''
+          description = ''
             Enable the mempool frontend (web interface).
             This starts a simple nginx instance, configured for local usage with
             settings similar to the `mempool/frontend` Docker image.
@@ -43,18 +43,18 @@ let
         address = mkOption {
           type = types.str;
           default = "127.0.0.1";
-          description = mdDoc "HTTP server address.";
+          description = "HTTP server address.";
         };
         port = mkOption {
           type = types.port;
           default = 60845; # A random private port
-          description = mdDoc "HTTP server port.";
+          description = "HTTP server port.";
         };
         staticContentRoot = mkOption {
           type = types.path;
           default = nbPkgs.mempool-frontend;
           defaultText = "config.nix-bitcoin.pkgs.mempool-frontend";
-          description = mdDoc "
+          description = "
             Path of the static frontend content root.
           ";
         };
@@ -62,7 +62,7 @@ let
           readOnly = true;
           default = frontend.nginxConfig;
           defaultText = "(See source)";
-          description = mdDoc "
+          description = "
             An attrset of nginx config snippets for assembling a custom
             mempool nginx config.
             For details, see the source comments at the point of definition.
@@ -73,17 +73,17 @@ let
       address = mkOption {
         type = types.str;
         default = "127.0.0.1";
-        description = mdDoc "Mempool backend address.";
+        description = "Mempool backend address.";
       };
       port = mkOption {
         type = types.port;
         default = 8999;
-        description = mdDoc "Mempool backend port.";
+        description = "Mempool backend port.";
       };
       electrumServer = mkOption {
         type = types.enum [ "electrs" "fulcrum" ];
         default = "electrs";
-        description = mdDoc ''
+        description = ''
           The Electrum server to use for fetching address information.
 
           Possible options:
@@ -104,7 +104,7 @@ let
             CLEARNET_URL = "https://myserver.org/prices";
           };
         };
-        description = mdDoc ''
+        description = ''
           Mempool backend settings.
           See here for possible options:
           https://github.com/mempool/mempool/blob/master/backend/src/config.ts
@@ -114,24 +114,24 @@ let
         name = mkOption {
           type = types.str;
           default = "mempool";
-          description = mdDoc "Database name.";
+          description = "Database name.";
         };
       };
       package = mkOption {
         type = types.package;
         default = nbPkgs.mempool-backend;
         defaultText = "config.nix-bitcoin.pkgs.mempool-backend";
-        description = mdDoc "The package providing mempool binaries.";
+        description = "The package providing mempool binaries.";
       };
       user = mkOption {
         type = types.str;
         default = "mempool";
-        description = mdDoc "The user as which to run Mempool.";
+        description = "The user as which to run Mempool.";
       };
       group = mkOption {
         type = types.str;
         default = cfg.user;
-        description = mdDoc "The group as which to run Mempool.";
+        description = "The group as which to run Mempool.";
       };
       tor = nbLib.tor;
     };

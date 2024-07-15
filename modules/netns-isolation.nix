@@ -8,7 +8,7 @@ let
     addressblock = mkOption {
       type = types.ints.u8;
       default = 1;
-      description = mdDoc ''
+      description = ''
         The address block N in 169.254.N.0/24, used as the prefix for netns addresses.
       '';
     };
@@ -20,7 +20,7 @@ let
           id = mkOption {
             # TODO: Assert uniqueness
             type = types.ints.between 11 255;
-            description = mdDoc ''
+            description = ''
               id for the netns, used for the IP address host part and
               for naming the interfaces. Must be unique. Must be greater than 10.
             '';
@@ -35,7 +35,7 @@ let
 
     allowedUser = mkOption {
       type = types.str;
-      description = mdDoc ''
+      description = ''
         User that is allowed to execute commands in the service network namespaces.
         The user's group is also authorized.
       '';
@@ -45,13 +45,13 @@ let
     netns = mkOption {
       readOnly = true;
       default = netns;
-      description = mdDoc "Exposes netns parameters.";
+      description = "Exposes netns parameters.";
     };
 
     bridgeIp = mkOption {
       readOnly = true;
       default = bridgeIp;
-      description = mdDoc "IP of the netns bridge interface.";
+      description = "IP of the netns bridge interface.";
     };
   };
 

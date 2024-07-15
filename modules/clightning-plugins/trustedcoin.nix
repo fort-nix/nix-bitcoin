@@ -10,13 +10,13 @@ let cfg = config.services.clightning.plugins.trustedcoin; in
       type = types.package;
       default = config.nix-bitcoin.pkgs.trustedcoin;
       defaultText = "config.nix-bitcoin.pkgs.trustedcoin";
-      description = mdDoc "The package providing trustedcoin binaries.";
+      description = "The package providing trustedcoin binaries.";
     };
 
     tor.proxy = mkOption {
       type = types.bool;
       default = config.services.clightning.tor.proxy;
-      description = mdDoc "Whether to proxy outgoing connections with Tor.";
+      description = "Whether to proxy outgoing connections with Tor.";
     };
   };
 

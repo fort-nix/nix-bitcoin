@@ -6,7 +6,7 @@ let
     enable = mkOption {
       type = types.bool;
       default = false;
-      description = mdDoc ''
+      description = ''
         Enable fulcrum, an Electrum server implemented in C++.
 
         Compared to electrs, fulcrum has a 3x larger database size but
@@ -23,17 +23,17 @@ let
     address = mkOption {
       type = types.str;
       default = "127.0.0.1";
-      description = mdDoc "Address to listen for RPC connections.";
+      description = "Address to listen for RPC connections.";
     };
     port = mkOption {
       type = types.port;
       default = 50001;
-      description = mdDoc "Port to listen for RPC connections.";
+      description = "Port to listen for RPC connections.";
     };
     dataDir = mkOption {
       type = types.path;
       default = "/var/lib/fulcrum";
-      description = mdDoc "The data directory for fulcrum.";
+      description = "The data directory for fulcrum.";
     };
     extraConfig = mkOption {
       type = types.lines;
@@ -41,7 +41,7 @@ let
       example = ''
         peering = true
       '';
-      description = mdDoc ''
+      description = ''
         Extra lines appended to the configuration file.
 
         See all available options at
@@ -51,12 +51,12 @@ let
     user = mkOption {
       type = types.str;
       default = "fulcrum";
-      description = mdDoc "The user as which to run fulcrum.";
+      description = "The user as which to run fulcrum.";
     };
     group = mkOption {
       type = types.str;
       default = cfg.user;
-      description = mdDoc "The group as which to run fulcrum.";
+      description = "The group as which to run fulcrum.";
     };
     tor.enforce = nbLib.tor.enforce;
   };

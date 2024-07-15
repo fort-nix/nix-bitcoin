@@ -25,7 +25,7 @@ let
     mkOption {
       type = types.nullOr types.str;
       default = null;
-      description = mdDoc "Endpoint for ${name}";
+      description = "Endpoint for ${name}";
     };
 
   setEndpoint = ep:

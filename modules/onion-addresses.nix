@@ -12,7 +12,7 @@ let
     access = mkOption {
       type = with types; attrsOf (listOf str);
       default = {};
-      description = mdDoc ''
+      description = ''
         This option controls who is allowed to access onion addresses.
         For example, the following allows user 'myuser' to access bitcoind
         and clightning onion addresses:
@@ -28,7 +28,7 @@ let
     services = mkOption {
       type = with types; listOf str;
       default = [];
-      description = mdDoc ''
+      description = ''
         Services that can access their onion address via file
         {file}`/var/lib/onion-addresses/<service>`
         The file is readable only by the service user.

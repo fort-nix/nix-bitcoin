@@ -6,21 +6,21 @@ let
     ledger = mkOption {
       type = types.bool;
       default = false;
-      description = mdDoc ''
+      description = ''
         If enabled, the ledger udev rules will be installed.
       '';
     };
     trezor = mkOption {
       type = types.bool;
       default = false;
-      description = mdDoc ''
+      description = ''
         If enabled, the trezor udev rules will be installed.
       '';
     };
     group = mkOption {
       type = types.str;
       default = "hardware-wallets";
-      description = mdDoc ''
+      description = ''
         Group the hardware wallet udev rules apply to.
       '';
     };
