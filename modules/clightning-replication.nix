@@ -209,7 +209,7 @@ in {
     nix-bitcoin = mkMerge [
       (mkIf useSshfs {
         secrets.clightning-replication-ssh-key = {
-          user = user;
+          inherit user;
           permissions = "400";
         };
         generateSecretsCmds.clightning-replication-ssh-key = ''

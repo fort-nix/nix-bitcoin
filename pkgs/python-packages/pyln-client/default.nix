@@ -2,10 +2,8 @@
 
 buildPythonPackageWithDepsCheck rec {
   pname = "pyln-client";
-  version = clightning.version;
+  inherit (clightning) src version;
   format = "pyproject";
-
-  inherit (clightning) src;
 
   nativeBuildInputs = [ poetry-core ];
 

@@ -16,7 +16,7 @@ stdenvNoCC.mkDerivation ({
   name = "${src.name}-node_modules";
   nativeBuildInputs = [
     makeWrapper
-    (if args ? nodejs then args.nodejs else nodejs)
+    (args.nodejs or nodejs)
   ];
 
   outputHashMode =  "recursive";

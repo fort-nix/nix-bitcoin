@@ -24,7 +24,7 @@ buildPythonPackage rec {
 
   meta = with lib; {
     description = "Twisted bindings for ZeroMQ";
-    homepage = https://github.com/smira/txZMQ;
+    homepage = "https://github.com/smira/txZMQ";
     license = licenses.gpl2;
   };
 }

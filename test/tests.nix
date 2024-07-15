@@ -12,9 +12,11 @@ let
       nixBitcoinModule
       {
         # Features required by the Python test suite
-        nix-bitcoin.secretsDir = "/secrets";
-        nix-bitcoin.generateSecrets = true;
-        nix-bitcoin.operator.enable = true;
+        nix-bitcoin = {
+          secretsDir = "/secrets";
+          generateSecrets = true;
+          operator.enable = true;
+        };
         environment.systemPackages = with pkgs; [ jq ];
       }
     ];

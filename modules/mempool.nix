@@ -269,7 +269,7 @@ in {
         DATABASE = cfg.database.name;
         SOCKET = "/run/mysqld/mysqld.sock";
       };
-    } // optionalAttrs (cfg.tor.proxy) {
+    } // optionalAttrs cfg.tor.proxy {
       # Use Tor for rate fetching
       SOCKS5PROXY = {
         ENABLED = true;
