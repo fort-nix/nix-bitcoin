@@ -9,7 +9,7 @@ task:
 
   container:
     # Defined in https://github.com/nix-community/docker-nixpkgs
-    image: nixpkgs/nix-flakes:nixos-23.11
+    image: nixpkgs/nix-flakes:nixos-24.05
 
   matrix:
     - name: modules_test
