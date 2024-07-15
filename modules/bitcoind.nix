@@ -373,16 +373,20 @@ in {
       "d '${cfg.dataDir}' 0770 ${cfg.user} ${cfg.group} - -"
     ];
 
-    systemd.services.bitcoind = {
-      # Use `wants` instead of `requires` so that bitcoind and all dependent services
-      # are not restarted when the secrets target restarts.
-      # The secrets target always restarts when deploying with one of the methods
-      # in ./deployment.
-      #
-      # TODO-EXTERNAL: Instead of `wants`, use a future systemd dependency type
-      # that propagates initial start failures but no restarts
-      wants = [ "nix-bitcoin-secrets.target" ];
-      after = [ "network-online.target" "nix-bitcoin-secrets.target" ];
+    systemd.services.bitcoind = rec {
+      wants = [
+        "network-online.target"
+        # Use `wants` instead of `requires` for `nix-bitcoin-secrets.target`
+        # so that bitcoind and all dependent services are not restarted when
+        # the secrets target restarts.
+        # The secrets target always restarts when deploying with one of the methods
+        # in ./deployment.
+        #
+        # TODO-EXTERNAL: Instead of `wants`, use a future systemd dependency type
+        # that propagates initial start failures but no restarts
+        "nix-bitcoin-secrets.target"
+      ];
+      after = wants;
       wantedBy = [ "multi-user.target" ];
 
       preStart = let
