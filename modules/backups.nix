@@ -52,7 +52,7 @@ let
   # Potential backup file paths are matched against filelist
   # entries from top to bottom.
   # The first match determines inclusion or exclusion.
-  filelist = builtins.toFile "filelist.txt" ''
+  includeFileList = builtins.toFile "filelist.txt" ''
     ${builtins.concatStringsSep "\n" cfg.extraFiles}
 
     ${optionalString (!cfg.with-bulk-data) ''
@@ -95,9 +95,7 @@ in {
 
       services.duplicity = {
         enable = true;
-        extraFlags = [
-          "--include-filelist" "${filelist}"
-        ];
+        inherit includeFileList;
         fullIfOlderThan = mkDefault "1M";
         targetUrl = cfg.destination;
         frequency = cfg.frequency;

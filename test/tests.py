@@ -355,7 +355,7 @@ def _():
     # Files in backup and /var/lib should be identical
     assert_matches(
         f"{run_duplicity} verify --archive-dir /var/lib/duplicity file:///var/lib/localBackups /var/lib",
-        "0 differences found",
+        "no sync needed",
     )
     # Backup should include important files
     files = {
