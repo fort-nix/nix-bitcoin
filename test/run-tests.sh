@@ -263,7 +263,7 @@ isNixVersionGreaterEqual_2_15() {
 }
 
 flake() {
-    nix flake check "$scriptDir/.."
+    nix flake check --all-systems "$scriptDir/.."
 }
 
 # Test generating module documentation for search.nixos.org
