@@ -123,7 +123,7 @@ c nodeinfo
 
 case ${1:-} in
     -i|--interactive)
-        . start-bash-session.sh
+        . ./start-bash-session.sh
         ;;
 esac
 
