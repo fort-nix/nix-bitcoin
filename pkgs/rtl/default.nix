@@ -5,7 +5,6 @@
 , fetchNodeModules
 , fetchpatch
 , fetchurl
-, applyPatches
 , makeWrapper
 }:
 let self = stdenvNoCC.mkDerivation {

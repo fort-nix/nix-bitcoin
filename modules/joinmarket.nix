@@ -7,7 +7,7 @@ let
     payjoinAddress = mkOption {
       type = types.str;
       default = "127.0.0.1";
-      description = mdDoc ''
+      description = ''
         The address where payjoin onion connections are forwarded to.
         This address is never used directly, it only serves as the internal endpoint
         for the payjoin onion service.
@@ -18,12 +18,12 @@ let
     payjoinPort = mkOption {
       type = types.port;
       default = 64180; # A random private port
-      description = mdDoc "The port corresponding to option {option}`payjoinAddress`.";
+      description = "The port corresponding to option {option}`payjoinAddress`.";
     };
     messagingAddress = mkOption {
       type = types.str;
       default = "127.0.0.1";
-      description = mdDoc ''
+      description = ''
         The address where messaging onion connections are forwarded to.
         This address is never used directly, it only serves as the internal endpoint
         for the messaging onion service.
@@ -33,29 +33,29 @@ let
     messagingPort = mkOption {
       type = types.port;
       default = 64181; # payjoinPort + 1
-      description = mdDoc "The port corresponding to option {option}`messagingAddress`.";
+      description = "The port corresponding to option {option}`messagingAddress`.";
     };
     dataDir = mkOption {
       type = types.path;
       default = "/var/lib/joinmarket";
-      description = mdDoc "The data directory for JoinMarket.";
+      description = "The data directory for JoinMarket.";
     };
     rpcWalletFile = mkOption {
       type = types.nullOr types.str;
       default = "jm_wallet";
-      description = mdDoc ''
+      description = ''
         Name of the watch-only bitcoind wallet the JoinMarket addresses are imported to.
       '';
     };
     user = mkOption {
       type = types.str;
       default = "joinmarket";
-      description = mdDoc "The user as which to run JoinMarket.";
+      description = "The user as which to run JoinMarket.";
     };
     group = mkOption {
       type = types.str;
       default = cfg.user;
-      description = mdDoc "The group as which to run JoinMarket.";
+      description = "The group as which to run JoinMarket.";
     };
     cli = mkOption {
       default = cli;
@@ -77,56 +77,56 @@ let
       ordertype = mkOption {
         type = types.enum [ "reloffer" "absoffer" ];
         default = "reloffer";
-        description = mdDoc ''
+        description = ''
           Which fee type to actually use.
         '';
       };
       cjfee_a = mkOption {
         type = types.ints.unsigned;
         default = 500;
-        description = mdDoc ''
+        description = ''
           Absolute offer fee you wish to receive for coinjoins (cj) in Satoshis.
         '';
       };
       cjfee_r = mkOption {
         type = types.float;
         default = 0.00002;
-        description = mdDoc ''
+        description = ''
           Relative offer fee you wish to receive based on a cj's amount.
         '';
       };
       cjfee_factor = mkOption {
         type = types.float;
         default = 0.1;
-        description = mdDoc ''
+        description = ''
           Variance around the average cj fee.
         '';
       };
       txfee = mkOption {
         type = types.ints.unsigned;
         default = 100;
-        description = mdDoc ''
+        description = ''
           The average transaction fee you're adding to coinjoin transactions.
         '';
       };
       txfee_contribution_factor = mkOption {
         type = types.float;
         default = 0.3;
-        description = mdDoc ''
+        description = ''
           Variance around the average tx fee.
         '';
       };
       minsize = mkOption {
         type = types.ints.unsigned;
         default = 100000;
-        description = mdDoc ''
+        description = ''
           Minimum size of your cj offer in Satoshis. Lower cj amounts will be disregarded.
         '';
       };
       size_factor = mkOption {
         type = types.float;
         default = 0.1;
-        description = mdDoc ''
+        description = ''
           Variance around all offer sizes.
         '';
       };

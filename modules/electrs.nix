@@ -7,37 +7,37 @@ let
     address = mkOption {
       type = types.str;
       default = "127.0.0.1";
-      description = mdDoc "Address to listen for RPC connections.";
+      description = "Address to listen for RPC connections.";
     };
     port = mkOption {
       type = types.port;
       default = 50001;
-      description = mdDoc "Port to listen for RPC connections.";
+      description = "Port to listen for RPC connections.";
     };
     dataDir = mkOption {
       type = types.path;
       default = "/var/lib/electrs";
-      description = mdDoc "The data directory for electrs.";
+      description = "The data directory for electrs.";
     };
     monitoringPort = mkOption {
       type = types.port;
       default = 4224;
-      description = mdDoc "Prometheus monitoring port.";
+      description = "Prometheus monitoring port.";
     };
     extraArgs = mkOption {
       type = types.separatedString " ";
       default = "";
-      description = mdDoc "Extra command line arguments passed to electrs.";
+      description = "Extra command line arguments passed to electrs.";
     };
     user = mkOption {
       type = types.str;
       default = "electrs";
-      description = mdDoc "The user as which to run electrs.";
+      description = "The user as which to run electrs.";
     };
     group = mkOption {
       type = types.str;
       default = cfg.user;
-      description = mdDoc "The group as which to run electrs.";
+      description = "The group as which to run electrs.";
     };
     tor.enforce = nbLib.tor.enforce;
   };

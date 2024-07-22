@@ -12,7 +12,7 @@ let
       type = with types; nullOr str;
       default = null;
       example = "0.0.92";
-      description = mdDoc ''
+      description = ''
         The nix-bitcoin release version that your config is compatible with.
 
         When upgrading to a backwards-incompatible release, nix-bitcoin will throw an

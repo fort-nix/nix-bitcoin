@@ -8,12 +8,12 @@ let
       address = mkOption {
         type = types.str;
         default = "127.0.0.1";
-        description = mdDoc "Address to listen on.";
+        description = "Address to listen on.";
       };
       port = mkOption {
         type = types.port;
         default = 23000;
-        description = mdDoc "Port to listen on.";
+        description = "Port to listen on.";
       };
       package = mkOption {
         type = types.package;
@@ -22,38 +22,38 @@ let
                   else
                     config.nix-bitcoin.pkgs.btcpayserver;
         defaultText = "(See source)";
-        description = mdDoc "The package providing btcpayserver binaries.";
+        description = "The package providing btcpayserver binaries.";
       };
       dataDir = mkOption {
         type = types.path;
         default = "/var/lib/btcpayserver";
-        description = mdDoc "The data directory for btcpayserver.";
+        description = "The data directory for btcpayserver.";
       };
       lightningBackend = mkOption {
         type = types.nullOr (types.enum [ "clightning" "lnd" ]);
         default = null;
-        description = mdDoc "The lightning node implementation to use.";
+        description = "The lightning node implementation to use.";
       };
       lbtc = mkOption {
         type = types.bool;
         default = false;
-        description = mdDoc "Enable liquid support in btcpayserver.";
+        description = "Enable liquid support in btcpayserver.";
       };
       rootpath = mkOption {
         type = types.nullOr types.str;
         default = null;
         example = "btcpayserver";
-        description = mdDoc "The prefix for root-relative btcpayserver URLs.";
+        description = "The prefix for root-relative btcpayserver URLs.";
       };
       user = mkOption {
         type = types.str;
         default = "btcpayserver";
-        description = mdDoc "The user as which to run btcpayserver.";
+        description = "The user as which to run btcpayserver.";
       };
       group = mkOption {
         type = types.str;
         default = cfg.btcpayserver.user;
-        description = mdDoc "The group as which to run btcpayserver.";
+        description = "The group as which to run btcpayserver.";
       };
       tor.enforce = nbLib.tor.enforce;
     };
@@ -63,7 +63,7 @@ let
         # This option is only used by netns-isolation
         internal = true;
         default = cfg.btcpayserver.enable;
-        description = mdDoc ''
+        description = ''
           nbxplorer is always enabled when btcpayserver is enabled.
         '';
       };
@@ -71,32 +71,32 @@ let
         type = types.package;
         default = config.nix-bitcoin.pkgs.nbxplorer;
         defaultText = "config.nix-bitcoin.pkgs.nbxplorer";
-        description = mdDoc "The package providing nbxplorer binaries.";
+        description = "The package providing nbxplorer binaries.";
       };
       address = mkOption {
         type = types.str;
         default = "127.0.0.1";
-        description = mdDoc "Address to listen on.";
+        description = "Address to listen on.";
       };
       port = mkOption {
         type = types.port;
         default = 24444;
-        description = mdDoc "Port to listen on.";
+        description = "Port to listen on.";
       };
       dataDir = mkOption {
         type = types.path;
         default = "/var/lib/nbxplorer";
-        description = mdDoc "The data directory for nbxplorer.";
+        description = "The data directory for nbxplorer.";
       };
       user = mkOption {
         type = types.str;
         default = "nbxplorer";
-        description = mdDoc "The user as which to run nbxplorer.";
+        description = "The user as which to run nbxplorer.";
       };
       group = mkOption {
         type = types.str;
         default = cfg.nbxplorer.user;
-        description = mdDoc "The group as which to run nbxplorer.";
+        description = "The group as which to run nbxplorer.";
       };
       tor.enforce = nbLib.tor.enforce;
     };

@@ -7,47 +7,47 @@ let
     address = mkOption {
       type = types.str;
       default = "127.0.0.1";
-      description = mdDoc "Address to listen for peer connections";
+      description = "Address to listen for peer connections";
     };
     port = mkOption {
       type = types.port;
       default = 9735;
-      description = mdDoc "Port to listen for peer connections";
+      description = "Port to listen for peer connections";
     };
     rpcAddress = mkOption {
       type = types.str;
       default = "127.0.0.1";
-      description = mdDoc "Address to listen for RPC connections.";
+      description = "Address to listen for RPC connections.";
     };
     rpcPort = mkOption {
       type = types.port;
       default = 10009;
-      description = mdDoc "Port to listen for gRPC connections.";
+      description = "Port to listen for gRPC connections.";
     };
     restAddress = mkOption {
       type = types.str;
       default = "127.0.0.1";
-      description = mdDoc "Address to listen for REST connections.";
+      description = "Address to listen for REST connections.";
     };
     restPort = mkOption {
       type = types.port;
       default = 8080;
-      description = mdDoc "Port to listen for REST connections.";
+      description = "Port to listen for REST connections.";
     };
     dataDir = mkOption {
       type = types.path;
       default = "/var/lib/lnd";
-      description = mdDoc "The data directory for LND.";
+      description = "The data directory for LND.";
     };
     networkDir = mkOption {
       readOnly = true;
       default = "${cfg.dataDir}/chain/bitcoin/${bitcoind.network}";
-      description = mdDoc "The network data directory.";
+      description = "The network data directory.";
     };
     tor-socks = mkOption {
       type = types.nullOr types.str;
       default = if cfg.tor.proxy then config.nix-bitcoin.torClientAddressWithPort else null;
-      description = mdDoc "Socks proxy for connecting to Tor nodes";
+      description = "Socks proxy for connecting to Tor nodes";
     };
     macaroons = mkOption {
       default = {};
@@ -55,18 +55,18 @@ let
         options = {
           user = mkOption {
             type = types.str;
-            description = mdDoc "User who owns the macaroon.";
+            description = "User who owns the macaroon.";
           };
           permissions = mkOption {
             type = types.str;
             example = ''
               {"entity":"info","action":"read"},{"entity":"onchain","action":"read"}
             '';
-            description = mdDoc "List of granted macaroon permissions.";
+            description = "List of granted macaroon permissions.";
           };
         };
       });
-      description = mdDoc ''
+      description = ''
         Extra macaroon definitions.
       '';
     };
@@ -75,7 +75,7 @@ let
         type = with types; listOf str;
         default = [];
         example = [ "60.100.0.1" ];
-        description = mdDoc ''
+        description = ''
           Extra `subjectAltName` IPs added to the certificate.
           This works the same as lnd option {option}`tlsextraip`.
         '';
@@ -84,7 +84,7 @@ let
         type = with types; listOf str;
         default = [];
         example = [ "example.com" ];
-        description = mdDoc ''
+        description = ''
           Extra `subjectAltName` domain names added to the certificate.
           This works the same as lnd option {option}`tlsextradomain`.
         '';
@@ -96,7 +96,7 @@ let
       example = ''
         autopilot.active=1
       '';
-      description = mdDoc ''
+      description = ''
         Extra lines appended to {file}`lnd.conf`.
         See here for all available options:
         https://github.com/lightningnetwork/lnd/blob/master/sample-lnd.conf
@@ -106,7 +106,7 @@ let
       type = types.package;
       default = config.nix-bitcoin.pkgs.lnd;
       defaultText = "config.nix-bitcoin.pkgs.lnd";
-      description = mdDoc "The package providing lnd binaries.";
+      description = "The package providing lnd binaries.";
     };
     cli = mkOption {
       default = pkgs.writers.writeBashBin "lncli"
@@ -118,12 +118,12 @@ let
             --macaroonpath '${networkDir}/admin.macaroon' "$@"
         '';
       defaultText = "(See source)";
-      description = mdDoc "Binary to connect with the lnd instance.";
+      description = "Binary to connect with the lnd instance.";
     };
     getPublicAddressCmd = mkOption {
       type = types.str;
       default = "";
-      description = mdDoc ''
+      description = ''
         Bash expression which outputs the public service address to announce to peers.
         If left empty, no address is announced.
       '';
@@ -131,17 +131,17 @@ let
     user = mkOption {
       type = types.str;
       default = "lnd";
-      description = mdDoc "The user as which to run LND.";
+      description = "The user as which to run LND.";
     };
     group = mkOption {
       type = types.str;
       default = cfg.user;
-      description = mdDoc "The group as which to run LND.";
+      description = "The group as which to run LND.";
     };
     certPath = mkOption {
       readOnly = true;
       default = "${secretsDir}/lnd-cert";
-      description = mdDoc "LND TLS certificate path.";
+      description = "LND TLS certificate path.";
     };
     tor = nbLib.tor;
   };

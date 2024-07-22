@@ -7,24 +7,24 @@ let
     address = mkOption {
       type = types.str;
       default = "127.0.0.1";
-      description = mdDoc "HTTP server address.";
+      description = "HTTP server address.";
     };
     port = mkOption {
       type = types.port;
       default = 3000;
-      description = mdDoc "HTTP server port.";
+      description = "HTTP server port.";
     };
     dataDir = mkOption {
       type = types.path;
       default = "/var/lib/rtl";
-      description = mdDoc "The data directory for RTL.";
+      description = "The data directory for RTL.";
     };
     nodes = {
       clightning = {
         enable = mkOption {
           type = types.bool;
           default = false;
-          description = mdDoc "Enable the clightning node interface.";
+          description = "Enable the clightning node interface.";
         };
         extraConfig = mkOption {
           type = with types; attrsOf anything;
@@ -33,7 +33,7 @@ let
             Settings.userPersona = "MERCHANT";
             Settings.logLevel = "DEBUG";
           };
-          description = mdDoc ''
+          description = ''
             Extra clightning node configuration.
             See here for all available options:
             https://github.com/Ride-The-Lightning/RTL/blob/master/.github/docs/Application_configurations.md
@@ -44,12 +44,12 @@ let
         enable = mkOption {
           type = types.bool;
           default = false;
-          description = mdDoc "Enable the lnd node interface.";
+          description = "Enable the lnd node interface.";
         };
         loop = mkOption {
           type = types.bool;
           default = false;
-          description = mdDoc "Enable swaps with lightning-loop.";
+          description = "Enable swaps with lightning-loop.";
         };
         extraConfig = mkOption {
           type = with types; attrsOf anything;
@@ -58,7 +58,7 @@ let
             Settings.userPersona = "MERCHANT";
             Settings.logLevel = "DEBUG";
           };
-          description = mdDoc ''
+          description = ''
             Extra lnd node configuration.
             See here for all available options:
             https://github.com/Ride-The-Lightning/RTL/blob/master/.github/docs/Application_configurations.md
@@ -68,7 +68,7 @@ let
       reverseOrder = mkOption {
         type = types.bool;
         default = false;
-        description = mdDoc ''
+        description = ''
           Reverse the order of nodes shown in the UI.
           By default, clightning is shown before lnd.
         '';
@@ -77,13 +77,13 @@ let
     nightTheme = mkOption {
       type = types.bool;
       default = false;
-      description = mdDoc "Enable the Night UI Theme.";
+      description = "Enable the Night UI Theme.";
     };
     extraCurrency = mkOption {
       type = with types; nullOr str;
       default = null;
       example = "USD";
-      description = mdDoc ''
+      description = ''
         Currency code (ISO 4217) of the extra currency used for displaying balances.
         When set, this option enables online currency rate fetching.
         Warning: Rate fetching requires outgoing clearnet connections, so option
@@ -93,12 +93,12 @@ let
     user = mkOption {
       type = types.str;
       default = "rtl";
-      description = mdDoc "The user as which to run RTL.";
+      description = "The user as which to run RTL.";
     };
     group = mkOption {
       type = types.str;
       default = cfg.user;
-      description = mdDoc "The group as which to run RTL.";
+      description = "The group as which to run RTL.";
     };
     tor.enforce = nbLib.tor.enforce;
   };

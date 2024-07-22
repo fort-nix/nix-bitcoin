@@ -10,7 +10,7 @@ with lib;
       noConnections = mkOption {
         type = types.bool;
         default = !config.test.container.enableWAN;
-        description = mdDoc ''
+        description = ''
           Whether services should be configured to not connect to external hosts.
           This can silence some warnings while running the test in an offline environment.
         '';
@@ -18,7 +18,7 @@ with lib;
       data = mkOption {
         type = types.attrs;
         default = {};
-        description = mdDoc ''
+        description = ''
           Attrs that are available in the Python test script under the global
           dictionary variable {var}`test_data`. The data is exported via JSON.
         '';

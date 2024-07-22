@@ -13,7 +13,11 @@ cd "${BASH_SOURCE[0]%/*}"
 nbFlake=$(realpath ../..)
 
 # shellcheck disable=SC2016
-PATH=$(nix shell -L .#{flake-info,bubblewrap} -c sh -c 'echo $PATH')
+PATH=$(nix shell -L .#{flake-info,bubblewrap,jq} -c sh -c 'echo $PATH')
+
+# flake-info uses `nixpkgs` from NIX_PATH
+NIX_PATH="nixpkgs=$(nix flake metadata --json --inputs-from "$nbFlake" nixpkgs | jq -r .path)"
+export NIX_PATH
 
 tmpDir=$(mktemp -d /tmp/nix-bitcoin-flake-info.XXX)
 trap 'rm -rf $tmpDir' EXIT

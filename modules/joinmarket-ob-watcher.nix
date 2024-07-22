@@ -7,27 +7,27 @@ let
     address = mkOption {
       type = types.str;
       default = "127.0.0.1";
-      description = mdDoc "HTTP server address.";
+      description = "HTTP server address.";
     };
     port = mkOption {
       type = types.port;
       default = 62601;
-      description = mdDoc "HTTP server port.";
+      description = "HTTP server port.";
     };
     dataDir = mkOption {
       readOnly = true;
       default = "/var/lib/joinmarket-ob-watcher";
-      description = mdDoc "The data directory for JoinMarket orderbook watcher.";
+      description = "The data directory for JoinMarket orderbook watcher.";
     };
     user = mkOption {
       type = types.str;
       default = "joinmarket-ob-watcher";
-      description = mdDoc "The user as which to run JoinMarket.";
+      description = "The user as which to run JoinMarket.";
     };
     group = mkOption {
       type = types.str;
       default = cfg.user;
-      description = mdDoc "The group as which to run JoinMarket.";
+      description = "The group as which to run JoinMarket.";
     };
     # This option is only used by netns-isolation.
     # Tor is always enabled.

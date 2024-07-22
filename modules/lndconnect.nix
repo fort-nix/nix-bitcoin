@@ -7,7 +7,7 @@ let
       enable = mkOption {
         type = types.bool;
         default = false;
-        description = mdDoc ''
+        description = ''
           Add a `lndconnect` binary to the system environment which prints
           connection info for lnd clients.
           See: https://github.com/LN-Zap/lndconnect
@@ -25,7 +25,7 @@ let
       onion = mkOption {
         type = types.bool;
         default = false;
-        description = mdDoc ''
+        description = ''
           Create an onion service for the lnd REST server,
           which is used by lndconnect.
         '';
@@ -37,7 +37,7 @@ let
       enable = mkOption {
         type = types.bool;
         default = false;
-        description = mdDoc ''
+        description = ''
         Add a `lndconnect-clightning` binary to the system environment which prints
         connection info for clightning clients.
         See: https://github.com/LN-Zap/lndconnect
@@ -55,7 +55,7 @@ let
       onion = mkOption {
         type = types.bool;
         default = false;
-        description = mdDoc ''
+        description = ''
           Create an onion service for the clightning REST server,
           which is used by lndconnect.
         '';
@@ -65,7 +65,7 @@ let
     nix-bitcoin.mkLndconnect = mkOption {
       readOnly = true;
       default = mkLndconnect;
-      description = mdDoc ''
+      description = ''
         A function to create a lndconnect binary.
         See the source for further details.
       '';

@@ -1,7 +1,7 @@
 { version
 , src
 , lib
-, buildPythonPackageWithDepsCheck
+, buildPythonPackage
 , pythonOlder
 , pythonAtLeast
 , pytestCheckHook
@@ -24,7 +24,7 @@
 , pyopenssl
 }:
 
-buildPythonPackageWithDepsCheck rec {
+buildPythonPackage rec {
   pname = "joinmarket";
   inherit version src;
   format = "pyproject";
@@ -62,12 +62,22 @@ buildPythonPackageWithDepsCheck rec {
     pyopenssl
   ];
 
+  # TODO-EXTERNAL:
+  # Remove this when fixed upstream.
+  #
+  # Fix the following error during checkPhase:
+  #   File "/nix/store/...-python3.11-pytest-8.1.1/lib/python3.11/site-packages/_pytest/config/argparsing.py", line 133, in _getparser
+  #     arggroup.add_argument(*n, **a)
+  #   File "/nix/store/...-python3-3.11.9/lib/python3.11/argparse.py", line 1460, in add_argument
+  #     raise ValueError('%r is not callable' % (type_func,))
+  #   ValueError: 'int' is not callable
+  patches = [ ./fix-conftest-arg-type-error.patch ];
+
   postPatch = ''
     substituteInPlace pyproject.toml \
-      --replace-fail 'txtorcon==23.11.0' 'txtorcon==23.5.0' \
-      --replace-fail 'twisted==23.10.0' 'twisted==23.8.0' \
-      --replace-fail 'service-identity==21.1.0' 'service-identity==23.1.0' \
-      --replace-fail 'cryptography==41.0.6' 'cryptography==41.0.3'
+      --replace-fail 'twisted==23.10.0' 'twisted==24.3.0' \
+      --replace-fail 'service-identity==21.1.0' 'service-identity==24.1.0' \
+      --replace-fail 'cryptography==41.0.6' 'cryptography==42.0.5'
 
     # Modify pyproject.toml to include only specific modules. Do not include 'jmqtui'.
     sed -i '/^\[tool.setuptools.packages.find\]/a include = ["jmbase", "jmbitcoin", "jmclient", "jmdaemon"]' pyproject.toml

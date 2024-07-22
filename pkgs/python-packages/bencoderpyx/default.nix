@@ -1,6 +1,6 @@
-{ lib, buildPythonPackageWithDepsCheck, fetchurl, cython, pytest, coverage }:
+{ lib, buildPythonPackage, fetchurl, cython, pytest, coverage }:
 
-buildPythonPackageWithDepsCheck rec {
+buildPythonPackage rec {
   pname = "bencoder.pyx";
   version = "3.0.1";
 

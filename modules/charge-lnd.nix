@@ -9,14 +9,14 @@ let
       type = listOf str;
       default = [];
       example = [ "--verbose" "--dry-run" ];
-      description = mdDoc "Extra flags to pass to the charge-lnd command.";
+      description = "Extra flags to pass to the charge-lnd command.";
     };
 
     interval = mkOption {
       type = str;
       default = "*-*-* 04:00:00";
       example = "hourly";
-      description = mdDoc ''
+      description = ''
         Systemd calendar expression when to adjust fees.
 
         See {man}`systemd.time(7)` for possible values.
@@ -28,7 +28,7 @@ let
     randomDelay = mkOption {
       type = str;
       default = "1h";
-      description = mdDoc ''
+      description = ''
         Random delay to add to scheduled time.
       '';
     };
@@ -54,7 +54,7 @@ let
         [default]
         strategy = ignore
       '';
-      description = mdDoc ''
+      description = ''
         Policy definitions in INI format.
 
         See https://github.com/accumulator/charge-lnd/blob/master/README.md#usage

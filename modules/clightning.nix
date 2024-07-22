@@ -7,24 +7,24 @@ let
     address = mkOption {
       type = types.str;
       default = "127.0.0.1";
-      description = mdDoc "Address to listen for peer connections.";
+      description = "Address to listen for peer connections.";
     };
     port = mkOption {
       type = types.port;
       default = 9735;
-      description = mdDoc "Port to listen for peer connections.";
+      description = "Port to listen for peer connections.";
     };
     proxy = mkOption {
       type = types.nullOr types.str;
       default = if cfg.tor.proxy then config.nix-bitcoin.torClientAddressWithPort else null;
-      description = mdDoc ''
+      description = ''
         Socks proxy for connecting to Tor nodes (or for all connections if option always-use-proxy is set).
       '';
     };
     always-use-proxy = mkOption {
       type = types.bool;
       default = cfg.tor.proxy;
-      description = mdDoc ''
+      description = ''
         Always use the proxy, even to connect to normal IP addresses.
         You can still connect to Unix domain sockets manually.
         This also disables all DNS lookups, to avoid leaking address information.
@@ -33,18 +33,18 @@ let
     dataDir = mkOption {
       type = types.path;
       default = "/var/lib/clightning";
-      description = mdDoc "The data directory for clightning.";
+      description = "The data directory for clightning.";
     };
     networkDir = mkOption {
       readOnly = true;
       default = "${cfg.dataDir}/${network}";
-      description = mdDoc "The network data directory.";
+      description = "The network data directory.";
     };
     wallet = mkOption {
       type = types.nullOr types.str;
       default = null;
       example = "sqlite3:///var/lib/clightning/bitcoin/lightningd.sqlite3";
-      description = mdDoc ''
+      description = ''
         Wallet data scheme (sqlite3 or postgres) and location/connection
         parameters, as fully qualified data source name.
       '';
@@ -64,7 +64,7 @@ let
       example = ''
         alias=mynode
       '';
-      description = mdDoc ''
+      description = ''
         Extra lines appended to the configuration file.
 
         See all available options at
@@ -75,18 +75,18 @@ let
     user = mkOption {
       type = types.str;
       default = "clightning";
-      description = mdDoc "The user as which to run clightning.";
+      description = "The user as which to run clightning.";
     };
     group = mkOption {
       type = types.str;
       default = cfg.user;
-      description = mdDoc "The group as which to run clightning.";
+      description = "The group as which to run clightning.";
     };
     package = mkOption {
       type = types.package;
       default = nbPkgs.clightning;
       defaultText = "config.nix-bitcoin.pkgs.clightning";
-      description = mdDoc "The package providing clightning binaries.";
+      description = "The package providing clightning binaries.";
     };
     cli = mkOption {
       readOnly = true;
@@ -94,12 +94,12 @@ let
         ${cfg.package}/bin/lightning-cli --lightning-dir='${cfg.dataDir}' "$@"
       '';
       defaultText = "(See source)";
-      description = mdDoc "Binary to connect with the clightning instance.";
+      description = "Binary to connect with the clightning instance.";
     };
     getPublicAddressCmd = mkOption {
       type = types.str;
       default = "";
-      description = mdDoc ''
+      description = ''
         Bash expression which outputs the public service address to announce to peers.
         If left empty, no address is announced.
       '';

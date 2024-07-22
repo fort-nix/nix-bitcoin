@@ -6,7 +6,7 @@ let
     enable =  mkOption {
       type = types.bool;
       default = false;
-      description = mdDoc ''
+      description = ''
         Enable live replication of the clightning database.
         This prevents losing off-chain funds when the primary wallet file becomes
         inaccessible.
@@ -26,7 +26,7 @@ let
         type = types.nullOr types.str;
         default = null;
         example = "user@10.0.0.1:directory";
-        description = mdDoc ''
+        description = ''
           The SSH destination for which a SSHFS will be mounted.
           `directory` is relative to the home of `user`.
 
@@ -40,12 +40,12 @@ let
       port = mkOption {
         type = types.port;
         default = 22;
-        description = mdDoc "SSH port of the remote server.";
+        description = "SSH port of the remote server.";
       };
       sshOptions = mkOption {
         type = with types; listOf str;
         default = [ "reconnect" "ServerAliveInterval=50" ];
-        description = mdDoc "SSH options used for mounting the SSHFS.";
+        description = "SSH options used for mounting the SSHFS.";
       };
     };
     local = {
@@ -53,7 +53,7 @@ let
         type = types.nullOr types.path;
         default = null;
         example = "/var/backup/clightning";
-        description = mdDoc ''
+        description = ''
           This option can be specified instead of `sshfs.destination` to enable
           replication to a local directory.
 
@@ -69,7 +69,7 @@ let
       setupDirectory = mkOption {
         type = types.bool;
         default = true;
-        description = mdDoc ''
+        description = ''
           Create `local.directory` if it doesn't exist and set write permissions
           for the `clightning` user.
         '';
@@ -78,7 +78,7 @@ let
     encrypt = mkOption {
       type = types.bool;
       default = false;
-      description = mdDoc ''
+      description = ''
         Whether to encrypt the replicated database with gocryptfs.
         The encryption password is automatically generated and stored
         in file {file}`$secretsDir/clightning-replication-password`.

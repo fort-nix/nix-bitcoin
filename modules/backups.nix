@@ -6,7 +6,7 @@ let
     enable = mkOption {
       type = types.bool;
       default = false;
-      description = mdDoc ''
+      description = ''
         Enable backups of node data.
         This uses the NixOS duplicity service.
         To further configure the backup, you can set NixOS options `services.duplicity.*`.
@@ -16,34 +16,34 @@ let
     with-bulk-data = mkOption {
       type = types.bool;
       default = false;
-      description = mdDoc ''
+      description = ''
         Whether to also backup Bitcoin blockchain and other bulk data.
       '';
     };
     destination = mkOption {
       type = types.str;
       default = "file:///var/lib/localBackups";
-      description = mdDoc ''
+      description = ''
         Where to back up to.
       '';
     };
     frequency = mkOption {
       type = types.nullOr types.str;
       default = null;
-      description = mdDoc ''
+      description = ''
         Run backup with the given frequency. If null, do not run automatically.
       '';
     };
     postgresqlDatabases = mkOption {
       type = types.listOf types.str;
       default = [];
-      description = mdDoc "List of database names to backup.";
+      description = "List of database names to backup.";
     };
     extraFiles = mkOption {
       type = types.listOf types.str;
       default = [];
       example = [ "/var/lib/nginx" ];
-      description = mdDoc "Additional files to be appended to filelist.";
+      description = "Additional files to be appended to filelist.";
     };
   };
 
@@ -52,7 +52,7 @@ let
   # Potential backup file paths are matched against filelist
   # entries from top to bottom.
   # The first match determines inclusion or exclusion.
-  filelist = builtins.toFile "filelist.txt" ''
+  includeFileList = builtins.toFile "filelist.txt" ''
     ${builtins.concatStringsSep "\n" cfg.extraFiles}
 
     ${optionalString (!cfg.with-bulk-data) ''
@@ -95,9 +95,7 @@ in {
 
       services.duplicity = {
         enable = true;
-        extraFlags = [
-          "--include-filelist" "${filelist}"
-        ];
+        inherit includeFileList;
         fullIfOlderThan = mkDefault "1M";
         targetUrl = cfg.destination;
         frequency = cfg.frequency;

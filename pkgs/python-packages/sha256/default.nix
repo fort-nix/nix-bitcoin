@@ -1,6 +1,6 @@
-{ lib, buildPythonPackageWithDepsCheck, fetchFromGitHub, cython }:
+{ lib, buildPythonPackage, fetchFromGitHub, cython }:
 
-buildPythonPackageWithDepsCheck rec {
+buildPythonPackage rec {
   pname = "sha256";
   version = builtins.substring 0 8 src.rev;
 
