@@ -192,7 +192,6 @@ let
     no_daemon = 0
     daemon_port = 27183
     daemon_host = 127.0.0.1
-    use_ssl = false
 
     [BLOCKCHAIN]
     blockchain_source = ${bitcoind.makeNetworkName "bitcoin-rpc" "regtest"}
@@ -205,41 +204,12 @@ let
     ${messagingConfig}
 
     [LOGGING]
-    console_log_level = INFO
     color = false
 
-    [POLICY]
-    segwit = true
-    native = true
-    merge_algorithm = default
-    gaplimit = 6
-    tx_fees = 3
-    tx_fees_factor = 0.2
-    absurd_fee_per_kb = 350000
-    max_sweep_fee_change = 0.8
-    tx_broadcast = self
-    minimum_makers = 4
-    max_sats_freeze_reuse = -1
-    interest_rate = 0.015
-    bondless_makers_allowance = 0.125
-    bond_value_exponent = 1.3
-    taker_utxo_retries = 3
-    taker_utxo_age = 5
-    taker_utxo_amtpercent = 20
-    accept_commitment_broadcasts = 1
-    commit_file_location = cmtdata/commitments.json
-    commitment_list_location = cmtdata/commitmentlist
-
     [PAYJOIN]
-    payjoin_version = 1
-    disable_output_substitution = 0
-    max_additional_fee_contribution = default
-    min_fee_rate = 1.1
     onion_socks5_host = ${torAddress.addr}
     onion_socks5_port = ${toString torAddress.port}
     tor_control_host = unix:/run/tor/control
-    # Required option, but unused because `tor_control_host` is a Unix socket
-    tor_control_port = 9051
     onion_serving_host = ${cfg.payjoinAddress}
     onion_serving_port = ${toString cfg.payjoinPort}
     hidden_service_ssl = false
@@ -253,12 +223,6 @@ let
     txfee_contribution_factor = ${toString yg.txfee_contribution_factor}
     minsize = ${toString yg.minsize}
     size_factor = ${toString yg.size_factor}
-
-    [SNICKER]
-    enabled = false
-    lowest_net_gain = 0
-    servers = cn5lfwvrswicuxn3gjsxoved6l2gu5hdvwy5l3ev7kg6j7lbji2k7hqd.onion,
-    polling_interval_minutes = 60
   '';
 
    # The jm scripts create a 'logs' dir in the working dir,
