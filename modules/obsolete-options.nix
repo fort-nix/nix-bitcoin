@@ -115,7 +115,16 @@ in {
       This plugin is no longer maintained.
     '')
     [ "summary" "helpme" "prometheus" ]
-  );
+  )
+  ++
+  # 0.0.110
+  [
+    (mkRemovedOptionModule [ "services" "joinmarket" "yieldgenerator" "txfee" ] ''
+      Option `txfee` has been removed in joinmarket 0.9.3:
+      https://github.com/JoinMarket-Org/joinmarket-clientserver/blob/v0.9.3/docs/release-notes/release-notes-0.9.3.md
+    '')
+  ];
+
   config = {
     # Migrate old clightning-rest datadir from nix-bitcoin versions < 0.0.70
     systemd.services.clightning-rest-migrate-datadir = let

@@ -543,8 +543,8 @@ See [here](https://github.com/JoinMarket-Org/joinmarket-clientserver/blob/master
     services.joinmarket.yieldgenerator = {
       enable = true;
       # Optional: Add custom parameters
-      txfee = 200;
       cjfee_a = 300;
+      cjfee_r = 0.00003;
     };
     '';
     ```

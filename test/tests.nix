@@ -135,7 +135,6 @@ let
         ordertype = "absoffer";
         cjfee_a = 300;
         cjfee_r = 0.00003;
-        txfee = 200;
       };
 
       tests.nodeinfo = config.nix-bitcoin.nodeinfo.enable;

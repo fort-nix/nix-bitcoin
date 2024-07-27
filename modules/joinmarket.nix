@@ -102,13 +102,6 @@ let
           Variance around the average cj fee.
         '';
       };
-      txfee = mkOption {
-        type = types.ints.unsigned;
-        default = 100;
-        description = ''
-          The average transaction fee you're adding to coinjoin transactions.
-        '';
-      };
       txfee_contribution_factor = mkOption {
         type = types.float;
         default = 0.3;
