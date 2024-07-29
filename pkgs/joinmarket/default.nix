@@ -1,6 +1,10 @@
 { stdenv, lib, fetchFromGitHub, python3, nbPython3PackagesJoinmarket }:
 
 let
+  # Note:
+  # After updating this pkg, also update the following items in ../../modules/joinmarket.nix:
+  # - The `MESSAGING:*` sections in the config value of option `settings`.
+  #   Copy the values from `jmclient/configure.py`.
   version = "0.9.11";
   src = fetchFromGitHub {
     owner = "joinmarket-org";

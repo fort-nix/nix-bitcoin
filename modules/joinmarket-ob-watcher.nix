@@ -19,6 +19,19 @@ let
       default = "/var/lib/joinmarket-ob-watcher";
       description = "The data directory for JoinMarket orderbook watcher.";
     };
+    settings = mkOption {
+      type = with types; attrsOf anything;
+      example = {
+        LOGGING = {
+          console_log_level = "DEBUG";
+        };
+      };
+      description = ''
+        Joinmarket settings.
+        See here for possible options:
+        https://github.com/JoinMarket-Org/joinmarket-clientserver/blob/v0.9.11/src/jmclient/configure.py#L98
+      '';
+    };
     user = mkOption {
       type = types.str;
       default = "joinmarket-ob-watcher";
@@ -40,17 +53,6 @@ let
   secretsDir = config.nix-bitcoin.secretsDir;
 
   inherit (config.services) bitcoind joinmarket;
-
-  configFile = builtins.toFile "config" ''
-    [BLOCKCHAIN]
-    blockchain_source = bitcoin-rpc
-    network = ${bitcoind.network}
-    rpc_host = ${bitcoind.rpc.address}
-    rpc_port = ${toString bitcoind.rpc.port}
-    rpc_user = ${bitcoind.rpc.users.joinmarket-ob-watcher.name}
-
-    ${joinmarket.messagingConfig}
-  '';
 in {
   inherit options;
 
@@ -72,6 +74,18 @@ in {
       "d '${cfg.dataDir}' 0770 ${cfg.user} ${cfg.group} - -"
     ];
 
+    services.joinmarket-ob-watcher.settings = {
+      BLOCKCHAIN = config.services.joinmarket.settings.BLOCKCHAIN // {
+        rpc_user = bitcoind.rpc.users.joinmarket-ob-watcher.name;
+        rpc_wallet_file = "";
+      };
+      inherit (config.services.joinmarket.settings)
+        "MESSAGING:onion"
+        "MESSAGING:server1"
+        "MESSAGING:server2"
+        "MESSAGING:server3";
+    };
+
     systemd.services.joinmarket-ob-watcher = rec {
       wantedBy = [ "multi-user.target" ];
       requires = [ "tor.service" "bitcoind.service" ];
@@ -80,7 +94,7 @@ in {
       environment.HOME = cfg.dataDir;
       preStart = ''
         {
-          cat ${configFile}
+          cat ${builtins.toFile "joinmarket-ob-watcher.cfg" ((generators.toINI {}) cfg.settings)}
           echo
           echo '[BLOCKCHAIN]'
           echo "rpc_password = $(cat ${secretsDir}/bitcoin-rpcpassword-joinmarket-ob-watcher)"
