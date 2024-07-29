@@ -73,7 +73,14 @@ let
     inherit (nbLib) cliExec;
 
     yieldgenerator = {
-      enable = mkEnableOption "JoinMarket yield generator bot";
+      enable = mkOption {
+        type = types.bool;
+        default = false;
+        description = ''
+          Enable the JoinMarket yield generator bot.
+          Documentation: https://github.com/JoinMarket-Org/joinmarket-clientserver/blob/master/docs/YIELDGENERATOR.md
+        '';
+      };
       ordertype = mkOption {
         type = types.enum [ "reloffer" "absoffer" ];
         default = "reloffer";
