@@ -109,7 +109,7 @@ let
           example = {
             alice = {
               passwordHMAC = "f7efda5c189b999524f151318c0c86$d5b51b3beffbc02b724e5d095828e0bc8b2456e9ac8757ae3211a5d9b16a22ae";
-              rpcwhitelist = [ "getnetworkinfo" "getpeerinfo" ];
+              rpcwhitelist = [ "sendtoaddress" "getnewaddress" ];
             };
           };
           type = with types; attrsOf (submodule ({ name, ... }: {
