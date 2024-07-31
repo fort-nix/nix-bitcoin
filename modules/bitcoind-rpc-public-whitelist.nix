@@ -35,6 +35,7 @@
   "getnetworkhashps"
   # Network
   "getnetworkinfo"
+  "getnodeaddresses"
   "getpeerinfo"
   # Rawtransactions
   "analyzepsbt"

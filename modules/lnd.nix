@@ -174,7 +174,7 @@ let
     ${optionalString (cfg.tor-socks != null) "tor.socks=${cfg.tor-socks}"}
 
     bitcoind.rpchost=${bitcoindRpcAddress}:${toString bitcoind.rpc.port}
-    bitcoind.rpcuser=${bitcoind.rpc.users.${rpcUser}.name}
+    bitcoind.rpcuser=${bitcoind.rpc.users.public.name}
     bitcoind.zmqpubrawblock=${zmqHandleSpecialAddress bitcoind.zmqpubrawblock}
     bitcoind.zmqpubrawtx=${zmqHandleSpecialAddress bitcoind.zmqpubrawtx}
 
@@ -184,16 +184,11 @@ let
   '';
 
   zmqHandleSpecialAddress = builtins.replaceStrings [ "0.0.0.0" "[::]" ] [ "127.0.0.1" "[::1]" ];
-
-  isPruned = bitcoind.prune > 0;
-  # When bitcoind pruning is enabled, lnd requires non-public RPC commands `getpeerinfo`, `getnodeaddresses`
-  # to fetch missing blocks from peers (implemented in btcsuite/btcwallet/chain/pruned_block_dispatcher.go)
-  rpcUser = if isPruned then "lnd" else "public";
 in {
 
   inherit options;
 
-  config = mkIf cfg.enable (mkMerge [ {
+  config = mkIf cfg.enable {
     assertions = [
       { assertion =
           !(config.services ? clightning)
@@ -233,7 +228,7 @@ in {
       preStart = ''
         install -m600 ${configFile} '${cfg.dataDir}/lnd.conf'
         {
-          echo "bitcoind.rpcpass=$(cat ${secretsDir}/bitcoin-rpcpassword-${rpcUser})"
+          echo "bitcoind.rpcpass=$(cat ${secretsDir}/bitcoin-rpcpassword-public)"
           ${optionalString (cfg.getPublicAddressCmd != "") ''
             echo "externalip=$(${cfg.getPublicAddressCmd})"
           ''}
@@ -311,22 +306,5 @@ in {
       makePasswordSecret lnd-wallet-password
       makeCert lnd '${nbLib.mkCertExtraAltNames cfg.certificate}'
     '';
-  }
-
-  (mkIf isPruned {
-    services.bitcoind.rpc.users.lnd = {
-      passwordHMACFromFile = true;
-      rpcwhitelist = bitcoind.rpc.users.public.rpcwhitelist ++ [
-        "getpeerinfo"
-        "getnodeaddresses"
-      ];
-    };
-    nix-bitcoin.secrets = {
-      bitcoin-rpcpassword-lnd.user = cfg.user;
-      bitcoin-HMAC-lnd.user = bitcoind.user;
-    };
-    nix-bitcoin.generateSecretsCmds.lndBitcoinRPC = ''
-      makeBitcoinRPCPassword lnd
-    '';
-  }) ]);
+  };
 }
