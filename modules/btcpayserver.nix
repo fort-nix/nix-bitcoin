@@ -117,7 +117,6 @@ in {
         rpcwhitelist = cfg.bitcoind.rpc.users.public.rpcwhitelist ++ [
           "setban"
           "generatetoaddress"
-          "getpeerinfo"
         ];
       };
       listenWhitelisted = true;
