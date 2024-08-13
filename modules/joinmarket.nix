@@ -41,10 +41,29 @@ let
       description = "The data directory for JoinMarket.";
     };
     rpcWalletFile = mkOption {
-      type = types.nullOr types.str;
+      type = types.nullOr types.nonEmptyStr;
       default = "jm_wallet";
       description = ''
         Name of the watch-only bitcoind wallet the JoinMarket addresses are imported to.
+      '';
+    };
+    settings = mkOption {
+      type = with types; attrsOf anything;
+      example = {
+        POLICY = {
+          merge_algorithm = "gradual";
+          tx_fees = 5;
+        };
+        LOGGING = {
+          console_log_level = "DEBUG";
+        };
+      };
+      description = ''
+        Joinmarket settings.
+        See here for possible options:
+        https://raw.githubusercontent.com/JoinMarket-Org/joinmarket-clientserver/master/src/jmclient/configure.py#:~:text=defaultconfig%20=
+        If your web browser does not support text fragment URLs, you can can manually
+        search for string `defaultconfig =` to jump to the correct location.
       '';
     };
     user = mkOption {
@@ -61,19 +80,20 @@ let
       default = cli;
       defaultText = "(See source)";
     };
-    # Used by ./joinmarket-ob-watcher.nix
-    messagingConfig = mkOption {
-      readOnly = true;
-      default = messagingConfig;
-      defaultText = "(See source)";
-    };
     # This option is only used by netns-isolation.
     # Tor is always enabled.
     tor.enforce = nbLib.tor.enforce;
     inherit (nbLib) cliExec;
 
     yieldgenerator = {
-      enable = mkEnableOption "JoinMarket yield generator bot";
+      enable = mkOption {
+        type = types.bool;
+        default = false;
+        description = ''
+          Enable the JoinMarket yield generator bot.
+          Documentation: https://github.com/JoinMarket-Org/joinmarket-clientserver/blob/master/docs/YIELDGENERATOR.md
+        '';
+      };
       ordertype = mkOption {
         type = types.enum [ "reloffer" "absoffer" ];
         default = "reloffer";
@@ -100,13 +120,6 @@ let
         default = 0.1;
         description = ''
           Variance around the average cj fee.
-        '';
-      };
-      txfee = mkOption {
-        type = types.ints.unsigned;
-        default = 100;
-        description = ''
-          The average transaction fee you're adding to coinjoin transactions.
         '';
       };
       txfee_contribution_factor = mkOption {
@@ -142,124 +155,12 @@ let
   inherit (config.services) bitcoind;
 
   torAddress = config.services.tor.client.socksListenAddress;
-  socks5Settings = ''
-    socks5 = true
-    socks5_host = ${torAddress.addr}
-    socks5_port = ${toString torAddress.port}
-  '';
 
-  messagingConfig = ''
-    [MESSAGING:onion]
-    type = onion
-    ${socks5Settings}
-    tor_control_host = unix:/run/tor/control
-    # required option, but ignored for unix socket host
-    tor_control_port = 9051
-    onion_serving_host = ${cfg.messagingAddress}
-    onion_serving_port = ${toString cfg.messagingPort}
-    hidden_service_dir =
-    directory_nodes = g3hv4uynnmynqqq2mchf3fcm3yd46kfzmcdogejuckgwknwyq5ya6iad.onion:5222,3kxw6lf5vf6y26emzwgibzhrzhmhqiw6ekrek3nqfjjmhwznb2moonad.onion:5222,bqlpq6ak24mwvuixixitift4yu42nxchlilrcqwk2ugn45tdclg42qid.onion:5222
-
-    # irc.darkscience.net
-    [MESSAGING:server1]
-    host = darkirc6tqgpnwd3blln3yfv5ckl47eg7llfxkmtovrv7c7iwohhb6ad.onion
-    channel = joinmarket-pit
-    port = 6697
-    usessl = true
-    ${socks5Settings}
-
-    # ilita
-    [MESSAGING:server2]
-    host = ilitafrzzgxymv6umx2ux7kbz3imyeko6cnqkvy4nisjjj4qpqkrptid.onion
-    channel = joinmarket-pit
-    port = 6667
-    usessl = false
-    ${socks5Settings}
-
-    # irc.hackint.org
-    [MESSAGING:server3]
-    host = ncwkrwxpq2ikcngxq3dy2xctuheniggtqeibvgofixpzvrwpa77tozqd.onion
-    channel = joinmarket-pit
-    port = 6667
-    usessl = false
-    ${socks5Settings}
-  '';
-
-  # Based on https://github.com/JoinMarket-Org/joinmarket-clientserver/blob/master/jmclient/jmclient/configure.py
-  yg = cfg.yieldgenerator;
-  configFile = builtins.toFile "config" ''
-    [DAEMON]
-    no_daemon = 0
-    daemon_port = 27183
-    daemon_host = 127.0.0.1
-    use_ssl = false
-
-    [BLOCKCHAIN]
-    blockchain_source = ${bitcoind.makeNetworkName "bitcoin-rpc" "regtest"}
-    network = ${bitcoind.makeNetworkName "mainnet" "testnet"}
-    rpc_host = ${nbLib.address bitcoind.rpc.address}
-    rpc_port = ${toString bitcoind.rpc.port}
-    rpc_user = ${bitcoind.rpc.users.privileged.name}
-    ${optionalString (cfg.rpcWalletFile != null) "rpc_wallet_file = ${cfg.rpcWalletFile}"}
-
-    ${messagingConfig}
-
-    [LOGGING]
-    console_log_level = INFO
-    color = false
-
-    [POLICY]
-    segwit = true
-    native = true
-    merge_algorithm = default
-    gaplimit = 6
-    tx_fees = 3
-    tx_fees_factor = 0.2
-    absurd_fee_per_kb = 350000
-    max_sweep_fee_change = 0.8
-    tx_broadcast = self
-    minimum_makers = 4
-    max_sats_freeze_reuse = -1
-    interest_rate = 0.015
-    bondless_makers_allowance = 0.125
-    bond_value_exponent = 1.3
-    taker_utxo_retries = 3
-    taker_utxo_age = 5
-    taker_utxo_amtpercent = 20
-    accept_commitment_broadcasts = 1
-    commit_file_location = cmtdata/commitments.json
-    commitment_list_location = cmtdata/commitmentlist
-
-    [PAYJOIN]
-    payjoin_version = 1
-    disable_output_substitution = 0
-    max_additional_fee_contribution = default
-    min_fee_rate = 1.1
-    onion_socks5_host = ${torAddress.addr}
-    onion_socks5_port = ${toString torAddress.port}
-    tor_control_host = unix:/run/tor/control
-    # Required option, but unused because `tor_control_host` is a Unix socket
-    tor_control_port = 9051
-    onion_serving_host = ${cfg.payjoinAddress}
-    onion_serving_port = ${toString cfg.payjoinPort}
-    hidden_service_ssl = false
-
-    [YIELDGENERATOR]
-    ordertype = ${yg.ordertype}
-    cjfee_a = ${toString yg.cjfee_a}
-    cjfee_r = ${toString yg.cjfee_r}
-    cjfee_factor = ${toString yg.cjfee_factor}
-    txfee_contribution = 0
-    txfee_contribution_factor = ${toString yg.txfee_contribution_factor}
-    minsize = ${toString yg.minsize}
-    size_factor = ${toString yg.size_factor}
-
-    [SNICKER]
-    enabled = false
-    lowest_net_gain = 0
-    servers = cn5lfwvrswicuxn3gjsxoved6l2gu5hdvwy5l3ev7kg6j7lbji2k7hqd.onion,
-    polling_interval_minutes = 60
-  '';
+  socks5Settings = {
+    socks5 = true;
+    socks5_host = torAddress.addr;
+    socks5_port = torAddress.port;
+  };
 
    # The jm scripts create a 'logs' dir in the working dir,
    # so run them inside dataDir.
@@ -278,7 +179,78 @@ let
 in {
   inherit options;
 
-  config = mkIf cfg.enable (mkMerge [{
+  config = mkMerge [
+  {
+    services.joinmarket.settings = {
+      DAEMON = {
+        no_daemon = 0;
+        daemon_port = 27183;
+        daemon_host = "127.0.0.1";
+      };
+      BLOCKCHAIN = {
+        blockchain_source = bitcoind.makeNetworkName "bitcoin-rpc" "regtest";
+        network = bitcoind.makeNetworkName "mainnet" "testnet";
+        rpc_host = nbLib.address bitcoind.rpc.address;
+        rpc_port = bitcoind.rpc.port;
+        rpc_user = bitcoind.rpc.users.privileged.name;
+        rpc_wallet_file = if cfg.rpcWalletFile == null then "" else cfg.rpcWalletFile;
+      };
+      LOGGING = {
+        color = false;
+      };
+      PAYJOIN = {
+        onion_socks5_host = torAddress.addr;
+        onion_socks5_port = torAddress.port;
+        tor_control_host = "unix:/run/tor/control";
+        onion_serving_host = cfg.payjoinAddress;
+        onion_serving_port = cfg.payjoinPort;
+        hidden_service_ssl = false;
+      };
+      YIELDGENERATOR = removeAttrs cfg.yieldgenerator [
+        "enable"
+        # TODO: This is only needed when ./obsolete-options.nix is imported
+        "txfee"
+      ];
+
+      # Messaging settings have to be fully specified because joinmarket doesn't
+      # provide default messaging settings.
+      # (`jmclient/configure.py` actually does contain default messaging settings, but
+      # they are removed via fn `_remove_unwanted_default_settings`)
+      "MESSAGING:onion" = socks5Settings // {
+        type = "onion";
+        tor_control_host = "unix:/run/tor/control";
+        # Required option, but ignored because `tor_control_host` is a unix socket
+        tor_control_port = 9051;
+        onion_serving_host = cfg.messagingAddress;
+        onion_serving_port = cfg.messagingPort;
+        hidden_service_dir = "";
+        directory_nodes = "g3hv4uynnmynqqq2mchf3fcm3yd46kfzmcdogejuckgwknwyq5ya6iad.onion:5222,3kxw6lf5vf6y26emzwgibzhrzhmhqiw6ekrek3nqfjjmhwznb2moonad.onion:5222,bqlpq6ak24mwvuixixitift4yu42nxchlilrcqwk2ugn45tdclg42qid.onion:5222";
+      };
+      # irc.darkscience.net
+      "MESSAGING:server1" = socks5Settings // {
+        host = "darkirc6tqgpnwd3blln3yfv5ckl47eg7llfxkmtovrv7c7iwohhb6ad.onion";
+        channel = "joinmarket-pit";
+        port = 6697;
+        usessl = true;
+      };
+      # ilita
+      "MESSAGING:server2" = socks5Settings // {
+        host = "ilitafrzzgxymv6umx2ux7kbz3imyeko6cnqkvy4nisjjj4qpqkrptid.onion";
+        channel = "joinmarket-pit";
+        port = 6667;
+        usessl = false;
+      };
+      # irc.hackint.org
+      "MESSAGING:server3" = socks5Settings // {
+        host = "ncwkrwxpq2ikcngxq3dy2xctuheniggtqeibvgofixpzvrwpa77tozqd.onion";
+        channel = "joinmarket-pit";
+        port = 6667;
+        usessl = false;
+      };
+    };
+  }
+
+  (mkIf cfg.enable {
     services.bitcoind = {
       enable = true;
       disablewallet = false;
@@ -311,7 +283,7 @@ in {
       after = [ "bitcoind.service" "nix-bitcoin-secrets.target" ];
       preStart = ''
         {
-          cat ${configFile}
+          cat ${builtins.toFile "joinmarket.cfg" ((generators.toINI {}) cfg.settings)}
           echo
           echo '[BLOCKCHAIN]'
           echo "rpc_password = $(cat ${secretsDir}/bitcoin-rpcpassword-privileged)"
@@ -386,9 +358,9 @@ in {
     nix-bitcoin.generateSecretsCmds.joinmarket = ''
       makePasswordSecret jm-wallet-password
     '';
-  }
+  })
 
-  (mkIf cfg.yieldgenerator.enable {
+  (mkIf (cfg.enable && cfg.yieldgenerator.enable) {
     systemd.services.joinmarket-yieldgenerator = {
       wantedBy = [ "joinmarket.service" ];
       requires = [ "joinmarket.service" ];
@@ -409,5 +381,5 @@ in {
       } // nbLib.allowTor;
     };
   })
-  ]);
+  ];
 }
