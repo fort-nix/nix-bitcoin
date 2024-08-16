@@ -17,6 +17,7 @@ pkgs: pkgsUnstable:
     nbxplorer;
 
   inherit (pkgsUnstable)
+    clboss
     fulcrum
     lnd;
 
