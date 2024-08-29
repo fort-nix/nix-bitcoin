@@ -214,7 +214,7 @@ in {
       '' + optionalString (cfg.btcpayserver.lightningBackend == "lnd")
         (
           "btclightning=type=lnd-rest;" +
-          "server=https://${cfg.lnd.restAddress}:${toString cfg.lnd.restPort}/;" +
+          "server=https://${nbLib.address cfg.lnd.restAddress}:${toString cfg.lnd.restPort}/;" +
           "macaroonfilepath=/run/lnd/btcpayserver.macaroon;" +
           "certfilepath=${config.services.lnd.certPath}" +
           "\n"
