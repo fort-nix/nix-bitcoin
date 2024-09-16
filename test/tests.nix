@@ -128,6 +128,8 @@ let
 
       tests.joinmarket = cfg.joinmarket.enable;
       tests.joinmarket-yieldgenerator = cfg.joinmarket.yieldgenerator.enable;
+      tests.joinmarket-jmwalletd = cfg.joinmarket-jmwalletd.enable;
+
       tests.joinmarket-ob-watcher = cfg.joinmarket-ob-watcher.enable;
       services.joinmarket.yieldgenerator = {
         enable = config.services.joinmarket.enable;
@@ -138,7 +140,6 @@ let
       };
 
       tests.nodeinfo = config.nix-bitcoin.nodeinfo.enable;
-
       tests.backups = cfg.backups.enable;
 
       # To test that unused secrets are made inaccessible by 'setup-secrets'
@@ -210,6 +211,7 @@ let
       services.btcpayserver.enable = true;
       services.joinmarket.enable = true;
       services.joinmarket-ob-watcher.enable = true;
+      services.joinmarket-jmwalletd.enable = true;
       services.backups.enable = true;
 
       nix-bitcoin.nodeinfo.enable = true;
@@ -257,6 +259,7 @@ let
       services.fulcrum.enable = true;
       services.btcpayserver.enable = true;
       services.joinmarket.enable = true;
+      services.joinmarket-jmwalletd.enable = true;
     };
 
     # netns and regtest, without secure-node.nix
