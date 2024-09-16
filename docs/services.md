@@ -594,3 +594,38 @@ To work around this and connect via clearnet instead, set this option:
 ```nix
 services.clightning.plugins.trustedcoin.tor.proxy = false;
 ```
+
+### The Eye of Satoshi watchtower plugin
+The basic usage of this plugin you can find in [its documentation](https://github.com/talaia-labs/rust-teos/blob/master/watchtower-plugin/README.md).
+
+The registration of a new tower can be done by calling the command in the
+following forms:
+
+```
+lightning-cli registertower <tower_id>[@<host>[:<port>]]
+
+or
+
+lightning-cli registertower <tower_id> [<host> [<port>]]
+```
+
+The `tower_id` represents the target tower public key. If the target watchtower
+server uses TEoS, you can get this id by calling the `teos-cli gettowerinfo`
+command.
+
+```
+lightning-cli registertower  032f7fa1823ab3c611833f2d61ed7d7e513886f5a6862d33dff71857b9cacb8b45@example.com:9814
+
+or via onion:
+
+lightning-cli registertower  032f7fa1823ab3c611833f2d61ed7d7e513886f5a6862d33dff71857b9cacb8b45 xryayjsnc7j2jhqihd7je7sd2dsi4l33hj5v5xbfnvjjiapdxc4el5ad.onion 9814
+```
+
+Please note that the [plugin proxy configuration](https://github.com/talaia-labs/rust-teos/blob/master/watchtower-plugin/README.md#core-lightning-cln-config)
+is loaded directly from the clightning. This means you must have a
+`services.clightning.tor.proxy` enabled to be able to connect to the tower
+behind the Tor. Otherwise you get the following error:
+
+```
+Cannot connect to an onion address without a proxy
+```

@@ -15,6 +15,7 @@ in {
     ./clboss.nix
     ./feeadjuster.nix
     ./trustedcoin.nix
+    ./teos-watchtower.nix
     ./zmq.nix
   ];
 
