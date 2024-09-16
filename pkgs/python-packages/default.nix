@@ -6,7 +6,6 @@ rec {
   in
     {
       txzmq = callPackage ./txzmq {};
-
       pyln-client = clightningPkg ./pyln-client;
       pyln-proto = clightningPkg ./pyln-proto;
       pyln-bolt7 = clightningPkg ./pyln-bolt7;
@@ -25,6 +24,10 @@ rec {
 
       # autobahn 20.12.3, required by joinmarketclient
       autobahn = callPackage ./specific-versions/autobahn.nix {};
+      # coincurve 20, required by pyln-proto.
+      coincurve = callPackage ./specific-versions/coincurve_20 {};
+      # scikit-build-core 0_10, required by coincurve.
+      scikit-build-core = callPackage ./specific-versions/scikit-build-core_0_10 {};
     };
 
   nbPython3Packages = (python3.override {
