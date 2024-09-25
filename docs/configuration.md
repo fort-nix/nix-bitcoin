@@ -262,3 +262,19 @@ following default values:
 - If you're using the krops deployment method: `/var/src/secrets`
 
 - Otherwise: `/etc/nix-bitcoin-secrets`
+
+## ASmap
+
+If you choose to provide an [ASmap](https://asmap.org) to bitcoind via the `-asmap` [option](https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-0.20.0.md#new-settings), this file will need to be copied from your local machine, and therefore included in `krops/deploy.nix` `extraSources` attribute set. For an existing `latest_asmap.dat` file in the current directory, for example:
+```
+  extraSources = {
+    "hardware-configuration.nix".file = toString ../hardware-configuration.nix;
+    "latest_asmap.dat".file = toString ../latest_asmap.dat;
+  };
+```
+The file will be copied over, and end up in the destination `/var/src` folder, so you must enable ASmap by passing the destination file path to `services.bitcoind.extraConfig`:
+```
+   extraConfig = ''
+      asmap=/var/src/latest_asmap.dat
+    '';
+```
