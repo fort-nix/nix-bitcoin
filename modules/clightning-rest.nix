@@ -96,6 +96,7 @@ in {
         User = clightning.user;
         Restart = "on-failure";
         RestartSec = "10s";
+        RestartMode = "direct";
         ReadWritePaths = [ cfg.dataDir ];
         inherit (nbLib.allowNetlink) RestrictAddressFamilies;
       } // nbLib.allowedIPAddresses cfg.tor.enforce
