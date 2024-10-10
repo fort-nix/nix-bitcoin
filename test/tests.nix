@@ -103,6 +103,7 @@ let
       nix-bitcoin.onionServices.lnd.public = true;
 
       tests.lndconnect-onion-lnd = with cfg.lnd.lndconnect; enable && onion;
+      tests.lnconnect-onion-clnrest = with cfg.clightning.plugins.clnrest.lnconnect; enable && onion;
       tests.lndconnect-onion-clightning = with cfg.clightning-rest.lndconnect; enable && onion;
 
       tests.lightning-loop = cfg.lightning-loop.enable;
@@ -194,6 +195,10 @@ let
         enable = true;
         encrypt = true;
         local.directory = "/var/backup/clightning";
+      };
+      services.clightning.plugins.clnrest = {
+        enable = true;
+        lnconnect = { enable = true; onion = true; };
       };
       test.features.clightningPlugins = true;
       services.rtl.enable = true;
