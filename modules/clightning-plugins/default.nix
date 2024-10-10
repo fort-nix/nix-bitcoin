@@ -13,6 +13,7 @@ let
 in {
   imports = [
     ./clboss.nix
+    ./clnrest.nix
     ./feeadjuster.nix
     ./trustedcoin.nix
     ./zmq.nix

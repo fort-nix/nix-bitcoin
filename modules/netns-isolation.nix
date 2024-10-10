@@ -315,6 +315,7 @@ in {
     };
 
     services.clightning.address = netns.clightning.address;
+    services.clightning.plugins.clnrest.address = netns.clightning.address;
 
     services.lnd = {
       address = netns.lnd.address;
