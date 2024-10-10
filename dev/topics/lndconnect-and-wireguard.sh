@@ -7,13 +7,15 @@ run-tests.sh -s wireguard-lndconnect-online container
 # 2. Test connecting via Tor
 # Print QR codes for lnd, clightning-rest connections via Tor
 c lndconnect
+c lnconnect-clnrest
 c lndconnect-clightning
-# Add these to Zeus >= 0.7.1.
+# Add these to Zeus >= 0.9.0.
 # To explicitly check if the connection is successful, press the node logo in the top
 # left corner, and then "Node Info".
 
 # Debug
 c lndconnect --url
+c lnconnect-clnrest --url
 c lndconnect-clightning --url
 
 # 3. Test connecting via WireGuard
@@ -33,13 +35,15 @@ c nix-bitcoin-wg-connect --text
 
 # Print QR codes for lnd, clightning-rest connections via WireGuard
 c lndconnect-wg
+c lnconnect-clnrest-wg
 c lndconnect-clightning-wg
-# Add these to Zeus >= 0.7.1.
-# To explicitly check if the connection is successful, press the node logo in the top
+# Add these to Zeus >= 0.9.0.
+# To explicitly check if the connection is successful, press the menu button in the top
 # left corner, and then "Node Info".
 
 # Debug
 c lndconnect-wg --url
+c lnconnect-clnrest-wg --url
 c lndconnect-clightning-wg --url
 
 # 3.3.remove external firewall port forward, remove local port forward:
@@ -55,6 +59,8 @@ c nodeinfo
 
 c lndconnect --url
 c lndconnect-wg --url
+c lndconnect-clnrest --url
+c lndconnect-clnrest-wg --url
 c lndconnect-clightning --url
 c lndconnect-clightning-wg --url
 

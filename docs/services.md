@@ -143,7 +143,7 @@ The default password location is `$secretsDir/rtl-password`.
 See: [Secrets dir](./configuration.md#secrets-dir)
 
 # Use Zeus (mobile lightning wallet) via Tor
-1. Install [Zeus](https://zeusln.app) (version ≥ 0.7.1)
+1. Install [Zeus](https://zeusln.app) (version ≥ 0.9.0)
 
 2. Edit your `configuration.nix`
 
@@ -161,9 +161,9 @@ See: [Secrets dir](./configuration.md#secrets-dir)
 
    Add the following config:
    ```nix
-   services.clightning-rest = {
+   services.clightning.plugins.clnrest = {
      enable = true;
-     lndconnect = {
+     lnconnect = {
        enable = true;
        onion = true;
      };
@@ -182,7 +182,7 @@ See: [Secrets dir](./configuration.md#secrets-dir)
 
    ##### For clightning
    ```
-   lndconnect-clightning
+   lnconnect-clnrest
    ```
 
 5. Configure Zeus
@@ -212,7 +212,7 @@ There are two ways to establish a secure, direct connection:
 - Connecting via WireGuard. This approach is simpler and more versatile, and is
   described in this guide.
 
-1. Install [Zeus](https://zeusln.app) (version ≥ 0.7.1) and
+1. Install [Zeus](https://zeusln.app) (version ≥ 0.9.0) and
    [WireGuard](https://www.wireguard.com/install/) on your mobile device.
 
 2. Add the following to your `configuration.nix`:
@@ -229,9 +229,11 @@ There are two ways to establish a secure, direct connection:
    services.lnd.lndconnect.enable = true;
 
    # For clightning
-   services.clightning-rest = {
-     enable = true;
-     lndconnect.enable = true;
+   services.clightning = {
+     plugins.clnrest = {
+       enable = true;
+       lnconnect.enable = true;
+     };
    };
    ```
 3. Deploy your configuration.
@@ -275,7 +277,7 @@ There are two ways to establish a secure, direct connection:
 
    ##### For clightning
    ```
-   lndconnect-clightning-wg
+   lnconnect-clnrest-wg
    ```
 
    Configure Zeus:

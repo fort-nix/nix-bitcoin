@@ -17,8 +17,6 @@ c systemctl status rtl
 c journalctl -u rtl
 c cat /var/lib/rtl/RTL-Config.json
 
-c systemctl status clightning-rest
-
 # Open webinterface. Password: a
 runuser -u "$(logname)" -- xdg-open "http://$ip:3000"
 

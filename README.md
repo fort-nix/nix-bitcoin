@@ -78,7 +78,6 @@ NixOS modules ([src](modules/modules.nix))
     * [rebalance](https://github.com/lightningd/plugins/tree/master/rebalance): keeps your channels balanced
     * [trustedcoin](https://github.com/nbd-wtf/trustedcoin) ([experimental](docs/services.md#trustedcoin)): replaces bitcoind with trusted public explorers
     * [zmq](https://github.com/lightningd/plugins/tree/master/zmq): publishes notifications via ZeroMQ to configured endpoints
-  * [clightning-rest](https://github.com/Ride-The-Lightning/c-lightning-REST): REST server for clightning
   * [lnd](https://github.com/lightningnetwork/lnd) with support for announcing an onion service and [static channel backups](https://github.com/lightningnetwork/lnd/blob/master/docs/recovery.md)
     * [Lightning Loop](https://github.com/lightninglabs/loop)
     * [Lightning Pool](https://github.com/lightninglabs/pool)

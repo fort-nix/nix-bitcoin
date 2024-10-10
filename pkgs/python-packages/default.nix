@@ -10,6 +10,7 @@ rec {
       pyln-proto = clightningPkg ./pyln-proto;
       pyln-bolt7 = clightningPkg ./pyln-bolt7;
       pylightning = clightningPkg ./pylightning;
+      clnrest = clightningPkg ./clnrest;
 
       # Packages only used by joinmarket
       bencoderpyx = callPackage ./bencoderpyx {};
