@@ -5,7 +5,6 @@ pkgs: pkgsUnstable:
     bitcoin
     bitcoind
     charge-lnd
-    electrs
     elementsd
     extra-container
     lightning-loop
@@ -16,6 +15,7 @@ pkgs: pkgsUnstable:
     btcpayserver
     clboss
     clightning
+    electrs
     fulcrum
     hwi
     lnd
