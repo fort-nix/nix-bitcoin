@@ -286,7 +286,7 @@ in {
         in
           optional nodes.lnd.enable "lnd" ++
           optional (nodes.lnd.enable && nodes.lnd.loop) "lightning-loop" ++
-          optional nodes.clightning.enable "clightning-rest";
+          optional nodes.clightning.enable "clightning";
       };
       clightning-rest = {
         id = 30;
