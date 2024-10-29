@@ -211,6 +211,12 @@ in {
 
       zmqpubrawblock = mkDefault "tcp://${bitcoindRpcAddress}:28332";
       zmqpubrawtx = mkDefault "tcp://${bitcoindRpcAddress}:28333";
+
+      # TODO-EXTERNAL: remove when https://github.com/lightningnetwork/lnd/issues/9163
+      # has been fixed.
+      extraConfig = ''
+        deprecatedrpc=warnings
+      '';
     };
 
     environment.systemPackages = [ cfg.package (hiPrio cfg.cli) ];
