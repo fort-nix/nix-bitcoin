@@ -262,9 +262,8 @@ in {
         ExecStartPost = let
           curl = "${pkgs.curl}/bin/curl -fsS --cacert ${cfg.certPath}";
           restUrl = "https://${nbLib.addressWithPort cfg.restAddress cfg.restPort}/v1";
-        in
           # Setting macaroon permissions for other users needs root permissions
-          nbLib.rootScript "lnd-create-macaroons" ''
+          script = nbLib.rootScript "lnd-create-macaroons" ''
             umask ug=r,o=
             ${lib.concatMapStrings (macaroon: ''
               echo "Create custom macaroon ${macaroon}"
@@ -278,6 +277,9 @@ in {
               chown ${cfg.macaroons.${macaroon}.user}: "$macaroonPath"
             '') (attrNames cfg.macaroons)}
           '';
+        in [
+          script
+        ];
       } // nbLib.allowedIPAddresses cfg.tor.enforce;
     };
 
