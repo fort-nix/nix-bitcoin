@@ -142,6 +142,10 @@ in {
       '') + ''
         info["nodeid"] = shell("lncli getinfo | jq -r '.identity_pubkey'")
       '') name cfg;
+      clnrest = name: cfg: mkInfoLong {
+        inherit name cfg;
+        systemdServiceName = "clightning";
+      };
       clightning-rest = mkInfo "";
       electrs = mkInfo "";
       fulcrum = mkInfo "";
@@ -153,7 +157,6 @@ in {
       mempool-frontend = name: cfg: mkInfoLong {
         inherit name cfg;
         systemdServiceName = "nginx";
-        extraCode = "";
       };
       # Only add sshd when it has an onion service
       sshd = name: cfg: mkIfOnionPort "sshd" (onionPort: ''

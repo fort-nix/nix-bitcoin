@@ -66,6 +66,16 @@ with lib;
         onion = true;
       };
     };
+    services.clightning = {
+      enable = true;
+      plugins.clnrest = {
+        enable = true;
+        lnconnect = {
+          enable = true;
+          onion = true;
+        };
+      };
+    };
     services.clightning-rest = {
       enable = true;
       lndconnect = {

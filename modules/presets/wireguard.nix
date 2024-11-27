@@ -2,7 +2,8 @@
 
 # Create a WireGuard server with a single peer.
 # Private/public keys are created via the secrets system.
-# Add helper binaries `nix-bitcoin-wg-connect` and optionally `lndconnect-wg`, `lndconnect-clightning-wg`.
+# Add helper binaries `nix-bitcoin-wg-connect` and optionally `lndconnect-wg`,
+# `lnconnect-clnrest-wg`, `lndconnect-clightning-wg`.
 
 # See ../../docs/services.md ("Use Zeus (mobile lightning wallet) via WireGuard")
 # for usage instructions.
@@ -33,9 +34,12 @@ let
   inherit (config.networking.wireguard.interfaces) wg-nb;
   inherit (config.services)
     lnd
+    clightning
     clightning-rest;
+  inherit (clightning.plugins) clnrest;
 
   lndconnect = lnd.enable && lnd.lndconnect.enable;
+  lnconnect-clnrest = clnrest.enable && clnrest.lnconnect.enable;
   lndconnect-clightning = clightning-rest.enable && clightning-rest.lndconnect.enable;
 
   serverAddress = "${wgSubnet}.1";
@@ -150,6 +154,10 @@ in {
       (pkgs.writers.writeBashBin "lndconnect-wg" ''
         exec lndconnect --host "${serverAddress}" --nocert "$@"
       '')
+    ) ++ (optional lnconnect-clnrest
+      (pkgs.writers.writeBashBin "lnconnect-clnrest-wg" ''
+        exec lnconnect-clnrest --host "${serverAddress}" --nocert "$@"
+      '')
     ) ++ (optional lndconnect-clightning
       (pkgs.writers.writeBashBin "lndconnect-clightning-wg" ''
         exec lndconnect-clightning --host "${serverAddress}" --nocert "$@"
@@ -164,6 +172,9 @@ in {
       extraCommands =
         optionalString lndconnect ''
           iptables -w -A nixos-fw -p tcp -s ${wgSubnet}.0/24 --dport ${toString lnd.restPort} -j nixos-fw-accept
+        ''
+        + optionalString lnconnect-clnrest ''
+          iptables -w -A nixos-fw -p tcp -s ${wgSubnet}.0/24 --dport ${toString clnrest.port} -j nixos-fw-accept
         ''
         + optionalString lndconnect-clightning ''
           iptables -w -A nixos-fw -p tcp -s ${wgSubnet}.0/24 --dport ${toString clightning-rest.port} -j nixos-fw-accept
@@ -187,6 +198,11 @@ in {
       restAddress = "0.0.0.0";
       tor.enforce = false;
     };
+
+    services.clightning.plugins.clnrest.address = mkIf lnconnect-clnrest "0.0.0.0";
+    # clnrest runs inside `clightning.service`
+    services.clightning.tor.enforce = mkIf lnconnect-clnrest false;
+
     services.clightning-rest = mkIf lndconnect-clightning {
       # clightning-rest always listens on "0.0.0.0"
       tor.enforce = false;

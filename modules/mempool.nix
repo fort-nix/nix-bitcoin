@@ -138,11 +138,7 @@ let
 
     # Internal read-only options used by `./nodeinfo.nix` and `./onion-services.nix`
     mempool-frontend = let
-      mkAlias = default: mkOption {
-        internal = true;
-        readOnly = true;
-        inherit default;
-      };
+      inherit (nbLib) mkAlias;
     in {
       enable = mkAlias cfg.frontend.enable;
       address = mkAlias cfg.frontend.address;

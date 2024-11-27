@@ -179,6 +179,11 @@ def _():
     assert_running("lnd")
     assert_matches("runuser -u operator -- lndconnect --url", ".onion")
 
+@test("lnconnect-onion-clnrest")
+def _():
+    assert_running("clightning")
+    assert_matches("runuser -u operator -- lnconnect-clnrest --url", ".onion")
+
 @test("lndconnect-onion-clightning")
 def _():
     assert_running("clightning-rest")

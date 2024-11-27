@@ -18,18 +18,22 @@ makeTestVM {
       nix-bitcoin.generateSecrets = true;
       nix-bitcoin.operator.enable = true;
 
+      services.clightning = {
+        enable = true;
+        plugins.clnrest = {
+          enable = true;
+          lnconnect.enable = true;
+        };
+      };
+
       services.clightning-rest = {
         enable = true;
         lndconnect.enable = true;
       };
       # TODO-EXTERNAL:
       # When WAN is disabled, DNS bootstrapping slows down service startup by ~15 s.
-      # TODO-EXTERNAL:
-      # When bitcoind is not fully synced, the offers plugin in clightning 24.05
-      # crashes (see https://github.com/ElementsProject/lightning/issues/7378).
       services.clightning.extraConfig = ''
         disable-dns
-        disable-plugin=offers
       '';
 
       services.lnd = {
@@ -55,16 +59,19 @@ makeTestVM {
 
     def parse_lndconnect_url(url):
         u = Url.urlparse(url)
+        data = {'host': u.hostname, 'port': u.port}
         queries = Url.parse_qs(u.query)
-        macaroon = queries['macaroon'][0]
-        is_clightning = url.startswith("c-lightning-rest")
+        if url.startswith("clnrest"):
+            data['rune'] = queries['rune'][0]
+        else:
+            macaroon = queries['macaroon'][0]
+            if url.startswith("c-lightning-rest"):
+              data['macaroon_hex'] = macaroon
+            else:
+              # lnd
+              data['macaroon_hex'] = base64.urlsafe_b64decode(macaroon + '===').hex().upper()
 
-        return SimpleNamespace(
-            host = u.hostname,
-            port = u.port,
-            macaroon_hex =
-              macaroon if is_clightning else base64.urlsafe_b64decode(macaroon + '===').hex().upper()
-        )
+        return SimpleNamespace(**data)
 
     client.start()
     server.connect()
@@ -94,6 +101,16 @@ makeTestVM {
           client.succeed(
               f"curl -fsS --max-time 3 --insecure --header 'Grpc-Metadata-macaroon: {api.macaroon_hex}' "
               f"-X GET https://{api.host}:{api.port}/v1/getinfo"
+          )
+
+      with subtest("lnconnect-clnrest-wg"):
+          server.wait_for_unit("clightning.service")
+          lndconnect_url = server.succeed("runuser -u operator -- lnconnect-clnrest-wg --url")
+          api = parse_lndconnect_url(lndconnect_url)
+          # Make clnrest API call
+          client.succeed(
+              f"curl -fsS --max-time 3 --insecure --header 'rune: {api.rune}' "
+              f"-X POST https://{api.host}:{api.port}/v1/getinfo"
           )
 
       with subtest("lndconnect-clightning-wg"):

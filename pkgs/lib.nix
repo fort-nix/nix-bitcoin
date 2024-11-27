@@ -123,4 +123,10 @@ let self = {
     mkIfTest = test: mkIf (config.tests.${test} or false);
   };
 
+  mkAlias = default: mkOption {
+    internal = true;
+    readOnly = true;
+    inherit default;
+  };
+
 }; in self

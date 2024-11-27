@@ -107,6 +107,7 @@ let
   nbLib = config.nix-bitcoin.lib;
   nbPkgs = config.nix-bitcoin.pkgs;
   secretsDir = config.nix-bitcoin.secretsDir;
+  runePath = "${cfg.dataDir}/clightning-admin-rune";
 
   inherit (nbLib) optionalAttr;
 
@@ -116,9 +117,8 @@ let
     lnImplementation = if isLnd then "LND" else "CLT";
     Authentication = {
       ${optionalAttr (isLnd && lndLoopEnabled) "swapMacaroonPath"} = "${lightning-loop.dataDir}/${bitcoind.network}";
-      macaroonPath = if isLnd
-                     then "${cfg.dataDir}/macaroons"
-                     else "${clightning-rest.dataDir}/certs";
+      ${optionalAttr (isLnd) "macaroonPath"} = "${cfg.dataDir}/macaroons";
+      ${optionalAttr (!isLnd) "runePath"} = runePath;
     };
     Settings = {
       userPersona = "OPERATOR";
@@ -133,7 +133,7 @@ let
       lnServerUrl = "https://${
         if isLnd
         then nbLib.addressWithPort lnd.restAddress lnd.restPort
-        else nbLib.addressWithPort clightning-rest.address clightning-rest.port
+        else nbLib.addressWithPort clightning.plugins.clnrest.address clightning.plugins.clnrest.port
       }";
     };
   };
@@ -159,7 +159,7 @@ let
   inherit (config.services)
     bitcoind
     lnd
-    clightning-rest
+    clightning
     lightning-loop;
 
   lndLoopEnabled = cfg.nodes.lnd.enable && cfg.nodes.lnd.loop;
@@ -177,7 +177,10 @@ in {
 
     services.lnd.enable = mkIf cfg.nodes.lnd.enable true;
     services.lightning-loop.enable = mkIf lndLoopEnabled true;
-    services.clightning-rest.enable = mkIf cfg.nodes.clightning.enable true;
+    services.clightning = mkIf cfg.nodes.clightning.enable {
+      enable = true;
+      plugins.clnrest.enable = true;
+    };
 
     systemd.tmpfiles.rules = [
       "d '${cfg.dataDir}' 0770 ${cfg.user} ${cfg.group} - -"
@@ -187,7 +190,7 @@ in {
 
     systemd.services.rtl = rec {
       wantedBy = [ "multi-user.target" ];
-      requires = optional cfg.nodes.clightning.enable "clightning-rest.service" ++
+      requires = optional cfg.nodes.clightning.enable "clightning.service" ++
                  optional cfg.nodes.lnd.enable "lnd.service";
       after = requires ++ [ "nix-bitcoin-secrets.target" ];
       environment.RTL_CONFIG_PATH = cfg.dataDir;
@@ -198,10 +201,17 @@ in {
             <${configFile} sed "s|@multiPass@|$(cat ${secretsDir}/rtl-password)|" \
               > '${cfg.dataDir}/RTL-Config.json'
           '')
-        ] ++ optional cfg.nodes.lnd.enable
+        ]
+        ++ optional cfg.nodes.lnd.enable
+          # The lnd admin macaroon is not readable by group `lnd`, so copy it
           (nbLib.rootScript "rtl-copy-macaroon" ''
-            install -D -o ${cfg.user} -g ${cfg.group} ${lnd.networkDir}/admin.macaroon \
+            install --compare -m 640 -o ${cfg.user} -g ${cfg.group} -D ${lnd.networkDir}/admin.macaroon \
               '${cfg.dataDir}/macaroons/admin.macaroon'
+          '')
+        ++ optional cfg.nodes.clightning.enable
+          (nbLib.rootScript "rtl-create-clnrest-rune-file" ''
+            rune=$(cat '${clightning.networkDir}/admin-rune')
+            install --compare -m 640 -o ${cfg.user} -g ${cfg.group} <(printf 'LIGHTNING_RUNE="%s"\n' "$rune") '${runePath}'
           '');
         ExecStart = "${nbPkgs.rtl}/bin/rtl";
         # Show "rtl" instead of "node" in the journal
@@ -217,10 +227,7 @@ in {
     users.users.${cfg.user} = {
       isSystemUser = true;
       group = cfg.group;
-      extraGroups =
-        # Reads cert and macaroon from the clightning-rest datadir
-        optional cfg.nodes.clightning.enable clightning-rest.group ++
-        optional lndLoopEnabled lnd.group;
+      extraGroups = optional lndLoopEnabled lnd.group;
     };
     users.groups.${cfg.group} = {};
 
