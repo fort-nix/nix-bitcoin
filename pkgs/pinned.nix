@@ -7,6 +7,8 @@ pkgs: pkgsUnstable:
     extra-container
     lightning-loop
     lightning-pool
+    teos
+    teos-watchtower-plugin
     lndconnect;
 
   inherit (pkgsUnstable)
