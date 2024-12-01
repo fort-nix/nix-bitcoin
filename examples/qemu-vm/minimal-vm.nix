@@ -27,12 +27,8 @@ rec {
       nix-bitcoin.generateSecrets = true;
       services.clightning.enable = true;
       # disable-dns leads to faster startup in offline VMs
-      # TODO-EXTERNAL:
-      # When bitcoind is not fully synced, the offers plugin in clightning 24.05
-      # crashes (see https://github.com/ElementsProject/lightning/issues/7378).
       services.clightning.extraConfig = ''
         disable-dns
-        disable-plugin=offers
       '';
 
       # Avoid lengthy build of the nixos manual
