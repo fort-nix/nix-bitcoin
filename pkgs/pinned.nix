@@ -5,7 +5,6 @@ pkgs: pkgsUnstable:
     charge-lnd
     elementsd
     extra-container
-    lightning-loop
     lightning-pool
     lndconnect;
 
@@ -18,6 +17,7 @@ pkgs: pkgsUnstable:
     electrs
     fulcrum
     hwi
+    lightning-loop
     lnd
     nbxplorer;
 
