@@ -24,12 +24,8 @@ let
 
       # TODO-EXTERNAL:
       # When WAN is disabled, DNS bootstrapping slows down service startup by ~15 s.
-      # TODO-EXTERNAL:
-      # When bitcoind is not fully synced, the offers plugin in clightning 24.05
-      # crashes (see https://github.com/ElementsProject/lightning/issues/7378).
       extraConfig = ''
         disable-dns
-        disable-plugin=offers
       '';
     };
   };
