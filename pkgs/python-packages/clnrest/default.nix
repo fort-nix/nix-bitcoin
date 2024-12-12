@@ -26,8 +26,9 @@ let
 
     postPatch = ''
       substituteInPlace pyproject.toml \
-        --replace 'gevent = "^23.9.0.post1"' 'gevent = "24.2.1"' \
-        --replace 'flask = "^2.3.3"' 'flask = "3.0.3"'
+        --replace-fail 'gevent = "^23.9.0.post1"' 'gevent = "24.2.1"' \
+        --replace-fail 'gunicorn = "^21.2.0"' 'gunicorn = "23.0.0"' \
+        --replace-fail 'flask = "^2.3.3"' 'flask = "3.0.3"'
 
       # Add extra required src files that are missing in pyproject.toml
       sed -i '/authors/a include = [ { path = "utilities", format = ["sdist", "wheel"] } ]' pyproject.toml

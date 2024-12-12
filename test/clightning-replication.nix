@@ -14,6 +14,8 @@ let
   clientBaseConfig = {
     imports = [ ../modules/modules.nix ];
 
+    system.switch.enable = true;
+
     nixpkgs.pkgs = pkgs;
 
     nix-bitcoin.generateSecrets = true;
