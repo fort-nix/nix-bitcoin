@@ -29,9 +29,8 @@ buildPythonPackage rec {
   inherit version src;
   format = "pyproject";
 
-  # Since v0.9.11, Python older than v3.8 is not supported. Python v3.12 is
-  # still not supported.
-  disabled = (pythonOlder "3.8") || (pythonAtLeast "3.12");
+  # Since v0.9.11, Python older than v3.8 is not supported.
+  disabled = pythonOlder "3.8";
 
   nativeBuildInputs = [
     setuptools
