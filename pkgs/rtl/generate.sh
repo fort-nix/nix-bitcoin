@@ -2,7 +2,7 @@
 set -euo pipefail
 . "${BASH_SOURCE[0]%/*}/../../helper/run-in-nix-env" "gnupg wget gnused" "$@"
 
-version="0.15.2"
+version="0.15.4"
 repo=https://github.com/Ride-The-Lightning/RTL
 
 scriptDir=$(cd "${BASH_SOURCE[0]%/*}" && pwd)
