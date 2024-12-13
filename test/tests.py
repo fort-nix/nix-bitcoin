@@ -452,10 +452,10 @@ def _():
     def expect_clightning_log(str):
         machine.wait_until_succeeds(log_has_string("clightning", str))
 
-    expect_clightning_log("plugin-trustedcoin[^^]\[0m\s+bitcoind RPC working")
+    expect_clightning_log(r"plugin-trustedcoin\b.*?\bbitcoind RPC working")
     if "regtest" in enabled_tests:
         num_blocks = test_data["num_blocks"]
-        expect_clightning_log(f"plugin-trustedcoin[^^]\[0m\s+returning block {num_blocks}")
+        expect_clightning_log(rf"plugin-trustedcoin\b.*?\breturning block {num_blocks}")
 
 
 if "netns-isolation" in enabled_tests:
