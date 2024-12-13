@@ -2,7 +2,9 @@
 set -euo pipefail
 
 # This script does the following:
-# - Update all flake inputs, including nixpkgs
+# - When called without arguments, update all flake inputs, including nixpkgs.
+# - When called with a version argument, set input `nixpkgs` in `flake.nix` to the
+#   specified version and only update this input.
 # - Print version updates of pinned pkgs like so:
 #     Pkg updates in nixpkgs unstable:
 #     bitcoin: 0.20.0 -> 0.21.1
@@ -39,9 +41,11 @@ if [[ $forceRun ]] && ! git diff --quiet ../flake.{nix,lock}; then
     exit 1
 fi
 
-echo "Updating flake 'nixos-search'"
-nix flake update --flake ../test/nixos-search
-echo
+if [[ ! $nixosVersion ]]; then
+    echo "Updating flake 'nixos-search'"
+    nix flake update --flake ../test/nixos-search
+    echo
+fi
 
 versions=$(nix eval --json -f update-flake.nix versions)
 
@@ -51,8 +55,10 @@ versions=$(nix eval --json -f update-flake.nix versions)
 echo "Updating main flake"
 if [[ $nixosVersion ]]; then
     sed -Ei "s|(nixpkgs.url = .*nixos-)[^\"]+|\1$nixosVersion|" ../flake.nix
+    nix flake update nixpkgs --flake ..
+else
+    nix flake update --flake ..
 fi
-nix flake update --flake ..
 
 echo
 nix eval --raw -f update-flake.nix --argstr prevVersions "$versions" showUpdates; echo
