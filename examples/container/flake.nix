@@ -61,7 +61,7 @@
               # Enable some services.
               # See ../configuration.nix for all available features.
               services.bitcoind.enable = true;
-              services.electrs.enable = true;
+              services.clightning.enable = true;
             };
           };
         };
