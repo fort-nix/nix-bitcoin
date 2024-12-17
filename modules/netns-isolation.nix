@@ -91,7 +91,7 @@ let
   enabledServices = filterAttrs (n: v: isEnabled n) cfg.services;
   isEnabled = x: config.services.${x}.enable;
 
-  ip = "${pkgs.iproute}/bin/ip";
+  ip = "${pkgs.iproute2}/bin/ip";
   iptables = "${config.networking.firewall.package}/bin/iptables";
 
   bridgeIp = "169.254.${toString cfg.addressblock}.10";

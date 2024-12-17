@@ -168,7 +168,6 @@ in {
           lbtcnodeendpoint=${nbLib.addressWithPort liquidd.address liquidd.whitelistedPort}
         ''}
         postgres=User ID=${cfg.nbxplorer.user};Host=/run/postgresql;Database=nbxplorer
-        automigrate=1
       '';
     in rec {
       wantedBy = [ "multi-user.target" ];

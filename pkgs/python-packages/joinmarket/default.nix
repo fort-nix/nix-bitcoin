@@ -29,9 +29,8 @@ buildPythonPackage rec {
   inherit version src;
   format = "pyproject";
 
-  # Since v0.9.11, Python older than v3.8 is not supported. Python v3.12 is
-  # still not supported.
-  disabled = (pythonOlder "3.8") || (pythonAtLeast "3.12");
+  # Since v0.9.11, Python older than v3.8 is not supported.
+  disabled = pythonOlder "3.8";
 
   nativeBuildInputs = [
     setuptools
@@ -75,9 +74,10 @@ buildPythonPackage rec {
 
   postPatch = ''
     substituteInPlace pyproject.toml \
-      --replace-fail 'twisted==23.10.0' 'twisted==24.3.0' \
+      --replace-fail 'twisted==23.10.0' 'twisted==24.7.0' \
       --replace-fail 'service-identity==21.1.0' 'service-identity==24.1.0' \
-      --replace-fail 'cryptography==41.0.6' 'cryptography==42.0.5'
+      --replace-fail 'cryptography==41.0.6' 'cryptography==43.0.1' \
+      --replace-fail 'txtorcon==23.11.0' 'txtorcon==24.8.0' \
 
     # Modify pyproject.toml to include only specific modules. Do not include 'jmqtui'.
     sed -i '/^\[tool.setuptools.packages.find\]/a include = ["jmbase", "jmbitcoin", "jmclient", "jmdaemon"]' pyproject.toml
