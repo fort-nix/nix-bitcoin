@@ -6,10 +6,6 @@ pkgs: pkgsUnstable:
     bitcoind
     btcpayserver
     charge-lnd
-    clboss
-    clightning
-    electrs
-    elementsd
     extra-container
     fulcrum
     hwi
@@ -20,7 +16,10 @@ pkgs: pkgsUnstable:
     nbxplorer;
 
   inherit (pkgsUnstable)
-    ;
+    clboss
+    clightning
+    electrs
+    elementsd;
 
   inherit pkgs pkgsUnstable;
 }
