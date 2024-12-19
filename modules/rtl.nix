@@ -219,6 +219,7 @@ in {
         User = cfg.user;
         Restart = "on-failure";
         RestartSec = "10s";
+        RestartMode = "direct";
         ReadWritePaths = [ cfg.dataDir ];
       } // nbLib.allowedIPAddresses cfg.tor.enforce
         // nbLib.nodejs;
