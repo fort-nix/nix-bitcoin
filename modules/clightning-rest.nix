@@ -75,7 +75,7 @@ in {
 
     systemd.services.clightning-rest = mkIf cfg.enable {
       wantedBy = [ "multi-user.target" ];
-      requires = [ "clightning.service" ];
+      wants = [ "clightning.service" ];
       after = [ "clightning.service" ];
       path = [ pkgs.openssl ];
       environment.CL_REST_STATE_DIR = cfg.dataDir;

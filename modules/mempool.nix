@@ -275,10 +275,11 @@ in {
       };
     };
 
-    systemd.services.mempool = {
+    systemd.services.mempool = rec {
       wantedBy = [ "multi-user.target" ];
-      requires = [ "${cfg.electrumServer}.service" ];
-      after = [ "${cfg.electrumServer}.service" "mysql.service" ];
+      requires = [ "mysql.service" ];
+      wants = [ "${cfg.electrumServer}.service" ];
+      after = requires ++ wants;
       preStart = ''
         mkdir -p '${cacheDir}/cache'
         <${configFile} sed \

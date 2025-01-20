@@ -386,7 +386,6 @@ def _():
 @test("restart-bitcoind")
 def _():
     # Sanity-check system by restarting bitcoind.
-    # This also restarts all services depending on bitcoind.
     succeed("systemctl restart bitcoind")
 
 @test("regtest")

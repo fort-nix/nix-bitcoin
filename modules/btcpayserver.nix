@@ -171,8 +171,9 @@ in {
       '';
     in rec {
       wantedBy = [ "multi-user.target" ];
-      requires = [ "bitcoind.service" "postgresql.service" ] ++ optional cfg.btcpayserver.lbtc "liquidd.service";
-      after = requires ++ [ "nix-bitcoin-secrets.target" ];
+      requires = [ "postgresql.service" ];
+      wants = [ "bitcoind.service" ] ++ optional cfg.btcpayserver.lbtc "liquidd.service";
+      after = requires ++ wants ++ [ "nix-bitcoin-secrets.target" ];
       preStart = ''
         install -m 600 ${configFile} '${cfg.nbxplorer.dataDir}/settings.config'
         {
@@ -223,11 +224,12 @@ in {
         lbtcexplorerurl=${nbExplorerUrl}
         lbtcexplorercookiefile=${nbExplorerCookie}
       '');
-    in let self = {
+    in rec {
       wantedBy = [ "multi-user.target" ];
-      requires = [ "nbxplorer.service" "postgresql.service" ]
-                 ++ optional (cfg.btcpayserver.lightningBackend != null) "${cfg.btcpayserver.lightningBackend}.service";
-      after = self.requires;
+      requires = [ "postgresql.service" ];
+      wants = [ "nbxplorer.service" ]
+              ++ optional (cfg.btcpayserver.lightningBackend != null) "${cfg.btcpayserver.lightningBackend}.service";
+      after = requires ++ wants;
       serviceConfig = nbLib.defaultHardening // {
         ExecStart = ''
           ${cfg.btcpayserver.package}/bin/btcpayserver --conf=${configFile} \
@@ -244,7 +246,7 @@ in {
       } // nbLib.allowedIPAddresses cfg.btcpayserver.tor.enforce;
       startLimitIntervalSec = 30;
       startLimitBurst = 10;
-    }; in self;
+    };
 
     users.users.${cfg.nbxplorer.user} = {
       isSystemUser = true;

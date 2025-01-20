@@ -255,7 +255,7 @@ in {
     ];
 
     systemd.services.liquidd = {
-      requires = [ "bitcoind.service" ];
+      wants = [ "bitcoind.service" ];
       after = [ "bitcoind.service" "nix-bitcoin-secrets.target" ];
       wantedBy = [ "multi-user.target" ];
       preStart = ''
