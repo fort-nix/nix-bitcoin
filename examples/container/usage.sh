@@ -39,7 +39,7 @@ extra-container start mynode
 # You can also use the `create --start` command above
 
 # Destroy container
-nix run . -- destroy
+extra-container destroy mynode
 
 #―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 # Inspect container config
