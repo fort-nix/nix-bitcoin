@@ -1,7 +1,7 @@
 The [`run-tests.sh`](./run-tests.sh) command is the most convenient and versatile way to run tests.\
 It leave no traces (outside of `/nix/store`) on the host system.
 
-`run-tests.sh` requires Nix >= 2.10.
+`run-tests.sh` requires Nix with [Flakes](https://wiki.nixos.org/wiki/Flakes).
 
 ### Summary
 ```bash
