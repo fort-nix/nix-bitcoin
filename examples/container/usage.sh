@@ -21,8 +21,8 @@ nix run . -- create --start
 # Run command in container
 extra-container run mynode -- hostname
 extra-container run mynode -- systemctl status bitcoind
-extra-container run mynode -- lightning-cli getinfo
-extra-container run mynode -- bash -c 'bitcoin-cli -getinfo && lightning-cli getinfo'
+extra-container run mynode -- bitcoin-cli -getinfo
+extra-container run mynode -- bash -c 'bitcoin-cli -getinfo && systemctl status electrs'
 
 # Start shell in container
 extra-container root-login mynode
@@ -39,7 +39,7 @@ extra-container start mynode
 # You can also use the `create --start` command above
 
 # Destroy container
-nix run . -- destroy
+extra-container destroy mynode
 
 #―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 # Inspect container config
