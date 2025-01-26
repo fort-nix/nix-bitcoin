@@ -52,9 +52,18 @@ versions=$(nix eval --json -f update-flake.nix versions)
 ## Uncomment the following to generate a version change message for testing
 # versions=$(echo "$versions" | sed 's|1|0|g')
 
+setVersion() {
+    sed -Ei "s|($1)[0-9.]+|\1$nixosVersion|" "$2"
+}
+
 echo "Updating main flake"
 if [[ $nixosVersion ]]; then
-    sed -Ei "s|(nixpkgs.url = .*nixos-)[^\"]+|\1$nixosVersion|" ../flake.nix
+    setVersion 'nixpkgs.url = .*?nixos-' ../flake.nix
+    setVersion 'system.stateVersion = "' ../examples/configuration.nix
+    setVersion 'nix-bitcoin.url = .*?/nixos-' ../examples/flakes/flake.nix
+    setVersion 'nix-bitcoin.url = .*?/nixos-' ../examples/container/flake.nix
+    setVersion 'image: nixpkgs.*?nixos-' ../.cirrus.yml
+    setVersion 'update-flake.sh ' ../dev/README.md
     nix flake update nixpkgs --flake ..
 else
     nix flake update --flake ..
