@@ -346,11 +346,18 @@ in {
       messagingAddress = netns.joinmarket.address;
       cliExec = mkCliExec "joinmarket";
     };
-    systemd.services.joinmarket-yieldgenerator = mkIf config.services.joinmarket.yieldgenerator.enable {
-      serviceConfig.NetworkNamespacePath = "/var/run/netns/nb-joinmarket";
+    systemd.services = {
+      joinmarket-yieldgenerator = mkIf config.services.joinmarket.yieldgenerator.enable {
+        serviceConfig.NetworkNamespacePath = "/var/run/netns/nb-joinmarket";
+      };
+
+      joinmarket-jmwalletd = mkIf config.services.joinmarket-jmwalletd.enable {
+        serviceConfig.NetworkNamespacePath = "/var/run/netns/nb-joinmarket";
+      };
     };
 
     services.joinmarket-ob-watcher.address = netns.joinmarket-ob-watcher.address;
+    services.joinmarket-jam.address = netns.nginx.address;
 
     services.lightning-pool.rpcAddress = netns.lightning-pool.address;
 
