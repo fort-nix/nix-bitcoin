@@ -190,9 +190,9 @@ in {
 
     systemd.services.rtl = rec {
       wantedBy = [ "multi-user.target" ];
-      requires = optional cfg.nodes.clightning.enable "clightning.service" ++
-                 optional cfg.nodes.lnd.enable "lnd.service";
-      after = requires ++ [ "nix-bitcoin-secrets.target" ];
+      wants = optional cfg.nodes.clightning.enable "clightning.service" ++
+              optional cfg.nodes.lnd.enable "lnd.service";
+      after = wants ++ [ "nix-bitcoin-secrets.target" ];
       environment.RTL_CONFIG_PATH = cfg.dataDir;
       environment.DB_DIRECTORY_PATH = cfg.dataDir;
       serviceConfig = nbLib.defaultHardening // {
