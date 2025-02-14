@@ -8,8 +8,7 @@ pkgs: pkgsUnstable:
     hwi
     lightning-loop
     lightning-pool
-    lndconnect
-    nbxplorer;
+    lndconnect;
 
   inherit (pkgsUnstable)
     bitcoin
@@ -19,7 +18,8 @@ pkgs: pkgsUnstable:
     electrs
     elementsd
     extra-container
-    lnd;
+    lnd
+    nbxplorer;
 
   inherit pkgs pkgsUnstable;
 }
