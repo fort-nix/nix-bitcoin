@@ -2,7 +2,6 @@
 pkgs: pkgsUnstable:
 {
   inherit (pkgs)
-    btcpayserver
     charge-lnd
     fulcrum
     hwi
@@ -13,6 +12,7 @@ pkgs: pkgsUnstable:
   inherit (pkgsUnstable)
     bitcoin
     bitcoind
+    btcpayserver
     clboss
     clightning
     electrs
