@@ -35,6 +35,7 @@ in {
     #
     electrs = defaultEnforceTor;
     fulcrum = defaultEnforceTor;
+    teos = defaultEnforceTor;
     nbxplorer = defaultEnforceTor;
     rtl = defaultEnforceTor;
     joinmarket = defaultEnforceTor;
@@ -48,6 +49,7 @@ in {
     liquidd.enable = defaultTrue;
     electrs.enable = defaultTrue;
     fulcrum.enable = defaultTrue;
+    teos.enable = defaultTrue;
     joinmarket-ob-watcher.enable = defaultTrue;
     rtl.enable = defaultTrue;
   };
