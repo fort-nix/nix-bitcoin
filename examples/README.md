@@ -64,6 +64,28 @@ The commands in `shell.nix` allow you to locally run the node in a VM or contain
 Flakes make it easy to include `nix-bitcoin` in an existing NixOS config.
 The [flakes example](./flakes/flake.nix) shows how to use `nix-bitcoin` as an input to a system flake.
 
+### Using Bitcoin Knots Instead of bitcoind
+
+nix-bitcoin now supports running [Bitcoin Knots](https://bitcoinknots.org/) as an alternative to Bitcoin Core (bitcoind).
+
+**To use Bitcoin Knots instead of bitcoind:**
+
+- In your `configuration.nix` (or flake module), set:
+
+```nix
+{
+  services.bitcoind.enable = false;
+  services.bitcoin-knots.enable = true;
+  # Optionally, set Knots-specific options:
+  # services.bitcoin-knots.knotsSpecificOptions = { ... };
+}
+```
+
+- Only one of `bitcoind` or `bitcoin-knots` should be enabled at a time.
+- All standard bitcoind configuration options are supported. Knots-specific options can be set via `knotsSpecificOptions`.
+
+For more advanced switching (e.g., via Flakes), see the main INSTRUCTIONS.md.
+
 ### Persistent container with Flakes
 
 The [persistent container](./container) example shows how to run a Flake-based node
