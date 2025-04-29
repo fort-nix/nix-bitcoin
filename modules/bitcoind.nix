@@ -10,6 +10,12 @@ let
         default = "127.0.0.1";
         description = "Address to listen for peer connections.";
       };
+      package = mkOption {
+        type = types.package;
+        default = if cfg.implementation == "knots" then pkgs.bitcoind-knots else pkgs.bitcoind;
+        defaultText = "pkgs.bitcoind or pkgs.bitcoind-knots based on implementation";
+        description = "The package to use.";
+      };
       port = mkOption {
         type = types.port;
         default = if !cfg.regtest then 8333 else 18444;
@@ -54,12 +60,6 @@ let
           Bash expression which outputs the public service address to announce to peers.
           If left empty, no address is announced.
         '';
-      };
-      package = mkOption {
-        type = types.package;
-        default = config.nix-bitcoin.pkgs.bitcoind;
-        defaultText = "config.nix-bitcoin.pkgs.bitcoind";
-        description = "The package providing bitcoin binaries.";
       };
       extraConfig = mkOption {
         type = types.lines;
@@ -264,6 +264,15 @@ let
         default = cfg.user;
         description = "The group as which to run bitcoind.";
       };
+      implementation = mkOption {
+        type = types.enum [ "core" "knots" ];
+        default = "core";
+        description = ''
+          Select the Bitcoin implementation to use.
+          `core`: Use the standard Bitcoin Core package.
+          `knots`: Use the Bitcoin Knots package.
+        '';
+      };
       cli = mkOption {
         readOnly = true;
         type = types.package;
@@ -272,6 +281,69 @@ let
         '';
         defaultText = "(See source)";
         description = "Binary to connect with the bitcoind instance.";
+      };
+
+      knotsSpecificOptions = mkOption {
+        type = types.attrsOf types.anything;
+        default = {};
+        example = { # Example Knots-specific options with Nix types
+          # -- Options often differing from Core defaults or specific to Knots --
+          mempoolfullrbf = true;            # Opt-in to full RBF logic
+          acceptnonstdtxn = true;           # Accept (but do not relay) non-standard transactions
+          permitbarepubkey = true;          # Permit bare P2PK outputs
+          spkreuse = false;                 # Disallow scriptPubKey reuse in mempool (false = "conflict")
+          dbfilesize = 128;                 # Control LevelDB target file size (MiB)
+          corepolicy = false;               # Don't use Core policy defaults (explicitly use Knots defaults)
+          mempoolreplacement = "fee,-optin"; # Always allow RBF (Knots default)
+          rejectparasites = true;           # Refuse parasitic overlay protocols (Knots default)
+          rejecttokens = true;              # Refuse non-bitcoin token transactions (Knots default)
+
+          # -- General options not exposed via dedicated Nix attrs --
+          # Network/Blocks/Mempool related
+          allowignoredconf = true;          # Treat unused conf as warning
+          blockfilterindex = "basic";       # Maintain compact block filter index ("basic", "v0")
+          blockreconstructionextratxn = 100;# Extra txns for compact block reconstruction
+          blocksdir = "/path/to/blocks";    # Custom directory for block data
+          blocksxor = true;                 # XOR key for block files
+          coinstatsindex = true;            # Maintain coinstats index
+          loadblock = "/path/to/blocks.dat";# Import blocks from external file on startup
+          lowmem = 10;                      # Flush caches if memory below <n> MiB
+          persistmempoolv1 = false;         # Use current mempool.dat format
+          pruneduringinit = 1;              # Temporary prune setting during initial sync (if prune enabled)
+          asmap = "ip_asn.map";             # ASN mapping file
+          acceptnonstddatacarrier = false;  # Relay non-OP_RETURN datacarrier
+          bytespersigop = 20;               # Equivalent bytes per sigop
+          bytespersigopstrict = 20;         # Minimum bytes per sigop strict
+          datacarrier = true;               # Relay data carrier transactions
+          datacarriercost = 1;              # VBytes cost multiplier for extra data
+          datacarriersize = 42;             # Max size for data carrier txns (bytes)
+          dustdynamic = "3*mempool:1000"; # Automatically adjust dust relay fee
+          maxscriptsize = 1650;             # Maximum script size relayed/mined (bytes)
+          mempooltruc = "accept";           # TRUC limit behavior ("accept", "reject", "enforce")
+          permitbaremultisig = false;       # Relay non-P2SH multisig outputs
+          blockmaxsize = 300000;            # Maximum block size (bytes)
+          blockprioritysize = 100000;       # Max size high-priority/low-fee txns (bytes)
+
+          # Wallet related (if wallet enabled)
+          walletimplicitsegwit = false;     # Support segwit when importing/restoring legacy wallets
+
+          # Logging/Misc related
+          uaappend = "my-knots-node";      # Append a string to the node's user agent
+          uacomment = "my-comment";         # Append comment to the user agent string
+          loglevelalways = false;           # Always prepend log level
+
+          # Statistics related
+          statsenable = false;              # Enable statistics
+          statsmaxmemorytarget = 10485760;  # Memory limit for statistics (bytes)
+
+          # Less common/Internal (usually not needed)
+          # confrw = "bitcoin_rw.conf";
+          # settings = "settings.json";
+        };
+        description = ''
+          Bitcoin Knots specific configuration options added to bitcoin.conf.
+          Only used when implementation = "knots".
+        '';
       };
       tor = nbLib.tor;
     };
@@ -337,8 +409,19 @@ let
     ${optionalString (cfg.zmqpubrawblock != null) "zmqpubrawblock=${cfg.zmqpubrawblock}"}
     ${optionalString (cfg.zmqpubrawtx != null) "zmqpubrawtx=${cfg.zmqpubrawtx}"}
 
-    # Extra options
+    # Generic extra options
     ${cfg.extraConfig}
+
+    # Knots-specific extra options - handle type conversion
+    ${lib.optionalString (cfg.implementation == "knots") (lib.concatStringsSep "\n" (
+      mapAttrsToList (name: value:
+        let
+          valStr = if isBool value then (if value then "1" else "0")
+                   else if isInt value then toString value
+                   else toString value; # Default to string conversion
+        in "${name}=${valStr}"
+      ) cfg.knotsSpecificOptions
+    ))}
   '';
 
   zmqServerEnabled = (cfg.zmqpubrawblock != null) || (cfg.zmqpubrawtx != null);
@@ -389,6 +472,10 @@ in {
       after = wants;
       wantedBy = [ "multi-user.target" ];
 
+      description = if cfg.implementation == "knots" then "Bitcoin Knots daemon" else "Bitcoin Core daemon";
+
+      environment.BITCOIN_DATADIR = cfg.dataDir;
+      # Add secrets to path for rpcauth files read by bitcoind
       preStart = let
         extraRpcauth = concatMapStrings (name: let
           user = cfg.rpc.users.${name};
