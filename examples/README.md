@@ -74,17 +74,19 @@ nix-bitcoin now supports running [Bitcoin Knots](https://bitcoinknots.org/) as a
 
 ```nix
 {
-  services.bitcoind.enable = false;
-  services.bitcoin-knots.enable = true;
-  # Optionally, set Knots-specific options:
-  # services.bitcoin-knots.knotsSpecificOptions = { ... };
+  services.bitcoind.enable = true;
+  services.bitcoind.implementation = "knots";
+
+  # Optionally, ensure the Knots CLI is in your environment:
+  environment.systemPackages = [ pkgs.bitcoind-knots ];
+  # Optionally, set Knots-specific:
+  services.bitcoind.knotsSpecificOptions = { ... }; # Only used if implementation = "knots"
 }
 ```
 
-- Only one of `bitcoind` or `bitcoin-knots` should be enabled at a time.
+- Only one implementation should be used at a time. Use `services.bitcoind.implementation = "core"` (default) or `"knots"`.
 - All standard bitcoind configuration options are supported. Knots-specific options can be set via `knotsSpecificOptions`.
 
-For more advanced switching (e.g., via Flakes), see the main INSTRUCTIONS.md.
 
 ### Persistent container with Flakes
 
