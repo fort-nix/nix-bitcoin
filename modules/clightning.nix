@@ -116,13 +116,7 @@ let
   network = bitcoind.makeNetworkName "bitcoin" "regtest";
   configFile = pkgs.writeText "config" ''
     network=${network}
-    ${
-      if cfg.useBcliPlugin then ''
-        bitcoin-datadir=${config.services.bitcoind.dataDir}
-      '' else ''
-        disable-plugin=bcli
-      ''
-    }
+    ${optionalString (!cfg.useBcliPlugin) "disable-plugin=bcli"}
     ${optionalString (cfg.proxy != null) "proxy=${cfg.proxy}"}
     always-use-proxy=${boolToString cfg.always-use-proxy}
     bind-addr=${cfg.address}:${toString cfg.port}
