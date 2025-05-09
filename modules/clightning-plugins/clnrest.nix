@@ -37,8 +37,8 @@ let
       };
       package = mkOption {
         type = types.package;
-        default = config.nix-bitcoin.pkgs.nbPython3Packages.clnrest;
-        defaultText = "config.nix-bitcoin.pkgs.nbPython3Packages.clnrest";
+        default = config.nix-bitcoin.pkgs.clnrest;
+        defaultText = "config.nix-bitcoin.pkgs.clnrest";
         description = "The package providing clnrest binaries.";
       };
     };

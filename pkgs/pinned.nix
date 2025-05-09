@@ -3,7 +3,7 @@ pkgs: pkgsUnstable:
 {
   inherit (pkgs)
     charge-lnd
-    fulcrum
+    extra-container
     hwi
     lightning-loop
     lightning-pool
@@ -17,7 +17,7 @@ pkgs: pkgsUnstable:
     clightning
     electrs
     elementsd
-    extra-container
+    fulcrum
     lnd
     nbxplorer;
 
