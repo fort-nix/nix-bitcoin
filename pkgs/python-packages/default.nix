@@ -10,7 +10,8 @@ rec {
       pyln-proto = clightningPkg ./pyln-proto;
       pyln-bolt7 = clightningPkg ./pyln-bolt7;
       pylightning = clightningPkg ./pylightning;
-      clnrest = clightningPkg ./clnrest;
+      # TODO: Remove after 2026-05-09
+      clnrest = throw "`nbPython3Packages.clnrest` has been replaced with nix-bitcoin pkg `clnrest` (Rust rewrite)";
 
       # Packages only used by joinmarket
       bencoderpyx = callPackage ./bencoderpyx {};
