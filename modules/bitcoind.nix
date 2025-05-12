@@ -59,7 +59,15 @@ let
         type = types.package;
         default = config.nix-bitcoin.pkgs.bitcoind;
         defaultText = "config.nix-bitcoin.pkgs.bitcoind";
-        description = "The package providing bitcoin binaries.";
+        description = ''
+          The package providing bitcoind binaries.
+
+          You can use this option to select other bitcoind-compatible implementations.
+          Example:
+          ```nix
+          services.bitcoind.package = config.nix-bitcoin.pkgs.bitcoind-knots;
+          ```
+        '';
       };
       extraConfig = mkOption {
         type = types.lines;
