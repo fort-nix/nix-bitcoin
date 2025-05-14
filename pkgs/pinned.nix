@@ -12,6 +12,7 @@ pkgs: pkgsUnstable:
   inherit (pkgsUnstable)
     bitcoin
     bitcoind
+    bitcoind-knots
     btcpayserver
     clboss
     clightning
