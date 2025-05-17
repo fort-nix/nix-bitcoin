@@ -22,6 +22,7 @@
     ./rtl.nix
     ./mempool.nix
     ./electrs.nix
+    ./teos.nix
     ./fulcrum.nix
     ./liquid.nix
     ./btcpayserver.nix
