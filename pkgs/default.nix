@@ -16,6 +16,7 @@ let self = {
   joinmarket = pkgs.callPackage ./joinmarket { inherit (self) nbPython3PackagesJoinmarket; };
   lndinit = pkgs.callPackage ./lndinit { };
   liquid-swap = pkgs.python3Packages.callPackage ./liquid-swap { };
+  nbxplorer = pkgs.callPackage ./nbxplorer { };
   rtl = pkgs.callPackage ./rtl { inherit (self) fetchNodeModules; };
   inherit (pkgs.callPackage ./mempool { inherit (self) fetchNodeModules; })
     mempool-backend

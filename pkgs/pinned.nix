@@ -19,8 +19,7 @@ pkgs: pkgsUnstable:
     electrs
     elementsd
     fulcrum
-    lnd
-    nbxplorer;
+    lnd;
 
   inherit pkgs pkgsUnstable;
 }
