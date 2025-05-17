@@ -26,6 +26,10 @@
   ### BITCOIND
   # Bitcoind is enabled by default via secure-node.nix.
   #
+  # If you wish to run Bitcoind Knots instead of the default Bitcoind core,
+  # you can enable it by uncommenting the following line:
+  # services.bitcoind.package = config.nix-bitcoin.pkgs.bitcoind-knots;
+  #
   # Set this option to enable pruning with a specified MiB value.
   # clightning is compatible with pruning. See
   # https://github.com/ElementsProject/lightning/#pruning for more information.
