@@ -12,6 +12,7 @@
   "getblockchaininfo"
   "getblockcount"
   "getblockfilter"
+  "getblockfrompeer"
   "getblockhash"
   "getblockheader"
   "getblockstats"
