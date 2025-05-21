@@ -54,6 +54,7 @@ let
   };
 
   cfg = config.services.clightning.plugins.clnrest;
+  nbLib = config.nix-bitcoin.lib;
   inherit (config.services) clightning;
 
   runePath = "${clightning.networkDir}/admin-rune";
@@ -68,11 +69,22 @@ in
       clnrest-port=${toString cfg.port}
     '';
 
-    systemd.services.clightning.postStart = mkIf cfg.createAdminRune (mkAfter ''
-      if [[ ! -e '${runePath}' ]]; then
-        rune=$(${clightning.cli}/bin/lightning-cli createrune | ${pkgs.jq}/bin/jq -r .rune)
-        install -m 640 <(echo "$rune") '${runePath}'
-      fi
-    '');
+    systemd.services.clightning.postStart = mkAfter (
+      optionalString cfg.createAdminRune ''
+        if [[ ! -e '${runePath}' ]]; then
+          rune=$(${clightning.cli}/bin/lightning-cli createrune | ${pkgs.jq}/bin/jq -r .rune)
+          install -m 640 <(echo "$rune") '${runePath}'
+        fi
+      '' +
+      # Wait until the clnrest server is listening.
+      # Usually, the server is already listening at this point.
+      # But when clnrest is running for the first time, certificates are generated
+      # before the server starts, which can take a few seconds.
+      ''
+        while ! { exec 3>/dev/tcp/${nbLib.address cfg.address}/${toString cfg.port}; } &>/dev/null; do
+          sleep 0.1
+        done
+      ''
+    );
   };
 }
