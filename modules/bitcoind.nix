@@ -205,7 +205,7 @@ let
         '';
       };
       dbCache = mkOption {
-        type = types.nullOr (types.ints.between 4 16384);
+        type = types.nullOr (intAtLeast 4);
         default = null;
         example = 4000;
         description = "Override the default database cache size in MiB.";
@@ -350,6 +350,11 @@ let
   '';
 
   zmqServerEnabled = (cfg.zmqpubrawblock != null) || (cfg.zmqpubrawtx != null);
+
+  intAtLeast = n: types.addCheck types.int (x: x >= n) // {
+    name = "intAtLeast";
+    description = "integer >= ${toString n}";
+  };
 in {
   inherit options;
 
