@@ -70,9 +70,6 @@ let
   nbLib = config.nix-bitcoin.lib;
 
   lnd = config.services.lnd;
-  electrs = if (config.services ? electrs) && config.services.electrs.enable
-            then config.services.electrs
-            else null;
 
   user = "charge-lnd";
   group = user;
@@ -113,8 +110,6 @@ in
             --lnddir ${dataDir}/lnddir-proxy \
             --grpc ${nbLib.addressWithPort lnd.rpcAddress lnd.rpcPort} \
             --config ${checkedConfig} \
-            ${optionalString (electrs != null)
-              "--electrum-server ${nbLib.addressWithPort electrs.address electrs.port}"} \
             ${escapeShellArgs cfg.extraFlags}
         '';
         Type = "oneshot";
