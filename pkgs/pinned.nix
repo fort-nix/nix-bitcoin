@@ -2,7 +2,6 @@
 pkgs: pkgsUnstable:
 {
   inherit (pkgs)
-    charge-lnd
     extra-container
     hwi
     lightning-loop
@@ -14,6 +13,7 @@ pkgs: pkgsUnstable:
     bitcoind
     bitcoind-knots
     btcpayserver
+    charge-lnd
     clboss
     clightning
     electrs
