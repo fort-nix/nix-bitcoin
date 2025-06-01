@@ -108,7 +108,7 @@ rec {
 
   mempool-nginx-conf = runCommand "mempool-nginx-conf" {} ''
     ${sync} --chmod=u+w ${./nginx-conf}/ $out
-    ${sync} ${src}/production/nginx/http-language.conf $out/mempool
+    ${sync} ${src}/production/nginx/http-language.conf $out
   '';
 
   sync = "${rsync}/bin/rsync -a --inplace";

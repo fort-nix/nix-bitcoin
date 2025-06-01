@@ -167,7 +167,7 @@ let
     # This must be added to `services.nginx.commonHttpConfig` when
     # `mempool/location-static.conf` is used
     httpConfig = ''
-      include ${nbPkgs.mempool-nginx-conf}/mempool/http-language.conf;
+      include ${nbPkgs.mempool-nginx-conf}/http-language.conf;
     '';
 
     # Config for static website content.
@@ -180,7 +180,7 @@ let
       add_header Vary Accept-Language;
       add_header Vary Cookie;
 
-      include ${nbPkgs.mempool-nginx-conf}/mempool/location-static.conf;
+      include ${nbPkgs.mempool-nginx-conf}/location-static.conf;
 
       # Redirect /api to /docs/api
       location = /api {
