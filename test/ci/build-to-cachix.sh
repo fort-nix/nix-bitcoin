@@ -9,7 +9,7 @@ set -euo pipefail
 CACHIX_SIGNING_KEY="${CACHIX_SIGNING_KEY:-}"
 cachixCache=nix-bitcoin
 
-trap 'echo Error at line $LINENO' ERR
+trap 'echo "Error at ${BASH_SOURCE[0]}:$LINENO"' ERR
 
 tmpDir=$(mktemp -d -p /tmp)
 trap 'rm -rf $tmpDir' EXIT
