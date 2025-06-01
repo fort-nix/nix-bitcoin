@@ -32,6 +32,6 @@ buildPythonPackage rec {
 
   postPatch = ''
     substituteInPlace pyproject.toml \
-      --replace-fail 'cryptography = "^42"' 'cryptography = "43.0.1"'
+      --replace-fail 'cryptography = "^42"' 'cryptography = "44.0.2"'
   '';
 }
