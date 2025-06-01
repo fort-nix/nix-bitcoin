@@ -170,7 +170,9 @@ let
       include ${nbPkgs.mempool-nginx-conf}/mempool/http-language.conf;
     '';
 
-    # This should be added to `services.nginx.virtualHosts.<mempool server name>.extraConfig`
+    # Config for static website content.
+    # This should be added to `services.nginx.virtualHosts.<mempool server name>.extraConfig`.
+    # Adapted from mempool/nginx-mempool.conf and mempool/production/nginx/location-redirects.conf
     staticContent = ''
       index index.html;
 
@@ -189,7 +191,9 @@ let
       }
     '';
 
-    # This should be added to `services.nginx.virtualHosts.<mempool server name>.extraConfig`
+    # Config for backend API.
+    # This should be added to `services.nginx.virtualHosts.<mempool server name>.extraConfig`.
+    # Adapted from mempool/nginx-mempool.conf and mempool/production/nginx/location-api.conf.
     proxyApi = let
       backend = "http://${nbLib.addressWithPort cfg.address cfg.port}";
     in ''
@@ -208,7 +212,7 @@ let
           proxy_set_header Connection "Upgrade";
 
           # Relevant settings from `recommendedProxyConfig` (nixos/nginx/default.nix)
-          # (In the above api locations, this are inherited from the parent scope)
+          # (In the above api locations, these are inherited from the parent scope)
           proxy_set_header Host $host;
           proxy_set_header X-Real-IP $remote_addr;
           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
