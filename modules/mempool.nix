@@ -50,9 +50,23 @@ let
           default = 60845; # A random private port
           description = "HTTP server port.";
         };
+        settings = mkOption {
+          type = with types; attrsOf anything;
+          default = {};
+          example = {
+            TESTNET_ENABLED = true;
+            MEMPOOL_WEBSITE_URL = "mempool.mynode.org";
+          };
+          description = ''
+            Mempool frontend settings.
+            See here for available options:
+            https://github.com/mempool/mempool/blob/master/frontend/src/app/services/state.service.ts
+            (`interface Env` and `defaultEnv`)
+          '';
+        };
         staticContentRoot = mkOption {
           type = types.path;
-          default = nbPkgs.mempool-frontend;
+          default = nbPkgs.mempool-frontend.withConfig cfg.frontend.settings;
           defaultText = "config.nix-bitcoin.pkgs.mempool-frontend";
           description = "
             Path of the static frontend content root.
@@ -106,7 +120,7 @@ let
         };
         description = ''
           Mempool backend settings.
-          See here for possible options:
+          See here for available options:
           https://github.com/mempool/mempool/blob/master/backend/src/config.ts
         '';
       };

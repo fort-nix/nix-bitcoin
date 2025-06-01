@@ -79,7 +79,14 @@ rec {
     };
   };
 
-  mempool-frontend = mkDerivationMempool {
+  mempool-frontend = mkFrontend {};
+
+  # Argument `config` (type: attrset) defines the mempool frontend config.
+  # If `{}`, the default config is used.
+  # See here for available options:
+  # https://github.com/mempool/mempool/blob/master/frontend/src/app/services/state.service.ts
+  # (`interface Env` and `defaultEnv`)
+  mkFrontend = config: mkDerivationMempool {
     pname = "mempool-frontend";
 
     buildPhase = ''
@@ -91,6 +98,10 @@ rec {
       # sync-assets.js is called during `npm run build` and downloads assets from the
       # internet. Disable this script and instead add the assets manually after building.
       : > sync-assets.js
+
+      ${lib.optionalString (config != {}) ''
+        ln -s ${builtins.toFile "mempool-frontend-config" (builtins.toJSON config)} mempool-frontend-config.json
+      ''}
 
       npm run build
 
@@ -107,6 +118,7 @@ rec {
     '';
 
     passthru = {
+      withConfig = mkFrontend;
       assets = frontendAssets;
       nodeModules = nodeModules.frontend;
     };
