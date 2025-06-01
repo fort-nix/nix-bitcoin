@@ -250,6 +250,7 @@ in {
         HTTP_PORT = cfg.port;
         CACHE_DIR = "${cacheDir}/cache";
         STDOUT_LOG_MIN_PRIORITY = mkDefault "info";
+        AUTOMATIC_POOLS_UPDATE = true;
       };
       CORE_RPC = {
         HOST = bitcoind.rpc.address;
@@ -268,9 +269,10 @@ in {
         ENABLED = true;
         DATABASE = cfg.database.name;
         SOCKET = "/run/mysqld/mysqld.sock";
+        PID_DIR = cacheDir;
       };
     } // optionalAttrs (cfg.tor.proxy) {
-      # Use Tor for rate fetching
+      # Use Tor for rate fetching and pool updating
       SOCKS5PROXY = {
         ENABLED = true;
         USE_ONION = true;
