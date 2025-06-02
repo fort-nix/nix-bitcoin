@@ -29,7 +29,7 @@ task:
           - scenario: netnsRegtest
       # This script is run as root
       build_script:
-        - echo "sandbox = true" >> /etc/nix/nix.conf
+        - printf '%s\n' 'sandbox = true' 'max-jobs = auto' >> /etc/nix/nix.conf
         - nix shell --inputs-from . nixpkgs#{bash,coreutils,cachix} -c ./test/ci/build.sh $scenario
 
     - name: flake
