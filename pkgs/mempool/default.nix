@@ -26,12 +26,12 @@ rec {
   nodeModules = {
     frontend = fetchNodeModules {
       inherit src nodejs;
-      preBuild = "cd frontend";
+      sourceRoot = "source/frontend";
       hash = "sha256-/Z0xNvob7eMGpzdUWolr47vljpFiIutZpGwd0uYhPWI=";
     };
     backend = fetchNodeModules {
       inherit src nodejs;
-      preBuild = "cd backend";
+      sourceRoot = "source/backend";
       hash = "sha256-HpzzSTuSRWDWGbctVhTcUA01if/7OTI4xN3DAbAAX+U=";
     };
   };
@@ -67,6 +67,7 @@ rec {
 
     passthru = {
       inherit nodejs nodejsRuntime;
+      nodeModules = nodeModules.backend;
     };
   };
 
@@ -99,7 +100,10 @@ rec {
       runHook postInstall
     '';
 
-    passthru = { assets = frontendAssets; };
+    passthru = {
+      assets = frontendAssets;
+      nodeModules = nodeModules.frontend;
+    };
   };
 
   mempool-nginx-conf = runCommand "mempool-nginx-conf" {} ''

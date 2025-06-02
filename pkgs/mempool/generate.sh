@@ -50,7 +50,7 @@ updateNodeModulesHash() {
     component=$1
     echo
     echo "Fetching node modules for mempool-$component"
-    ../../helper/update-fixed-output-derivation.sh ./default.nix mempool-"$component" "cd $component"
+    ../../helper/update-fixed-output-derivation.sh ./default.nix mempool-"$component".nodeModules "sourceRoot.*$component"
 }
 
 updateFrontendAssets() {
