@@ -14,10 +14,12 @@ rec {
   nodejs = nodejs-18_x;
   nodejsRuntime = nodejs-slim-18_x;
 
+  version = "2.5.0";
+
   src = fetchFromGitHub {
     owner = "mempool";
     repo = "mempool";
-    rev = "v2.5.0";
+    tag = "v${version}";
     hash = "sha256-8HmfytxRte3fQ0QKOljUVk9YAuaXhQQWuv3EFNmOgfQ=";
   };
 
@@ -108,8 +110,7 @@ rec {
   sync = "${rsync}/bin/rsync -a --inplace";
 
   mkDerivationMempool = args: stdenvNoCC.mkDerivation ({
-    version = src.rev;
-    inherit src meta;
+    inherit version src meta;
 
     nativeBuildInputs = [
       makeWrapper

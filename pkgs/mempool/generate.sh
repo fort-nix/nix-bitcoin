@@ -40,9 +40,9 @@ updateSrc() {
     hash=$(nix hash path "$src")
 
     sed -i "
+      s|\bversion = .*;|version = \"$version\";|
       s|\bowner = .*;|owner = \"$owner\";|
-      s|\brev = .*;|rev = \"$rev\";|
-      s|\bhash = .*;|hash = \"$hash\";|
+      /fetchFromGitHub/,/hash/ s|\bhash = .*;|hash = \"$hash\";|
     " default.nix
 }
 
