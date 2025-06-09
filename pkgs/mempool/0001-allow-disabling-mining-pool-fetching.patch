@@ -1,0 +1,42 @@
+From e4b3ebaf0451c1bddbd7dcf8527c296938ebb607 Mon Sep 17 00:00:00 2001
+From: Erik Arvstedt <erik.arvstedt@gmail.com>
+Date: Sun, 1 Jun 2025 11:17:22 +0200
+Subject: [PATCH] allow disabling mining pool fetching in offline environments
+
+Previously, Mempool strictly required fetching mining pool data from
+Github and failed when this was not possible, e.g. in offline
+environments.
+
+This patch allows disabling pool fetching.
+When disabled, empty pool data is inserted into the DB, which
+effectively turns off block pool classification.
+---
+ backend/src/tasks/pools-updater.ts | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/backend/src/tasks/pools-updater.ts b/backend/src/tasks/pools-updater.ts
+index 6b0520dfc..a74259b95 100644
+--- a/backend/src/tasks/pools-updater.ts
++++ b/backend/src/tasks/pools-updater.ts
+@@ -75,7 +75,7 @@ class PoolsUpdater {
+       } else {
+         logger.warn(`pools-v2.json is outdated, fetching latest from ${this.poolsUrl} over ${network}`, this.tag);
+       }
+-      const poolsJson = await this.query(this.poolsUrl);
++      const poolsJson = (githubSha == "disable-pool-fetching") ? [] : await this.query(this.poolsUrl);
+       if (poolsJson === undefined) {
+         return;
+       }
+@@ -136,6 +136,9 @@ class PoolsUpdater {
+    * Fetch our latest pools-v2.json sha from github
+    */
+   private async fetchPoolsSha(): Promise<string | null> {
++    if (this.poolsUrl == "disable-pool-fetching") {
++      return "disable-pool-fetching";
++    }
+     const response = await this.query(this.treeUrl);
+ 
+     if (response !== undefined) {
+-- 
+2.47.2
+

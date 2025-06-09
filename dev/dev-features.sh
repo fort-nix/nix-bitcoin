@@ -293,6 +293,7 @@ c journalctl -u clightning -f
 run-tests.sh -s mempool-regtest container
 
 c systemctl status mempool
+c journalctl -u mempool
 c systemctl status mysql
 c nodeinfo
 
@@ -302,6 +303,8 @@ c curl -fsS localhost:8999/api/v1/blocks/tip/height | jq
 c curl -fsS localhost:8999/api/v1/address/1CGG9qVq2P6F7fo6sZExvNq99Jv2GDpaLE | jq
 
 # Check frontend
+c systemctl status nginx
+c journalctl -u nginx
 c curl -fsS localhost:60845
 c curl -fsS localhost:60845/api/mempool | jq
 c curl -fsS localhost:60845/api/blocks/1 | jq

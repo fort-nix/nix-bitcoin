@@ -50,9 +50,23 @@ let
           default = 60845; # A random private port
           description = "HTTP server port.";
         };
+        settings = mkOption {
+          type = with types; attrsOf anything;
+          default = {};
+          example = {
+            TESTNET_ENABLED = true;
+            MEMPOOL_WEBSITE_URL = "mempool.mynode.org";
+          };
+          description = ''
+            Mempool frontend settings.
+            See here for available options:
+            https://github.com/mempool/mempool/blob/master/frontend/src/app/services/state.service.ts
+            (`interface Env` and `defaultEnv`)
+          '';
+        };
         staticContentRoot = mkOption {
           type = types.path;
-          default = nbPkgs.mempool-frontend;
+          default = nbPkgs.mempool-frontend.withConfig cfg.frontend.settings;
           defaultText = "config.nix-bitcoin.pkgs.mempool-frontend";
           description = "
             Path of the static frontend content root.
@@ -106,7 +120,7 @@ let
         };
         description = ''
           Mempool backend settings.
-          See here for possible options:
+          See here for available options:
           https://github.com/mempool/mempool/blob/master/backend/src/config.ts
         '';
       };
@@ -167,10 +181,12 @@ let
     # This must be added to `services.nginx.commonHttpConfig` when
     # `mempool/location-static.conf` is used
     httpConfig = ''
-      include ${nbPkgs.mempool-nginx-conf}/mempool/http-language.conf;
+      include ${nbPkgs.mempool-nginx-conf}/http-language.conf;
     '';
 
-    # This should be added to `services.nginx.virtualHosts.<mempool server name>.extraConfig`
+    # Config for static website content.
+    # This should be added to `services.nginx.virtualHosts.<mempool server name>.extraConfig`.
+    # Adapted from mempool/nginx-mempool.conf and mempool/production/nginx/location-redirects.conf
     staticContent = ''
       index index.html;
 
@@ -178,7 +194,7 @@ let
       add_header Vary Accept-Language;
       add_header Vary Cookie;
 
-      include ${nbPkgs.mempool-nginx-conf}/mempool/location-static.conf;
+      include ${nbPkgs.mempool-nginx-conf}/location-static.conf;
 
       # Redirect /api to /docs/api
       location = /api {
@@ -189,7 +205,9 @@ let
       }
     '';
 
-    # This should be added to `services.nginx.virtualHosts.<mempool server name>.extraConfig`
+    # Config for backend API.
+    # This should be added to `services.nginx.virtualHosts.<mempool server name>.extraConfig`.
+    # Adapted from mempool/nginx-mempool.conf and mempool/production/nginx/location-api.conf.
     proxyApi = let
       backend = "http://${nbLib.addressWithPort cfg.address cfg.port}";
     in ''
@@ -208,7 +226,7 @@ let
           proxy_set_header Connection "Upgrade";
 
           # Relevant settings from `recommendedProxyConfig` (nixos/nginx/default.nix)
-          # (In the above api locations, this are inherited from the parent scope)
+          # (In the above api locations, these are inherited from the parent scope)
           proxy_set_header Host $host;
           proxy_set_header X-Real-IP $remote_addr;
           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -246,6 +264,7 @@ in {
         HTTP_PORT = cfg.port;
         CACHE_DIR = "${cacheDir}/cache";
         STDOUT_LOG_MIN_PRIORITY = mkDefault "info";
+        AUTOMATIC_POOLS_UPDATE = true;
       };
       CORE_RPC = {
         HOST = bitcoind.rpc.address;
@@ -264,9 +283,10 @@ in {
         ENABLED = true;
         DATABASE = cfg.database.name;
         SOCKET = "/run/mysqld/mysqld.sock";
+        PID_DIR = cacheDir;
       };
     } // optionalAttrs (cfg.tor.proxy) {
-      # Use Tor for rate fetching
+      # Use Tor for rate fetching and pool updating
       SOCKS5PROXY = {
         ENABLED = true;
         USE_ONION = true;

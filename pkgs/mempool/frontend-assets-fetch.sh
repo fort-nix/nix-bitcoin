@@ -8,8 +8,7 @@ set -euo pipefail
 # This file is updated by ./frontend-assets-update.sh
 
 declare -A revs=(
-    ["mempool/mining-pools"]=e889230b0924d7d72eb28186db6f96ef94361fa5
-    ["mempool/mining-pool-logos"]=9cb443035878c3f112af97384d624de245afe72d
+    ["mempool/mining-pool-logos"]=53972ebbd08373cf4910cbb3e6421a1f3bba4563
 )
 
 fetchFile() {
@@ -25,7 +24,5 @@ fetchRepo() {
     curl -fsSL "https://github.com/$repo/archive/$rev.tar.gz"
 }
 
-# shellcheck disable=SC2094
-fetchFile "mempool/mining-pools" pools.json > pools.json
 mkdir mining-pools
 fetchRepo "mempool/mining-pool-logos" | tar xz --strip-components=1 -C mining-pools

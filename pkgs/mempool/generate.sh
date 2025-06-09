@@ -5,7 +5,7 @@ set -euo pipefail
 # Use this to start a debug shell at the location of this statement
 # . "${BASH_SOURCE[0]%/*}/../../helper/start-bash-session.sh"
 
-version=2.5.0
+version=3.2.1
 # You can also specify a rev instead:
 # rev=57eddac7f0b99b4fe84d91c0f4a50a4f7ccfe55f
 owner=mempool
@@ -40,9 +40,9 @@ updateSrc() {
     hash=$(nix hash path "$src")
 
     sed -i "
+      s|\bversion = .*;|version = \"$version\";|
       s|\bowner = .*;|owner = \"$owner\";|
-      s|\brev = .*;|rev = \"$rev\";|
-      s|\bhash = .*;|hash = \"$hash\";|
+      /fetchFromGitHub/,/hash/ s|\bhash = .*;|hash = \"$hash\";|
     " default.nix
 }
 
@@ -50,7 +50,7 @@ updateNodeModulesHash() {
     component=$1
     echo
     echo "Fetching node modules for mempool-$component"
-    ../../helper/update-fixed-output-derivation.sh ./default.nix mempool-"$component" "cd $component"
+    ../../helper/update-fixed-output-derivation.sh ./default.nix mempool-"$component".nodeModules "sourceRoot.*$component"
 }
 
 updateFrontendAssets() {
@@ -60,12 +60,19 @@ updateFrontendAssets() {
   ../../helper/update-fixed-output-derivation.sh ./default.nix mempool-frontend.assets "frontendAssets"
 }
 
+updateRustGbtCargoDeps() {
+    echo
+    echo "Fetching rust-gbt cargo deps"
+    ../../helper/update-fixed-output-derivation.sh ./default.nix mempool-rust-gbt.cargoDeps "fetchCargoVendor"
+}
+
 if [[ $# == 0 ]]; then
     # Each of these can be run separately
     updateSrc
     updateFrontendAssets
     updateNodeModulesHash backend
     updateNodeModulesHash frontend
+    updateRustGbtCargoDeps
 else
     "$@"
 fi

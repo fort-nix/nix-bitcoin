@@ -85,7 +85,10 @@ let
       '');
 
       tests.mempool = cfg.mempool.enable;
-      services.mempool.electrumServer = "fulcrum";
+      services.mempool = {
+        electrumServer = "fulcrum";
+        settings.MEMPOOL.POOLS_JSON_URL = mkIf config.test.noConnections "disable-pool-fetching";
+      };
 
       tests.lnd = cfg.lnd.enable;
       services.lnd = {

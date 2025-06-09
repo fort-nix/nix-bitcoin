@@ -111,7 +111,10 @@ with lib;
     ];
     services.mempool = {
       enable = true;
-      frontend.address = "0.0.0.0";
+      frontend = {
+        address = "0.0.0.0";
+        settings.LIQUID_ENABLED = true;
+      };
     };
     nix-bitcoin.nodeinfo.enable = true;
   };

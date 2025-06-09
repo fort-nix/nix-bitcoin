@@ -21,6 +21,7 @@ let self = {
   inherit (pkgs.callPackage ./mempool { inherit (self) fetchNodeModules; })
     mempool-backend
     mempool-frontend
+    mempool-rust-gbt
     mempool-nginx-conf;
   trustedcoin = pkgs.callPackage ./trustedcoin { };
 
