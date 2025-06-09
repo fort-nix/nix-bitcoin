@@ -184,6 +184,8 @@ in {
         Restart = "on-failure";
         RestartSec = "10s";
         ReadWritePaths = [ cfg.dataDir ];
+        # DB upgrades or recovery after a crash can take a while
+        TimeoutStartSec = "10m";
       } // nbLib.allowedIPAddresses cfg.tor.enforce;
       # Wait until the rpc socket appears
       postStart = ''
