@@ -14,13 +14,12 @@ pkgs: pkgsUnstable:
     extra-container
     fulcrum
     hwi
-    lightning-loop
     lightning-pool
-    lnd
     lndconnect;
 
   inherit (pkgsUnstable)
-    ;
+    lightning-loop
+    lnd;
 
   inherit pkgs pkgsUnstable;
 }
