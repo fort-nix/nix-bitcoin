@@ -158,16 +158,18 @@ let
   networkDir = cfg.networkDir;
   configFile = pkgs.writeText "lnd.conf" ''
     datadir=${cfg.dataDir}
-    logdir=${cfg.dataDir}/logs
     tlscertpath=${cfg.certPath}
     tlskeypath=${secretsDir}/lnd-key
+
+    # We're logging via journald
+    logging.file.disable=1
+    logging.console.no-timestamps=1
 
     listen=${toString cfg.address}:${toString cfg.port}
     rpclisten=${cfg.rpcAddress}:${toString cfg.rpcPort}
     restlisten=${cfg.restAddress}:${toString cfg.restPort}
 
     bitcoin.${bitcoind.network}=1
-    bitcoin.active=1
     bitcoin.node=bitcoind
 
     ${optionalString (cfg.tor.proxy) "tor.active=true"}
