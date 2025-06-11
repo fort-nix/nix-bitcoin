@@ -74,9 +74,9 @@ buildPythonPackage rec {
 
   postPatch = ''
     substituteInPlace pyproject.toml \
-      --replace-fail 'twisted==23.10.0' 'twisted==24.7.0' \
-      --replace-fail 'service-identity==21.1.0' 'service-identity==24.1.0' \
-      --replace-fail 'cryptography==41.0.6' 'cryptography==43.0.1' \
+      --replace-fail 'twisted==23.10.0' 'twisted==24.11.0' \
+      --replace-fail 'service-identity==21.1.0' 'service-identity==24.2.0' \
+      --replace-fail 'cryptography==41.0.6' 'cryptography==44.0.2' \
       --replace-fail 'txtorcon==23.11.0' 'txtorcon==24.8.0' \
 
     # Modify pyproject.toml to include only specific modules. Do not include 'jmqtui'.

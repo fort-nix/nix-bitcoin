@@ -4,7 +4,7 @@ set -euo pipefail
 
 scriptDir=$(cd "${BASH_SOURCE[0]%/*}" && pwd)
 
-trap 'echo "Error at ${BASH_SOURCE[0]}, line $LINENO"' ERR
+trap 'echo "Error at ${BASH_SOURCE[0]}:$LINENO"' ERR
 
 repo=fort-nix/nix-bitcoin
 if [[ ! -v version ]]; then

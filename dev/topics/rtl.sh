@@ -28,7 +28,7 @@ runuser -u "$(logname)" -- xdg-open "http://$ip:3000"
 rtl_src=~/s/RTL
 git clone https://github.com/Ride-The-Lightning/RTL "$rtl_src"
 
-nix build -o /tmp/nix-bitcoin-dev/nodejs --inputs-from . nixpkgs#nodejs-18_x
+nix build -o /tmp/nix-bitcoin-dev/nodejs --inputs-from . nixpkgs#nodejs_22
 # Start a shell in a sandbox
 env --chdir "$rtl_src" nix-bitcoin-firejail --whitelist="$rtl_src" --whitelist=/tmp/nix-bitcoin-dev/nodejs
 PATH=/tmp/nix-bitcoin-dev/nodejs/bin:"$PATH"

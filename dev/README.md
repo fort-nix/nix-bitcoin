@@ -97,5 +97,5 @@ It's easiest to use an existing service as a template:
   Most other services use packages that are already included in nixpkgs.
 
 ## Switching to a new NixOS release
-- Run command `update-flake.sh 24.11`
+- Run command `update-flake.sh 25.05`
 - Treewide: check if any `TODO-EXTERNAL` comments can be resolved

@@ -12,7 +12,7 @@
   inputs = {
     nix-bitcoin.url = "github:fort-nix/nix-bitcoin/release";
     # You can also use a version branch to track a specific NixOS release
-    # nix-bitcoin.url = "github:fort-nix/nix-bitcoin/nixos-24.11";
+    # nix-bitcoin.url = "github:fort-nix/nix-bitcoin/nixos-25.05";
 
     nixpkgs.follows = "nix-bitcoin/nixpkgs";
     nixpkgs-unstable.follows = "nix-bitcoin/nixpkgs-unstable";
