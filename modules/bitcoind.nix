@@ -262,6 +262,11 @@ let
         example = "bech32";
         description = "The type of addresses to use";
       };
+      fetchASmap = mkOption {
+        type = types.nullOr types.bool;
+        default = null;
+        description = "Fetch the latest ASmap from the github:asmap/asmap-data repository.";
+      };
       user = mkOption {
         type = types.str;
         default = "bitcoin";
@@ -344,6 +349,9 @@ let
     # ZMQ options
     ${optionalString (cfg.zmqpubrawblock != null) "zmqpubrawblock=${cfg.zmqpubrawblock}"}
     ${optionalString (cfg.zmqpubrawtx != null) "zmqpubrawtx=${cfg.zmqpubrawtx}"}
+
+    # ASmap option
+    ${optionalString (cfg.fetchASmap != null) "asmap=${pkgs.asmap-data}"}
 
     # Extra options
     ${cfg.extraConfig}
