@@ -18,6 +18,7 @@ pkgs: pkgsUnstable:
     lndconnect;
 
   inherit (pkgsUnstable)
+    albyhub
     lightning-loop
     lnd;
 
