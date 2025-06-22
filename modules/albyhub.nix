@@ -8,8 +8,6 @@ let
   bitcoind = config.services.bitcoind;
   lnd = config.services.lnd;
 
-  boolToString = b: if b then "true" else "false";
-
   envFileContent =
     let
       backendOpts =
