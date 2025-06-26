@@ -459,16 +459,15 @@ in {
           };
         });
 
+    instantiateTestsFromStr = testNamesStr: instantiateTests (lib.splitString " " testNamesStr);
+
     instantiateTests = testNames:
-      let
-        testNames' = lib.splitString " " testNames;
-      in
-        map (name:
-          let
-            test = tests.${name};
-          in
-            builtins.seq (builtins.trace "Evaluating test '${name}'" test.outPath)
-              test
-        ) testNames';
+      map (name:
+        let
+          test = tests.${name};
+        in
+          builtins.seq (builtins.trace "Evaluating test '${name}'" test.outPath)
+            test
+      ) testNames;
   };
 }

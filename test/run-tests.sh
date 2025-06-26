@@ -193,7 +193,7 @@ buildTests() {
     # TODO-EXTERNAL:
     # Simplify and switch to pure build when `nix build` can instantiate flake function outputs
     # shellcheck disable=SC2207
-    drvs=($(nixInstantiate "pkgs.instantiateTests \"${tests[*]}\""))
+    drvs=($(nixInstantiate "pkgs.instantiateTestsFromStr \"${tests[*]}\""))
     for i in "${!tests[@]}"; do
         testName=${tests[$i]}
         drv=${drvs[$i]}
