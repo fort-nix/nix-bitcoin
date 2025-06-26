@@ -28,7 +28,9 @@ fi
 
 ## Build
 
-if [[ -v CIRRUS_CI ]]; then
+if [[ -v GITHUB_ACTIONS ]]; then
+    # Avoid cachix warning message
+    mkdir -p ~/.config/nix && touch ~/.config/nix/nix.conf
     cachix use "$cachixCache"
 fi
 

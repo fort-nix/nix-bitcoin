@@ -1,0 +1,46 @@
+name: nix-bitcoin tests
+
+on: [push, pull_request]
+
+env:
+  CACHIX_SIGNING_KEY: ${{ secrets.CACHIX_SIGNING_KEY }}
+
+# Strategy:
+# Job `build_test_drivers` evals all VM tests and builds all test drivers in a single Nix build.
+# Compared to launching a separate build job for each VM test, this avoids duplicated
+# builds of derivations that the test drivers have in common.
+#
+# The job matrix `test_scenario` runs the VM tests.
+# When job `build_test_drivers` determines that all tests have already been built successfully,
+# job `test_scenario` is skipped via output variable `run_scenario_tests`.
+jobs:
+  build_test_drivers:
+    runs-on: ubuntu-latest
+    outputs:
+      run_scenario_tests: ${{ steps.main.outputs.run_scenario_tests }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v31
+      - id: main
+        run: nix shell --inputs-from . nixpkgs#{bash,coreutils,cachix} -c ./test/ci/build_test_drivers.sh
+
+  test_scenario:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        scenario: [default, netns, netnsRegtest]
+    needs: build_test_drivers
+    if: needs.build_test_drivers.outputs.run_scenario_tests == 'true'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v31
+      - run: nix shell --inputs-from . nixpkgs#{bash,coreutils,cachix} -c ./test/ci/build.sh ${{ matrix.scenario }}
+
+  check_flake:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v31
+      - run: nix flake check --all-systems
+      - run: ./test/nixos-search/ci-test.sh
+      - run: ./test/shellcheck.sh
