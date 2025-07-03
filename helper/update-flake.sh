@@ -62,7 +62,6 @@ if [[ $nixosVersion ]]; then
     setVersion 'system.stateVersion = "' ../examples/configuration.nix
     setVersion 'nix-bitcoin.url = .*?/nixos-' ../examples/flakes/flake.nix
     setVersion 'nix-bitcoin.url = .*?/nixos-' ../examples/container/flake.nix
-    setVersion 'image: nixpkgs.*?nixos-' ../.cirrus.yml
     setVersion 'update-flake.sh ' ../dev/README.md
     nix flake update nixpkgs --flake ..
 else

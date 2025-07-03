@@ -111,6 +111,8 @@
           (test.pkgs self pkgs) //
           {
             extra-container = self.inputs.extra-container.packages.${system}.default;
+
+            ciTestInfo = import ./test/ci/test-info.nix pkgs legacyPackages.instantiateTests;
           };
 
         apps = rec {

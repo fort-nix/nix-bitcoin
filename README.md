@@ -6,8 +6,9 @@
 </p>
 <br/>
 <p align="center">
-    <a href="https://cirrus-ci.com/github/fort-nix/nix-bitcoin" target="_blank">
-        <img src="https://api.cirrus-ci.com/github/fort-nix/nix-bitcoin.svg?branch=master" alt="CirrusCI status">
+    <a href="https://github.com/fort-nix/nix-bitcoin/actions" target="_blank">
+        <img src="https://github.com/fort-nix/nix-bitcoin/actions/workflows/test.yml/badge.svg?branch=master"
+             alt="Github Actions status">
     </a>
     <a href="https://github.com/fort-nix/nix-bitcoin/releases/latest" target="_blank">
         <img src="https://img.shields.io/github/v/release/fort-nix/nix-bitcoin" alt="GitHub tag (latest SemVer)">
