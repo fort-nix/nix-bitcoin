@@ -9,11 +9,11 @@
 }:
 let self = stdenvNoCC.mkDerivation {
   pname = "rtl";
-  version = "0.15.4";
+  version = "0.15.5";
 
   src = fetchurl {
     url = "https://github.com/Ride-The-Lightning/RTL/archive/refs/tags/v${self.version}.tar.gz";
-    hash = "sha256-vHno0vMtT5fjtDG2hWGDZP2a34JrFWvqfIgIgvOTv08=";
+    hash = "sha256-qwXiMsE5lyFTpV5rbIOEmBPtcMkYteMr/W5LDHlIbus=";
   };
 
   passthru = {
@@ -25,7 +25,7 @@ let self = stdenvNoCC.mkDerivation {
       # TODO-EXTERNAL: Remove `npmFlags` when no longer required
       # See: https://github.com/Ride-The-Lightning/RTL/issues/1182
       npmFlags = "--legacy-peer-deps";
-      hash = "sha256-1x2IukpS85hEw3nmHl1dxNF5mXDmEX6H8pHve/MxWks=";
+      hash = "sha256-gG99Sv72Wme8jZm959MyASZl9h1zQAqiReWa9XoTSJk=";
     };
   };
 
