@@ -22,7 +22,10 @@ jobs:
       - uses: actions/checkout@v4
       - uses: cachix/install-nix-action@v31
       - id: main
-        run: nix shell --inputs-from . nixpkgs#{bash,coreutils,cachix} -c ./test/ci/build_test_drivers.sh
+        name: Build test drivers
+        run: |
+          echo "::group::Setup Nix env"
+          nix shell --inputs-from . nixpkgs#{bash,coreutils,cachix} -c ./test/ci/build_test_drivers.sh
 
   test_scenario:
     runs-on: ubuntu-latest
