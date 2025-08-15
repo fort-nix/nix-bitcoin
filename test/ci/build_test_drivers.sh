@@ -10,10 +10,17 @@ driverDrvs=()
 drivers=()
 scenarioTests=()
 
+echo '::group::Eval test drivers'
 # Call ./test-info.nix
 testInfo=$(time nix eval --raw --show-trace ../..#ciTestInfo)
 # This sets variables `driverDrvs`, `drivers`, `scenarioTests`
 eval "$testInfo"
+
+for i in "${!drivers[@]}"; do
+    echo "${drivers[$i]}"
+    echo "${driverDrvs[$i]%^*}"
+done
+echo '::endgroup::'
 
 if nix path-info --store "https://${cachixCache}.cachix.org" "${scenarioTests[@]}" &>/dev/null; then
     echo
@@ -31,6 +38,8 @@ if nix path-info --store "https://${cachixCache}.cachix.org" "${drivers[@]}" &>/
     echo "All test drivers have already been built successfully:"
     exit 0
 fi
+
+echo '::group::Build test drivers'
 
 if [[ -v GITHUB_ACTIONS ]]; then
     # Avoid cachix warning message
