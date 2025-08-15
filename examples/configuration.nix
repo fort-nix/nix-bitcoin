@@ -4,6 +4,12 @@
 
 { config, pkgs, lib, ... }: {
   imports = [
+    <nix-bitcoin/modules/modules.nix>
+
+    # FIXME: The secure-node preset is an opinionated config to enhance security
+    # and privacy.
+    # Among other settings, it routes traffic of all nix-bitcoin services through Tor.
+    # Turn it off when not needed.
     <nix-bitcoin/modules/presets/secure-node.nix>
 
     # FIXME: The hardened kernel profile improves security but
