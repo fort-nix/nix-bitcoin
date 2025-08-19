@@ -190,6 +190,7 @@ buildTestAttr() {
 buildTests() {
     local -n tests=$1
     shift
+    makeTmpDir
     # TODO-EXTERNAL:
     # Simplify and switch to pure build when `nix build` can instantiate flake function outputs
     # shellcheck disable=SC2207
