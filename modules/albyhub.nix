@@ -12,6 +12,8 @@ let
   secretsDir = config.nix-bitcoin.secretsDir;
   bitcoind = config.services.bitcoind;
   lnd = config.services.lnd;
+  # Use loopback for client connections if lnd is bound to wildcard addresses
+  lndRpcClientAddress = builtins.replaceStrings [ "0.0.0.0" "[::]" ] [ "127.0.0.1" "[::1]" ] lnd.rpcAddress;
 
   envFileContent =
     let
@@ -19,7 +21,7 @@ let
         if cfg.lnBackend == "lnd" then
           ''
             LN_BACKEND_TYPE=LND
-            LND_ADDRESS=${lnd.rpcAddress}:${toString lnd.rpcPort}
+            LND_ADDRESS=${lndRpcClientAddress}:${toString lnd.rpcPort}
             LND_CERT_FILE=${lnd.certPath}
             LND_MACAROON_FILE=${cfg.dataDir}/admin.macaroon
           ''
@@ -326,13 +328,11 @@ in
   };
 
   config = mkMerge [
+    # If lnd is enabled, use it as the albyhub backend
     (mkIf config.services.lnd.enable {
       services.albyhub.lnBackend = mkDefault "lnd";
     })
-
-    # Enable lnd if the user configures it as the albyhub backend
     (mkIf cfg.enable {
-      services.lnd.enable = mkIf (cfg.lnBackend == "lnd") true;
 
       users.users.${cfg.user} = {
         isSystemUser = true;
