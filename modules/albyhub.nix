@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 with lib;
 let
@@ -11,24 +16,35 @@ let
   envFileContent =
     let
       backendOpts =
-        if cfg.lnBackend == "lnd" then ''
-          LN_BACKEND_TYPE=LND
-          LND_ADDRESS=${lnd.rpcAddress}:${toString lnd.rpcPort}
-          LND_CERT_FILE=${lnd.certPath}
-          LND_MACAROON_FILE=${cfg.dataDir}/admin.macaroon
-        '' else if cfg.lnBackend == "ldk" then ''
-          LN_BACKEND_TYPE=LDK
-          ${optionalString (cfg.ldk.network != null) "LDK_NETWORK=${cfg.ldk.network}"}
-          ${optionalString (cfg.ldk.esploraServer != null) "LDK_ESPLORA_SERVER=${cfg.ldk.esploraServer}"}
-          ${optionalString (cfg.ldk.gossipSource != null) "LDK_GOSSIP_SOURCE=${cfg.ldk.gossipSource}"}
-          ${optionalString (cfg.ldk.logLevel != null) "LDK_LOG_LEVEL=${toString cfg.ldk.logLevel}"}
-          ${optionalString (cfg.ldk.vssUrl != null) "LDK_VSS_URL=${cfg.ldk.vssUrl}"}
-          ${optionalString (cfg.ldk.listeningAddresses != null) "LDK_LISTENING_ADDRESSES=${cfg.ldk.listeningAddresses}"}
-          ${optionalString (cfg.ldk.transientNetworkGraph != null) "LDK_TRANSIENT_NETWORK_GRAPH=${boolToString cfg.ldk.transientNetworkGraph}"}
-        '' else if cfg.lnBackend == "phoenix" then ''
-          LN_BACKEND_TYPE=PHOENIX
-          ${optionalString (cfg.phoenix.address != null) "PHOENIXD_ADDRESS=${cfg.phoenix.address}"}
-        '' else "";
+        if cfg.lnBackend == "lnd" then
+          ''
+            LN_BACKEND_TYPE=LND
+            LND_ADDRESS=${lnd.rpcAddress}:${toString lnd.rpcPort}
+            LND_CERT_FILE=${lnd.certPath}
+            LND_MACAROON_FILE=${cfg.dataDir}/admin.macaroon
+          ''
+        else if cfg.lnBackend == "ldk" then
+          ''
+            LN_BACKEND_TYPE=LDK
+            ${optionalString (cfg.ldk.network != null) "LDK_NETWORK=${cfg.ldk.network}"}
+            ${optionalString (cfg.ldk.esploraServer != null) "LDK_ESPLORA_SERVER=${cfg.ldk.esploraServer}"}
+            ${optionalString (cfg.ldk.gossipSource != null) "LDK_GOSSIP_SOURCE=${cfg.ldk.gossipSource}"}
+            ${optionalString (cfg.ldk.logLevel != null) "LDK_LOG_LEVEL=${toString cfg.ldk.logLevel}"}
+            ${optionalString (cfg.ldk.vssUrl != null) "LDK_VSS_URL=${cfg.ldk.vssUrl}"}
+            ${optionalString (
+              cfg.ldk.listeningAddresses != null
+            ) "LDK_LISTENING_ADDRESSES=${cfg.ldk.listeningAddresses}"}
+            ${optionalString (
+              cfg.ldk.transientNetworkGraph != null
+            ) "LDK_TRANSIENT_NETWORK_GRAPH=${boolToString cfg.ldk.transientNetworkGraph}"}
+          ''
+        else if cfg.lnBackend == "phoenix" then
+          ''
+            LN_BACKEND_TYPE=PHOENIX
+            ${optionalString (cfg.phoenix.address != null) "PHOENIXD_ADDRESS=${cfg.phoenix.address}"}
+          ''
+        else
+          "";
     in
     ''
       WORK_DIR=${cfg.dataDir}
@@ -45,7 +61,9 @@ let
       ${optionalString (cfg.baseUrl != null) "BASE_URL=${cfg.baseUrl}"}
       ${optionalString (cfg.frontendUrl != null) "FRONTEND_URL=${cfg.frontendUrl}"}
       ${optionalString (cfg.logEvents != null) "LOG_EVENTS=${boolToString cfg.logEvents}"}
-      ${optionalString (cfg.enableAdvancedSetup != null) "ENABLE_ADVANCED_SETUP=${boolToString cfg.enableAdvancedSetup}"}
+      ${optionalString (
+        cfg.enableAdvancedSetup != null
+      ) "ENABLE_ADVANCED_SETUP=${boolToString cfg.enableAdvancedSetup}"}
       ${optionalString (cfg.boltzApi != null) "BOLTZ_API=${cfg.boltzApi}"}
       ${backendOpts}
       ${optionalString (cfg.extraConfig != null) cfg.extraConfig}
@@ -137,7 +155,11 @@ in
 
     mempoolApi = mkOption {
       type = with types; nullOr str;
-      default = if config.services.mempool.enable then "http://${nbLib.addressWithPort config.services.mempool.address config.services.mempool.port}" else null;
+      default =
+        if config.services.mempool.enable then
+          "http://${nbLib.addressWithPort config.services.mempool.address config.services.mempool.port}"
+        else
+          null;
       description = "Mempool API endpoint.";
       example = "https://mempool.space/api";
     };
@@ -209,7 +231,13 @@ in
     };
 
     lnBackend = mkOption {
-      type = with types; nullOr (enum [ "lnd" "ldk" "phoenix" ]);
+      type =
+        with types;
+        nullOr (enum [
+          "lnd"
+          "ldk"
+          "phoenix"
+        ]);
       default = null;
       description = ''
         The lightning backend to use.
@@ -297,90 +325,118 @@ in
     };
   };
 
-  config = mkIf cfg.enable {
-    services.lnd.enable = mkIf (cfg.lnBackend == "lnd") true;
+  config = mkMerge [
+    (mkIf config.services.lnd.enable {
+      services.albyhub.lnBackend = mkDefault "lnd";
+    })
 
-    users.users.${cfg.user} = {
-      isSystemUser = true;
-      group = cfg.group;
-    };
-    users.groups.${cfg.group} = {};
+    # Enable lnd if the user configures it as the albyhub backend
+    (mkIf cfg.enable {
+      services.lnd.enable = mkIf (cfg.lnBackend == "lnd") true;
 
-    systemd.tmpfiles.rules = [
-      "d '${cfg.dataDir}' 0770 ${cfg.user} ${cfg.group} - -"
-    ];
-
-    systemd.services.albyhub = {
-      description = mkDefault "Alby Hub";
-      wantedBy = [ "multi-user.target" ];
-      after = [ "network.target" ] ++ optional (cfg.lnBackend == "lnd") "lnd.service" ++ optional config.services.mempool.enable "mempool.service";
-
-      serviceConfig = nbLib.defaultHardening // {
-        ExecStartPre =
-          let
-            catSecret = secret: optionalString (secret != null) "cat ${secret}";
-            appendToFile = key: secret: optionalString (secret != null) ''
-              echo -n '${key}=' >> ${envFile}
-              ${catSecret secret} >> ${envFile}
-              echo >> ${envFile}
-            '';
-          in
-          [
-            (nbLib.rootScript "albyhub-setup" ''
-              ${optionalString (cfg.lnBackend == "lnd") ''
-              install -m640 -o ${cfg.user} -g ${cfg.group} -D ${lnd.networkDir}/admin.macaroon ${cfg.dataDir}/admin.macaroon
-              ''}
-              # Create env file without secrets
-              cat > ${envFile} <<EOF
-              ${envFileContent}
-              EOF
-              # Append secrets
-              ${appendToFile "AUTO_UNLOCK_PASSWORD" (if cfg.autoUnlockPasswordFile != null then cfg.autoUnlockPasswordFile else "${secretsDir}/albyhub-auto-unlock-password")}
-              ${optionalString (cfg.jwtSecretFile != null) (appendToFile "JWT_SECRET" cfg.jwtSecretFile)}
-              ${optionalString (cfg.albyOAuth.clientSecretFile != null) (appendToFile "ALBY_OAUTH_CLIENT_SECRET" cfg.albyOAuth.clientSecretFile)}
-              ${optionalString (cfg.phoenix.authorizationFile != null) (appendToFile "PHOENIXD_AUTHORIZATION" cfg.phoenix.authorizationFile)}
-
-              chown -R ${cfg.user}:${cfg.group} ${cfg.dataDir}
-              chmod 600 ${envFile}
-            '')
-          ];
-
-        User = cfg.user;
-        Group = cfg.group;
-        ExecStart = "${cfg.package}/bin/albyhub";
-        EnvironmentFile = "-${envFile}";
-        WorkingDirectory = cfg.dataDir;
-        Restart = "on-failure";
-        RestartSec = "10s";
-        ReadWritePaths = [ cfg.dataDir ];
-      } // nbLib.allowedIPAddresses cfg.tor.enforce;
-
-      # albyhub has no native tor support
-      environment = mkIf (cfg.tor.proxy) (let
-        proxy = config.nix-bitcoin.torClientAddressWithPort;
-        socks5h = "socks5h://${proxy}";
-      in {
-        # TODO: if this works at all, remove the ones we don't need
-        ALL_PROXY = socks5h;
-        HTTP_PROXY = socks5h;
-        HTTPS_PROXY = socks5h;
-        all_proxy = socks5h;
-        http_proxy = socks5h;
-        https_proxy = socks5h;
-        NO_PROXY = "127.0.0.1,::1,localhost";
-        no_proxy = "127.0.0.1,::1,localhost";
-      });
-    };
-
-    nix-bitcoin.secrets = {
-      albyhub-auto-unlock-password = {
-        user = cfg.user;
-        permissions = "400";
+      users.users.${cfg.user} = {
+        isSystemUser = true;
+        group = cfg.group;
       };
-    };
+      users.groups.${cfg.group} = { };
 
-    nix-bitcoin.generateSecretsCmds.albyhub = ''
-      makePasswordSecret albyhub-auto-unlock-password
-    '';
-  };
+      systemd.tmpfiles.rules = [
+        "d '${cfg.dataDir}' 0770 ${cfg.user} ${cfg.group} - -"
+      ];
+
+      systemd.services.albyhub = {
+        description = mkDefault "Alby Hub";
+        wantedBy = [ "multi-user.target" ];
+        after = [
+          "network.target"
+        ]
+        ++ optional (cfg.lnBackend == "lnd") "lnd.service"
+        ++ optional config.services.mempool.enable "mempool.service";
+
+        serviceConfig =
+          nbLib.defaultHardening
+          // {
+            ExecStartPre =
+              let
+                catSecret = secret: optionalString (secret != null) "cat ${secret}";
+                appendToFile =
+                  key: secret:
+                  optionalString (secret != null) ''
+                    echo -n '${key}=' >> ${envFile}
+                    ${catSecret secret} >> ${envFile}
+                    echo >> ${envFile}
+                  '';
+              in
+              [
+                (nbLib.rootScript "albyhub-setup" ''
+                  ${optionalString (cfg.lnBackend == "lnd") ''
+                    install -m640 -o ${cfg.user} -g ${cfg.group} -D ${lnd.networkDir}/admin.macaroon ${cfg.dataDir}/admin.macaroon
+                  ''}
+                  # Create env file without secrets
+                  cat > ${envFile} <<EOF
+                  ${envFileContent}
+                  EOF
+                  # Append secrets
+                  ${appendToFile "AUTO_UNLOCK_PASSWORD" (
+                    if cfg.autoUnlockPasswordFile != null then
+                      cfg.autoUnlockPasswordFile
+                    else
+                      "${secretsDir}/albyhub-auto-unlock-password"
+                  )}
+                  ${optionalString (cfg.jwtSecretFile != null) (appendToFile "JWT_SECRET" cfg.jwtSecretFile)}
+                  ${optionalString (cfg.albyOAuth.clientSecretFile != null) (
+                    appendToFile "ALBY_OAUTH_CLIENT_SECRET" cfg.albyOAuth.clientSecretFile
+                  )}
+                  ${optionalString (cfg.phoenix.authorizationFile != null) (
+                    appendToFile "PHOENIXD_AUTHORIZATION" cfg.phoenix.authorizationFile
+                  )}
+
+                  chown -R ${cfg.user}:${cfg.group} ${cfg.dataDir}
+                  chmod 600 ${envFile}
+                '')
+              ];
+
+            User = cfg.user;
+            Group = cfg.group;
+            ExecStart = "${cfg.package}/bin/albyhub";
+            EnvironmentFile = "-${envFile}";
+            WorkingDirectory = cfg.dataDir;
+            Restart = "on-failure";
+            RestartSec = "10s";
+            ReadWritePaths = [ cfg.dataDir ];
+          }
+          // nbLib.allowedIPAddresses cfg.tor.enforce;
+
+        # albyhub has no native tor support
+        environment = mkIf (cfg.tor.proxy) (
+          let
+            proxy = config.nix-bitcoin.torClientAddressWithPort;
+            socks5h = "socks5h://${proxy}";
+          in
+          {
+            # TODO: if this works at all, remove the ones we don't need
+            ALL_PROXY = socks5h;
+            HTTP_PROXY = socks5h;
+            HTTPS_PROXY = socks5h;
+            all_proxy = socks5h;
+            http_proxy = socks5h;
+            https_proxy = socks5h;
+            NO_PROXY = "127.0.0.1,::1,localhost";
+            no_proxy = "127.0.0.1,::1,localhost";
+          }
+        );
+      };
+
+      nix-bitcoin.secrets = {
+        albyhub-auto-unlock-password = {
+          user = cfg.user;
+          permissions = "400";
+        };
+      };
+
+      nix-bitcoin.generateSecretsCmds.albyhub = ''
+        makePasswordSecret albyhub-auto-unlock-password
+      '';
+    })
+  ];
 }
