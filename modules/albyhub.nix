@@ -391,7 +391,9 @@ in
 
             User = cfg.user;
             Group = cfg.group;
-            ExecStart = "${cfg.package}/bin/albyhub";
+            ExecStart = if cfg.tor.proxy
+              then "${config.nix-bitcoin.torify}/bin/torify ${cfg.package}/bin/albyhub"
+              else "${cfg.package}/bin/albyhub";
             EnvironmentFile = "-${envFile}";
             WorkingDirectory = cfg.dataDir;
             Restart = "on-failure";
@@ -400,24 +402,6 @@ in
           }
           // nbLib.allowedIPAddresses cfg.tor.enforce;
 
-        # albyhub has no native tor support
-        environment = mkIf (cfg.tor.proxy) (
-          let
-            proxy = config.nix-bitcoin.torClientAddressWithPort;
-            socks5 = "socks5://${proxy}";
-          in
-          {
-            # TODO: if this works at all, remove the ones we don't need
-            ALL_PROXY = socks5;
-            HTTP_PROXY = socks5;
-            HTTPS_PROXY = socks5;
-            all_proxy = socks5;
-            http_proxy = socks5;
-            https_proxy = socks5;
-            NO_PROXY = "127.0.0.1,::1,localhost";
-            no_proxy = "127.0.0.1,::1,localhost";
-          }
-        );
       };
 
     })
