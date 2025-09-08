@@ -351,6 +351,8 @@ in
         ++ optional (cfg.lnBackend == "lnd") "lnd.service"
         ++ optional config.services.mempool.enable "mempool.service";
 
+        path = mkIf cfg.tor.proxy [ pkgs.torsocks ];
+
         serviceConfig =
           nbLib.defaultHardening
           // {
