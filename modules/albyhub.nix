@@ -9,7 +9,6 @@ with lib;
 let
   cfg = config.services.albyhub;
   nbLib = config.nix-bitcoin.lib;
-  secretsDir = config.nix-bitcoin.secretsDir;
   bitcoind = config.services.bitcoind;
   lnd = config.services.lnd;
   # Use loopback for client connections if lnd is bound to wildcard addresses
@@ -218,7 +217,6 @@ in
         Password will still be required to access the interface.
         Setting this option is insecure. The password file will be world-readable
         in the Nix store.
-        If not set, a password will be automatically generated.
       '';
     };
 
@@ -377,12 +375,7 @@ in
                   ${envFileContent}
                   EOF
                   # Append secrets
-                  ${appendToFile "AUTO_UNLOCK_PASSWORD" (
-                    if cfg.autoUnlockPasswordFile != null then
-                      cfg.autoUnlockPasswordFile
-                    else
-                      "${secretsDir}/albyhub-auto-unlock-password"
-                  )}
+                  ${appendToFile "AUTO_UNLOCK_PASSWORD" cfg.autoUnlockPasswordFile}
                   ${optionalString (cfg.jwtSecretFile != null) (appendToFile "JWT_SECRET" cfg.jwtSecretFile)}
                   ${optionalString (cfg.albyOAuth.clientSecretFile != null) (
                     appendToFile "ALBY_OAUTH_CLIENT_SECRET" cfg.albyOAuth.clientSecretFile
@@ -427,16 +420,6 @@ in
         );
       };
 
-      nix-bitcoin.secrets = {
-        albyhub-auto-unlock-password = {
-          user = cfg.user;
-          permissions = "400";
-        };
-      };
-
-      nix-bitcoin.generateSecretsCmds.albyhub = ''
-        makePasswordSecret albyhub-auto-unlock-password
-      '';
     })
   ];
 }
