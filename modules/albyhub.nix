@@ -394,7 +394,7 @@ in
             User = cfg.user;
             Group = cfg.group;
             ExecStart = if cfg.tor.proxy
-              then "${config.nix-bitcoin.torify}/bin/torify ${cfg.package}/bin/albyhub"
+              then "${config.nix-bitcoin.torsocks}/bin/torsocks ${cfg.package}/bin/albyhub"
               else "${cfg.package}/bin/albyhub";
             EnvironmentFile = "-${envFile}";
             WorkingDirectory = cfg.dataDir;
