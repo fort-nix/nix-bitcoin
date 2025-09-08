@@ -404,16 +404,16 @@ in
         environment = mkIf (cfg.tor.proxy) (
           let
             proxy = config.nix-bitcoin.torClientAddressWithPort;
-            socks5h = "socks5h://${proxy}";
+            socks5 = "socks5://${proxy}";
           in
           {
             # TODO: if this works at all, remove the ones we don't need
-            ALL_PROXY = socks5h;
-            HTTP_PROXY = socks5h;
-            HTTPS_PROXY = socks5h;
-            all_proxy = socks5h;
-            http_proxy = socks5h;
-            https_proxy = socks5h;
+            ALL_PROXY = socks5;
+            HTTP_PROXY = socks5;
+            HTTPS_PROXY = socks5;
+            all_proxy = socks5;
+            http_proxy = socks5;
+            https_proxy = socks5;
             NO_PROXY = "127.0.0.1,::1,localhost";
             no_proxy = "127.0.0.1,::1,localhost";
           }
