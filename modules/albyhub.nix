@@ -53,7 +53,6 @@ let
       PORT=${toString cfg.port}
       LOG_LEVEL=${toString cfg.logLevel}
       AUTO_LINK_ALBY_ACCOUNT=${boolToString cfg.autoLinkAlbyAccount}
-      ${optionalString (cfg.relay != null) "RELAY=${cfg.relay}"}
       ${optionalString (cfg.logToFile != null) "LOG_TO_FILE=${boolToString cfg.logToFile}"}
       ${optionalString (cfg.logDBQueries != null) "LOG_DB_QUERIES=${boolToString cfg.logDBQueries}"}
       ${optionalString (cfg.network != null) "NETWORK=${cfg.network}"}
@@ -383,8 +382,7 @@ in
           "network.target"
         ]
         ++ optional (cfg.lnBackend == "lnd") "lnd.service"
-        ++ optional config.services.mempool.enable "mempool.service"
-        ++ optional (cfg.tor.proxy || cfg.relayBridge.enable || cfg.boltzBridge.enable) "tor.service"
+        ++ optional cfg.tor.proxy "tor.service"
         ++ optional cfg.relayBridge.enable "albyhub-relay-bridge.service"
         ++ optional cfg.boltzBridge.enable "albyhub-boltz-bridge.service";
 
@@ -448,10 +446,9 @@ in
       };
 
       systemd.services.albyhub-relay-bridge = mkIf cfg.relayBridge.enable {
-        description = "Alby Hub relay WebSocket bridge via HTTP proxy";
-        after = [
-          "network-online.target"
-        ] ++ optional (cfg.tor.proxy || cfg.relayBridge.enable || cfg.boltzBridge.enable) "tor.service";
+        description = "Alby Hub relay WebSocket bridge via Tor SOCKS proxy";
+        after = [ "tor.service" ];
+        requires = [ "tor.service" ];
         wantedBy = [ "multi-user.target" ];
         serviceConfig = {
           User = cfg.user;
@@ -468,10 +465,9 @@ in
       };
 
       systemd.services.albyhub-boltz-bridge = mkIf cfg.boltzBridge.enable {
-        description = "Alby Hub Boltz WebSocket bridge via HTTP proxy";
-        after = [
-          "network-online.target"
-        ] ++ optional (cfg.tor.proxy || cfg.relayBridge.enable || cfg.boltzBridge.enable) "tor.service";
+        description = "Alby Hub Boltz WebSocket bridge via Tor SOCKS proxy";
+        after = [ "tor.service" ];
+        requires = [ "tor.service" ];
         wantedBy = [ "multi-user.target" ];
         serviceConfig = {
           User = cfg.user;
