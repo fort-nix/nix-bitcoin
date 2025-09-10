@@ -13,39 +13,6 @@ let
   lnd = config.services.lnd;
   # Use loopback for client connections if lnd is bound to wildcard addresses
   lndRpcClientAddress = builtins.replaceStrings [ "0.0.0.0" "[::]" ] [ "127.0.0.1" "[::1]" ] lnd.rpcAddress;
-  relayUpstream = if cfg.relay != null then cfg.relay else "wss://relay.getalby.com/v1";
-  boltzWsUpstream = "${if cfg.boltzApi != null then cfg.boltzApi else "https://api.boltz.exchange"}/v2/ws";
-
-  # Helpers for websocat without --proxy: build ws uri and extract host/port
-  normalizeWsUri = url:
-    if hasPrefix "wss://" url || hasPrefix "ws://" url then url
-    else if hasPrefix "https://" url then "wss://" + (removePrefix "https://" url)
-    else if hasPrefix "http://" url then "ws://" + (removePrefix "http://" url)
-    else url;
-
-  urlHost = url:
-    let m = builtins.match "^[a-zA-Z]+://([^/]+).*" url; in
-    if m == null then url else builtins.elemAt m 0;
-
-  urlDefaultPort = url:
-    if hasPrefix "wss://" url || hasPrefix "https://" url then 443 else 80;
-
-  urlHostPort = url:
-    let
-      hostWithPort = urlHost url;
-      m = builtins.match "^(.*):([0-9]+)$" hostWithPort;
-    in if m == null then { host = hostWithPort; port = urlDefaultPort url; }
-    else { host = builtins.elemAt m 0; port = builtins.fromJSON (builtins.elemAt m 1); };
-
-  relayUpstreamWsUri = normalizeWsUri relayUpstream;
-  relayHostPort = urlHostPort relayUpstreamWsUri;
-  relayHost = relayHostPort.host;
-  relayPort = relayHostPort.port;
-
-  boltzUpstreamWsUri = normalizeWsUri boltzWsUpstream;
-  boltzHostPort = urlHostPort boltzUpstreamWsUri;
-  boltzHost = boltzHostPort.host;
-  boltzPort = boltzHostPort.port;
 
   envFileContent =
     let
@@ -98,9 +65,8 @@ let
       ${optionalString (
         cfg.enableAdvancedSetup != null
       ) "ENABLE_ADVANCED_SETUP=${boolToString cfg.enableAdvancedSetup}"}
-      ${optionalString (cfg.boltzApi != null) "BOLTZ_API=${cfg.boltzApi}"}
       ${optionalString (cfg.relayBridge.enable or false) "RELAY=ws://${cfg.relayBridge.listen}"}
-      ${optionalString (cfg.boltzBridge.enable or false) "BOLTZ_API=http://${cfg.boltzBridge.listen}"}
+      ${optionalString (cfg.boltzBridge.enable or false) "BOLTZ_API=ws://${cfg.boltzBridge.listen}"}
       ${backendOpts}
       ${optionalString (cfg.extraConfig != null) cfg.extraConfig}
     '';
@@ -159,9 +125,8 @@ in
 
     relay = mkOption {
       type = with types; nullOr str;
-      default = null;
+      default = "wss://relay.getalby.com/v1";
       description = "The default nostr relay.";
-      example = "wss://relay.getalby.com/v1";
     };
 
     logLevel = mkOption {
@@ -234,7 +199,7 @@ in
 
     boltzApi = mkOption {
       type = with types; nullOr str;
-      default = null;
+      default = "wss://api.boltz.exchange/v2/ws";
       description = "Boltz API endpoint.";
     };
 
@@ -403,6 +368,8 @@ in
       services.tor = mkIf (cfg.tor.proxy || cfg.relayBridge.enable || cfg.boltzBridge.enable) {
         enable = true;
         client.enable = true;
+        # Provide an HTTP CONNECT proxy via Tor so HTTP(S)/WS clients can use it
+        settings.HTTPTunnelPort = [ { addr = "127.0.0.1"; port = 9080; } ];
       };
 
       systemd.tmpfiles.rules = [
@@ -480,7 +447,6 @@ in
 
       };
 
-      # WebSocket bridge for nostr relay via HTTP proxy (Privoxy → Tor)
       systemd.services.albyhub-relay-bridge = mkIf cfg.relayBridge.enable {
         description = "Alby Hub relay WebSocket bridge via HTTP proxy";
         after = [
@@ -490,13 +456,17 @@ in
         serviceConfig = {
           User = cfg.user;
           Group = cfg.group;
-          ExecStart = "${pkgs.websocat}/bin/websocat -b --ping-interval=30 --exit-on-eof --socks5 ${config.nix-bitcoin.torClientAddressWithPort} ws-l:${cfg.relayBridge.listen} ${relayUpstreamWsUri}";
+          # websocat bridge:
+          # -b: binary mode; --ping-interval=30: keep-alive pings; --exit-on-eof: exit when either side closes
+          # --socks5 <addr:port>: route the upstream connection via Tor's SOCKS proxy
+          # ws-l:<listen>: start a local WebSocket listener at <listen> and bridge it to <upstream>
+          # <upstream> is the remote WS(S) URL of the nostr relay
+          ExecStart = "${pkgs.websocat}/bin/websocat -b --ping-interval=30 --exit-on-eof --socks5 ${config.nix-bitcoin.torClientAddressWithPort} ws-l:${cfg.relayBridge.listen} ${cfg.relay}";
           Restart = "always";
           RestartSec = "5s";
         };
       };
 
-      # WebSocket bridge for Boltz via HTTP proxy (Privoxy → Tor)
       systemd.services.albyhub-boltz-bridge = mkIf cfg.boltzBridge.enable {
         description = "Alby Hub Boltz WebSocket bridge via HTTP proxy";
         after = [
@@ -506,7 +476,7 @@ in
         serviceConfig = {
           User = cfg.user;
           Group = cfg.group;
-          ExecStart = "${pkgs.websocat}/bin/websocat -b --ping-interval=30 --exit-on-eof --socks5 ${config.nix-bitcoin.torClientAddressWithPort} ws-l:${cfg.boltzBridge.listen} ${boltzUpstreamWsUri}";
+          ExecStart = "${pkgs.websocat}/bin/websocat -b --ping-interval=30 --exit-on-eof --socks5 ${config.nix-bitcoin.torClientAddressWithPort} ws-l:${cfg.boltzBridge.listen} ${cfg.boltzApi}";
           Restart = "always";
           RestartSec = "5s";
         };
