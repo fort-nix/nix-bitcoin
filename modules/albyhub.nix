@@ -13,6 +13,9 @@ let
   lnd = config.services.lnd;
   # Use loopback for client connections if lnd is bound to wildcard addresses
   lndRpcClientAddress = builtins.replaceStrings [ "0.0.0.0" "[::]" ] [ "127.0.0.1" "[::1]" ] lnd.rpcAddress;
+  # Local WebSocket bridge listen addresses used when Tor proxying is enabled
+  relayBridgeListen = "127.0.0.1:8485";
+  boltzBridgeListen = "127.0.0.1:8486";
 
   envFileContent =
     let
@@ -64,8 +67,8 @@ let
       ${optionalString (
         cfg.enableAdvancedSetup != null
       ) "ENABLE_ADVANCED_SETUP=${boolToString cfg.enableAdvancedSetup}"}
-      ${optionalString (cfg.relayBridge.enable or false) "RELAY=ws://${cfg.relayBridge.listen}"}
-      ${optionalString (cfg.boltzBridge.enable or false) "BOLTZ_API=ws://${cfg.boltzBridge.listen}"}
+      ${if cfg.tor.proxy then "RELAY=ws://${relayBridgeListen}" else "RELAY=${cfg.relay}"}
+      ${if cfg.tor.proxy then "BOLTZ_API=ws://${boltzBridgeListen}" else "BOLTZ_API=${cfg.boltzApi}"}
       ${backendOpts}
       ${optionalString (cfg.extraConfig != null) cfg.extraConfig}
     '';
@@ -202,31 +205,7 @@ in
       description = "Boltz API endpoint.";
     };
 
-    relayBridge = {
-      enable = mkOption {
-        type = types.bool;
-        default = true;
-        description = "Enable a local WebSocket bridge for the nostr relay via HTTP proxy.";
-      };
-      listen = mkOption {
-        type = types.str;
-        default = "127.0.0.1:8485";
-        description = "Local address for the relay WebSocket bridge (ws-l:listen).";
-      };
-    };
-
-    boltzBridge = {
-      enable = mkOption {
-        type = types.bool;
-        default = true;
-        description = "Enable a local WebSocket bridge for the Boltz WebSocket via HTTP proxy.";
-      };
-      listen = mkOption {
-        type = types.str;
-        default = "127.0.0.1:8486";
-        description = "Local address for the Boltz WebSocket bridge (ws-l:listen).";
-      };
-    };
+    # Removed: relayBridge and boltzBridge options. Bridges are auto-managed when tor.proxy is enabled.
 
     extraConfig = mkOption {
       type = with types; nullOr str;
@@ -363,8 +342,8 @@ in
       };
       users.groups.${cfg.group} = { };
 
-      # Ensure Tor SOCKS client is available when proxying or bridges are enabled
-      services.tor = mkIf (cfg.tor.proxy || cfg.relayBridge.enable || cfg.boltzBridge.enable) {
+      # Ensure Tor SOCKS client is available when proxying
+      services.tor = mkIf cfg.tor.proxy {
         enable = true;
         client.enable = true;
         # Provide an HTTP CONNECT proxy via Tor so HTTP(S)/WS clients can use it
@@ -383,8 +362,8 @@ in
         ]
         ++ optional (cfg.lnBackend == "lnd") "lnd.service"
         ++ optional cfg.tor.proxy "tor.service"
-        ++ optional cfg.relayBridge.enable "albyhub-relay-bridge.service"
-        ++ optional cfg.boltzBridge.enable "albyhub-boltz-bridge.service";
+        ++ optional cfg.tor.proxy "albyhub-relay-bridge.service"
+        ++ optional cfg.tor.proxy "albyhub-boltz-bridge.service";
 
         environment = mkIf cfg.tor.proxy {
           # Route all traffic through Tor SOCKS; some libs honor HTTP(S)_PROXY as well
@@ -445,7 +424,7 @@ in
 
       };
 
-      systemd.services.albyhub-relay-bridge = mkIf cfg.relayBridge.enable {
+      systemd.services.albyhub-relay-bridge = mkIf cfg.tor.proxy {
         description = "Alby Hub relay WebSocket bridge via Tor SOCKS proxy";
         after = [ "tor.service" ];
         requires = [ "tor.service" ];
@@ -458,13 +437,13 @@ in
           # --socks5 <addr:port>: route the upstream connection via Tor's SOCKS proxy
           # ws-l:<listen>: start a local WebSocket listener at <listen> and bridge it to <upstream>
           # <upstream> is the remote WS(S) URL of the nostr relay
-          ExecStart = "${pkgs.websocat}/bin/websocat -b --ping-interval=30 --exit-on-eof --socks5 ${config.nix-bitcoin.torClientAddressWithPort} ws-l:${cfg.relayBridge.listen} ${cfg.relay}";
+          ExecStart = "${pkgs.websocat}/bin/websocat -b --ping-interval=30 --exit-on-eof --socks5 ${config.nix-bitcoin.torClientAddressWithPort} ws-l:${relayBridgeListen} ${cfg.relay}";
           Restart = "always";
           RestartSec = "5s";
         };
       };
 
-      systemd.services.albyhub-boltz-bridge = mkIf cfg.boltzBridge.enable {
+      systemd.services.albyhub-boltz-bridge = mkIf cfg.tor.proxy {
         description = "Alby Hub Boltz WebSocket bridge via Tor SOCKS proxy";
         after = [ "tor.service" ];
         requires = [ "tor.service" ];
@@ -472,7 +451,7 @@ in
         serviceConfig = {
           User = cfg.user;
           Group = cfg.group;
-          ExecStart = "${pkgs.websocat}/bin/websocat -b --ping-interval=30 --exit-on-eof --socks5 ${config.nix-bitcoin.torClientAddressWithPort} ws-l:${cfg.boltzBridge.listen} ${cfg.boltzApi}";
+          ExecStart = "${pkgs.websocat}/bin/websocat -b --ping-interval=30 --exit-on-eof --socks5 ${config.nix-bitcoin.torClientAddressWithPort} ws-l:${boltzBridgeListen} ${cfg.boltzApi}";
           Restart = "always";
           RestartSec = "5s";
         };
