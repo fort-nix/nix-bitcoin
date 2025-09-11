@@ -242,6 +242,14 @@
   # services.charge-lnd.policies = ''
   # '';
 
+  ### THE EYE OF SATOSHI
+  # Set this to enable TEoS, a Lightning watchtower compliant with BOLT13.
+  # services.teos.enable = true;
+  #
+  # Set this to create an onion service by which teos can accept incoming
+  # connections via Tor.
+  # nix-bitcoin.onionServices.teos.enable = true;
+
   ### JOINMARKET
   # Set this to enable the JoinMarket service, including its command-line scripts.
   # These scripts have prefix 'jm-', like 'jm-tumbler'.
