@@ -18,6 +18,7 @@ pkgs: pkgsUnstable:
     btcpayserver
     clightning
     electrs
+    albyhub
     lightning-loop
     lnd;
 
