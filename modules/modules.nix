@@ -27,6 +27,7 @@
     ./btcpayserver.nix
     ./joinmarket.nix
     ./joinmarket-ob-watcher.nix
+    ./joinmarket-jmwalletd.nix
     ./hardware-wallets.nix
 
     # Support features
