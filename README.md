@@ -94,6 +94,7 @@ NixOS modules ([src](modules/modules.nix))
   * [liquid](https://github.com/elementsproject/elements): federated sidechain
   * [JoinMarket](https://github.com/joinmarket-org/joinmarket-clientserver)
     * [JoinMarket Orderbook Watcher](https://github.com/JoinMarket-Org/joinmarket-clientserver/blob/master/docs/orderbook.md)
+    * [Jam](https://github.com/joinmarket-webui/jam): simplified user-friendly JoinMarket web interface
   * [bitcoin-core-hwi](https://github.com/bitcoin-core/HWI)
 * Helper
   * [netns-isolation](modules/netns-isolation.nix): isolates applications on the network-level via network namespaces

@@ -559,6 +559,16 @@ See [here](https://github.com/JoinMarket-Org/joinmarket-clientserver/blob/master
 
 3. Profit
 
+## Run the Jam, the JoinMarket web interface
+
+The [Jam](https://github.com/joinmarket-webui/jam) is a static web interface
+which is served by nginx. It connects to the jmwalled daemon which gets started
+in the background.
+
+TODO
+- How to access the web interface using e.g. ssh proxy: `ssh -L 61851:localhost:61851 root@<nix-bitcoin-node-host>`
+- how to access interface over onion?
+
 # clightning
 
 ## Plugins

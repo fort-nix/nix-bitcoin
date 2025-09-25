@@ -255,6 +255,13 @@
   #
   # Set this to enable the JoinMarket order book watcher.
   # services.joinmarket-ob-watcher.enable = true;
+  #
+  # Set this to enable Jam, the JoinMarket web interface.
+  # services.joinmarket-jam.enable = true;
+  #
+  # Set this to create an onion service to make the Jam web interface
+  # available via Tor:
+  # nix-bitcoin.onionServices.joinmarket-jam.enable = true;
 
   ### Nodeinfo
   # Set this to add command `nodeinfo` to the system environment.
