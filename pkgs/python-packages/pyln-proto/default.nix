@@ -1,6 +1,6 @@
 { buildPythonPackage
 , clightning
-, poetry-core
+, hatchling
 , pytestCheckHook
 , bitstring
 , cryptography
@@ -16,7 +16,7 @@ buildPythonPackage rec {
 
   inherit (clightning) src;
 
-  nativeBuildInputs = [ poetry-core ];
+  nativeBuildInputs = [ hatchling ];
 
   propagatedBuildInputs = [
     bitstring
@@ -28,10 +28,7 @@ buildPythonPackage rec {
 
   checkInputs = [ pytestCheckHook ];
 
-  postUnpack = "sourceRoot=$sourceRoot/contrib/pyln-proto";
+  pythonNamespaces = [ "pyln" ];
 
-  postPatch = ''
-    substituteInPlace pyproject.toml \
-      --replace-fail 'cryptography = "^42"' 'cryptography = "44.0.2"'
-  '';
+  postUnpack = "sourceRoot=$sourceRoot/contrib/pyln-proto";
 }
