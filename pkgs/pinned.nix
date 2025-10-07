@@ -8,6 +8,8 @@ pkgs: pkgsUnstable:
     fulcrum
     hwi
     lightning-pool
+    teos
+    teos-watchtower-plugin
     lndconnect;
 
   inherit (pkgsUnstable)

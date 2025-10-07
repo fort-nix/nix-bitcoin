@@ -78,6 +78,7 @@ NixOS modules ([src](modules/modules.nix))
     * [monitor](https://github.com/lightningd/plugins/tree/master/monitor): helps you analyze the health of your peers and channels
     * [rebalance](https://github.com/lightningd/plugins/tree/master/rebalance): keeps your channels balanced
     * [trustedcoin](https://github.com/nbd-wtf/trustedcoin) ([experimental](docs/services.md#trustedcoin)): replaces bitcoind with trusted public explorers
+    * [teos-watchtower](https://github.com/talaia-labs/rust-teos/tree/master/watchtower-plugin): watchtower client plugin [to interact](docs/services.md#the-eye-of-satoshi-watchtower-plugin) with an Eye of Satoshi tower
     * [zmq](https://github.com/lightningd/plugins/tree/master/zmq): publishes notifications via ZeroMQ to configured endpoints
   * [lnd](https://github.com/lightningnetwork/lnd) with support for announcing an onion service and [static channel backups](https://github.com/lightningnetwork/lnd/blob/master/docs/recovery.md)
     * [Lightning Loop](https://github.com/lightninglabs/loop)
@@ -90,6 +91,7 @@ NixOS modules ([src](modules/modules.nix))
   * [mempool](https://github.com/mempool/mempool): Bitcoin visualizer, explorer, and API service
   * [electrs](https://github.com/romanz/electrs): Electrum server
   * [fulcrum](https://github.com/cculianu/Fulcrum): Electrum server (see [the module](modules/fulcrum.nix) for a comparison with electrs)
+  * [teos](https://github.com/talaia-labs/rust-teos) a Lightning watchtower
   * [btcpayserver](https://github.com/btcpayserver/btcpayserver)
   * [liquid](https://github.com/elementsproject/elements): federated sidechain
   * [JoinMarket](https://github.com/joinmarket-org/joinmarket-clientserver)
