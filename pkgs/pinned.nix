@@ -2,8 +2,6 @@
 pkgs: pkgsUnstable:
 {
   inherit (pkgs)
-    bitcoind-knots
-    charge-lnd
     clboss
     elementsd
     extra-container
@@ -15,7 +13,9 @@ pkgs: pkgsUnstable:
   inherit (pkgsUnstable)
     bitcoin
     bitcoind
+    bitcoind-knots
     btcpayserver
+    charge-lnd
     clightning
     electrs
     lightning-loop

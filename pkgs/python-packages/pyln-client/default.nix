@@ -1,4 +1,4 @@
-{ buildPythonPackage, poetry-core, pytestCheckHook, clightning, pyln-bolt7, pyln-proto }:
+{ buildPythonPackage, hatchling, pytestCheckHook, clightning, pyln-bolt7, pyln-proto }:
 
 buildPythonPackage rec {
   pname = "pyln-client";
@@ -7,7 +7,7 @@ buildPythonPackage rec {
 
   inherit (clightning) src;
 
-  nativeBuildInputs = [ poetry-core ];
+  nativeBuildInputs = [ hatchling ];
 
   propagatedBuildInputs = [
     pyln-bolt7
@@ -15,6 +15,8 @@ buildPythonPackage rec {
   ];
 
   checkInputs = [ pytestCheckHook ];
+
+  pythonNamespaces = [ "pyln" ];
 
   postUnpack = "sourceRoot=$sourceRoot/contrib/${pname}";
 }
