@@ -18,6 +18,7 @@ pkgs: pkgsUnstable:
     charge-lnd
     clightning
     electrs
+    albyhub
     lightning-loop
     lnd;
 

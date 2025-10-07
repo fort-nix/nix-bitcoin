@@ -28,6 +28,7 @@ in {
     # btcpayserver = defaultEnableTorProxy;
     lightning-pool = defaultEnableTorProxy;
     mempool = defaultEnableTorProxy;
+    albyhub = defaultEnableTorProxy;
 
     # These services don't make outgoing connections
     # (or use Tor by default in case of joinmarket)
@@ -50,5 +51,6 @@ in {
     fulcrum.enable = defaultTrue;
     joinmarket-ob-watcher.enable = defaultTrue;
     rtl.enable = defaultTrue;
+    albyhub.enable = defaultTrue;
   };
 }
