@@ -31,7 +31,10 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        scenario: [default, netns, netnsRegtest]
+        scenario:
+          - default
+          - netns
+          - netnsRegtest
     needs: build_test_drivers
     if: needs.build_test_drivers.outputs.run_scenario_tests == 'true'
     steps:
