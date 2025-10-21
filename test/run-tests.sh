@@ -302,6 +302,7 @@ buildable=(
     lndPruned
     wireguard-lndconnect
     trustedcoin
+    joinmarket-bitcoind-29
 )
 buildable() { buildTests buildable "$@"; }
 

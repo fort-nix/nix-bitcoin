@@ -341,7 +341,7 @@ in {
     services.nbxplorer.address = netns.nbxplorer.address;
     services.btcpayserver.address = netns.btcpayserver.address;
 
-    services.joinmarket = {
+    services.joinmarket = mkIf config.services.joinmarket.enable {
       payjoinAddress = netns.joinmarket.address;
       messagingAddress = netns.joinmarket.address;
       cliExec = mkCliExec "joinmarket";
