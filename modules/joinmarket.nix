@@ -251,6 +251,19 @@ in {
   }
 
   (mkIf cfg.enable {
+    assertions = [
+      {
+        assertion = lib.versionOlder bitcoind.package.version "30";
+        message = ''
+          Joinmarket is not compatible with bitcoind >= 30.
+          (https://github.com/JoinMarket-Org/joinmarket-clientserver/pull/1775)
+
+          To fix this, add the following to your config:
+          services.bitcoind.package = config.nix-bitcoin.pkgs.bitcoind_29;
+        '';
+      }
+    ];
+
     services.bitcoind = {
       enable = true;
       disablewallet = false;

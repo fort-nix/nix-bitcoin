@@ -25,6 +25,8 @@ let self = {
     mempool-nginx-conf;
   trustedcoin = pkgs.callPackage ./trustedcoin { };
 
+  bitcoind_29 = pkgs.bitcoind;
+
   pyPkgs = import ./python-packages self pkgs.python3;
   inherit (self.pyPkgs)
     nbPython3Packages

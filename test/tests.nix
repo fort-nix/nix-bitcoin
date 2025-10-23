@@ -213,7 +213,6 @@ let
       services.fulcrum.enable = true;
       services.liquidd.enable = true;
       services.btcpayserver.enable = true;
-      services.joinmarket.enable = true;
       services.joinmarket-ob-watcher.enable = true;
       services.backups.enable = true;
 
@@ -261,7 +260,6 @@ let
       services.electrs.enable = true;
       services.fulcrum.enable = true;
       services.btcpayserver.enable = true;
-      services.joinmarket.enable = true;
     };
 
     # netns and regtest, without secure-node.nix
@@ -341,6 +339,14 @@ let
         enable = true;
         plugins.trustedcoin.enable = true;
       };
+    };
+
+    # The full regtest test with bitcoind 29 and joinmarket enabled.
+    # Joinmarket only supports bitcoind 29.
+    joinmarket-bitcoind-29 = { config, ... }: {
+      imports = [ scenarios.regtest ];
+      services.joinmarket.enable = true;
+      services.bitcoind.package = config.nix-bitcoin.pkgs.bitcoind_29;
     };
   } // (import ../dev/dev-scenarios.nix {
     inherit lib scenarios;
