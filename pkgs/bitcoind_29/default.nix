@@ -44,14 +44,14 @@ let
 in
 stdenv.mkDerivation (finalAttrs: {
   pname = if withGui then "bitcoin" else "bitcoind";
-  version = "29.1";
+  version = "29.2";
 
   src = fetchurl {
     urls = [
       "https://bitcoincore.org/bin/bitcoin-core-${finalAttrs.version}/bitcoin-${finalAttrs.version}.tar.gz"
     ];
     # hash retrieved from signed SHA256SUMS
-    sha256 = "067f624ae273b0d85a1554ffd7c098923351a647204e67034df6cc1dfacfa06b";
+    sha256 = "sha256-pSnXXQUSMX1jNLuf10y23co7HrNF0unjG2YTZYPswEU=";
   };
 
   nativeBuildInputs = [
@@ -89,12 +89,12 @@ stdenv.mkDerivation (finalAttrs: {
 
       checksums = fetchurl {
         url = "https://bitcoincore.org/bin/bitcoin-core-${finalAttrs.version}/SHA256SUMS";
-        hash = "sha256-teQ02vm875Isks9sBC2HV3Zo78W+UkXGH9zgyNhOnQs=";
+        hash = "sha256-siFBow5riZNg6LsMXpJc3u0txCGKJJCy24Cmm0TbvDM=";
       };
 
       signatures = fetchurl {
         url = "https://bitcoincore.org/bin/bitcoin-core-${finalAttrs.version}/SHA256SUMS.asc";
-        hash = "sha256-hyk57QyGJnrjuuGRmvfOhVAx9Nru93e8bfah5fSVcmg=";
+        hash = "sha256-pUBsfT9BvsTIqxAA9CSp1Z8K8RQpi1e00ssEa2il8CQ=";
       };
 
       verifyBuilderKeys =
