@@ -18,6 +18,7 @@ pkgs: pkgsUnstable:
     clboss
     clightning
     electrs
+    albyhub
     lightning-loop
     lnd;
 
