@@ -33,4 +33,22 @@ rec {
   }).pkgs;
 
   nbPython3PackagesJoinmarket = nbPython3Packages;
+
+  # Re-enable pkgs `hwi`, `trezor` that are unaffected by `CVE-2024-23342` because
+  # they don't use python pkg `ecdsa` for signing.
+  # These packages no longer evaluate in nixpkgs after `ecdsa` was tagged with this CVE.
+  nbPython3PackagesWithUnlockedEcdsa = let
+    python3PackagesWithUnlockedEcdsa = (python3.override {
+      packageOverrides = self: super: {
+        ecdsa = super.ecdsa.overrideAttrs (old: {
+          meta = old.meta // {
+            knownVulnerabilities = builtins.filter (x: x != "CVE-2024-23342") old.meta.knownVulnerabilities;
+          };
+        });
+      };
+    }).pkgs;
+  in {
+    hwi = with python3PackagesWithUnlockedEcdsa; toPythonApplication hwi;
+    inherit (python3PackagesWithUnlockedEcdsa) trezor;
+  };
 }
