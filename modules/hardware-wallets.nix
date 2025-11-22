@@ -62,7 +62,7 @@ in {
       });
     })
     (mkIf cfg.trezor {
-      environment.systemPackages = [ pkgs.python3.pkgs.trezor ];
+      environment.systemPackages = [ config.nix-bitcoin.pkgs.pyPkgs.nbPython3PackagesWithUnlockedEcdsa.trezor ];
       # Don't use rules from nixpkgs because we want to use our own group.
       services.udev.packages = lib.singleton (pkgs.writeTextFile {
         name = "trezord-udev-rules";

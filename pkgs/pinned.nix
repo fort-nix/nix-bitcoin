@@ -5,7 +5,6 @@ pkgs: pkgsUnstable:
     elementsd
     extra-container
     fulcrum
-    hwi
     lightning-pool
     lndconnect;
 
