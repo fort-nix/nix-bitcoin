@@ -26,6 +26,7 @@ let self = {
   trustedcoin = pkgs.callPackage ./trustedcoin { };
 
   bitcoind_29 = pkgs.callPackage ./bitcoind_29 {};
+  inherit (self.pyPkgs.nbPython3PackagesWithUnlockedEcdsa) hwi;
 
   pyPkgs = import ./python-packages self pkgs.python3;
   inherit (self.pyPkgs)
