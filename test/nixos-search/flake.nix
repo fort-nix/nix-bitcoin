@@ -17,8 +17,7 @@
       # This allows running flake-info in an offline environment (./flake-info-sandboxed.sh).
       flake-info = nixos-search.packages.${system}.flake-info.overrideAttrs (old: {
         postPatch = (old.postPatch or "") + ''
-          substituteInPlace src/commands/nix_flake_attrs.rs --replace-fail \
-            'command.add_arg_pair("-I", "nixpkgs=https://github.com/NixOS/nixpkgs/archive/refs/heads/nixpkgs-unstable.tar.gz");' ""
+          sed -zi 's|    command.add_arg_pair(\n        "-I",\n        "nixpkgs=https://github.com/NixOS/nixpkgs/archive/refs/heads/nixpkgs-unstable.tar.gz",\n    );\n||' src/commands/nix_flake_attrs.rs
         '';
       });
     });
