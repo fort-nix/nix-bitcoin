@@ -49,6 +49,14 @@ rec {
     }).pkgs;
   in {
     hwi = with python3PackagesWithUnlockedEcdsa; toPythonApplication hwi;
-    inherit (python3PackagesWithUnlockedEcdsa) trezor;
+
+    # trezor 0.13.10 supports click 8.2.x.
+    # The version spec `click>=8,<8.3` has been copied from trezor 0.20.0-dev.
+    trezor = python3PackagesWithUnlockedEcdsa.trezor.overridePythonAttrs (_: {
+      postPatch = ''
+        substituteInPlace requirements.txt \
+          --replace-fail 'click>=7,<8.2' 'click>=8,<8.3'
+      '';
+    });
   };
 }
