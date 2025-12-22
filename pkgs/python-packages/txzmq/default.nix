@@ -9,6 +9,7 @@
 buildPythonPackage rec {
   pname = "txzmq";
   version = "0.8.2";
+  format = "setuptools";
 
   src = fetchPypi {
     pname = "txZMQ";
@@ -18,7 +19,6 @@ buildPythonPackage rec {
 
   propagatedBuildInputs = [
     pyzmq
-    setuptools
     twisted
   ];
 

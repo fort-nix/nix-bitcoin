@@ -3,6 +3,7 @@
 buildPythonPackage rec {
   pname = "python-bitcointx";
   version = "1.1.5";
+  format = "setuptools";
 
   src = fetchFromGitHub {
     owner = "Simplexum";

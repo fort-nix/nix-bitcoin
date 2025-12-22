@@ -13,7 +13,7 @@
 , twisted
 , txtorcon
 , python-bitcointx
-, argon2_cffi
+, argon2-cffi
 , autobahn
 , bencoderpyx
 , klein
@@ -48,7 +48,7 @@ buildPythonPackage rec {
     python-bitcointx
 
     # jmclient
-    argon2_cffi
+    argon2-cffi
     autobahn
     bencoderpyx
     klein

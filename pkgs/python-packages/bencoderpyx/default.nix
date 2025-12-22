@@ -3,6 +3,7 @@
 buildPythonPackage rec {
   pname = "bencoder.pyx";
   version = "3.0.1";
+  format = "setuptools";
 
   src = fetchurl {
     url = "https://github.com/whtsky/bencoder.pyx/archive/9a47768f3ceba9df9e6fbaa7c445f59960889009.tar.gz";

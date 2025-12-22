@@ -2,6 +2,7 @@
 buildPythonPackage rec {
   pname = "chromalog";
   version = "1.0.5";
+  format = "setuptools";
 
   src = fetchFromGitHub {
     owner = "freelan-developers";
