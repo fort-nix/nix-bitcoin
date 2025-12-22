@@ -10,7 +10,7 @@
     nixpkgs-25_05.url = "github:NixOS/nixpkgs/nixos-25.05";
     flake-utils.url = "github:numtide/flake-utils";
     extra-container = {
-      url = "github:erikarvstedt/extra-container/0.13";
+      url = "github:erikarvstedt/extra-container/0.14";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
     };
