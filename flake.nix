@@ -73,7 +73,7 @@
           nix-bitcoin.pkgs =
             if config.nix-bitcoin.useVersionLockedPkgs
             then (self.lib.mkNbPkgs { inherit (config.nixpkgs) system; }).modulesPkgs
-            else (self.lib.mkNbPkgs { inherit (pkgs) system; inherit pkgs; }).modulesPkgs;
+            else (self.lib.mkNbPkgs { inherit (pkgs.stdenv.hostPlatform) system; inherit pkgs; }).modulesPkgs;
         };
       };
 

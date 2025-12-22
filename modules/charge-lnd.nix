@@ -75,7 +75,7 @@ let
   group = user;
   dataDir = "/var/lib/charge-lnd";
   configFile = builtins.toFile "charge-lnd.config" cfg.policies;
-  checkedConfig = pkgs.runCommandNoCC "charge-lnd-checked.config" { } ''
+  checkedConfig = pkgs.runCommand "charge-lnd-checked.config" { } ''
     ${config.nix-bitcoin.pkgs.charge-lnd}/bin/charge-lnd --check --config ${configFile}
     cp ${configFile} $out
   '';
