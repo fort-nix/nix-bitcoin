@@ -16,6 +16,11 @@ buildPythonPackage rec {
 
   inherit (clightning) src;
 
+  postPatch = ''
+    substituteInPlace pyproject.toml \
+      --replace-fail 'coincurve==20.0.0' 'coincurve==21.0.0'
+  '';
+
   nativeBuildInputs = [ hatchling ];
 
   propagatedBuildInputs = [
