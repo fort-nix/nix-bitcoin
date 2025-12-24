@@ -261,8 +261,8 @@ in {
 
     systemd.services.lnd = {
       wantedBy = [ "multi-user.target" ];
-      requires = optional (cfg.backend == "bitcoind") "bitcoind.service";
-      after = optional (cfg.backend == "bitcoind") "bitcoind.service" ++ [ "nix-bitcoin-secrets.target" ];
+      requires = optionals (cfg.backend == "bitcoind") [ "bitcoind.service" ];
+      after = optionals (cfg.backend == "bitcoind") [ "bitcoind.service" ] ++ [ "nix-bitcoin-secrets.target" ];
       preStart = ''
         install -m600 ${configFile} '${cfg.dataDir}/lnd.conf'
         ${optionalString (cfg.backend == "bitcoind") ''
@@ -324,7 +324,7 @@ in {
     users.users.${cfg.user} = {
       isSystemUser = true;
       group = cfg.group;
-      extraGroups = optional (cfg.backend == "bitcoind") "bitcoinrpc-public";
+      extraGroups = optionals (cfg.backend == "bitcoind") [ "bitcoinrpc-public" ];
       home = cfg.dataDir; # lnd creates .lnd dir in HOME
     };
     users.groups.${cfg.group} = {};
