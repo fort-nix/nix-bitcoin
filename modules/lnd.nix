@@ -150,12 +150,12 @@ let
       description = "The backend to use for fetching blockchain data.";
     };
     neutrino = {
-      addpeers = mkOption {
+      peers = mkOption {
         type = types.listOf types.str;
         default = [];
         example = [ "192.168.1.1:8333" "btcd.example.com:8333" ];
         description = ''
-          List of Bitcoin full node peers to connect to via neutrino.addpeer.
+          List of Bitcoin full node peers to connect to for neutrino.
           Multiple peers provide redundancy for maximum uptime.
         '';
       };
@@ -206,7 +206,7 @@ let
       bitcoind.zmqpubrawtx=${zmqHandleSpecialAddress bitcoind.zmqpubrawtx}
     '' else ''
       bitcoin.node=neutrino
-      ${lib.concatMapStringsSep "\n" (peer: "neutrino.addpeer=${peer}") cfg.neutrino.addpeers}
+      ${lib.concatMapStringsSep "\n" (peer: "neutrino.addpeer=${peer}") cfg.neutrino.peers}
       fee.url=${cfg.neutrino.feeUrl}
     ''}
 
@@ -232,10 +232,10 @@ in {
           services.lnd.port to a port other than 9735.
         '';
       }
-      { assertion = cfg.backend != "neutrino" || cfg.neutrino.addpeers != [];
+      { assertion = cfg.backend != "neutrino" || cfg.neutrino.peers != [];
         message = ''
           When using neutrino backend, you must configure at least one peer
-          in services.lnd.neutrino.addpeers.
+          in services.lnd.neutrino.peers.
         '';
       }
     ];
