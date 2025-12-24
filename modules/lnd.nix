@@ -167,6 +167,13 @@ let
           Required because neutrino doesn't have access to mempool data.
         '';
       };
+      maxPeers = mkOption {
+        type = types.int;
+        default = 8;
+        description = ''
+          Maximum number of inbound and outbound peers for neutrino.
+        '';
+      };
     };
   };
 
@@ -207,6 +214,7 @@ let
     '' else ''
       bitcoin.node=neutrino
       ${lib.concatMapStringsSep "\n" (peer: "neutrino.addpeer=${peer}") cfg.neutrino.peers}
+      neutrino.maxpeers=${toString cfg.neutrino.maxPeers}
       fee.url=${cfg.neutrino.feeUrl}
     ''}
 
