@@ -68,15 +68,11 @@ let
 
             # Enable FUSE inside the container when clightning replication
             # is enabled.
-            # TODO-EXTERNAL: Remove this when
-            # https://github.com/systemd/systemd/issues/17607
-            # has been resolved. This will also improve security.
             (
               let
                 s = config.config.services;
               in
                 lib.mkIf (s ? clightning && s.clightning.enable && s.clightning.replication.enable) {
-                  bindMounts."/dev/fuse" = { hostPath = "/dev/fuse"; };
                   allowedDevices = [ { node = "/dev/fuse"; modifier = "rw"; } ];
                 }
             )

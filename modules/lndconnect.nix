@@ -124,7 +124,7 @@ let
   # TODO-EXTERNAL:
   # lndconnect requires a --configfile argument, although it's unused
   # https://github.com/LN-Zap/lndconnect/issues/25
-  pkgs.hiPrio (pkgs.writeScriptBin name ''
+  lib.hiPrio (pkgs.writeScriptBin name ''
     ${shebang}
     url=$(
       ${getExe config.nix-bitcoin.pkgs.lndconnect} --url \

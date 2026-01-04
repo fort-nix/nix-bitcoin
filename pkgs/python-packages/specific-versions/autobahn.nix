@@ -2,19 +2,20 @@
 # but without Python 2 support
 
 { lib, buildPythonPackage, fetchPypi,
-  six, txaio, twisted, zope_interface, cffi,
+  six, txaio, twisted, zope-interface, cffi,
   mock, pytest, cryptography, pynacl
 }:
 buildPythonPackage rec {
   pname = "autobahn";
   version = "20.12.3";
+  format = "setuptools";
 
   src = fetchPypi {
     inherit pname version;
     sha256 = "15b8zm7jalwisfwc08szxy3bh2bnn0hd41dbsnswi0lqwbh962j1";
   };
 
-  propagatedBuildInputs = [ six txaio twisted zope_interface cffi cryptography pynacl ];
+  propagatedBuildInputs = [ six txaio twisted zope-interface cffi cryptography pynacl ];
 
   checkInputs = [ mock pytest ];
   checkPhase = ''

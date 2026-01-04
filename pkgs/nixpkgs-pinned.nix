@@ -17,4 +17,5 @@ in
 {
   nixpkgs = fetch lockedInputs.nixpkgs;
   nixpkgs-unstable = fetch lockedInputs.nixpkgs-unstable;
+  nixpkgs-25_05 = fetch lockedInputs.nixpkgs-25_05;
 }

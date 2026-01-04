@@ -1,4 +1,4 @@
-{ stdenv, lib, fetchFromGitHub, python3, nbPython3PackagesJoinmarket }:
+{ stdenv, lib, fetchFromGitHub, nbPython3PackagesJoinmarket }:
 
 let
   # Note:
@@ -18,7 +18,7 @@ let
     matplotlib # for ob-watcher
   ];
 
-  pythonEnv = python3.withPackages (_: runtimePackages);
+  pythonEnv = nbPython3PackagesJoinmarket.python.withPackages (_: runtimePackages);
 in
 stdenv.mkDerivation {
   pname = "joinmarket";

@@ -3,6 +3,7 @@
 buildPythonPackage rec {
   pname = "liquid-swap";
   version = "0.0.2";
+  format = "setuptools";
 
   propagatedBuildInputs = [ click ];
 

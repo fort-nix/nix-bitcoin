@@ -157,7 +157,7 @@ in {
         veth = "nb-veth-${toString v.id}";
         peer = "nb-veth-br-${toString v.id}";
         inherit (v) netnsName;
-        nsenter = "${pkgs.utillinux}/bin/nsenter";
+        nsenter = "${pkgs.util-linux}/bin/nsenter";
         allowedNetnsAddresses = map (available: netns.${available}.address) v.availableNetns;
         allowedAddresses = concatStringsSep ","
           ([ "127.0.0.1,${bridgeIp},${v.address}" ] ++ allowedNetnsAddresses);

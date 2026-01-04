@@ -5,17 +5,18 @@
   '';
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    nixpkgs-25_05.url = "github:NixOS/nixpkgs/nixos-25.05";
     flake-utils.url = "github:numtide/flake-utils";
     extra-container = {
-      url = "github:erikarvstedt/extra-container/0.13";
+      url = "github:erikarvstedt/extra-container/0.14";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
     };
   };
 
-  outputs = { self, nixpkgs, nixpkgs-unstable, flake-utils, ... }:
+  outputs = { self, nixpkgs, nixpkgs-unstable, nixpkgs-25_05, flake-utils, ... }:
     let
       supportedSystems = [
         "x86_64-linux"
@@ -33,8 +34,9 @@
           system
           , pkgs ? nixpkgs.legacyPackages.${system}
           , pkgsUnstable ? nixpkgs-unstable.legacyPackages.${system}
+          , pkgs-25_05 ? nixpkgs-25_05.legacyPackages.${system}
         }:
-          import ./pkgs { inherit pkgs pkgsUnstable; };
+          import ./pkgs { inherit pkgs pkgsUnstable pkgs-25_05; };
 
         test = {
           inherit (test) scenarios;
@@ -73,7 +75,7 @@
           nix-bitcoin.pkgs =
             if config.nix-bitcoin.useVersionLockedPkgs
             then (self.lib.mkNbPkgs { inherit (config.nixpkgs) system; }).modulesPkgs
-            else (self.lib.mkNbPkgs { inherit (pkgs) system; inherit pkgs; }).modulesPkgs;
+            else (self.lib.mkNbPkgs { inherit (pkgs.stdenv.hostPlatform) system; inherit pkgs; }).modulesPkgs;
         };
       };
 
@@ -95,6 +97,8 @@
           "nixops19_09"
           "pinned"
           "generate-secrets"
+          "nbPython3Packages"
+          "nbPython3PackagesJoinmarket"
         ]) // {
           inherit (import ./examples/qemu-vm/minimal-vm.nix self pkgs system)
             # A simple demo VM.

@@ -21,18 +21,27 @@ rec {
       sha256 = callPackage ./sha256 {};
 
       joinmarket = callPackage ./joinmarket { inherit (nbPkgs.joinmarket) version src; };
-
-      ## Specific versions of packages that already exist in nixpkgs
-
-      # autobahn 20.12.3, required by joinmarketclient
-      autobahn = callPackage ./specific-versions/autobahn.nix {};
     };
 
   nbPython3Packages = (python3.override {
     packageOverrides = pyPkgsOverrides;
   }).pkgs;
 
-  nbPython3PackagesJoinmarket = nbPython3Packages;
+  # joinmarket requires cython 3.0 via pkg bencoder.pyx.
+  # The python pkgs from nixpkgs-25.11 default to cython 3.1.
+  # Downgrading to 3.0 causes mass rebuilds, so we use python pkgs from nixpkgs-25.05 for joinmarket.
+  # The nixpkgs-25.05 dependency will be removed with the next joinmarket update.
+  # https://github.com/JoinMarket-Org/joinmarket-clientserver/issues/1787
+  nbPython3PackagesJoinmarket =
+    (nbPkgs.pinned.pkgs-25_05.python3.override {
+      packageOverrides = self: super:
+        (pyPkgsOverrides self super) // {
+          ## Specific versions of packages that already exist in nixpkgs
+
+          # autobahn 20.12.3, required by joinmarketclient
+          autobahn = self.callPackage ./specific-versions/autobahn.nix {};
+        };
+    }).pkgs;
 
   # Re-enable pkgs `hwi`, `trezor` that are unaffected by `CVE-2024-23342` because
   # they don't use python pkg `ecdsa` for signing.
@@ -49,6 +58,14 @@ rec {
     }).pkgs;
   in {
     hwi = with python3PackagesWithUnlockedEcdsa; toPythonApplication hwi;
-    inherit (python3PackagesWithUnlockedEcdsa) trezor;
+
+    # trezor 0.13.10 supports click 8.2.x.
+    # The version spec `click>=8,<8.3` has been copied from trezor 0.20.0-dev.
+    trezor = python3PackagesWithUnlockedEcdsa.trezor.overridePythonAttrs (_: {
+      postPatch = ''
+        substituteInPlace requirements.txt \
+          --replace-fail 'click>=7,<8.2' 'click>=8,<8.3'
+      '';
+    });
   };
 }

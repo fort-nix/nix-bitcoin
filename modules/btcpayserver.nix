@@ -135,14 +135,17 @@ in {
     };
     services.postgresql = {
       enable = true;
-      ensureDatabases = [ "btcpaydb" "nbxplorer" ];
+      ensureDatabases = [
+        "btcpaydb" # This name is kept for backwards compatibility
+        "nbxplorer"
+      ];
       ensureUsers = [
         { name = cfg.btcpayserver.user; }
         { name = cfg.nbxplorer.user; }
       ];
     };
-    systemd.services.postgresql.postStart = lib.mkAfter ''
-      $PSQL -tAc '
+    systemd.services.postgresql-setup.postStart = ''
+      psql -tAc '
         ALTER DATABASE "btcpaydb" OWNER TO "${cfg.btcpayserver.user}";
         ALTER DATABASE "nbxplorer" OWNER TO "${cfg.nbxplorer.user}";
       '
@@ -171,7 +174,7 @@ in {
       '';
     in rec {
       wantedBy = [ "multi-user.target" ];
-      requires = [ "postgresql.service" ];
+      requires = [ "postgresql.target" ];
       wants = [ "bitcoind.service" ] ++ optional cfg.btcpayserver.lbtc "liquidd.service";
       after = requires ++ wants ++ [ "nix-bitcoin-secrets.target" ];
       preStart = ''
@@ -226,7 +229,7 @@ in {
       '');
     in rec {
       wantedBy = [ "multi-user.target" ];
-      requires = [ "postgresql.service" ];
+      requires = [ "postgresql.target" ];
       wants = [ "nbxplorer.service" ]
               ++ optional (cfg.btcpayserver.lightningBackend != null) "${cfg.btcpayserver.lightningBackend}.service";
       after = requires ++ wants;
