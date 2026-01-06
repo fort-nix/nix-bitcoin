@@ -80,6 +80,15 @@
   # Set this to enable lnd, a lightning implementation written in Go.
   # services.lnd.enable = true;
   #
+  # By default, lnd uses bitcoind as its backend. You can use neutrino instead
+  # to run lnd without a full Bitcoin node. This is useful for resource-constrained
+  # systems, but provides less privacy and security than a local bitcoind.
+  # services.lnd = {
+  #   enable = true;
+  #   backend = "neutrino";
+  #   neutrino.peers = [ "btcd.example.com:8333" ];
+  # };
+  #
   # NOTE: In order to avoid collisions with clightning you must disable clightning or
   # change the services.clightning.port or services.lnd.port to a port other than
   # 9735.

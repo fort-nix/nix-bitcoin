@@ -144,6 +144,37 @@ let
       description = "LND TLS certificate path.";
     };
     tor = nbLib.tor;
+    backend = mkOption {
+      type = types.enum [ "bitcoind" "neutrino" ];
+      default = "bitcoind";
+      description = "The backend to use for fetching blockchain data.";
+    };
+    neutrino = {
+      peers = mkOption {
+        type = types.listOf types.str;
+        default = [];
+        example = [ "192.168.1.1:8333" "btcd.example.com:8333" ];
+        description = ''
+          List of Bitcoin full node peers to connect to for neutrino.
+          Multiple peers provide redundancy for maximum uptime.
+        '';
+      };
+      feeUrl = mkOption {
+        type = types.str;
+        default = "https://nodes.lightning.computer/fees/v1/btc-fee-estimates.json";
+        description = ''
+          URL for fee estimation when using neutrino on mainnet.
+          Required because neutrino doesn't have access to mempool data.
+        '';
+      };
+      maxPeers = mkOption {
+        type = types.int;
+        default = 8;
+        description = ''
+          Maximum number of inbound and outbound peers for neutrino.
+        '';
+      };
+    };
   };
 
   cfg = config.services.lnd;
@@ -170,15 +201,22 @@ let
     restlisten=${cfg.restAddress}:${toString cfg.restPort}
 
     bitcoin.${bitcoind.network}=1
-    bitcoin.node=bitcoind
 
     ${optionalString (cfg.tor.proxy) "tor.active=true"}
     ${optionalString (cfg.tor-socks != null) "tor.socks=${cfg.tor-socks}"}
 
-    bitcoind.rpchost=${bitcoindRpcAddress}:${toString bitcoind.rpc.port}
-    bitcoind.rpcuser=${bitcoind.rpc.users.public.name}
-    bitcoind.zmqpubrawblock=${zmqHandleSpecialAddress bitcoind.zmqpubrawblock}
-    bitcoind.zmqpubrawtx=${zmqHandleSpecialAddress bitcoind.zmqpubrawtx}
+    ${if cfg.backend == "bitcoind" then ''
+      bitcoin.node=bitcoind
+      bitcoind.rpchost=${bitcoindRpcAddress}:${toString bitcoind.rpc.port}
+      bitcoind.rpcuser=${bitcoind.rpc.users.public.name}
+      bitcoind.zmqpubrawblock=${zmqHandleSpecialAddress bitcoind.zmqpubrawblock}
+      bitcoind.zmqpubrawtx=${zmqHandleSpecialAddress bitcoind.zmqpubrawtx}
+    '' else ''
+      bitcoin.node=neutrino
+      ${lib.concatMapStringsSep "\n" (peer: "neutrino.addpeer=${peer}") cfg.neutrino.peers}
+      neutrino.maxpeers=${toString cfg.neutrino.maxPeers}
+      fee.url=${cfg.neutrino.feeUrl}
+    ''}
 
     wallet-unlock-password-file=${secretsDir}/lnd-wallet-password
 
@@ -202,9 +240,15 @@ in {
           services.lnd.port to a port other than 9735.
         '';
       }
+      { assertion = cfg.backend != "neutrino" || cfg.neutrino.peers != [];
+        message = ''
+          When using neutrino backend, you must configure at least one peer
+          in services.lnd.neutrino.peers.
+        '';
+      }
     ];
 
-    services.bitcoind = {
+    services.bitcoind = mkIf (cfg.backend == "bitcoind") {
       enable = true;
 
       # Increase rpc thread count due to reports that lightning implementations fail
@@ -225,16 +269,16 @@ in {
 
     systemd.services.lnd = {
       wantedBy = [ "multi-user.target" ];
-      requires = [ "bitcoind.service" ];
-      after = [ "bitcoind.service" "nix-bitcoin-secrets.target" ];
+      requires = optionals (cfg.backend == "bitcoind") [ "bitcoind.service" ];
+      after = optionals (cfg.backend == "bitcoind") [ "bitcoind.service" ] ++ [ "nix-bitcoin-secrets.target" ];
       preStart = ''
         install -m600 ${configFile} '${cfg.dataDir}/lnd.conf'
-        {
-          echo "bitcoind.rpcpass=$(cat ${secretsDir}/bitcoin-rpcpassword-public)"
-          ${optionalString (cfg.getPublicAddressCmd != "") ''
-            echo "externalip=$(${cfg.getPublicAddressCmd})"
-          ''}
-        } >> '${cfg.dataDir}/lnd.conf'
+        ${optionalString (cfg.backend == "bitcoind") ''
+          echo "bitcoind.rpcpass=$(cat ${secretsDir}/bitcoin-rpcpassword-public)" >> '${cfg.dataDir}/lnd.conf'
+        ''}
+        ${optionalString (cfg.getPublicAddressCmd != "") ''
+          echo "externalip=$(${cfg.getPublicAddressCmd})" >> '${cfg.dataDir}/lnd.conf'
+        ''}
 
         if [[ ! -f ${networkDir}/wallet.db ]]; then
           seed='${cfg.dataDir}/lnd-seed-mnemonic'
@@ -288,7 +332,7 @@ in {
     users.users.${cfg.user} = {
       isSystemUser = true;
       group = cfg.group;
-      extraGroups = [ "bitcoinrpc-public" ];
+      extraGroups = optionals (cfg.backend == "bitcoind") [ "bitcoinrpc-public" ];
       home = cfg.dataDir; # lnd creates .lnd dir in HOME
     };
     users.groups.${cfg.group} = {};
