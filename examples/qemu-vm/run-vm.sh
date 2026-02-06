@@ -41,7 +41,7 @@ vmWaitForSSH() {
 
 # Run command in VM
 c() {
-    ssh -p "$sshPort" -i "$identityFile" -o ConnectTimeout=1 \
+    ssh -p "$sshPort" -i "$identityFile" -o IdentitiesOnly=yes -o ConnectTimeout=1 \
         -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR \
         -o ControlMaster=auto -o ControlPath=$tmpDir/ssh-connection -o ControlPersist=60 \
         root@127.0.0.1 "$@"
