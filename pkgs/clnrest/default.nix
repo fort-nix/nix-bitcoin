@@ -11,7 +11,7 @@ rustPlatform.buildRustPackage rec {
 
   inherit (clightning) src;
 
-  cargoHash = "sha256-2xOLwj42Ua85+kn73y+5q3YmzKYMCjxLlq/UrYjiZv0=";
+  cargoHash = "sha256-SjGvKeDBZzbn4TR2nbGHb3XAon0Dv4KtSlkzX+eji8c=";
 
   depsExtraArgs = {
     nativeBuildInputs = [ unzip ];
