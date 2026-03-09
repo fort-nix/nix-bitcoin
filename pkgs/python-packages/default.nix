@@ -59,13 +59,15 @@ rec {
   in {
     hwi = with python3PackagesWithUnlockedEcdsa; toPythonApplication hwi;
 
-    # trezor 0.13.10 supports click 8.2.x.
-    # The version spec `click>=8,<8.3` has been copied from trezor 0.20.0-dev.
-    trezor = python3PackagesWithUnlockedEcdsa.trezor.overridePythonAttrs (_: {
-      postPatch = ''
-        substituteInPlace requirements.txt \
-          --replace-fail 'click>=7,<8.2' 'click>=8,<8.3'
-      '';
+    # nixpkgs has keyring 25.6.0, but trezor 0.20.0 requires >= 25.7.0.
+    # 25.7.0 only adds KWallet 6 support and removes Python 3.8 cruft,
+    # so 25.6.0 is functionally equivalent for trezor's use.
+    # Relax the constraint until nixpkgs updates keyring.
+    trezor = python3PackagesWithUnlockedEcdsa.trezor.overridePythonAttrs (old: {
+      nativeBuildInputs = (old.nativeBuildInputs or []) ++ [
+        python3PackagesWithUnlockedEcdsa.pythonRelaxDepsHook
+      ];
+      pythonRelaxDeps = [ "keyring" ];
     });
   };
 }

@@ -128,6 +128,8 @@ in {
       requires = [ "lnd.service" ];
       after = [ "lnd.service" "nix-bitcoin-secrets.target" ];
       serviceConfig = nbLib.defaultHardening // {
+        # TODO: temporary sleep to prevent race condition
+        ExecStartPre = "${pkgs.coreutils}/bin/sleep 5";
         ExecStart = "${cfg.package}/bin/loopd --configfile=${configFile}";
         User = lnd.user;
         Restart = "on-failure";
