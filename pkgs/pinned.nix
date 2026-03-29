@@ -19,7 +19,7 @@ pkgs: pkgsUnstable: pkgs-25_05:
     lndconnect;
 
   inherit (pkgsUnstable)
-    ;
+    albyhub;
 
   inherit pkgs pkgsUnstable pkgs-25_05;
 }
