@@ -13,10 +13,6 @@ let
   lnd = config.services.lnd;
   # Use loopback for client connections if lnd is bound to wildcard addresses
   lndRpcClientAddress = builtins.replaceStrings [ "0.0.0.0" "[::]" ] [ "127.0.0.1" "[::1]" ] lnd.rpcAddress;
-  torRelays = [
-    "ws://oxtrdevav64z64yb7x6rjg4ntzqjhedm5b5zjqulugknhzr46ny2qbad.onion"
-    "ws://bitcoinr6de5lkvx4tpwdmzrdfdpla5sya2afwpcabjup2xpi5dulbad.onion"
-  ];
 
   envFileContent =
     let
@@ -127,15 +123,11 @@ in
     };
 
     relay = mkOption {
-      type = with types; nullOr (either str (listOf str));
+      type = with types; nullOr (listOf str);
       example = [ "wss://relay.damus.io" "wss://offchain.pub" "wss://relay.primal.net" ];
-      default = if cfg.tor.proxy then torRelays else null;
+      default = null;
       apply = value: if builtins.isList value then concatStringsSep "," value else value;
-      description = ''
-        The default nostr relays to use. Find more relays:
-        - https://nostrwat.ch/
-        - https://github.com/0xtrr/onion-service-nostr-relays
-      '';
+      description = "The nostr relays to use. Note that onion relays are not supported due to proxy limitations in hub. Find more relays: https://nostrwat.ch/";
     };
 
     logLevel = mkOption {
