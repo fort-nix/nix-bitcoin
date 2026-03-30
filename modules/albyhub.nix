@@ -164,7 +164,7 @@ in
       type = with types; nullOr str;
       default =
         if config.services.mempool.enable then
-          "http://${nbLib.addressWithPort config.services.mempool.address config.services.mempool.port}"
+          "http://${nbLib.addressWithPort config.services.mempool.address config.services.mempool.port}/api"
         else
           null;
       description = "Mempool API endpoint.";
