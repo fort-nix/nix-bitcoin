@@ -13,6 +13,11 @@ let
   lnd = config.services.lnd;
   # Use loopback for client connections if lnd is bound to wildcard addresses
   lndRpcClientAddress = builtins.replaceStrings [ "0.0.0.0" "[::]" ] [ "127.0.0.1" "[::1]" ] lnd.rpcAddress;
+  torRelays = [
+    "wss://relay.damus.io"
+    "ws://nostrland2gdw7g3y77ctftovvil76vquipymo7tsctlxpiwknevzfid.onion"
+    "ws://oxtrdevav64z64yb7x6rjg4ntzqjhedm5b5zjqulugknhzr46ny2qbad.onion"
+  ];
 
   envFileContent =
     let
@@ -123,10 +128,11 @@ in
     };
 
     relay = mkOption {
-      type = with types; nullOr str;
-      default = null;
-      example = "wss://relay.getalby.com,wss://relay2.getalby.com";
-      description = "The default nostr relay.";
+      type = with types; nullOr (either str (listOf str));
+      example = [ "wss://relay.getalby.com" "wss://relay2.getalby.com" ];
+      default = if cfg.tor.proxy then torRelays else null;
+      apply = value: if builtins.isList value then concatStringsSep "," value else value;
+      description = "The default nostr relays to use.";
     };
 
     logLevel = mkOption {
@@ -376,8 +382,11 @@ in
         ++ optional cfg.tor.proxy "tor.service";
 
         environment = mkIf cfg.tor.proxy {
-          ALL_PROXY = "socks5h://${config.nix-bitcoin.torClientAddressWithPort}";
           HTTP_PROXY = "http://127.0.0.1:${toString cfg.httpProxyPort}";
+          HTTPS_PROXY = "http://127.0.0.1:${toString cfg.httpProxyPort}";
+          # Use Tor SOCKS for generic proxy-aware clients.
+          ALL_PROXY = "socks5h://${config.nix-bitcoin.torClientAddressWithPort}";
+          NO_PROXY = "127.0.0.1,localhost,::1";
         };
 
         serviceConfig =
