@@ -119,7 +119,7 @@ in {
     users.users.${cfg.user} = {
       isSystemUser = true;
       group = cfg.group;
-      extraGroups = [ "bitcoinrpc-public" ];
+      extraGroups = [ "bitcoinrpc-public" "bitcoin" ];
     };
     users.groups.${cfg.group} = {};
   };
