@@ -192,6 +192,14 @@
   # public access to the web interface.
   # nix-bitcoin.onionServices.btcpayserver.enable = true;
 
+  ### Alby Hub
+  # Set this to enable Alby Hub.
+  # services.albyhub.enable = true;
+  #
+  # Set this to create an onion service to make the Alby Hub web interface
+  # accessible via Tor.
+  # nix-bitcoin.onionServices.albyhub.public = true;
+
   ### LIQUIDD
   # Enable this module to use Liquid, a sidechain for an inter-exchange
   # settlement network linking together cryptocurrency exchanges and

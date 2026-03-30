@@ -61,11 +61,11 @@ let
       ${optionalString (cfg.baseUrl != null) "BASE_URL=${cfg.baseUrl}"}
       ${optionalString (cfg.frontendUrl != null) "FRONTEND_URL=${cfg.frontendUrl}"}
       ${optionalString (cfg.logEvents != null) "LOG_EVENTS=${boolToString cfg.logEvents}"}
+      ${optionalString (cfg.relay != null) "RELAY=${cfg.relay}"}
+      ${optionalString (cfg.boltzApi != null) "BOLTZ_API=${cfg.boltzApi}"}
       ${optionalString (
         cfg.enableAdvancedSetup != null
       ) "ENABLE_ADVANCED_SETUP=${boolToString cfg.enableAdvancedSetup}"}
-      RELAY=${cfg.relay}
-      BOLTZ_API=${cfg.boltzApi}
       ${backendOpts}
       ${optionalString (cfg.extraConfig != null) cfg.extraConfig}
     '';
@@ -124,7 +124,8 @@ in
 
     relay = mkOption {
       type = with types; nullOr str;
-      default = "wss://relay.getalby.com/v1";
+      default = null;
+      example = "wss://relay.getalby.com,wss://relay2.getalby.com";
       description = "The default nostr relay.";
     };
 
@@ -167,15 +168,21 @@ in
     baseUrl = mkOption {
       type = with types; nullOr str;
       default = null;
-      description = "Base URL for the Alby Hub. Required if you want to connect to your Alby account.";
+      description = ''
+        Public base URL of your Alby Hub backend (used as `BASE_URL`).
+        This must be reachable by the browser and is required when using a custom Alby OAuth client,
+        because the OAuth callback is `${baseUrl}/api/alby/callback`.
+      '';
       example = "http://localhost:8082";
     };
 
     frontendUrl = mkOption {
       type = with types; nullOr str;
       default = null;
-      description = "Frontend URL for the Alby Hub";
-      example = "http://127.0.0.1:8082";
+      description = ''
+        Public URL of the Hub frontend UI used for browser redirects (for example after OAuth or logout).
+        If unset, redirects fall back to `baseUrl`.
+      '';
     };
 
     logEvents = mkOption {
@@ -198,11 +205,10 @@ in
 
     boltzApi = mkOption {
       type = with types; nullOr str;
-      default = "wss://api.boltz.exchange/v2/ws";
+      default = null;
+      example = "wss://api.boltz.exchange/";
       description = "Boltz API endpoint.";
     };
-
-    # Removed: relayBridge and boltzBridge options. Bridges are auto-managed when tor.proxy is enabled.
 
     extraConfig = mkOption {
       type = with types; nullOr str;
@@ -370,18 +376,16 @@ in
         ++ optional cfg.tor.proxy "tor.service";
 
         environment = mkIf cfg.tor.proxy {
-          # Use Tor SOCKS for generic proxy-aware clients.
-          # Use Tor's HTTP CONNECT tunnel for clients that only support HTTP(S)_PROXY.
           ALL_PROXY = "socks5h://${config.nix-bitcoin.torClientAddressWithPort}";
-          SOCKS_PROXY = "socks5h://${config.nix-bitcoin.torClientAddressWithPort}";
           HTTP_PROXY = "http://127.0.0.1:${toString cfg.httpProxyPort}";
-          HTTPS_PROXY = "http://127.0.0.1:${toString cfg.httpProxyPort}";
-          NO_PROXY = "127.0.0.1,localhost,::1";
         };
 
         serviceConfig =
           nbLib.defaultHardening
           // {
+            # Build `${envFile}` at service start so dynamic values and secrets are resolved at runtime,
+            # rather than being baked into the Nix-evaluated config. This hook also handles privileged
+            # setup (for example copying LND macaroon and fixing ownership/permissions) before dropping to `${cfg.user}`.
             ExecStartPre =
               let
                 catSecret = secret: optionalString (secret != null) "cat ${secret}";
@@ -402,6 +406,9 @@ in
                   cat > ${envFile} <<EOF
                   ${envFileContent}
                   EOF
+                  ${optionalString (cfg.frontendUrl == null && cfg.getPublicAddressCmd != "") ''
+                    echo "FRONTEND_URL=http://$(${cfg.getPublicAddressCmd})" >> ${envFile}
+                  ''}
                   # Append secrets
                   ${appendToFile "AUTO_UNLOCK_PASSWORD" cfg.autoUnlockPasswordFile}
                   ${optionalString (cfg.jwtSecretFile != null) (appendToFile "JWT_SECRET" cfg.jwtSecretFile)}

@@ -116,6 +116,9 @@ in {
         mempool-frontend = {
           externalPort = 80;
         };
+        albyhub = {
+          externalPort = 80;
+        };
       };
     }
   ];
