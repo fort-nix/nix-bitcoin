@@ -286,6 +286,13 @@ def _():
     assert_running("joinmarket-ob-watcher")
     machine.wait_until_succeeds(log_has_string("joinmarket-ob-watcher", "Starting ob-watcher"))
 
+@test("bitcoin-tui")
+def _():
+    assert_running("bitcoind")
+    # bitcoin-tui is an interactive TUI, just verify the binary is installed
+    # and can show its version
+    assert_matches("runuser -u operator -- bitcoin-tui --version", "bitcoin-tui")
+
 @test("nodeinfo")
 def _():
     status, _ = machine.execute("systemctl is-enabled --quiet onion-addresses 2> /dev/null")
