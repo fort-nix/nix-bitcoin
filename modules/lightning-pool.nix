@@ -99,6 +99,8 @@ in {
         ln -sfn ${configFile} '${cfg.dataDir}/${network}/poold.conf'
       '';
       serviceConfig = nbLib.defaultHardening // {
+        # TODO: temporary sleep to prevent race condition
+        ExecStartPre = "${pkgs.coreutils}/bin/sleep 5";
         ExecStart = "${cfg.package}/bin/poold --basedir='${cfg.dataDir}' --network=${network}";
         User = "lnd";
         Restart = "on-failure";
