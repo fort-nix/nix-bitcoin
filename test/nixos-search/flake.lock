@@ -21,11 +21,11 @@
     "nixos-infra": {
       "flake": false,
       "locked": {
-        "lastModified": 1777369279,
-        "narHash": "sha256-ewYONJDiRt9Vc2Ar6SKyiQ0zBUSz3ws2HY9lU2NEiXM=",
+        "lastModified": 1778186763,
+        "narHash": "sha256-WYpwAXUSbAvyygzaPJ5A0MpBgCRDfOn/JlA6bhAExOM=",
         "owner": "NixOS",
         "repo": "infra",
-        "rev": "5ecd8f26fc30311913f1c19b29a4d8853e28123a",
+        "rev": "f7fcb33b303e1026a99206c8a9a4f4d93907d5d1",
         "type": "github"
       },
       "original": {
@@ -44,11 +44,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1777878641,
-        "narHash": "sha256-saijRTtAhxOe9ZiaPbJOCWgfnlNzksLQBK00gf7OOcg=",
+        "lastModified": 1778708793,
+        "narHash": "sha256-LXzXKjaxm23vLEOVefy9HNfedZvdI/FvoJlFd/jjNc0=",
         "owner": "nixos",
         "repo": "nixos-search",
-        "rev": "e9806088e52087ea6414bf4a447b345a81e03a32",
+        "rev": "4a3cb26d1ccaa9c62f29071c228dff07c3686e38",
         "type": "github"
       },
       "original": {
@@ -59,17 +59,18 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1777268161,
-        "narHash": "sha256-bxrdOn8SCOv8tN4JbTF/TXq7kjo9ag4M+C8yzzIRYbE=",
+        "lastModified": 1777954456,
+        "narHash": "sha256-hGdgeU2Nk87RAuZyYjyDjFL6LK7dAZN5RE9+hrDTkDU=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "1c3fe55ad329cbcb28471bb30f05c9827f724c76",
+        "rev": "549bd84d6279f9852cae6225e372cc67fb91a4c1",
         "type": "github"
       },
       "original": {
-        "id": "nixpkgs",
+        "owner": "NixOS",
         "ref": "nixos-unstable",
-        "type": "indirect"
+        "repo": "nixpkgs",
+        "type": "github"
       }
     },
     "nixpkgs-npmlock2nix": {
@@ -82,9 +83,10 @@
         "type": "github"
       },
       "original": {
-        "id": "nixpkgs",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
         "rev": "c5ed8beb478a8ca035f033f659b60c89500a3034",
-        "type": "indirect"
+        "type": "github"
       }
     },
     "npmlock2nix": {
