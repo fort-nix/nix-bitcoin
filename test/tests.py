@@ -103,6 +103,12 @@ def _():
         log_has_string("bitcoind", "RPC User public not allowed to call method stop")
     )
 
+@test("bitcoin-ipc")
+def _():
+    assert_running("bitcoind")
+    machine.wait_until_succeeds("[[ -S /run/bitcoin-ipc/node.sock ]]")
+    assert_full_match("stat -c '%U:%G %a' /run/bitcoin-ipc", "bitcoin:bitcoin 770\n")
+
 @test("electrs")
 def _():
     assert_running("electrs")
