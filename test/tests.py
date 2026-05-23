@@ -286,6 +286,18 @@ def _():
     assert_running("joinmarket-ob-watcher")
     machine.wait_until_succeeds(log_has_string("joinmarket-ob-watcher", "Starting ob-watcher"))
 
+@test("utxoracle")
+def _():
+    # utxoracle is a oneshot service triggered by a timer.
+    # It requires real mainnet blocks with transactions to produce price data,
+    # so we only verify the timer/service plumbing and CLI access here.
+    assert_running("bitcoind")
+    machine.wait_for_unit("utxoracle.timer")
+    # Check that the CLI wrapper is available to the operator
+    assert_matches("runuser -u operator -- utxoracle -h", "UTXOracle")
+    # Verify the service user has RPC access
+    succeed("runuser -u utxoracle -- ls /var/lib/bitcoind/.cookie")
+
 @test("nodeinfo")
 def _():
     status, _ = machine.execute("systemctl is-enabled --quiet onion-addresses 2> /dev/null")
