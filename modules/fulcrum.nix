@@ -65,6 +65,7 @@ let
   nbLib = config.nix-bitcoin.lib;
   secretsDir = config.nix-bitcoin.secretsDir;
   bitcoind = config.services.bitcoind;
+  bitcoindRpcAddress = nbLib.address bitcoind.rpc.address;
 
   configFile = builtins.toFile "fulcrum.conf" ''
     datadir = ${cfg.dataDir}
@@ -103,6 +104,7 @@ in {
     services.bitcoind = {
       enable = true;
       txindex = true;
+      zmqpubhashblock = mkDefault "tcp://${bitcoindRpcAddress}:28331";
     };
 
     systemd.tmpfiles.rules = [

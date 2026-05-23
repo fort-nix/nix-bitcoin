@@ -224,6 +224,12 @@ let
         default = false;
         description = "Enable the transaction index.";
       };
+      zmqpubhashblock = mkOption {
+        type = types.nullOr types.str;
+        default = null;
+        example = "tcp://127.0.0.1:28331";
+        description = "ZMQ address for zmqpubhashblock notifications";
+      };
       zmqpubrawblock = mkOption {
         type = types.nullOr types.str;
         default = null;
@@ -342,6 +348,7 @@ let
     ${optionalString (cfg.addresstype != null) "addresstype=${cfg.addresstype}"}
 
     # ZMQ options
+    ${optionalString (cfg.zmqpubhashblock != null) "zmqpubhashblock=${cfg.zmqpubhashblock}"}
     ${optionalString (cfg.zmqpubrawblock != null) "zmqpubrawblock=${cfg.zmqpubrawblock}"}
     ${optionalString (cfg.zmqpubrawtx != null) "zmqpubrawtx=${cfg.zmqpubrawtx}"}
 
@@ -349,7 +356,7 @@ let
     ${cfg.extraConfig}
   '';
 
-  zmqServerEnabled = (cfg.zmqpubrawblock != null) || (cfg.zmqpubrawtx != null);
+  zmqServerEnabled = (cfg.zmqpubhashblock != null) || (cfg.zmqpubrawblock != null) || (cfg.zmqpubrawtx != null);
 
   intAtLeast = n: types.addCheck types.int (x: x >= n) // {
     name = "intAtLeast";
