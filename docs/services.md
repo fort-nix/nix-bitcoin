@@ -26,6 +26,92 @@ systemctl cat bitcoind
 systemctl show bitcoind
 ```
 
+# UTXOracle Local
+
+UTXOracle Local calculates a Bitcoin price estimate from local Bitcoin Core
+confirmed-block data. nix-bitcoin packages UTXOracle with its custom license
+metadata and requires explicit license acceptance before enabling the service.
+The UTXOracle license is not OSI-approved and includes restrictions on
+commercial, live, real-time, naming, and branding uses. See
+https://utxo.live/oracle/license.php.
+
+To run the default daily confirmed-block calculation:
+
+```nix
+{ lib, ... }: {
+  nixpkgs.config.allowUnfreePredicate = pkg:
+    builtins.elem (lib.getName pkg) [ "utxoracle" ];
+
+  services.utxoracle = {
+    enable = true;
+    acceptLicense = true;
+  };
+}
+```
+
+The service runs as the bitcoind user by default, reads the local Bitcoin Core
+data directory, and writes cached output under `/var/lib/utxoracle`. It creates
+`latest.log`, `latest.html` when UTXOracle generates HTML output, and
+`latest.json` when a price can be parsed.
+
+The module does not open firewall ports.
+
+For a moving confirmed-block estimate, enable recent 144-block mode:
+
+```nix
+services.utxoracle = {
+  enable = true;
+  acceptLicense = true;
+  recentBlocks = true;
+};
+```
+
+With `recentBlocks = true`, nix-bitcoin runs UTXOracle's recent block mode and
+labels the cached JSON output as `mode = "recent_blocks_144"`. This is a moving
+price estimate from the most recent 144 confirmed blocks. It is not exchange
+price data, mempool data, or live real-time price data.
+
+To update that recent-block estimate whenever Bitcoin Core connects a block:
+
+```nix
+services.utxoracle = {
+  enable = true;
+  acceptLicense = true;
+  recentBlocks = true;
+  updateOnBlock = true;
+};
+```
+
+`updateOnBlock` adds a Bitcoin Core `blocknotify` command and starts the
+oneshot `utxoracle.service` from a systemd path unit. The daily timer remains
+enabled as a fallback.
+
+## Cached local price feed
+
+To serve the cached 144-block rolling output over loopback HTTP:
+
+```nix
+services.utxoracle = {
+  enable = true;
+  acceptLicense = true;
+  recentBlocks = true;
+  updateOnBlock = true;
+  priceFeed.enable = true;
+};
+```
+
+The price feed binds to `127.0.0.1:8174` by default and serves only cached
+confirmed-block output from `/var/lib/utxoracle/latest.json`. It does not
+calculate prices itself, read mempool data, stream pushed updates, open firewall
+ports, or expose a public service.
+
+Available local endpoints:
+
+```shell
+curl -fsS http://127.0.0.1:8174/latest.json
+curl -fsS http://127.0.0.1:8174/health
+```
+
 # clightning database replication
 
 The clightning database can be replicated to a local path
