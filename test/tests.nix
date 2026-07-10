@@ -84,6 +84,10 @@ let
         echo a > rtl-password
       '');
 
+      nix-bitcoin.generateSecretsCmds.cdk-mintd = mkIf cfg.cdk-mintd.enable ''
+        [[ -e cdk-mintd-mnemonic ]] || echo "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about" > cdk-mintd-mnemonic
+      '';
+
       tests.mempool = cfg.mempool.enable;
       services.mempool = {
         electrumServer = "fulcrum";
@@ -141,6 +145,11 @@ let
       tests.nodeinfo = config.nix-bitcoin.nodeinfo.enable;
 
       tests.backups = cfg.backups.enable;
+
+      tests.cdk-mintd = cfg.cdk-mintd.enable;
+      test.data.cdk-mintd-backend = cfg.cdk-mintd.lightningBackend;
+      test.data.cdk-mintd-mint-name = config.services.cdk-mintd.mintInfo.name;
+      test.data.cdk-mintd-backup-location = config.services.cdk-mintd.backup.location;
 
       # To test that unused secrets are made inaccessible by 'setup-secrets'
       systemd.services.setup-secrets.preStart = mkIfTest "security" ''
@@ -347,6 +356,78 @@ let
       imports = [ scenarios.regtest ];
       services.joinmarket.enable = true;
       services.bitcoind.package = config.nix-bitcoin.pkgs.bitcoind_29;
+    };
+
+    cdk-mintd = {
+      services.cdk-mintd = {
+        enable = true;
+        mintUrl = "https://mint.example.com";
+        lightningBackend = "fakewallet";
+        backup.enable = true;
+        mintInfo = {
+          name = "nix-bitcoin cdk-mintd fakewallet";
+          description = "fakewallet test mint";
+        };
+        extraConfig = ''
+          [info.logging]
+          console_level = "debug"
+        '';
+      };
+    };
+
+    cdk-mintd-lnd = {
+      services.lnd.enable = true;
+      services.cdk-mintd = {
+        enable = true;
+        mintUrl = "https://mint.example.com";
+        lightningBackend = "lnd";
+        workDir = "/var/lib/cdk-mintd/.cdk-mintd";
+        backup.enable = true;
+        mintInfo = {
+          name = "nix-bitcoin cdk-mintd lnd";
+          description = "lnd test mint";
+        };
+        extraConfig = ''
+          [info.logging]
+          console_level = "debug"
+        '';
+      };
+    };
+
+    cdk-mintd-cln = {
+      services.clightning.enable = true;
+      services.cdk-mintd = {
+        enable = true;
+        mintUrl = "https://mint.example.com";
+        lightningBackend = "cln";
+        backup.enable = true;
+        mintInfo = {
+          name = "nix-bitcoin cdk-mintd cln";
+          description = "cln test mint";
+        };
+        extraConfig = ''
+          [info.logging]
+          console_level = "debug"
+        '';
+      };
+    };
+
+    cdk-mintd-netns = {
+      imports = with scenarios; [ netnsBase secureNode ];
+      services.cdk-mintd = {
+        enable = true;
+        mintUrl = "https://mint.example.com";
+        lightningBackend = "lnd";
+        backup.enable = true;
+        mintInfo = {
+          name = "nix-bitcoin cdk-mintd netns";
+          description = "netns lnd test mint";
+        };
+        extraConfig = ''
+          [info.logging]
+          console_level = "debug"
+        '';
+      };
     };
   } // (import ../dev/dev-scenarios.nix {
     inherit lib scenarios;

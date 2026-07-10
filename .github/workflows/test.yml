@@ -36,6 +36,10 @@ jobs:
           - netns
           - netnsRegtest
           - joinmarket-bitcoind-29
+          - cdk-mintd
+          - cdk-mintd-lnd
+          - cdk-mintd-cln
+          - cdk-mintd-netns
     needs: build_test_drivers
     if: needs.build_test_drivers.outputs.run_scenario_tests == 'true'
     steps:

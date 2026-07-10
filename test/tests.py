@@ -266,6 +266,40 @@ def _():
     )
     assert_matches(f"curl -L {ip('nginx')}:60845", "mempool - Bitcoin Explorer")
 
+@test("cdk-mintd")
+def _():
+    assert_running("cdk-mintd")
+    wait_for_open_port(ip("cdk-mintd"), 8085)
+    machine.wait_until_succeeds(
+        f"curl -fsS http://{ip('cdk-mintd')}:8085/v1/info | jq -e .pubkey"
+    )
+
+    mint_name = test_data["cdk-mintd-mint-name"]
+    if mint_name:
+        assert_matches(
+            f"curl -fsS http://{ip('cdk-mintd')}:8085/v1/info",
+            f'"{mint_name}"',
+        )
+
+    backend = test_data["cdk-mintd-backend"]
+    if backend == "fakewallet":
+        machine.wait_until_succeeds(
+            log_has_string("cdk-mintd", "Using fake wallet")
+        )
+    elif backend == "lnd":
+        machine.wait_until_succeeds(
+            log_has_string("cdk-mintd", "Ln backend: Lnd")
+        )
+    elif backend == "cln":
+        machine.wait_until_succeeds(
+            log_has_string("cdk-mintd", "Ln backend: Cln")
+        )
+
+    succeed("systemctl start cdk-mintd-backup")
+    assert_matches("systemctl show -p ExecMainStatus --value cdk-mintd-backup", "^0$")
+    backup_location = test_data["cdk-mintd-backup-location"]
+    succeed(f"ls {backup_location}/cdk-mintd-*.sqlite")
+
 @test("joinmarket")
 def _():
     assert_running("joinmarket")

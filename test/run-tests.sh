@@ -303,6 +303,10 @@ buildable=(
     wireguard-lndconnect
     trustedcoin
     joinmarket-bitcoind-29
+    cdk-mintd
+    cdk-mintd-lnd
+    cdk-mintd-cln
+    cdk-mintd-netns
 )
 buildable() { buildTests buildable "$@"; }
 
