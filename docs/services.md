@@ -596,3 +596,52 @@ To work around this and connect via clearnet instead, set this option:
 ```nix
 services.clightning.plugins.trustedcoin.tor.proxy = false;
 ```
+
+# CDK Cashu mint
+
+Enable the [CDK](https://github.com/cashubtc/cdk) Cashu mint daemon.
+
+```nix
+services.cdk-mintd = {
+  enable = true;
+  mintUrl = "https://mint.example.com";
+  lightningBackend = "lnd";
+  backup.enable = true;
+  mintInfo = {
+    name = "My Cashu Mint";
+    description = "A production Cashu mint";
+    contact.email = "operator@example.com";
+  };
+};
+```
+
+Supported Lightning backends are `lnd`, `cln`, and `fakewallet` (for testing only).
+Only SQLite is supported as the database engine.
+
+When `nix-bitcoin.generateSecrets` is enabled, nix-bitcoin creates a 24-word
+mnemonic automatically. Otherwise, create it manually in the secrets directory
+before deploying:
+```sh
+echo "word1 word2 ... word12" > secrets/cdk-mintd-mnemonic
+```
+
+The mnemonic is loaded at runtime via systemd `LoadCredential` and passed to CDK
+with `--seed-file`. It is never written to the Nix store, a persistent `.env` file,
+or the service process environment.
+
+The LND backend uses the admin macaroon and therefore grants the mint full control
+over the LND node and its on-chain wallet. Treat the mint process as part of the
+same security boundary as LND.
+
+`services.cdk-mintd.extraConfig` is written to the world-readable Nix store.
+Never place mnemonics, passwords, tokens, or other secrets in this option.
+
+Enable `services.cdk-mintd.backup.enable` to run scheduled SQLite backups.
+By default, backups are written to `/var/lib/cdk-mintd/backups`.
+`services.cdk-mintd.backup.retention` controls how many snapshots are kept
+(set to `0` to keep all backups).
+When `services.backups.enable` is set, the mint data directory is also included
+in nix-bitcoin's central backups. Configure production backups on a separate
+filesystem or remote destination so they survive failure of the mint data disk.
+
+Run `nodeinfo` to see the local address (and onion address, if enabled) of the mint.

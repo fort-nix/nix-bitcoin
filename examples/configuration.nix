@@ -242,6 +242,23 @@
   # services.charge-lnd.policies = ''
   # '';
 
+  ### CDK Cashu mint
+  # Set this to enable the CDK Cashu mint daemon.
+  # The mint mnemonic must be created manually in the secrets directory before
+  # deploying. See ../docs/services.md for details.
+  # services.cdk-mintd = {
+  #   enable = true;
+  #   mintUrl = "https://mint.example.com";
+  #   lightningBackend = "lnd";
+  #   backup.enable = true;
+  #   mintInfo = {
+  #     name = "My Cashu Mint";
+  #     description = "A production Cashu mint";
+  #   };
+  # };
+  #
+  # Use lightningBackend = "cln" to connect to clightning instead of lnd.
+
   ### JOINMARKET
   # Set this to enable the JoinMarket service, including its command-line scripts.
   # These scripts have prefix 'jm-', like 'jm-tumbler'.
