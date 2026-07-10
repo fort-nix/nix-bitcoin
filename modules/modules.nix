@@ -25,6 +25,7 @@
     ./fulcrum.nix
     ./liquid.nix
     ./btcpayserver.nix
+    ./cdk-mintd.nix
     ./joinmarket.nix
     ./joinmarket-ob-watcher.nix
     ./hardware-wallets.nix
