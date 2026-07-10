@@ -303,6 +303,11 @@ in {
           (if (config.services.mempool.electrumServer == "electrs") then "electrs" else "fulcrum")
         ];
       };
+      cdk-mintd = {
+        id = 33;
+        connections = optional (config.services.cdk-mintd.lightningBackend == "lnd") "lnd"
+                      ++ optional (config.services.cdk-mintd.lightningBackend == "cln") "clightning";
+      };
     };
 
     services.bitcoind = {
@@ -360,6 +365,12 @@ in {
 
     services.mempool.address = netns.mempool.address;
     services.mempool.frontend.address = netns.nginx.address;
+
+    services.cdk-mintd = mkIf config.services.cdk-mintd.enable {
+      address = netns.cdk-mintd.address;
+      lnd.address = mkIf (config.services.cdk-mintd.lightningBackend == "lnd")
+        "https://${config.nix-bitcoin.lib.addressWithPort netns.lnd.address config.services.lnd.rpcPort}";
+    };
   }
   ]);
 }
