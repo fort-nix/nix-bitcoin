@@ -13,6 +13,7 @@ in
     config = {};
     overlays = [];
   }
+, cdk ? null
 }:
 let self = {
   clightning-rest = pkgs.callPackage ./clightning-rest { inherit (self) fetchNodeModules; };
@@ -29,6 +30,9 @@ let self = {
     mempool-rust-gbt
     mempool-nginx-conf;
   trustedcoin = pkgs.callPackage ./trustedcoin { };
+
+  cdk-mintd-static = pkgs.callPackage ./cdk-mintd-static { inherit cdk; };
+  cdk-cli-static = pkgs.callPackage ./cdk-cli-static { inherit cdk; };
 
   bitcoind_29 = pkgs.callPackage ./bitcoind_29 {};
   inherit (self.pyPkgs.nbPython3PackagesWithUnlockedEcdsa) hwi;

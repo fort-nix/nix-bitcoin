@@ -14,6 +14,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
     };
+    cdk = {
+      url = "github:cashubtc/cdk/v0.17.1";
+      inputs.flake-utils.follows = "flake-utils";
+    };
   };
 
   outputs = { self, nixpkgs, nixpkgs-unstable, nixpkgs-25_05, flake-utils, ... }:
@@ -35,8 +39,9 @@
           , pkgs ? nixpkgs.legacyPackages.${system}
           , pkgsUnstable ? nixpkgs-unstable.legacyPackages.${system}
           , pkgs-25_05 ? nixpkgs-25_05.legacyPackages.${system}
+          , cdk ? self.inputs.cdk.packages.${system}
         }:
-          import ./pkgs { inherit pkgs pkgsUnstable pkgs-25_05; };
+          import ./pkgs { inherit pkgs pkgsUnstable pkgs-25_05 cdk; };
 
         test = {
           inherit (test) scenarios;
