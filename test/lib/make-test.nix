@@ -22,8 +22,8 @@ let
       test.shellcheckServices.enable = true;
     };
 
-    testScript = nodes: let
-      cfg = nodes.nodes.machine;
+    testScript = { nodes, ... }: let
+      cfg = nodes.machine;
       data = {
         data = cfg.test.data;
         tests = cfg.tests;
