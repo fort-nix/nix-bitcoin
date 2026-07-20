@@ -7,7 +7,6 @@ pkgs: pkgsUnstable: pkgs-25_05:
     charge-lnd
     electrs
     extra-container
-    fulcrum
     lightning-pool
     lndconnect;
 
@@ -17,6 +16,7 @@ pkgs: pkgsUnstable: pkgs-25_05:
     clboss
     clightning
     elementsd
+    fulcrum
     lightning-loop
     lnd;
 
