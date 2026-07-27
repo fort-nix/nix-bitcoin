@@ -31,6 +31,13 @@ rustPlatform.buildRustPackage rec {
     protobuf
   ];
 
+  # `core::lsps2::htlc::tests::polls_until_channel_ready` (in the `cln-lsps`
+  # workspace member) is timing-dependent: it spawns a polling task, sleeps a
+  # real 10 ms, then asserts the loop ran more than once. Under the parallel
+  # test load in CI the spawned task gets starved and the assertion fails.
+  # Skip this single upstream test; the remaining workspace tests still run.
+  checkFlags = [ "--skip=polls_until_channel_ready" ];
+
   meta = with lib; {
     description = "REST plugin for clightning";
     homepage = "https://github.com/ElementsProject/lightning/tree/master/plugins/rest-plugin";
