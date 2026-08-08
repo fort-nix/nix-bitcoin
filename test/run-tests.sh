@@ -333,9 +333,10 @@ all() {
     examples
     flake
     # FIXME: Re-enable when the nixos-search input is usable again.
-    # It is currently at a rev whose flake-info resolves nixpkgs via
-    # `builtins.getFlake` instead of NIX_PATH, which breaks our postPatch and
-    # both runners. See ../dev/known-issues/nixos-search-flake-migration.md.
+    # flake-info at the currently locked rev supplies nixpkgs to its inner eval
+    # via `builtins.getFlake` instead of NIX_PATH. This breaks the postPatch in
+    # ./nixos-search/flake.nix and both runners in ./nixos-search, which pass
+    # nix-bitcoin's pinned nixpkgs through NIX_PATH.
     # Run explicitly with `./run-tests.sh nixosSearch`.
     # nixosSearch
 }
