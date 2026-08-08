@@ -31,6 +31,9 @@
         # legacyInstallDirs = true;
 
         config = {
+          # See the file for why this is needed and when it can be removed
+          imports = [ (nix-bitcoin.outPath + "/test/lib/extra-container-workaround.nix") ];
+
           containers.mynode = {
             # Always start container along with the container host
             autoStart = true;

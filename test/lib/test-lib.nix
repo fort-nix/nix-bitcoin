@@ -31,7 +31,7 @@ with lib;
       container = {
         # Forwarded to extra-container. For descriptions, see
         # https://github.com/erikarvstedt/extra-container/blob/master/eval-config.nix
-        addressPrefix = mkOption { default = "10.225.255"; };
+        # `addressPrefix` is not settable here, see ./make-test.nix.
         enableWAN = mkOption { default = false; };
         firewallAllowHost = mkOption { default = true; };
         exposeLocalhost = mkOption { default = false; };

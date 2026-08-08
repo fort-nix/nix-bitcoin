@@ -332,7 +332,12 @@ all() {
     shellcheck
     examples
     flake
-    nixosSearch
+    # FIXME: Re-enable when the nixos-search input is usable again.
+    # It is currently at a rev whose flake-info resolves nixpkgs via
+    # `builtins.getFlake` instead of NIX_PATH, which breaks our postPatch and
+    # both runners. See ../dev/known-issues/nixos-search-flake-migration.md.
+    # Run explicitly with `./run-tests.sh nixosSearch`.
+    # nixosSearch
 }
 
 # An alias for buildTest

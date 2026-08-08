@@ -75,6 +75,8 @@ fi
 #
 read -rd '' src <<EOF || true
 { pkgs, lib, ... }: {
+  imports = [ $(realpath "${BASH_SOURCE[0]%/*}"/../test/lib/extra-container-workaround.nix) ];
+
   containers.demo-node = {
     extra.addressPrefix = "10.250.0";
     extra.enableWAN = true;
