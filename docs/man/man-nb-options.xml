@@ -1,0 +1,27 @@
+<refentry xmlns="http://docbook.org/ns/docbook"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          xmlns:xi="http://www.w3.org/2001/XInclude">
+ <refmeta>
+  <refentrytitle><filename>nb-options</filename>
+  </refentrytitle><manvolnum>5</manvolnum>
+  <refmiscinfo class="source">nix-bitcoin</refmiscinfo>
+ </refmeta>
+ <refnamediv>
+  <refname><filename>nb-options</filename>
+  </refname><refpurpose>nix-bitcoin configuration specification</refpurpose>
+ </refnamediv>
+ <refsection>
+  <title>Description</title>
+  <para>
+   This contains the nix-bitcoin module options.
+  </para>
+ </refsection>
+ <refsection>
+  <title>Options</title>
+  <para>
+   You can use the following options in <filename>configuration.nix</filename>:
+  </para>
+  <xi:include href="./nmd-result/nb-options.xml" />
+ </refsection>
+</refentry>
+
