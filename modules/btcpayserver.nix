@@ -239,6 +239,11 @@ in {
             --datadir='${cfg.btcpayserver.dataDir}'
         '';
         User = cfg.btcpayserver.user;
+        # Since 2.4.0, btcpayserver uses `Host.CreateDefaultBuilder`, which sets the
+        # ASP.NET content root to the working directory instead of the app directory.
+        # The web root (`wwwroot`) is resolved relative to the content root, so
+        # btcpayserver must be started from its app directory.
+        WorkingDirectory = "${cfg.btcpayserver.package}/lib/btcpayserver";
         # Also restart after the program has exited successfully.
         # This is required to support restarting from the web interface after
         # interactive plugin installation.
