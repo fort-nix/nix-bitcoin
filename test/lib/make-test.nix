@@ -22,8 +22,8 @@ let
       test.shellcheckServices.enable = true;
     };
 
-    testScript = nodes: let
-      cfg = nodes.nodes.machine;
+    testScript = { nodes, ... }: let
+      cfg = nodes.machine;
       data = {
         data = cfg.test.data;
         tests = cfg.tests;
@@ -56,12 +56,23 @@ let
     extra-container.lib.buildContainers {
       inherit system legacyInstallDirs;
       config = {
+        imports = [ ./extra-container-workaround.nix ];
+
         # The container name has a 11 char length limit
         containers.nb-test = { config, ... }: {
           imports = [
             {
               config = {
-                extra = config.config.test.container;
+                extra = {
+                  # Defined here instead of in the container config because NixOS
+                  # 26.05 derives the container's `networking.interfaces` from
+                  # `localAddress`, which extra-container derives from
+                  # `addressPrefix`. Reading it from the container config would
+                  # thus be circular.
+                  addressPrefix = "10.225.255";
+                  inherit (config.config.test.container)
+                    enableWAN firewallAllowHost exposeLocalhost;
+                };
                 config = testConfig;
               };
             }

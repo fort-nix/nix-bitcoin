@@ -12,7 +12,7 @@
   inputs = {
     nix-bitcoin.url = "github:fort-nix/nix-bitcoin/release";
     # You can also use a version branch to track a specific NixOS release
-    # nix-bitcoin.url = "github:fort-nix/nix-bitcoin/nixos-25.11";
+    # nix-bitcoin.url = "github:fort-nix/nix-bitcoin/nixos-26.05";
 
     nixpkgs.follows = "nix-bitcoin/nixpkgs";
     nixpkgs-unstable.follows = "nix-bitcoin/nixpkgs-unstable";
@@ -31,6 +31,9 @@
         # legacyInstallDirs = true;
 
         config = {
+          # See the file for why this is needed and when it can be removed
+          imports = [ (nix-bitcoin.outPath + "/test/lib/extra-container-workaround.nix") ];
+
           containers.mynode = {
             # Always start container along with the container host
             autoStart = true;

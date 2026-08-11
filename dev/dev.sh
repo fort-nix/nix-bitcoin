@@ -82,6 +82,7 @@ read -rd '' src <<'EOF' || :
       inherit (nix-bitcoin.inputs) nixpkgs;
       # legacyInstallDirs = true;
       config = {
+        imports = [ ../test/lib/extra-container-workaround.nix ];
         containers.nb-adhoc = {
           # bindMounts."/shared" = { hostPath = "/my/hostpath"; isReadOnly = false; };
           extra.addressPrefix = "10.200.255";
