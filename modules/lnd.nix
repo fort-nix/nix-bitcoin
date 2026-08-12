@@ -265,13 +265,16 @@ in {
           curl = "${pkgs.curl}/bin/curl -fsS --cacert ${cfg.certPath}";
           restUrl = "https://${nbLib.addressWithPort cfg.restAddress cfg.restPort}/v1";
           # Setting macaroon permissions for other users needs root permissions
+          # The admin macaroon is passed to curl via a fd because argv is
+          # world-readable through /proc/<pid>/cmdline
           script = nbLib.rootScript "lnd-create-macaroons" ''
             umask ug=r,o=
             ${lib.concatMapStrings (macaroon: ''
               echo "Create custom macaroon ${macaroon}"
               macaroonPath="$RUNTIME_DIRECTORY/${macaroon}.macaroon"
+              adminMacaroonHex=$(${pkgs.xxd}/bin/xxd -ps -u -c 99999 '${networkDir}/admin.macaroon')
               ${curl} \
-                -H "Grpc-Metadata-macaroon: $(${pkgs.xxd}/bin/xxd -ps -u -c 99999 '${networkDir}/admin.macaroon')" \
+                -H @<(printf 'Grpc-Metadata-macaroon: %s\n' "$adminMacaroonHex") \
                 -X POST \
                 -d '{"permissions":[${cfg.macaroons.${macaroon}.permissions}]}' \
                 ${restUrl}/macaroon |\
