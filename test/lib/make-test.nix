@@ -128,8 +128,9 @@ let
       # Needed because duplicity requires 270 MB of free temp space, regardless of backup size
       diskSize = 1024;
 
-      # Min. 800 MiB needed to avoid 'out of memory' errors
-      memorySize = lib.mkDefault 2048;
+      # The `netns` scenarios need more than 2 GiB: netns-isolation adds a
+      # network namespace per service, which costs a few hundred MiB of slab.
+      memorySize = lib.mkDefault 4096;
 
       # There are no perf gains beyond 3 cores.
       # Benchmark: Ryzen 7 2700 (8 cores), VM test `default` as of 34f6eb90.
