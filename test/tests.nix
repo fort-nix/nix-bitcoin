@@ -279,6 +279,10 @@ let
       test.data.netns = config.nix-bitcoin.netns-isolation.netns;
       tests.netns-isolation = true;
       environment.systemPackages = [ pkgs.fping ];
+
+      # Used for testing that `netns-exec` is not executable by users other than
+      # the operator. Like all normal users, this user is a member of group `users`.
+      users.users.unauthorized.isNormalUser = true;
     };
 
     regtestBase = { config, pkgs, ... }: {

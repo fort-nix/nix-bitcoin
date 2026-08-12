@@ -37,7 +37,6 @@ let
       type = types.str;
       description = ''
         User that is allowed to execute commands in the service network namespaces.
-        The user's group is also authorized.
       '';
       default = config.nix-bitcoin.operator.name;
     };
@@ -122,8 +121,10 @@ in {
       source = config.nix-bitcoin.pkgs.netns-exec;
       capabilities = "cap_sys_admin=ep";
       owner = cfg.allowedUser;
-      group = ""; # Set to the group of `owner`
-      permissions = "550";
+      # Don't authorize the group of `owner`. For normal users, this group is
+      # `users`, which is shared by all normal users.
+      group = "root";
+      permissions = "500";
     };
 
     systemd.services = {

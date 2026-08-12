@@ -332,19 +332,27 @@ def _():
         f"nc -l {ip('bitcoind')} 1080 2>&1 || true", "nc: Cannot assign requested address"
     )
 
+    # netns-exec should fail for unauthorized namespaces
+    assert_matches(
+        "runuser -u operator -- netns-exec nb-clightning ip a 2>&1 || true",
+        "nb-clightning is not an allowed netns",
+    )
+
+    # netns-exec should only be executable by the operator user.
+    # User `unauthorized` is a member of group `users`, like all normal users.
+    # Netns `nb-clightning` is rejected by netns-exec before it accesses the
+    # netns, so the error below can only originate from the exec permissions.
+    assert_matches(
+        "runuser -u unauthorized -- netns-exec nb-clightning ip a 2>&1 || true",
+        "Permission denied",
+    )
+
     if "joinmarket" in enabled_tests:
         # netns-exec should drop capabilities
         assert_matches(
             "runuser -u operator -- netns-exec nb-joinmarket capsh --print | grep Current",
             re.compile("^Current: =$", re.MULTILINE),
         )
-
-    if "clightning" in enabled_tests:
-        # netns-exec should fail for unauthorized namespaces
-        machine.fail("netns-exec nb-clightning ip a")
-
-        # netns-exec should only be executable by the operator user
-        machine.fail("runuser -u clightning -- netns-exec nb-bitcoind ip a")
 
 
 # Impure: stops bitcoind (and dependent services)
