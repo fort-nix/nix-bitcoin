@@ -266,6 +266,19 @@ def _():
     )
     assert_matches(f"curl -L {ip('nginx')}:60845", "mempool - Bitcoin Explorer")
 
+@test("utxoracle")
+def _():
+    succeed("systemctl start utxoracle")
+    assert_no_failure("utxoracle")
+    assert_running("utxoracle-price-feed")
+    assert_matches("jq -r .mode /var/lib/utxoracle/latest.json", "recent_blocks_144")
+    assert_matches("jq -r .name /var/lib/utxoracle/latest.json", "UTXOracle Block Window Price")
+    assert_matches("jq -r .price_usd /var/lib/utxoracle/latest.json", "64935")
+    assert_matches("curl -fsS 127.0.0.1:8174/latest.json | jq -r .mode", "recent_blocks_144")
+    assert_matches("curl -fsS 127.0.0.1:8174/health | jq -r .ok", "true")
+    succeed("test -L /var/lib/utxoracle/latest.html")
+    machine.fail("systemctl cat utxoracle | grep -F -- '--listen'")
+
 @test("joinmarket")
 def _():
     assert_running("joinmarket")
