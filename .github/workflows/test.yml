@@ -49,5 +49,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: cachix/install-nix-action@v31
       - run: nix flake check --all-systems
-      - run: ./test/nixos-search/ci-test.sh
+      # FIXME: Re-enable when the nixos-search input is usable again.
+      # This is also disabled in ./test/run-tests.sh.
+      # - run: ./test/nixos-search/ci-test.sh
       - run: ./test/shellcheck.sh
