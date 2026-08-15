@@ -1,3 +1,7 @@
+> [!WARNING]
+> **Archived and unmaintained as of August 13, 2026.**
+> v0.0.139 is the final release; there will be no further updates or security fixes.
+
 <p align="center">
   <img
     width="320"
