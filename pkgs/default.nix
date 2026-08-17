@@ -14,6 +14,7 @@ in
     overlays = [];
   }
 , cdk ? null
+, lnurl-mint ? null
 }:
 let self = {
   clightning-rest = pkgs.callPackage ./clightning-rest { inherit (self) fetchNodeModules; };
@@ -33,6 +34,8 @@ let self = {
 
   cdk-mintd-static = pkgs.callPackage ./cdk-mintd-static { inherit cdk; };
   cdk-cli-static = pkgs.callPackage ./cdk-cli-static { inherit cdk; };
+
+  lnurl-mint = pkgs.callPackage ./lnurl-mint { src = lnurl-mint; };
 
   bitcoind_29 = pkgs.callPackage ./bitcoind_29 {};
   inherit (self.pyPkgs.nbPython3PackagesWithUnlockedEcdsa) hwi;

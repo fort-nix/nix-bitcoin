@@ -148,6 +148,23 @@
         "type": "github"
       }
     },
+    "lnurl-mint": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1786971798,
+        "narHash": "sha256-jwgeB+rpK5iQ6BAA3Tk7D7Nn1zsOSr+TZO28yp/qIOE=",
+        "owner": "dni",
+        "repo": "lnurl-mint",
+        "rev": "b76a221234e22b4534650e0ac13a7193b7dbde1e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "dni",
+        "repo": "lnurl-mint",
+        "rev": "b76a221234e22b4534650e0ac13a7193b7dbde1e",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1780453794,
@@ -233,6 +250,7 @@
         "cdk": "cdk",
         "extra-container": "extra-container",
         "flake-utils": "flake-utils_2",
+        "lnurl-mint": "lnurl-mint",
         "nixpkgs": "nixpkgs_2",
         "nixpkgs-25_05": "nixpkgs-25_05",
         "nixpkgs-unstable": "nixpkgs-unstable_2"

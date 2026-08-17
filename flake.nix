@@ -18,6 +18,10 @@
       url = "github:cashubtc/cdk/v0.17.1";
       inputs.flake-utils.follows = "flake-utils";
     };
+    lnurl-mint = {
+      url = "github:dni/lnurl-mint/b76a221234e22b4534650e0ac13a7193b7dbde1e";
+      flake = false;
+    };
   };
 
   outputs = { self, nixpkgs, nixpkgs-unstable, nixpkgs-25_05, flake-utils, ... }:
@@ -40,8 +44,9 @@
           , pkgsUnstable ? nixpkgs-unstable.legacyPackages.${system}
           , pkgs-25_05 ? nixpkgs-25_05.legacyPackages.${system}
           , cdk ? self.inputs.cdk.packages.${system}
+          , lnurl-mint ? self.inputs.lnurl-mint
         }:
-          import ./pkgs { inherit pkgs pkgsUnstable pkgs-25_05 cdk; };
+          import ./pkgs { inherit pkgs pkgsUnstable pkgs-25_05 cdk lnurl-mint; };
 
         test = {
           inherit (test) scenarios;
