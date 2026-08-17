@@ -41,6 +41,7 @@ in {
     joinmarket-ob-watcher = defaultEnforceTor;
     clightning-rest = defaultEnforceTor;
     cdk-mintd = defaultEnforceTor;
+    lnurl-mint = defaultEnforceTor;
   };
 
   # Add onion services for incoming connections
@@ -52,5 +53,6 @@ in {
     joinmarket-ob-watcher.enable = defaultTrue;
     rtl.enable = defaultTrue;
     cdk-mintd.enable = defaultTrue;
+    lnurl-mint.enable = defaultTrue;
   };
 }
