@@ -148,6 +148,8 @@ let
 
       tests.cdk-mintd = cfg.cdk-mintd.enable;
       test.data.cdk-mintd-backend = cfg.cdk-mintd.lightningBackend;
+
+      tests.lnurl-mint = cfg.lnurl-mint.enable;
       test.data.cdk-mintd-mint-name = config.services.cdk-mintd.mintInfo.name;
       test.data.cdk-mintd-backup-location = config.services.cdk-mintd.backup.location;
 
@@ -409,6 +411,37 @@ let
           [info.logging]
           console_level = "debug"
         '';
+      };
+    };
+
+    lnurl-mint = {
+      services.lnd.enable = true;
+      services.lnurl-mint = {
+        enable = true;
+        mintUrl = "https://mint.example.com";
+        lightningBackend = "lnd";
+      };
+    };
+
+    lnurl-mint-cln = {
+      services.clightning.enable = true;
+      services.clightning.plugins.clnrest.enable = true;
+      services.lnurl-mint = {
+        enable = true;
+        mintUrl = "https://mint.example.com";
+        lightningBackend = "cln";
+      };
+    };
+
+    lnurl-mint-netns = {
+      # like the plain scenario, but through the network-namespace wiring;
+      # regtestBase for the same reason (lnd needs blocks to sync)
+      imports = with scenarios; [ netnsBase regtestBase ];
+      services.lnd.enable = true;
+      services.lnurl-mint = {
+        enable = true;
+        mintUrl = "https://mint.example.com";
+        lightningBackend = "lnd";
       };
     };
 

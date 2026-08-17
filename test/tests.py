@@ -300,6 +300,24 @@ def _():
     backup_location = test_data["cdk-mintd-backup-location"]
     succeed(f"ls {backup_location}/cdk-mintd-*.sqlite")
 
+@test("lnurl-mint")
+def _():
+    assert_running("lnurl-mint")
+    wait_for_open_port(ip("lnurl-mint"), 8111)
+
+    # the LUD-06 payRequest is served
+    machine.wait_until_succeeds(
+        f"curl -fsS http://{ip('lnurl-mint')}:8111/p | jq -e .withdrawLink"
+    )
+    # the callback reaches the funding source and returns a real invoice -
+    # the end-to-end proof the backend wiring works (for cln, that the
+    # auto-minted scoped rune was accepted)
+    machine.wait_until_succeeds(
+        f"curl -fsS 'http://{ip('lnurl-mint')}:8111/p/cb?amount=50000' | jq -e .pr"
+    )
+    # the frontend one-pager renders
+    succeed(f"curl -fsS http://{ip('lnurl-mint')}:8111/ | grep -q lnurl-mint")
+
 @test("joinmarket")
 def _():
     assert_running("joinmarket")

@@ -307,6 +307,9 @@ buildable=(
     cdk-mintd-lnd
     cdk-mintd-cln
     cdk-mintd-netns
+    lnurl-mint
+    lnurl-mint-cln
+    lnurl-mint-netns
 )
 buildable() { buildTests buildable "$@"; }
 

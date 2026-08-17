@@ -40,6 +40,9 @@ jobs:
           - cdk-mintd-lnd
           - cdk-mintd-cln
           - cdk-mintd-netns
+          - lnurl-mint
+          - lnurl-mint-cln
+          - lnurl-mint-netns
     needs: build_test_drivers
     if: needs.build_test_drivers.outputs.run_scenario_tests == 'true'
     steps:
