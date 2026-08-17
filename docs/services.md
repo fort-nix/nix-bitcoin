@@ -645,3 +645,41 @@ in nix-bitcoin's central backups. Configure production backups on a separate
 filesystem or remote destination so they survive failure of the mint data disk.
 
 Run `nodeinfo` to see the local address (and onion address, if enabled) of the mint.
+
+# lnurl-mint (lnurlcash bearer notes)
+
+Enable the [lnurl-mint](https://github.com/dni/lnurl-mint) lnurlcash
+([LUD-25](https://github.com/lnurl/luds)) mint - Lightning bearer notes on
+plain LUD-03/LUD-06, minted by paying an invoice, circulating offline, and
+rotated/split/merged/melted via the withdraw callback.
+
+```nix
+services.lnurl-mint = {
+  enable = true;
+  mintUrl = "https://mint.example.com";
+  lightningBackend = "lnd";
+};
+```
+
+Supported Lightning backends are `lnd` (REST + macaroon) and `cln` (clnrest +
+rune; requires `services.clightning.plugins.clnrest.enable = true`).
+
+Credentials never enter the Nix store or the service environment: they are
+loaded at runtime via systemd `LoadCredential` and exported by the service
+launcher. For lnd, `services.lnurl-mint.lnd.macaroonFile` defaults to the
+admin macaroon - scope it down (see the lnurl-mint README) to
+`invoices:write invoices:read offchain:write offchain:read message:write
+info:read`. For cln, the module mints its own rune on first start, already
+restricted to just the methods lnurl-mint calls.
+
+Note that a settled LUD-21 `/verify` response's `preimage` IS the bearer
+note's spend secret, served to any holder of the payment hash (which travels
+inside the invoice itself). Wallets must rotate freshly minted notes
+immediately; if you can't accept that exposure for your users, set
+`services.lnurl-mint.verifyEnabled = false`, which disables the endpoint
+entirely. See "The observer race, plainly" in the lnurl-mint README.
+
+When `services.backups.enable` is set, the mint data directory is included
+in nix-bitcoin's central backups.
+
+Run `nodeinfo` to see the local address (and onion address, if enabled) of the mint.

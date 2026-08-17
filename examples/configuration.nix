@@ -259,6 +259,18 @@
   #
   # Use lightningBackend = "cln" to connect to clightning instead of lnd.
 
+  ### lnurl-mint (lnurlcash bearer notes)
+  # Set this to enable the lnurl-mint lnurlcash (LUD-25) bearer-note mint.
+  # services.lnurl-mint = {
+  #   enable = true;
+  #   mintUrl = "https://mint.example.com";
+  #   lightningBackend = "lnd";
+  # };
+  #
+  # Use lightningBackend = "cln" to connect to clightning instead (also
+  # enable services.clightning.plugins.clnrest.enable). See
+  # ../docs/services.md for details.
+
   ### JOINMARKET
   # Set this to enable the JoinMarket service, including its command-line scripts.
   # These scripts have prefix 'jm-', like 'jm-tumbler'.
