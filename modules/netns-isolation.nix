@@ -308,6 +308,11 @@ in {
         connections = optional (config.services.cdk-mintd.lightningBackend == "lnd") "lnd"
                       ++ optional (config.services.cdk-mintd.lightningBackend == "cln") "clightning";
       };
+      lnurl-mint = {
+        id = 34;
+        connections = optional (config.services.lnurl-mint.lightningBackend == "lnd") "lnd"
+                      ++ optional (config.services.lnurl-mint.lightningBackend == "cln") "clightning";
+      };
     };
 
     services.bitcoind = {
@@ -371,6 +376,12 @@ in {
       lnd.address = mkIf (config.services.cdk-mintd.lightningBackend == "lnd")
         "https://${config.nix-bitcoin.lib.addressWithPort netns.lnd.address config.services.lnd.rpcPort}";
     };
+
+    # lnurl-mint's funding-source URL defaults derive from
+    # services.lnd.restAddress / clnrest.address, which this module has
+    # already rewritten to the netns addresses above - only its own listen
+    # address needs overriding here
+    services.lnurl-mint.address = mkIf config.services.lnurl-mint.enable netns.lnurl-mint.address;
   }
   ]);
 }
