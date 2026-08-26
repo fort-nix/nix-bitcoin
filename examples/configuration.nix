@@ -46,6 +46,11 @@
   # services.bitcoind.extraConfig = ''
   #   maxorphantx=110
   # '';
+  #
+  # To enable Bitcoin Core IPC, use a package version >= 30 and configure one
+  # or more IPC socket addresses. Full paths are optional:
+  # services.bitcoind.ipcbind = [ "unix" ];
+  # services.bitcoind.ipcbind = [ "unix:/run/bitcoin-ipc/node.sock" ];
 
   ### CLIGHTNING
   # Enable clightning, a Lightning Network implementation in C.

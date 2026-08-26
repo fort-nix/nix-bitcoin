@@ -32,6 +32,7 @@ let
       ]);
 
       tests.bitcoind = cfg.bitcoind.enable;
+      tests.bitcoin-ipc = cfg.bitcoind.ipcbind != [];
       services.bitcoind = {
         enable = true;
         extraConfig = mkIf config.test.noConnections "connect=0";
@@ -351,6 +352,10 @@ let
       imports = [ scenarios.regtest ];
       services.joinmarket.enable = true;
       services.bitcoind.package = config.nix-bitcoin.pkgs.bitcoind_29;
+    };
+
+    bitcoin-ipc = {
+      services.bitcoind.ipcbind = [ "unix:/run/bitcoin-ipc/node.sock" ];
     };
   } // (import ../dev/dev-scenarios.nix {
     inherit lib scenarios;
