@@ -1,0 +1,32 @@
+<book xmlns="http://docbook.org/ns/docbook"
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      version="5.0"
+      xml:id="book-nix-bitcoin-manual">
+ <info>
+  <title>nix-bitcoin</title>
+ </info>
+ <preface>
+  <title>Preface</title>
+  <para>
+  Documentation of nix-bitcoin options.
+  </para>
+  <para>
+   If you encounter problems or bugs then please report them on the <link xlink:href="https://gitlab.com/rycee/nur-expressions/issues">issue tracker</link>.
+  </para>
+ </preface>
+ <appendix xml:id="ch-nb-options">
+  <title>nix-bitcoin configuration options</title>
+  <section xml:id="sec-nb-usage">
+   <title>Usage</title>
+   <para>
+    To use these options modify your <filename>configuration.nix</filename> such that it has the format
+   </para>
+  </section>
+  <section xml:id="sec-nb-options">
+   <title>Options</title>
+
+   <xi:include href="./nmd-result/nb-options.xml" />
+  </section>
+ </appendix>
+</book>
