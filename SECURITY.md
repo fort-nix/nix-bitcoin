@@ -16,7 +16,12 @@ You can import a GPG key by running the following command with that individualâ€
 
 ## Wall of Fame
 
-*empty*
+### [haoxucu](https://github.com/haoxucu)
+
+* Reported that `netns-exec` was executable by all normal users ([fixed in `34a18f92`](https://github.com/fort-nix/nix-bitcoin/commit/34a18f92eeacc754e5857249aaf8decf24e98cde)); received 5% of the fund.
+* Reported that `lnd-create-macaroons` exposed the LND admin macaroon in `curl`'s process arguments ([fixed in `df184b6e`](https://github.com/fort-nix/nix-bitcoin/commit/df184b6e06cc3404add42ccf5ae68306395e8d6c)); received 10% of the fund.
+
+Both rewards were paid in transaction [`5b93fbad4b9a2c35daaf40b74fc76f0b69d2b75bc4da927cd3398dbc432eb888`](https://mempool.nixbitcoin.org/tx/5b93fbad4b9a2c35daaf40b74fc76f0b69d2b75bc4da927cd3398dbc432eb888).
 
 
 ## nix-bitcoin security fund
