@@ -21,6 +21,7 @@
     ./lndconnect.nix # Requires onion-addresses.nix
     ./rtl.nix
     ./mempool.nix
+    ./utxoracle.nix
     ./electrs.nix
     ./fulcrum.nix
     ./liquid.nix

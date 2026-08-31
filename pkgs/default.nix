@@ -23,6 +23,7 @@ let self = {
   liquid-swap = pkgs.python3Packages.callPackage ./liquid-swap { };
   nbxplorer = pkgs.callPackage ./nbxplorer { };
   rtl = pkgs.callPackage ./rtl { inherit (self) fetchNodeModules; };
+  utxoracle = pkgs.callPackage ./utxoracle { };
   inherit (pkgs.callPackage ./mempool { inherit (self) fetchNodeModules; })
     mempool-backend
     mempool-frontend
