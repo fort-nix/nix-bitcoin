@@ -31,7 +31,7 @@ curl -fsS -L -O "$baseUrl/nar-hash.txt"
 curl -fsS -L -O "$baseUrl/nar-hash.txt.asc"
 
 # Verify signature for nar-hash
-gpg --verify nar-hash.txt.asc &> /dev/null || {
+gpg --verify nar-hash.txt.asc nar-hash.txt &> /dev/null || {
     >&2 echo "Error: Signature verification failed. Please open an issue in the project repository."
     exit 1
 }
