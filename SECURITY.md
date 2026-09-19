@@ -16,13 +16,11 @@ You can import a GPG key by running the following command with that individual�
 
 ## Wall of Fame
 
-### [haoxucu](https://github.com/haoxucu)
-
-* Reported that `netns-exec` was executable by all normal users ([fixed in `34a18f92`](https://github.com/fort-nix/nix-bitcoin/commit/34a18f92eeacc754e5857249aaf8decf24e98cde)); received 5% of the fund.
-* Reported that `lnd-create-macaroons` exposed the LND admin macaroon in `curl`'s process arguments ([fixed in `df184b6e`](https://github.com/fort-nix/nix-bitcoin/commit/df184b6e06cc3404add42ccf5ae68306395e8d6c)); received 10% of the fund.
-
-Both rewards were paid in transaction [`5b93fbad4b9a2c35daaf40b74fc76f0b69d2b75bc4da927cd3398dbc432eb888`](https://mempool.nixbitcoin.org/tx/5b93fbad4b9a2c35daaf40b74fc76f0b69d2b75bc4da927cd3398dbc432eb888).
-
+| Researcher | Report | Fix | Reward | Payout transaction |
+| :-- | :-- | :-- | :-- | :-- |
+| [haoxucu](https://github.com/haoxucu) | `netns-exec` was executable by all normal users | [`34a18f92`](https://github.com/fort-nix/nix-bitcoin/commit/34a18f92eeacc754e5857249aaf8decf24e98cde) | 5% of the fund | [`5b93fbad…eb888`](https://mempool.space/tx/5b93fbad4b9a2c35daaf40b74fc76f0b69d2b75bc4da927cd3398dbc432eb888) |
+| [haoxucu](https://github.com/haoxucu) | `lnd-create-macaroons` exposed the LND admin macaroon in `curl`'s process arguments | [`df184b6e`](https://github.com/fort-nix/nix-bitcoin/commit/df184b6e06cc3404add42ccf5ae68306395e8d6c) | 10% of the fund | [`5b93fbad…eb888`](https://mempool.space/tx/5b93fbad4b9a2c35daaf40b74fc76f0b69d2b75bc4da927cd3398dbc432eb888) |
+| Mehdi Kerimov | `fetch-release` did not verify `nar-hash.txt` when `nar-hash.txt.asc` contained an inline signed message | [`da27f270`](https://github.com/fort-nix/nix-bitcoin/commit/da27f27026d92841e3ea91e100608ed9854ac013) | 15% of the fund | [`a0c5821e…83f3`](https://mempool.space/tx/a0c5821edcd45af98e5c0818560535a24c1a6dba29b5a4a05149ab1003c783f3) |
 
 ## nix-bitcoin security fund
 
@@ -32,7 +30,7 @@ It is held on a 2 of 3 bitcoin multisig address and is open for donations:
 ```
 bc1qrpnz05n0yznaj6yw82wy8dhwuqz86s87vdlhq4cu92fus9qal25s555wsy
 ```
-([View balance](https://mempool.nixbitcoin.org/address/bc1qrpnz05n0yznaj6yw82wy8dhwuqz86s87vdlhq4cu92fus9qal25s555wsy))
+([View balance](https://mempool.space/address/bc1qrpnz05n0yznaj6yw82wy8dhwuqz86s87vdlhq4cu92fus9qal25s555wsy))
 
 
 Rewards are paid out as percentages of the total fund, rather than as fixed
