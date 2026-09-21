@@ -107,7 +107,7 @@ NixOS modules ([src](modules/modules.nix))
 
 Security
 ---
-See [SECURITY.md](SECURITY.md) for the security policy and how to report a vulnerability.
+See [SECURITY.md](SECURITY.md) for the historical security fund policy and past vulnerability reports.
 
 nix-bitcoin aims to achieve a high degree of security by building on the following principles:
 
@@ -120,9 +120,8 @@ Note that if the machine you're deploying *from* is insecure, there is nothing n
 
 Security fund
 ---
-The nix-bitcoin security fund is a 2 of 3 bitcoin multisig address open for donations, used to reward
-security researchers who discover vulnerabilities in nix-bitcoin or its upstream dependencies.\
-See [Security Fund](./SECURITY.md#nix-bitcoin-security-fund) for details.
+The nix-bitcoin security fund is closed and no longer accepts reward submissions or donations.
+See [Security Fund](./SECURITY.md#nix-bitcoin-security-fund) for the historical policy.
 
 Developing
 ---
