@@ -6,9 +6,9 @@ function nb() {
 }
 
 # A package defined by nix-bitcoin
-nb .#joinmarket
+nb .#trustedcoin
 # Equivalent
-nb .#modulesPkgs.joinmarket
+nb .#modulesPkgs.trustedcoin
 
 # A nix-bitcoin python package
 nb .#nbPython3Packages.pyln-client
@@ -20,10 +20,10 @@ nb .#modulesPkgs.electrs
 
 ## Eval packages
 # Check version
-nix eval .#joinmarket.version
+nix eval .#trustedcoin.version
 
 # Eval derivation. --raw is needed due to a Nix bug (https://github.com/NixOS/nix/issues/5731)
-nix eval --raw .#joinmarket; echo
+nix eval --raw .#trustedcoin; echo
 
 # Check the version of a package in the nixpkgs(-unstable) inputs of the nix-bitcoin flake
 nix eval --inputs-from . nixpkgs#electrs.version

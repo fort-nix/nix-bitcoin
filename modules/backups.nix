@@ -73,7 +73,6 @@ let
     ${optionalString cfg.with-bulk-data "${config.services.electrs.dataDir}"}
     ${config.services.nbxplorer.dataDir}
     ${config.services.btcpayserver.dataDir}
-    ${config.services.joinmarket.dataDir}
     ${optionalString config.nix-bitcoin.generateSecrets "${config.nix-bitcoin.secretsDir}"}
     /var/lib/tor
     /var/lib/nixos

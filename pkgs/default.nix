@@ -18,7 +18,6 @@ let self = {
   clightning-rest = pkgs.callPackage ./clightning-rest { inherit (self) fetchNodeModules; };
   clightning-plugins = pkgs.lib.recurseIntoAttrs (import ./clightning-plugins pkgs self.nbPython3Packages);
   clnrest = pkgs.callPackage ./clnrest { inherit (self.pinned) clightning; };
-  joinmarket = pkgs.callPackage ./joinmarket { inherit (self) nbPython3PackagesJoinmarket; };
   lndinit = pkgs.callPackage ./lndinit { };
   liquid-swap = pkgs.python3Packages.callPackage ./liquid-swap { };
   nbxplorer = pkgs.callPackage ./nbxplorer { };
@@ -35,8 +34,7 @@ let self = {
 
   pyPkgs = import ./python-packages self pkgs.python3;
   inherit (self.pyPkgs)
-    nbPython3Packages
-    nbPython3PackagesJoinmarket;
+    nbPython3Packages;
 
   fetchNodeModules = pkgs.callPackage ./build-support/fetch-node-modules.nix { };
 

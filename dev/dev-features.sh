@@ -252,34 +252,6 @@ c ls -al /var/lib/tor/onion/bitcoind
 c ls -al /var/lib/tor/onion/clightning-rest
 
 #―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
-# joinmarket
-run-tests.sh -s joinmarket container
-
-c systemctl status joinmarket
-c journalctl -u joinmarket
-
-#―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
-# joinmarket-ob-watcher
-
-# This starts a container with WAN access, so that jm-ob-watcher
-# can connect to the joinmarket IRC servers over Tor
-run-tests.sh -s jm-ob-watcher container
-
-c systemctl status joinmarket-ob-watcher
-c journalctl -u joinmarket-ob-watcher
-
-# Manually wait for string 'started http server, visit http://127.0.0.1:62601/'
-# This can take >10 minutes when the Tor network is under heavy load.
-# While connecting, errors like `We failed to connect and handshake with ANY directories...`
-# may be shown.
-c journalctl -f -u joinmarket-ob-watcher
-
-# Check webinterface
-c curl 127.0.0.1:62601
-nix run --inputs-from . nixpkgs#lynx -- --dump $ip:62601
-c curl -s 127.0.0.1:62601 | grep -i "orders found"
-
-#―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 # trustedcoin
 run-tests.sh -s trustedcoin-online container
 

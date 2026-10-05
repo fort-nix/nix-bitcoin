@@ -78,7 +78,7 @@
     };
     ```
 
-7. If `lnd` or `joinmarket` is enabled on your node, run the commmand
+7. If `lnd` is enabled on your node, run the commmand
    ```
    nix-shell --run 'nix-instantiate --eval -E "
      (import <nixpkgs/nixos> {

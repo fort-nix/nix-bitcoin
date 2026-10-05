@@ -9,9 +9,7 @@
 #include <fcntl.h>
 #include <sys/capability.h>
 
-static char *allowed_netns[] = {
-    "nb-joinmarket"
-};
+static char *allowed_netns[] = { };
 
 int is_netns_allowed(char *netns) {
     int n_allowed_netns = sizeof(allowed_netns) / sizeof(allowed_netns[0]);

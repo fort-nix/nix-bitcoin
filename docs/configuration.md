@@ -169,12 +169,6 @@ Some services require extra steps:
   sudo -u postgres psql btcpaydb < export.sql
   ```
 
-- joinmarket
-
-  Copy your wallet to `/var/lib/joinmarket/wallets/wallet.jmdat`.\
-  Write your wallet password, without a trailing newline, to
-  `$secretsDir/jm-wallet-password` (See: [Secrets dir](#secrets-dir)).
-
 # Use bitcoind from another node
 
 Here's how to use a bitcoind instance running on another node within a nix-bitcoin config:
@@ -208,8 +202,6 @@ services.bitcoind = {
     public.name = name;
     ## Set this if you use btcpayserver
     # btcpayserver.name = name;
-    ## Set this if you use joinmarket-ob-watcher
-    # joinmarket-ob-watcher.name = name;
   };
 };
 ```
@@ -233,7 +225,6 @@ $secretsDir/bitcoin-rpcpassword-public
 
 ## Only needed when set in the above config snippet
 # $secretsDir/bitcoin-rpcpassword-btcpayserver
-# $secretsDir/bitcoin-rpcpassword-joinmarket-ob-watcher
 ```
 See: [Secrets dir](#secrets-dir)
 

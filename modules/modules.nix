@@ -25,8 +25,6 @@
     ./fulcrum.nix
     ./liquid.nix
     ./btcpayserver.nix
-    ./joinmarket.nix
-    ./joinmarket-ob-watcher.nix
     ./hardware-wallets.nix
 
     # Support features

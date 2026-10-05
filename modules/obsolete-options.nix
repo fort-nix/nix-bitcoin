@@ -117,11 +117,18 @@ in {
     [ "summary" "helpme" "prometheus" ]
   )
   ++
-  # 0.0.110
+  # 0.1.0
   [
-    (mkRemovedOptionModule [ "services" "joinmarket" "yieldgenerator" "txfee" ] ''
-      Option `txfee` has been removed in joinmarket 0.9.3:
-      https://github.com/JoinMarket-Org/joinmarket-clientserver/blob/v0.9.3/docs/release-notes/release-notes-0.9.3.md
+    (mkRemovedOptionModule [ "services" "joinmarket" ] ''
+      The joinmarket project is no longer maintained. The upstream project is
+      archived:
+      https://github.com/JoinMarket-Org/joinmarket-clientserver/releases/tag/v0.9.12
+    '')
+    (mkRemovedOptionModule [ "services" "joinmarket-ob-watcher" ] ''
+      The joinmarket-ob-watcher is not longer maintained.
+    '')
+    (mkRemovedOptionModule [ "services" "joinmarket-yieldgenerator" ] ''
+      The joinmarket-yieldgenerator is not longer maintained.
     '')
   ];
 

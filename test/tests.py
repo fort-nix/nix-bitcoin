@@ -266,27 +266,6 @@ def _():
     )
     assert_matches(f"curl -L {ip('nginx')}:60845", "mempool - Bitcoin Explorer")
 
-@test("joinmarket")
-def _():
-    assert_running("joinmarket")
-    machine.wait_until_succeeds(
-        log_has_string("joinmarket", "JMDaemonServerProtocolFactory starting on 27183")
-    )
-
-@test("joinmarket-yieldgenerator")
-def _():
-    if "regtest" in enabled_tests:
-        expected_log_msg = "You do not have the minimum required amount of coins to be a maker"
-    else:
-        expected_log_msg = "Critical error updating blockheight."
-
-    machine.wait_until_succeeds(log_has_string("joinmarket-yieldgenerator", expected_log_msg))
-
-@test("joinmarket-ob-watcher")
-def _():
-    assert_running("joinmarket-ob-watcher")
-    machine.wait_until_succeeds(log_has_string("joinmarket-ob-watcher", "Starting ob-watcher"))
-
 @test("nodeinfo")
 def _():
     status, _ = machine.execute("systemctl is-enabled --quiet onion-addresses 2> /dev/null")
@@ -347,13 +326,6 @@ def _():
         "Permission denied",
     )
 
-    if "joinmarket" in enabled_tests:
-        # netns-exec should drop capabilities
-        assert_matches(
-            "runuser -u operator -- netns-exec nb-joinmarket capsh --print | grep Current",
-            re.compile("^Current: =$", re.MULTILINE),
-        )
-
 
 # Impure: stops bitcoind (and dependent services)
 @test("backups")
@@ -376,7 +348,6 @@ def _():
         "bitcoind": "var/lib/bitcoind/test/wallet.dat",
         "clightning": "var/lib/clightning/bitcoin/hsm_secret",
         "lnd": "var/lib/lnd/lnd-seed-mnemonic",
-        "joinmarket": "var/lib/joinmarket/jm-wallet-seed",
         "btcpayserver": "var/backup/postgresql/btcpaydb.sql.gz",
     }
     actual_files = succeed(f"{run_duplicity} list-current-files file:///var/lib/localBackups")

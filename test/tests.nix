@@ -127,17 +127,6 @@ let
       };
       test.data.btcpayserver-lbtc = config.services.btcpayserver.lbtc;
 
-      tests.joinmarket = cfg.joinmarket.enable;
-      tests.joinmarket-yieldgenerator = cfg.joinmarket.yieldgenerator.enable;
-      tests.joinmarket-ob-watcher = cfg.joinmarket-ob-watcher.enable;
-      services.joinmarket.yieldgenerator = {
-        enable = config.services.joinmarket.enable;
-        # Test a smattering of custom parameters
-        ordertype = "absoffer";
-        cjfee_a = 300;
-        cjfee_r = 0.00003;
-      };
-
       tests.nodeinfo = config.nix-bitcoin.nodeinfo.enable;
 
       tests.backups = cfg.backups.enable;
@@ -213,7 +202,6 @@ let
       services.fulcrum.enable = true;
       services.liquidd.enable = true;
       services.btcpayserver.enable = true;
-      services.joinmarket-ob-watcher.enable = true;
       services.backups.enable = true;
 
       nix-bitcoin.nodeinfo.enable = true;
@@ -343,14 +331,6 @@ let
         enable = true;
         plugins.trustedcoin.enable = true;
       };
-    };
-
-    # The full regtest test with bitcoind 29 and joinmarket enabled.
-    # Joinmarket only supports bitcoind 29.
-    joinmarket-bitcoind-29 = { config, ... }: {
-      imports = [ scenarios.regtest ];
-      services.joinmarket.enable = true;
-      services.bitcoind.package = config.nix-bitcoin.pkgs.bitcoind_29;
     };
   } // (import ../dev/dev-scenarios.nix {
     inherit lib scenarios;

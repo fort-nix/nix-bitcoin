@@ -14,17 +14,6 @@ with lib;
     test.container.enableWAN = true;
   };
 
-  # A node with internet access to test joinmarket-ob-watcher
-  jm-ob-watcher = {
-    services.joinmarket-ob-watcher.enable = true;
-    # Don't download blocks
-    services.bitcoind.extraConfig = ''
-      connect = 0;
-    '';
-    test.container.exposeLocalhost = true;
-    test.container.enableWAN = true;
-  };
-
   rtl-dev = { config, pkgs, lib, ... }: {
     imports = [
       # scenarios.netnsBase

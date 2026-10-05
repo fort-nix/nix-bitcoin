@@ -242,20 +242,6 @@
   # services.charge-lnd.policies = ''
   # '';
 
-  ### JOINMARKET
-  # Set this to enable the JoinMarket service, including its command-line scripts.
-  # These scripts have prefix 'jm-', like 'jm-tumbler'.
-  # Note: JoinMarket has full access to bitcoind, including its wallet functionality.
-  # services.joinmarket.enable = true;
-  #
-  # Set this to enable the JoinMarket Yield Generator Bot. You will be able to
-  # earn sats by providing CoinJoin liquidity. This makes it impossible to use other
-  # scripts that access your wallet.
-  # services.joinmarket.yieldgenerator.enable = true;
-  #
-  # Set this to enable the JoinMarket order book watcher.
-  # services.joinmarket-ob-watcher.enable = true;
-
   ### Nodeinfo
   # Set this to add command `nodeinfo` to the system environment.
   # It shows info about running services like onion addresses and local addresses.

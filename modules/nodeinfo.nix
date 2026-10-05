@@ -151,7 +151,6 @@ in {
       fulcrum = mkInfo "";
       btcpayserver = mkInfo "";
       liquidd = mkInfo "";
-      joinmarket-ob-watcher = mkInfo "";
       rtl = mkInfo "";
       mempool = mkInfo "";
       mempool-frontend = name: cfg: mkInfoLong {

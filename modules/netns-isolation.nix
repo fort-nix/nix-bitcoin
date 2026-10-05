@@ -264,14 +264,6 @@ in {
                       ++ optional config.services.btcpayserver.lbtc "liquidd";
         # communicates with clightning over rpc socket
       };
-      joinmarket = {
-        id = 25;
-        connections = [ "bitcoind" ];
-      };
-      joinmarket-ob-watcher = {
-        id = 26;
-        connections = [ "bitcoind" ];
-      };
       lightning-pool = {
         id = 27;
         connections = [ "lnd" ];
@@ -341,17 +333,6 @@ in {
 
     services.nbxplorer.address = netns.nbxplorer.address;
     services.btcpayserver.address = netns.btcpayserver.address;
-
-    services.joinmarket = mkIf config.services.joinmarket.enable {
-      payjoinAddress = netns.joinmarket.address;
-      messagingAddress = netns.joinmarket.address;
-      cliExec = mkCliExec "joinmarket";
-    };
-    systemd.services.joinmarket-yieldgenerator = mkIf config.services.joinmarket.yieldgenerator.enable {
-      serviceConfig.NetworkNamespacePath = "/var/run/netns/nb-joinmarket";
-    };
-
-    services.joinmarket-ob-watcher.address = netns.joinmarket-ob-watcher.address;
 
     services.lightning-pool.rpcAddress = netns.lightning-pool.address;
 
