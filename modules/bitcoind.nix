@@ -155,6 +155,21 @@ let
           }));
         };
       };
+      ipcbind = mkOption {
+        type = types.listOf types.str;
+        default = [];
+        example = [
+          "unix"
+          "unix:/run/bitcoin-ipc/node.sock"
+        ];
+        description = ''
+          Unix socket addresses for incoming Bitcoin Core IPC connections.
+
+          This requires a Bitcoin Core package version >= 30 with IPC support.
+          Use `"unix"` for the default path (`node.sock` in the network data
+          directory), or `"unix:/custom/path"` for an absolute path.
+        '';
+      };
       regtest = mkOption {
         type = types.bool;
         default = false;
@@ -291,6 +306,30 @@ let
 
   i2pSAM = config.services.i2pd.proto.sam;
 
+  dataDir = toString cfg.dataDir;
+  ipcEnabled = cfg.ipcbind != [];
+  ipcAbsolutePaths = map
+    (address: builtins.substring 5 ((builtins.stringLength address) - 5) address)
+    (builtins.filter (address: hasPrefix "unix:/" address) cfg.ipcbind);
+  ipcWritableDirs = unique (
+    builtins.filter
+      (dir: dir != dataDir && !(hasPrefix "${dataDir}/" dir))
+      (map builtins.dirOf ipcAbsolutePaths)
+  );
+  execStart =
+    if ipcEnabled then
+      concatStringsSep " " (
+        [
+          "${cfg.package}/bin/bitcoin"
+          "-m"
+          "node"
+          "-datadir=${escapeShellArg dataDir}"
+        ]
+        ++ map (address: "-ipcbind=${escapeShellArg address}") cfg.ipcbind
+      )
+    else
+      "${cfg.package}/bin/bitcoind -datadir=${escapeShellArg dataDir}";
+
   configFile = builtins.toFile "bitcoin.conf" ''
     # We're already logging via journald
     nodebuglogfile=1
@@ -359,6 +398,13 @@ in {
   inherit options;
 
   config = mkIf cfg.enable {
+    assertions = [
+      {
+        assertion = !ipcEnabled || versionAtLeast cfg.package.version "30";
+        message = "services.bitcoind.ipcbind requires a Bitcoin Core package version >= 30.";
+      }
+    ];
+
     environment.systemPackages = [ cfg.package (hiPrio cfg.cli) ];
 
     services.bitcoind = mkMerge [
@@ -384,7 +430,7 @@ in {
 
     systemd.tmpfiles.rules = [
       "d '${cfg.dataDir}' 0770 ${cfg.user} ${cfg.group} - -"
-    ];
+    ] ++ map (dir: "d '${dir}' 0770 ${cfg.user} ${cfg.group} - -") ipcWritableDirs;
 
     systemd.services.bitcoind = rec {
       wants = [
@@ -444,10 +490,10 @@ in {
         Group = cfg.group;
         TimeoutStartSec = "30min";
         TimeoutStopSec = "30min";
-        ExecStart = "${cfg.package}/bin/bitcoind -datadir='${cfg.dataDir}'";
+        ExecStart = execStart;
         Restart = "on-failure";
         UMask = mkIf cfg.dataDirReadableByGroup "0027";
-        ReadWritePaths = [ cfg.dataDir ];
+        ReadWritePaths = [ cfg.dataDir ] ++ ipcWritableDirs;
       } // nbLib.allowedIPAddresses cfg.tor.enforce
         // optionalAttrs zmqServerEnabled nbLib.allowNetlink;
     };
