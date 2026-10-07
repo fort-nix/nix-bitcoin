@@ -90,6 +90,8 @@ let
         settings.MEMPOOL.POOLS_JSON_URL = mkIf config.test.noConnections "disable-pool-fetching";
       };
 
+      tests.utxoracle = cfg.utxoracle.enable;
+
       tests.lnd = cfg.lnd.enable;
       services.lnd = {
         port = 9736;
@@ -342,6 +344,36 @@ let
       services.clightning = {
         enable = true;
         plugins.trustedcoin.enable = true;
+      };
+    };
+
+    utxoracle = { pkgs, ... }: {
+      services.utxoracle = {
+        enable = true;
+        acceptLicense = true;
+        recentBlocks = true;
+        priceFeed.enable = true;
+        package = pkgs.writeShellScriptBin "utxoracle" ''
+          set -eu
+
+          recent=0
+          for arg in "$@"; do
+            if [[ "$arg" == "-rb" ]]; then
+              recent=1
+            fi
+          done
+
+          if [[ "$recent" == 1 ]]; then
+            cat > UTXOracle_1-144.html <<EOF
+UTXOracle Block Window Price \$64,935
+EOF
+          else
+            cat > UTXOracle_2026-06-17.html <<EOF
+Jun 17, 2026 price: \$65,042
+EOF
+            echo 'Jun 17, 2026 price: $65,042'
+          fi
+        '';
       };
     };
 
